@@ -1,0 +1,422 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PCR viewer</title>
+<link rel="stylesheet" type="text/css" href="shared.css" />
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+<style>
+body {
+	margin: 50px 0;
+	font-size: 16px;
+}
+#cWrapper {
+	width: 100%;
+	display: inline-block;
+	margin-bottom: 200px;
+}
+#calendar {
+	width: 80%;
+	border-spacing: 0;
+	border-collapse: collapse;
+	display: inline-table;
+}
+@media (max-width: 1000px) {
+	#calendar {
+		width: 90%;
+	}
+}
+@media (max-width: 800px) {
+	#calendar {
+		width: 100%;
+	}
+}
+#calendar td {
+	background: -moz-linear-gradient(top, #fafafa 0%, #ffffff 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fafafa), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #fafafa 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #fafafa 0%,#ffffff 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #fafafa 0%,#ffffff 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #fafafa 0%,#ffffff 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+	padding: 5px;
+	padding-top: 25px;
+	height: 200px;
+	border: 1px solid #CCCCCC;
+	vertical-align: top;
+	width: 14.2857%;
+	position: relative;
+}
+#calendar .weekend {
+	background: -moz-linear-gradient(top, #f7f7f7 0%, #fcfcfc 100%); /* fc3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(100%,#fcfcfc)); /* Chrome,Saf7ri4+ */
+	background: -webkit-linear-gradient(top, #f7f7f7 0%,#fcfcfc 100%); /* Chrome10+,Saf7ri5.1+ */
+	background: -o-linear-gradient(top, #f7f7f7 0%,#fcfcfc 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #f7f7f7 0%,#fcfcfc 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #f7f7f7 0%,#fcfcfc 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#fcfcfc',GradientType=0 ); /* IE6-9 */
+}
+#calendar .otherMonth {
+	background: -moz-linear-gradient(top, #ededed 0%, #f2f2f2 100%); /* f23.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ededed), color-stop(100%,#f2f2f2)); /* Chrome,Saedri4+ */
+	background: -webkit-linear-gradient(top, #ededed 0%,#f2f2f2 100%); /* Chrome10+,Saedri5.1+ */
+	background: -o-linear-gradient(top, #ededed 0%,#f2f2f2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ededed 0%,#f2f2f2 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #ededed 0%,#f2f2f2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
+}
+#calendar .today {
+	background: -moz-linear-gradient(top, #bdbdbd 0%, #c1c1c1 100%); /* c13.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bdbdbd), color-stop(100%,#c1c1c1)); /* Chrome,Sabdri4+ */
+	background: -webkit-linear-gradient(top, #bdbdbd 0%,#c1c1c1 100%); /* Chrome10+,Sabdri5.1+ */
+	background: -o-linear-gradient(top, #bdbdbd 0%,#c1c1c1 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #bdbdbd 0%,#c1c1c1 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #bdbdbd 0%,#c1c1c1 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bdbdbd', endColorstr='#c1c1c1',GradientType=0 ); /* IE6-9 */
+}
+
+.span1 { width: 100%; }
+.span2 { width: calc(200% + 11px); }
+.span3 { width: calc(300% + 22px); }
+.span4 { width: calc(400% + 33px); }
+.span5 { width: calc(500% + 44px); }
+.span6 { width: calc(600% + 55px); }
+.span7 { width: calc(700% + 66px); }
+
+/*#calendar td:nth-child(7n+1) {
+	color: red;
+}*/
+.month {
+	opacity: 0;
+	transition: opacity 0.3s linear;
+	-webkit-transition: opacity 0.3s linear;
+	position: absolute;
+	top: 5px;
+	left: 5px;
+}
+#calendar td:hover .month {
+	opacity: 1;
+}
+.day {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+#calendar .assignment {
+	padding: 0 5px;
+	margin: 3px 0;
+	display: table;
+	height: 38px;
+	position: relative;
+	word-break: break-word;
+	z-index: 2;
+	transition: z-index 0.1s 1s linear;
+}
+#calendar .assignment:after {
+	content: ' ';
+	display: block;
+	position: absolute;
+	bottom: -15px;
+	left: calc(50% - 20px);
+	width: 0;
+	height: 0;
+	border-bottom: 20px solid #CCC;
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	z-index:5;
+	opacity: 0;
+	transition: opacity 0.1s 1s linear;
+}
+#calendar .assignment:before {
+	content: ' ';
+	opacity: 0;
+	position: absolute;
+	width: calc(100% + 20px);
+	left: -25%;
+	bottom: -10px;
+	height: 16px;
+	z-index: 5;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.1s 1s linear;
+}
+#calendar .assignment:not(.noHover):hover, #calendar .assignment.pinned {
+	z-index: 3;
+}
+#calendar .assignment:not(.noHover):hover:after, #calendar .assignment.pinned:after {
+	/*transition: opacity 0.1s 1s;*/
+	opacity: 1;
+}
+#calendar .assignment:not(.noHover):hover:before, #calendar .assignment.pinned:before {
+	/*transition: max-height 0.1s 1s;*/
+	max-height: 100px;
+}
+#calendar .assignment>div:after {
+	content: ' ';
+	height: 0%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 4px;
+	transition: height 1s 0s linear;
+}
+#calendar .assignment:not(.noHover):hover>div:after, #calendar .assignment.pinned>div:after {
+	height: 100%;
+}
+#calendar .assignment article {
+	position: absolute;
+	top: calc(100% + 3px);
+	left: 0;
+}
+/*When the table = 80% of screen width, the cell width = 4/5*100/7 = 4*20/7 = 11.42857...*/
+/*#calendar td:nth-child(7n+1) #calendar .assignment article { left: -5px }
+#calendar td:nth-child(7n+1) #calendar .assignment article>div { left: 0; }
+#calendar td:nth-child(7n+2) #calendar .assignment article { left: -11.4vw; } /*100%*/
+/*#calendar td:nth-child(7n+2) #calendar .assignment article>div { left: 0; }
+#calendar td:nth-child(7n+3) #calendar .assignment article { left: calc(17.14vw + 15px); } /*150%*/
+/*#calendar td:nth-child(7n+4) #calendar .assignment article { left: calc(5.7vw + 5px); } /*50%*/
+/*#calendar td:nth-child(7n+5) #calendar .assignment article { left: calc(-5.7vw - 5px);; } /*-50%*/
+/*#calendar td:nth-child(7n+6) #calendar .assignment article { right: -10vw; } /*-100%*/
+/*#calendar td:nth-child(7n+6) #calendar .assignment article>div { left: 0; }
+#calendar td:nth-child(7n+0) .assignment article { right: -5px; }
+#calendar td:nth-child(7n+0) .assignment article>div { left: 0; }*/
+#calendar td:nth-child(7n+1) .assignment article { left: 0; }
+#calendar td:nth-child(7n+2) .assignment article { left: -10vw; }
+#calendar td:nth-child(7n+3)  .assignment article { left: -20vw; }
+#calendar td:nth-child(7n+4) .assignment article>div { left: -30vw; } /*50%*/
+#calendar td:nth-child(7n+5) .assignment article>div { right: -20vw; }
+#calendar td:nth-child(7n+6) .assignment article>div { right: -10vw; }
+#calendar td:nth-child(7n+0) .assignment article>div { right: 0; }
+#calendar .assignment article>div {
+	background-color: transparent;
+	border: 1px solid transparent;
+	max-width: 1000px;
+	width: 80vw;
+	z-index: 10;
+	position: absolute;
+	text-align: left;
+	padding: 0px;
+	transition: all 0.1s 1s linear;
+	max-height: 0;
+	overflow: hidden;
+}
+#calendar .assignment:not(.noHover):hover article>div, #calendar .assignment.pinned article>div {
+	max-height: 1000px;
+	border-color: #CCC;
+	background-color: white;
+	/*transition: all 0.1s 1s;*/
+}
+#calendar .assignment section {
+	display: inline-block;
+	padding: 20px;
+	padding-top: 10px;
+}
+#calendar .assignment.noHover article>div, #calendar .assignment.noHover:before, #calendar .assignment.noHover:after, #calendar .assignment.noHover>div:after {
+	transition: none;
+}
+#calendar .assignment>div {
+	display: table-cell;
+	vertical-align: middle;
+}
+#calendar .assignment.overWeekend>div:before {
+	content: '\25B6';
+	height: 38px;
+	position: absolute;
+	top: 0;
+	right: 3px;
+	line-height: 38px;
+	text-align: right;
+}
+#calendar .assignment.fromWeekend>div:before {
+	content: '\25C0';
+	height: 38px;
+	position: absolute;
+	top: 0;
+	left: 3px;
+	line-height: 38px;
+	text-align: left;
+}
+.homework {
+	background-color: #0C0;
+	border: 1px solid #0A0;
+}
+.homework>div:after { background-color: #0A0; }
+#calendar .assignment>div>div {
+	overflow: hidden;
+	max-height: 36px;
+}
+.classwork {
+	background-color: #FC3;
+	border: 1px solid #DA1;
+}
+.classwork>div:after { background-color: #DA1; }
+.tests {
+	background-color: #F90;
+	border: 1px solid #D70;
+}
+.tests>div:after { background-color: #D70; }
+.projects {
+	background-color: #09F;
+	border: 1px solid #07D;
+}
+.projects>div:after { background-color: #07D; }
+.completed { border-color: #AAA; }
+.completed.homework { background-color: #005500; }
+.completed.classwork { background-color: #6E5508; }
+.completed.tests { background-color: #6E3B00; }
+.completed.projects { background-color: #003B6E; }
+#calendar .range {
+	border-bottom: 1px solid #DDD;
+	width: calc(100% + 20px);
+	margin-top: 10px;
+	padding-left: 10px;
+	display: block;
+	padding-bottom: 1px;
+}
+
+.compAll {
+	position: absolute;
+	top: 5px;
+	width: 30px;
+	font-size: 15px;
+	left: calc(75% - 15px);
+	color: #999;
+	cursor: pointer;
+	font-weigtht: bold;
+	opacity: 0;
+	transition: opacity 0.5s linear;
+	-webkit-transition: opacity 0.5s linear;
+}
+td:hover .compAll {
+	opacity: 1;
+}
+.compAll:hover {
+	color: #115040;
+}
+h2 {
+	font-size: 18px;
+	margin-top: 2px;
+	margin-bottom: 12px;
+}
+#header {
+	z-index: 50;
+	position: fixed;
+	height: 40px;
+	top: 0;
+	left: 0;
+	right: 0;
+	/*background-color: #115040;
+	color: white;*/
+	background-color: #FAFAFA;
+	border-bottom: 1px solid #CCC;
+	margin: 0;
+	font-size: 18px;
+}
+#header>* {
+	line-height: 40px;
+	margin: 0px;
+	display: inline-block;
+}
+#logo {
+	font-size: 24px;
+	position: absolute;
+	left: 10px;
+	top: 0;
+}
+#settings {
+	position: absolute;
+	right: 0px;
+	top: 0;
+	cursor: pointer;
+	padding: 0 10px;
+}
+#settings:hover, .view:hover, .view.selected {
+	/*background-color: #053D2F;*/
+	background-color: #EEE;
+}
+#header>.view {
+	padding: 0 10px;
+	border-radius: 10px;
+	cursor: pointer;
+	line-height: 34px;
+	position: relative;
+	top: 3px;
+}
+#list, #cWrapper {
+	display: none;
+}
+#eWrapper.list #list {display: block; }
+#eWrapper.chart #cWrapper {display: block; }
+#logout, #offline {
+	position: fixed;
+	bottom: 0;
+	padding: 10px 15px;
+	display: none;
+	z-index:1000;
+}
+#logout {
+	background-color: #115040;
+	color: white;
+	cursor: pointer;
+	right: 0;
+	border-radius: 10px 0 0 0;
+}
+#logout:hover {background-color: #053D2F;}
+#logout.visible {display: block;}
+#offline {
+	background-color: #DDD;
+	left: 0;
+	border-radius: 0 10px 0 0;
+}
+</style>
+</head>
+
+<body onload="auto(location.pathname=='/list'?updateList:updateMonth)">
+<ul id="header">
+	<li id="logo">Check PCR</li>
+	<li class="view" onclick="updateMonth()">Month</li>
+	<li class="view" onclick="updateList()">List</li>
+	<li class="view" onclick="window.open('docked.html', 'Docked', 'height=400, width=500, menubar=no, status=no, scrollbars=yes, location=no, toolbar=no, top='+(screen.height-430)+', left='+(screen.width-500))">Docked</li>
+	<div id="settings">Settings</div>
+</ul>
+<div id="eWrapper">
+	<div id="list"></div>
+	<div id="cWrapper">
+		<table id="calendar">
+			<tbody id="assignments">
+			</tbody>
+		</table>
+	</div>
+</div>
+<div id="loadingBar" class="loadingDots">
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+</div>
+<div id="login">
+	<form onsubmit="return dologin()">
+		<h1>Log into PCR</h1>
+		<small class="err" id="loginErr"></small>
+		<table>
+			<tbody>
+				<tr>
+					<td>Username:&nbsp;</td><td><input type="text" id="user" placeholder="Username" autofocus="autofocus" /></td>
+				</tr><tr>
+					<td>Password:&nbsp;</td><td><input type="password" id="pass" placeholder="Password" /></td>
+				</tr>
+			</tbody>
+		</table>
+		<br />
+		<input id="remember" type="checkbox"> Remember me
+		<div style="width:calc(100% - 100px); position: absolute; bottom: 50px;">
+			<input type="submit" value="Log in" />
+		</div>
+	</form>
+</div>
+<div id="logout" onclick="byebye()">Logout & Close</div>
+<div id="offline">You are offline</div>
+<script src="pcrClient.js"></script>
+</body>
+</html>
