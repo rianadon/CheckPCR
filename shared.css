@@ -244,3 +244,13 @@ body.finished #list:empty:after {
 	content: 'No assignments to display';
 	font-size: 16px;
 }
+
+.attachments {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	padding: 5px 0;
+	border-top: 1px dashed #DDD;
+	border-bottom: 1px dashed #DDD;
+	margin-bottom: 10px;
+}

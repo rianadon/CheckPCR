@@ -83,9 +83,6 @@ body {
 .span6 { width: calc(600% + 55px); }
 .span7 { width: calc(700% + 66px); }
 
-/*#calendar td:nth-child(7n+1) {
-	color: red;
-}*/
 .month {
 	opacity: 0;
 	transition: opacity 0.3s linear;
@@ -168,18 +165,6 @@ body {
 	top: calc(100% + 3px);
 	left: 0;
 }
-/*When the table = 80% of screen width, the cell width = 4/5*100/7 = 4*20/7 = 11.42857...*/
-/*#calendar td:nth-child(7n+1) #calendar .assignment article { left: -5px }
-#calendar td:nth-child(7n+1) #calendar .assignment article>div { left: 0; }
-#calendar td:nth-child(7n+2) #calendar .assignment article { left: -11.4vw; } /*100%*/
-/*#calendar td:nth-child(7n+2) #calendar .assignment article>div { left: 0; }
-#calendar td:nth-child(7n+3) #calendar .assignment article { left: calc(17.14vw + 15px); } /*150%*/
-/*#calendar td:nth-child(7n+4) #calendar .assignment article { left: calc(5.7vw + 5px); } /*50%*/
-/*#calendar td:nth-child(7n+5) #calendar .assignment article { left: calc(-5.7vw - 5px);; } /*-50%*/
-/*#calendar td:nth-child(7n+6) #calendar .assignment article { right: -10vw; } /*-100%*/
-/*#calendar td:nth-child(7n+6) #calendar .assignment article>div { left: 0; }
-#calendar td:nth-child(7n+0) .assignment article { right: -5px; }
-#calendar td:nth-child(7n+0) .assignment article>div { left: 0; }*/
 #calendar td:nth-child(7n+1) .assignment article { left: 0; }
 #calendar td:nth-child(7n+2) .assignment article { left: -10vw; }
 #calendar td:nth-child(7n+3)  .assignment article { left: -20vw; }
@@ -218,23 +203,22 @@ body {
 	display: table-cell;
 	vertical-align: middle;
 }
-#calendar .assignment.overWeekend>div:before {
-	content: '\25B6';
-	height: 38px;
-	position: absolute;
-	top: 0;
-	right: 3px;
-	line-height: 38px;
-	text-align: right;
-}
-#calendar .assignment.fromWeekend>div:before {
-	content: '\25C0';
-	height: 38px;
+#calendar .assignment>div:before {
+	content: '';
 	position: absolute;
 	top: 0;
 	left: 3px;
-	line-height: 38px;
-	text-align: left;
+	bottom: 0;
+	right: 3px;
+}
+#calendar .assignment.overWeekend:not(.fromWeekend)>div:before {
+	background: url(right.svg) right center / 10px 10px no-repeat;
+}
+#calendar .assignment.fromWeekend:not(.overWeekend)>div:before {
+	background: url(left.svg) left center / 10px 10px no-repeat;
+}
+#calendar .assignment.fromWeekend.overWeekend>div:before {
+	background: url(left.svg) left center / 10px 10px no-repeat, url(right.svg) right center / 10px 10px no-repeat;
 }
 .homework {
 	background-color: #0C0;
@@ -305,8 +289,6 @@ h2 {
 	top: 0;
 	left: 0;
 	right: 0;
-	/*background-color: #115040;
-	color: white;*/
 	background-color: #FAFAFA;
 	border-bottom: 1px solid #CCC;
 	margin: 0;
@@ -371,10 +353,10 @@ h2 {
 </style>
 </head>
 
-<body onload="auto(location.pathname=='/list'?updateList:updateMonth)">
+<body onload="auto(location.pathname=='/list'?updateList:updateCalendar)">
 <ul id="header">
 	<li id="logo">Check PCR</li>
-	<li class="view" onclick="updateMonth()">Month</li>
+	<li class="view" onclick="updateCalendar()">Calendar</li>
 	<li class="view" onclick="updateList()">List</li>
 	<li class="view" onclick="window.open('docked.html', 'Docked', 'height=400, width=500, menubar=no, status=no, scrollbars=yes, location=no, toolbar=no, top='+(screen.height-430)+', left='+(screen.width-500))">Docked</li>
 	<div id="settings">Settings</div>
