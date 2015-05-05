@@ -13,6 +13,8 @@ Usage
 2. Create a shortcut to run `pcrv2.py`.
 3. Run `pcrv2.py`.
 3. In a browser, navigate to `http://localhost:9000` for calendar view or `http://localhost:9000/list` for list view. This is internal website created by the Python script that is only accessible by your computer.
+4. **To quit the application (since it keeps on running in the background so you can visit Check PCR at any time), use the "Logout & Close" button:**
+![Logout & Close button](images/logoutClose.png?raw=true)
 
 If there are any problems with the program or completing the above steps, please create an issue on the repository.
 

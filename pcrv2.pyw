@@ -70,7 +70,20 @@ class RequestHandler(SimpleHTTPRequestHandler):
         global loginUrl, assignments
         if self.path == '/' or self.path == '/list':
             self.path = main
-        if self.path == '/start':
+        elif self.path == '/commit':
+            try:
+                with open('commit.txt', 'r') as f:
+                    r = f.read()
+                    self.request.sendall("!" if len(r) == 0 else r)
+            except IOError:
+                self.request.sendall("!")
+            return
+        elif self.path == '/setcommit':
+            with open('commit.txt', 'w') as f:
+                f.write(self.headers.get("commit"))
+            self.request.sendall(self.headers.get("commit"))
+            return
+        elif self.path == '/start':
             url = 'https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536'
             try:
                 r = urlopen(url)
@@ -135,9 +148,6 @@ def launchWindow():
 
 t = threading.Timer(0.5, launchWindow)
 t.start()
-def updater():
-    import update
-start_new_thread(updater, ())
 try:
     httpd = ThreadingServer(("localhost", PORT), RequestHandler)
     createTaskbarIcon()

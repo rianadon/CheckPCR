@@ -10,6 +10,37 @@ var logout = document.getElementById("logout");
 var offline = document.getElementById("offline");
 var remember = document.getElementById("remember");
 var oc;
+function send(type, url, error, callback, headers) {
+	var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) callback(xmlhttp.responseText);
+	};
+	xmlhttp.onerror = function() {
+		console.log(error);
+	};
+	xmlhttp.open(type, url, true);
+	if (typeof headers !== "undefined" && headers !== null) {
+		for(var header in headers) {
+			xmlhttp.setRequestHeader(header, headers[header]);
+		}
+	}
+	xmlhttp.send();
+}
+(function update() {
+	send("GET", "https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "Connection to GitHub failed", function(current) {
+		send("GET", "commit", "Connection to python server failed", function(last) {
+			var c = JSON.parse(current).object.sha;
+			console.log(last, c);
+			if(last === "!") {
+				send("GET", "setcommit", "Connection to python server failed", function(resp){}, {
+					"commit": c
+				});
+			} else if (last != c) {
+				alert("Please update the application from https://github.com/19RyanA/CheckPCR.");
+			}
+		});
+	});
+})();
 function auto(onComplete) {
 	data = JSON.parse(localStorage.getItem("data"));
 	if(data) {
