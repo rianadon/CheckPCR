@@ -71,7 +71,11 @@ function start(onComplete){
 				if(offline) offline.style.display="block";
 			} else {
 				console.log("Fetching assignments successful");
-				handleData(xmlhttp.responseText);
+				try {
+					handleData(xmlhttp.responseText);
+				} catch(e) {
+					alert("Error parsing assignments. Is PCR on list or month view?");
+				}
 			}
 		}
 	};
@@ -112,7 +116,11 @@ function dologin(val) {
 				loginErr.innerHTML = "The username and/or password you entered is incorrect";
 			} else {
 				loadingBar.style.display = "none";
-				handleData(xmlhttp.responseText);
+				try {
+					handleData(xmlhttp.responseText);
+				} catch(e) {
+					alert("Error parsing assignments. Is PCR on list or month view?");
+				}
 			}
 		}
 	};
@@ -180,14 +188,14 @@ function handleData(tp) {
 			var ca = assignments[a];
 			assignment.range = findId(ca, "span", "StartingOn").innerHTML;
 			var t = findId(ca, "span", "lblTitle");
-			assignment.title = t.childNodes[0].innerHTML;
+			assignment.title = t.innerHTML;
 			ed = assignment.range.split(" - ")[1];
-			assignment.endDate = (new Date(ed ? ed.substring(0, ed.indexOf(" ")) : null)).getTime();
 			assignment.startDate = (new Date(assignment.range.substring(0, assignment.range.indexOf(" ")))).getTime();
+			assignment.endDate = (new Date(ed ? ed.substring(0, ed.indexOf(" ")) : assignment.startDate)).getTime();
 			var b = t.parentNode.parentNode.innerHTML;
 			var bUnparsed = b.substring(b.indexOf("\n", b.indexOf("</div", b.indexOf("</div")+4)));
 			var ap = attachmentify(bUnparsed);
-			assignment.attachments = ap[0]
+			assignment.attachments = ap[0];
 			assignment.body = urlify(ap[1]).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
 			assignment.type = ca.title.substring(0, ca.title.indexOf("\n")).toLowerCase().replace("& quizzes", "");
 			var st = ca.title.substring(ca.title.indexOf("\n")+1);
@@ -214,7 +222,7 @@ function createAttachments(attachments) {
 	if(attachments.length===0) return "";
 	var box = '<div class="attachments">';
 	for(var at=0; at<attachments.length; at++) {
-		box += '<a href="https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx'+attachments[at][1]+'">'+attachments[at][0]+'</a>';
+		box += '<a href="/attachment'+attachments[at][1]+'">'+attachments[at][0]+'</a>';
 	}
 	return box+"</div>";
 }
@@ -475,10 +483,11 @@ function attachmentify(text) {
 	var parsed = document.createElement('div');
 	parsed.innerHTML = text.replace(/&amp;/g, "&");
 	var as = parsed.getElementsByTagName("a");
-	for(var a=as.length-1; a>=0; a--) {
+	for(var a=0; a<as.length; a++) {
 		if(as[a].id.indexOf("Attachment") != -1) {
 			attachments.push([as[a].innerHTML, as[a].search+as[a].hash]);
 			as[a].remove();
+			a--;
 		}
 	}
 	return [attachments, parsed.innerHTML];

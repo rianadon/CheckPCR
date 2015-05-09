@@ -248,7 +248,7 @@ body.finished #list:empty:after {
 .attachments {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
+	justify-content: space-around;
 	padding: 5px 0;
 	border-top: 1px dashed #DDD;
 	border-bottom: 1px dashed #DDD;

@@ -1,7 +1,7 @@
 #! /usr/bin/python
 import urllib, json
 try:
-    from urllib2 import build_opener, install_opener, HTTPRedirectHandler, HTTPCookieProcessor, urlopen
+    from urllib2 import build_opener, install_opener, HTTPRedirectHandler, HTTPCookieProcessor, urlopen, Request
     from cookielib import CookieJar
     from BaseHTTPServer import HTTPServer
     from SocketServer import ThreadingMixIn
@@ -9,15 +9,18 @@ try:
     from thread import start_new_thread
     from HTMLParser import HTMLParser
 except ImportError:
-    from urllib.request import build_opener, install_opener, HTTPRedirectHandler, HTTPCookieProcessor, urlopen
+    from urllib.request import build_opener, install_opener, HTTPRedirectHandler, HTTPCookieProcessor, urlopen, Request
     from http.cookiejar import CookieJar
     from http.server import HTTPServer, SimpleHTTPRequestHandler
     from socketserver import ThreadingMixIn
     from _thread import start_new_thread
     from html.parser import HTMLParser
 import os, fnmatch, subprocess, threading, sys
+from StringIO import StringIO
+import gzip
 
-os.chdir(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))))
+if '__file__' in locals():
+    os.chdir(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))))
 
 toLoginData = dict()
 toLoginDataOther = dict()
@@ -30,6 +33,18 @@ install_opener(opener)
 x = None
 
 assignments = list()
+
+def getUrl(url, data=None):
+    #return urlopem(url, data=data)
+    response = urlopen(Request(url, headers={
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-encoding': 'gzip, deflate'}, data=data))
+    if response.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO( response.read())
+        f = gzip.GzipFile(fileobj=buf)
+        return (response, f.read())
+    return (response, response.read())
 
 class ThreadingServer(ThreadingMixIn, HTTPServer):
     pass
@@ -86,18 +101,18 @@ class RequestHandler(SimpleHTTPRequestHandler):
         elif self.path == '/start':
             url = 'https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536'
             try:
-                r = urlopen(url)
+                (r, read) = getUrl(url)
                 if 'Login' in r.url:
                     self.request.sendall("Login")
                     loginUrl = r.url
                     parser = InputParser()
-                    parser.feed(r.read())
+                    parser.feed(read)
                 else:
-                    read = r.read()
                     ap = AssignmentParser()
                     ap.feed(read)
                     self.request.sendall(read)
-            except:
+            except Exception as e:
+                print(e)
                 self.request.sendall("Load")
             return
         elif self.path == '/login':
@@ -107,15 +122,22 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 elif "pass" in x.lower():
                     toLoginData[x] = self.headers.get("pass")
             toLoginDataOther.update(toLoginData)
-            r = urlopen(loginUrl, data=urllib.urlencode(toLoginDataOther))
+            (r, read) = getUrl(loginUrl, data=urllib.urlencode(toLoginDataOther))
             if r.url == loginUrl:
                 self.request.sendall("Login")
             else:
-                read = r.read()
                 ap = AssignmentParser()
                 ap.feed(read)
                 self.request.sendall(read)
             return
+        elif self.path.startswith('/attachment'):
+            r = urlopen(Request('https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx'+self.path[11:], headers=self.headers))
+            self.send_response(r.getcode())
+            i = r.info()
+            for h in i:
+                self.send_header(h, i[h])
+            self.end_headers()
+            self.wfile.write(r.read())
         elif self.path == '/quit':
             self.request.sendall("Going to quit in 1 second");
             t = threading.Timer(1, q)
