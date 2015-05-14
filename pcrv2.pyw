@@ -1,6 +1,6 @@
 #! /usr/bin/python
-import urllib, json
-try:
+import urllib, json, sys
+if sys.version_info[0] < 3:
     from urllib2 import build_opener, install_opener, HTTPRedirectHandler, HTTPCookieProcessor, urlopen, Request
     from cookielib import CookieJar
     from BaseHTTPServer import HTTPServer
@@ -8,16 +8,17 @@ try:
     from SimpleHTTPServer import SimpleHTTPRequestHandler
     from thread import start_new_thread
     from HTMLParser import HTMLParser
-except ImportError:
+    from urllib import urlencode
+else:
     from urllib.request import build_opener, install_opener, HTTPRedirectHandler, HTTPCookieProcessor, urlopen, Request
     from http.cookiejar import CookieJar
     from http.server import HTTPServer, SimpleHTTPRequestHandler
     from socketserver import ThreadingMixIn
     from _thread import start_new_thread
     from html.parser import HTMLParser
+    from urllib.parse import urlencode
 import os, fnmatch, subprocess, threading, sys
-from StringIO import StringIO
-import gzip
+import zlib
 
 if '__file__' in locals():
     os.chdir(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))))
@@ -34,6 +35,17 @@ x = None
 
 assignments = list()
 
+def b(s):
+    if sys.version_info[0] < 3:
+        return s
+    else:
+        return bytes(s, 'utf-8')
+def fb(b):
+    if sys.version_info[0] < 3:
+        return b
+    else:
+        return b.decode('utf-8')
+
 def getUrl(url, data=None):
     #return urlopem(url, data=data)
     response = urlopen(Request(url, headers={
@@ -41,10 +53,12 @@ def getUrl(url, data=None):
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-encoding': 'gzip, deflate'}, data=data))
     if response.info().get('Content-Encoding') == 'gzip':
-        buf = StringIO( response.read())
-        f = gzip.GzipFile(fileobj=buf)
-        return (response, f.read())
-    return (response, response.read())
+        return (response, fb(zlib.decompress(response.read(), 16+zlib.MAX_WBITS)))
+    return (response, fb(response.read()))
+
+def s(req, data):
+    print(req.path)
+    req.request.sendall(b(data))
 
 class ThreadingServer(ThreadingMixIn, HTTPServer):
     pass
@@ -89,46 +103,46 @@ class RequestHandler(SimpleHTTPRequestHandler):
             try:
                 with open('commit.txt', 'r') as f:
                     r = f.read()
-                    self.request.sendall("!" if len(r) == 0 else r)
+                    s(self, "!" if len(r) == 0 else r)
             except IOError:
-                self.request.sendall("!")
+                s(self, "!")
             return
         elif self.path == '/setcommit':
             with open('commit.txt', 'w') as f:
                 f.write(self.headers.get("commit"))
-            self.request.sendall(self.headers.get("commit"))
+            s(self, self.headers.get("commit"))
             return
         elif self.path == '/start':
             url = 'https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536'
             try:
                 (r, read) = getUrl(url)
                 if 'Login' in r.url:
-                    self.request.sendall("Login")
+                    s(self, "Login")
                     loginUrl = r.url
                     parser = InputParser()
                     parser.feed(read)
                 else:
                     ap = AssignmentParser()
                     ap.feed(read)
-                    self.request.sendall(read)
+                    s(self, read)
             except Exception as e:
                 print(e)
-                self.request.sendall("Load")
+                s(self, "Load")
             return
         elif self.path == '/login':
-            for x in toLoginData.iterkeys():
+            for x in toLoginData:
                 if "user" in x.lower():
                     toLoginData[x]=self.headers.get("user")
                 elif "pass" in x.lower():
                     toLoginData[x] = self.headers.get("pass")
             toLoginDataOther.update(toLoginData)
-            (r, read) = getUrl(loginUrl, data=urllib.urlencode(toLoginDataOther))
+            (r, read) = getUrl(loginUrl, data=b(urlencode(toLoginDataOther)))
             if r.url == loginUrl:
-                self.request.sendall("Login")
+                s(self, "Login")
             else:
                 ap = AssignmentParser()
                 ap.feed(read)
-                self.request.sendall(read)
+                s(self, read)
             return
         elif self.path.startswith('/attachment'):
             r = urlopen(Request('https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx'+self.path[11:], headers=self.headers))
@@ -139,7 +153,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(r.read())
         elif self.path == '/quit':
-            self.request.sendall("Going to quit in 1 second");
+            s(self, "Going to quit in 1 second");
             t = threading.Timer(1, q)
             t.start()
             return
