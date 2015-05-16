@@ -10,10 +10,11 @@ A client for the homework system currently used by the Harker School, PCR. It ha
 Usage
 -----
 1. Download the repository.
-2. Create a shortcut to run `pcrv2.py`.
-3. Run `pcrv2.py`.
-3. In a browser, navigate to `http://localhost:9000` for calendar view or `http://localhost:9000/list` for list view. This is internal website created by the Python script that is only accessible by your computer.
-4. **To quit the application (since it keeps on running in the background so you can visit Check PCR at any time), use the "Logout & Close" button:**
+2. Create a shortcut to run `pcrv2.py` if you want one.
+3. If you are using Windows, optionally download the [pywin32](http://sourceforge.net/projects/pywin32/) libary so that the program can create an icon in the tray so you can stop the program. Support for this on Macs will come in a later commit.
+4. Run `pcrv2.py`. You should be able to do this by navigating to the folder you downloaded in a terminal/command prompt and running `python pcrv2.py` or dragging it to PythonLauncher (see https://docs.python.org/2/using/mac.html#how-to-run-a-python-script). If it complains about there not being a python command, then you'll probably have to install python from https://www.python.org/downloads.
+5. In a browser, navigate to `http://localhost:9000` for calendar view or `http://localhost:9000/list` for list view. This is internal website created by the Python script that is only accessible by your computer.
+6. **To quit the application (since it keeps on running in the background so you can visit Check PCR at any time), use the "Logout & Close" button:**
 ![Logout & Close button](images/logoutClose.png?raw=true)
 
 If there are any problems with the program or completing the above steps, please create an issue on the repository.
