@@ -1,10 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>PCR viewer</title>
 <link rel="stylesheet" type="text/css" href="shared.css" />
-<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <style>
 body {
 	margin: 50px 0;
@@ -329,23 +328,12 @@ h2 {
 }
 #eWrapper.list #list {display: block; }
 #eWrapper.chart #cWrapper {display: block; }
-#logout, #offline {
+#offline {
 	position: fixed;
 	bottom: 0;
 	padding: 10px 15px;
 	display: none;
 	z-index:1000;
-}
-#logout {
-	background-color: #115040;
-	color: white;
-	cursor: pointer;
-	right: 0;
-	border-radius: 10px 0 0 0;
-}
-#logout:hover {background-color: #053D2F;}
-#logout.visible {display: block;}
-#offline {
 	background-color: #DDD;
 	left: 0;
 	border-radius: 0 10px 0 0;
@@ -353,12 +341,12 @@ h2 {
 </style>
 </head>
 
-<body onload="auto(location.pathname=='/list'?updateList:updateCalendar)">
+<body>
 <ul id="header">
 	<li id="logo">Check PCR</li>
-	<li class="view" onclick="updateCalendar()">Calendar</li>
-	<li class="view" onclick="updateList()">List</li>
-	<li class="view" onclick="window.open('docked.html', 'Docked', 'height=400, width=500, menubar=no, status=no, scrollbars=yes, location=no, toolbar=no, top='+(screen.height-430)+', left='+(screen.width-500))">Docked</li>
+	<li id="calendarV" class="view">Calendar</li>
+	<li id="listV" class="view">List</li>
+	<li id="dockedV" class="view">Docked</li>
 	<div id="settings">Settings</div>
 </ul>
 <div id="eWrapper">
@@ -378,7 +366,7 @@ h2 {
 	<div></div>
 </div>
 <div id="login">
-	<form onsubmit="return dologin()">
+	<form>
 		<h1>Log into PCR</h1>
 		<small class="err" id="loginErr"></small>
 		<table>
@@ -397,8 +385,7 @@ h2 {
 		</div>
 	</form>
 </div>
-<div id="logout" onclick="byebye()">Logout & Close</div>
 <div id="offline">You are offline</div>
-<script src="pcrClient.js"></script>
+<script src="client.js"></script>
 </body>
 </html>

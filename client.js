@@ -1,3 +1,5 @@
+var loginURL = "";
+var loginHeaders = {};
 var doneBodies = JSON.parse(localStorage.getItem("done") || "[]");
 var loadingBar = document.getElementById("loadingBar");
 var login = document.getElementById("login");
@@ -6,17 +8,47 @@ var at = document.getElementById("assignments");
 var views = document.getElementsByClassName("view");
 var ew = document.getElementById("eWrapper");
 var list = document.getElementById("list");
-var logout = document.getElementById("logout");
 var offline = document.getElementById("offline");
 var remember = document.getElementById("remember");
+try {
+	document.getElementById("calendarV").addEventListener("click", updateCalendar);
+	document.getElementById("listV").addEventListener("click", updateList);
+	document.getElementById("dockedV").addEventListener("click", function() {
+		window.open('docked.html', 'Docked', 'height=400, width=500, menubar=no, status=no, scrollbars=yes, location=no, toolbar=no, top='+(screen.height-430)+', left='+(screen.width-500));
+	});
+} catch(e) {
+	//docked
+}
+login.getElementsByTagName("form")[0].onsubmit = dologin;
 var oc;
-function send(type, url, error, callback, headers) {
-	var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+var data = [];
+var classList = [];
+
+(function update() {
+	send("GET", "https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "Connection to GitHub failed", function(current) {
+		last = localStorage.getItem("commit");
+		var c = JSON.parse(current.responseText).object.sha;
+		console.log(last, c);
+		if(!last) {
+			localStorage.setItem("commit", c);
+		} else if (last != c) {
+			alert("Please update the application from https://github.com/19RyanA/CheckPCR.");
+		}
+	});
+})();
+
+auto(location.pathname=='/docked.html'?updateList:updateCalendar);
+
+function send(type, url, error, callback, ef, headers, data) {
+	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 && xmlhttp.status==200) callback(xmlhttp.responseText);
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) callback(xmlhttp);
 	};
 	xmlhttp.onerror = function() {
 		console.log(error);
+		if (typeof ef !== "undefined" && ef !== null) ef();
 	};
 	xmlhttp.open(type, url, true);
 	if (typeof headers !== "undefined" && headers !== null) {
@@ -24,30 +56,19 @@ function send(type, url, error, callback, headers) {
 			xmlhttp.setRequestHeader(header, headers[header]);
 		}
 	}
-	xmlhttp.send();
+	if(typeof data !== "undefined" && data !== null) {
+		xmlhttp.send(data);
+	} else {
+		xmlhttp.send();
+	}
 }
-(function update() {
-	send("GET", "https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "Connection to GitHub failed", function(current) {
-		send("GET", "commit", "Connection to python server failed", function(last) {
-			var c = JSON.parse(current).object.sha;
-			console.log(last, c);
-			if(last === "!") {
-				send("GET", "setcommit", "Connection to python server failed", function(resp){}, {
-					"commit": c
-				});
-			} else if (last != c) {
-				alert("Please update the application from https://github.com/19RyanA/CheckPCR.");
-			}
-		});
-	});
-})();
 function auto(onComplete) {
 	data = JSON.parse(localStorage.getItem("data"));
 	if(data) {
 		try {
 			onComplete();
 		} catch(e) {
-			console.error("Error loading last assignments");
+			console.error("Error loading last assignments", e);
 		}
 	}
 	document.body.className="finished";
@@ -55,36 +76,31 @@ function auto(onComplete) {
 }
 function start(onComplete){
 	oc = onComplete;
-	var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			if(logout) logout.className="visible";
-			if(xmlhttp.responseText == "Login") {
-				console.log("Need to log in");
-				login.className="visible";
-				up = getCookie("userPass");
-				if(up !== "") {
-					dologin(up);
-				}
-			} else if (xmlhttp.responseText == "Load") {
-				console.log("Offline");
-				if(offline) offline.style.display="block";
-			} else {
-				console.log("Fetching assignments successful");
-				try {
-					handleData(xmlhttp.responseText);
-				} catch(e) {
-					alert("Error parsing assignments. Is PCR on list or month view?");
-				}
+	send("GET", "https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "Offline", function(xmlhttp) {
+		if(xmlhttp.responseURL.indexOf("Login") != -1) {
+			loginURL = xmlhttp.responseURL;
+			var el = document.createElement("div");
+			el.innerHTML = xmlhttp.responseText;
+			Array.prototype.map.call(el.getElementsByTagName("input"), function(e) {
+				loginHeaders[e.name] = e.value || "";
+			});
+			console.log("Need to log in");
+			login.className="visible";
+			up = getCookie("userPass");
+			if(up !== "") {
+				dologin(window.atob(up).split(":"));
+			}
+		} else {
+			console.log("Fetching assignments successful");
+			try {
+				handleData(xmlhttp.responseText);
+			} catch(e) {
+				alert("Error parsing assignments. Is PCR on list or month view?");
 			}
 		}
-	};
-	xmlhttp.onerror = function() {
-		console.log("Connection to python server failed.");
-	};
-
-	xmlhttp.open("GET","start",true);
-	xmlhttp.send();
+	}, function() {
+		if(offline) offline.style.display="block";
+	});
 }
 function getCookie(cname) {
     var name = cname + "=";
@@ -108,36 +124,28 @@ function dologin(val) {
 	if(remember.checked) {
 		setCookie("userPass", window.btoa(document.getElementById("user").value+":"+document.getElementById("pass").value), 14);
 	}
-	var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			if(xmlhttp.responseText == "Login") {
-				login.className="visible";
-				loginErr.innerHTML = "The username and/or password you entered is incorrect";
-			} else {
-				loadingBar.style.display = "none";
-				try {
-					handleData(xmlhttp.responseText);
-				} catch(e) {
-					alert("Error parsing assignments. Is PCR on list or month view?");
-				}
+	var v = val && val.length>0;
+	var postArray=[];
+	for(var h in loginHeaders) {
+		if(h.toLowerCase().indexOf("user") != -1) loginHeaders[h] = v ? val[0] : document.getElementById("user").value;
+		if(h.toLowerCase().indexOf("pass") != -1) loginHeaders[h] = v ? val[1] : document.getElementById("pass").value;
+		postArray.push(encodeURIComponent(h)+"="+encodeURIComponent(loginHeaders[h]));
+	}
+	send("POST", loginURL, "Cannot login to PCR", function(xmlhttp) {
+		if(xmlhttp.responseURL.indexOf("Login") != -1) {
+			login.className="visible";
+			loginErr.innerHTML = "The username and/or password you entered is incorrect";
+		} else {
+			loadingBar.style.display = "none";
+			try {
+				handleData(xmlhttp.responseText);
+			} catch(e) {
+				alert("Error parsing assignments. Is PCR on list or month view?");
 			}
 		}
-	};
-	xmlhttp.open("GET","login",true);
-	if(val && val.length>0) {
-		up = window.atob(val).split(":");
-		xmlhttp.setRequestHeader("User",up[0]);
-		xmlhttp.setRequestHeader("Pass",up[1]);
-	} else {
-		xmlhttp.setRequestHeader("User",document.getElementById("user").value);
-		xmlhttp.setRequestHeader("Pass",document.getElementById("pass").value);
-	}
-	xmlhttp.send();
+	}, function(){}, {"Content-type": "application/x-www-form-urlencoded"}, postArray.join("&"));
 	return false;
 }
-var data = [];
-var classList = [];
 function parseDateHash(element) {
 	var dateSplit = element.hash.substring(1).split('-');
 	return (new Date(+dateSplit[0], +dateSplit[1]-1, +dateSplit[2])).getTime();
@@ -226,7 +234,6 @@ function createAttachments(attachments) {
 	}
 	return box+"</div>";
 }
-var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 function updateCalendar() {
 	var overWeekends = [];
 	var today;
@@ -301,7 +308,31 @@ function updateCalendar() {
 			a3.innerHTML += "<div><div><small>"+a2.class+"</small> "+a2.shortTitle+"</div></div>";
 			var ab = document.createElement("article");
 			ab.style.width = 100/span2+"%";
-			ab.innerHTML = "<div><div class='close' onclick='closeThis(this)'>&times;</div><div class='pin' onclick='pinThis(this)'>p</div><div class='done' onclick='complete(this)'>&#x2713;</div><span class='range'>"+a2.range+"</span><section><h2>"+a2.title+"</h2>"+createAttachments(a2.attachments)+a2.body+"</div></section></div>";
+			var d = document.createElement("div");
+			var close = document.createElement("div");
+			close.innerHTML = "&times;";
+			close.className = "close";
+			close.addEventListener("click", closeThis);
+			d.appendChild(close);
+			var pin = document.createElement("div");
+			pin.innerHTML = "p";
+			pin.className = "pin";
+			pin.addEventListener("click", pinThis);
+			d.appendChild(pin);
+			var done = document.createElement("div");
+			done.innerHTML = "&#x2713;";
+			done.className = "done";
+			done.addEventListener("click", complete);
+			d.appendChild(done);
+			var range = document.createElement("span");
+			range.innerHTML = a2.range;
+			range.className = "range";
+			d.appendChild(range);
+			var section = document.createElement("section");
+			section.innerHTML = "<section><h2>"+a2.title+"</h2>"+createAttachments(a2.attachments)+a2.body+"</section>";
+			d.appendChild(section);
+			ab.appendChild(d);
+			//ab.innerHTML = "<div><div class='close' onclick='closeThis(this)'></div><div class='pin' onclick='pinThis(this)'>p</div><div class='done' onclick='complete(this)'></div><span class='range'>"+a2.range+"</span><section><h2>"+a2.title+"</h2>"+createAttachments(a2.attachments)+a2.body+"</div></section></div>";
 			a3.appendChild(ab);
 			td.appendChild(a3);
 			if(doneBodies.indexOf(describeA(a2)) > -1) complete(a3, false);
@@ -352,8 +383,8 @@ function parents(el, c) {
 	}
 	return p;
 }
-function closeThis(el) {
-	var p = parents(el, "assignment");
+function closeThis(event) {
+	var p = parents(event.target, "assignment");
 	p.className += " noHover";
 	setTimeout(function(){p.className = p.className.replace(" noHover", "");});
 }
@@ -363,7 +394,7 @@ document.onkeydown = function(evt) {
 		try{evt.preventDefault();}//Non-IE
         catch(x){evt.returnValue=false;}//IE
 		var assignments = document.getElementsByClassName("assignment");
-		for(var a=0; a<assignments.length; a++) { closeThis(assignments[a]); }
+		for(var a=0; a<assignments.length; a++) { closeThis({target: assignments[a]}); }
 	}
 };
 function daysBetween( d1, d2 ) {
@@ -391,8 +422,9 @@ function describe(el) {
 function describeA(a) {
 	return a.range+a.title;
 }
-function complete(el,update) {
+function complete(event,update) {
 	var a;
+	var el = event.target;
 	update = typeof update === "undefined" ? true : update;
 	var p = parents(el, "assignment");
 	var ta = describe(el.parentNode);
@@ -433,7 +465,7 @@ function complete(el,update) {
 	if(update) {
 		localStorage.setItem("done", JSON.stringify(doneBodies));
 	}
-	closeThis(el);
+	closeThis({target: el});
 }
 function completeAll(el) {
 	var a = el.parentNode.getElementsByClassName("assignment");
@@ -452,8 +484,8 @@ function completeAll(el) {
 		}
 	}
 }
-function pinThis(el) {
-	var p = parents(el, "assignment");
+function pinThis(event) {
+	var p = parents(event.target, "assignment");
 	if(p.className.indexOf("pinned") == -1) {
 		p.className += " pinned";
 	} else {
@@ -467,16 +499,6 @@ function dayMatch(d1, d2) {
 	if(a.getMonth() != b.getMonth()) return false;
 	if(a.getFullYear() != b.getFullYear()) return false;
 	return true;
-}
-function byebye() {
-	var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			window.close();
-		}
-	};
-	xmlhttp.open("GET","quit",true);
-	xmlhttp.send();
 }
 function attachmentify(text) {
 	var attachments = [];

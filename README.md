@@ -1,7 +1,7 @@
 Check PCR
 ========
 
-A client for the homework system currently used by the Harker School, PCR. It has been thoroughly tested on Windows with Python 2.7.5 and 3.3.0.
+A client for the homework system currently used by the Harker School, PCR.
 
 ********************************************************************************************************************************************************************
 **<center>If you want to see the whole month in calendar view, leave PCR in month view. Otherwise, if you only want to see one week, put it on list view.</center>**
@@ -9,14 +9,14 @@ A client for the homework system currently used by the Harker School, PCR. It ha
 
 Usage
 -----
+Because this is not an official chrome app (so you can't find it on the webstore), you'll have to manually install it by following the directions below.
 1. Download the repository.
-2. Create a shortcut to run `pcrv2.py`.
-3. Run `pcrv2.py`.
-3. In a browser, navigate to `http://localhost:9000` for calendar view or `http://localhost:9000/list` for list view. This is internal website created by the Python script that is only accessible by your computer.
-4. **To quit the application (since it keeps on running in the background so you can visit Check PCR at any time), use the "Logout & Close" button:**
-![Logout & Close button](images/logoutClose.png?raw=true)
+2. Navigate to `chrome://extensions` in Google Chrome.
+3. Make sure the "Developer mode" checkbox in the top is checked.
+4. Click "Load unpacked extension..." and choose the repository's folder.
+5. Go to `chrome://apps` and click the "Check PCR" icon or use an alternate new tab page to access the app (It should behave just like any other chrome app).
 
-If there are any problems with the program or completing the above steps, please create an issue on the repository.
+If there are any problems with the program or completing the above steps, please create an issue on Github.
 
 Features
 --------
