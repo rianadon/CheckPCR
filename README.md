@@ -10,6 +10,7 @@ A client for the homework system currently used by the Harker School, PCR.
 Usage
 -----
 Because this is not an official chrome app (so you can't find it on the webstore), you'll have to manually install it by following the directions below.
+
 1. Download the repository.
 2. Navigate to `chrome://extensions` in Google Chrome.
 3. Make sure the "Developer mode" checkbox in the top is checked.
