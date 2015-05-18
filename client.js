@@ -26,6 +26,8 @@ var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 var data = [];
 var classList = [];
 
+auto(location.pathname=='/docked.html'?updateList:updateCalendar);
+
 (function update() {
 	send("GET", "https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "Connection to GitHub failed", function(current) {
 		last = localStorage.getItem("commit");
@@ -38,8 +40,6 @@ var classList = [];
 		}
 	});
 })();
-
-auto(location.pathname=='/docked.html'?updateList:updateCalendar);
 
 function send(type, url, error, callback, ef, headers, data) {
 	var xmlhttp = new XMLHttpRequest();
@@ -95,6 +95,7 @@ function start(onComplete){
 			try {
 				handleData(xmlhttp.responseText);
 			} catch(e) {
+				console.error(e);
 				alert("Error parsing assignments. Is PCR on list or month view?");
 			}
 		}
@@ -140,6 +141,7 @@ function dologin(val) {
 			try {
 				handleData(xmlhttp.responseText);
 			} catch(e) {
+				console.error(e);
 				alert("Error parsing assignments. Is PCR on list or month view?");
 			}
 		}
@@ -259,7 +261,19 @@ function updateCalendar() {
 		}
 		var td = document.createElement("td");
 		var day = new Date(data[p].day);
-		td.innerHTML = "<span class='month'>"+months[day.getMonth()]+"</span><span class='compAll' onclick='completeAll(this)'>&#x2713;&#x2713;</span><span class='day'>"+day.getDate()+"</span>";
+		var m = document.createElement("span");
+		m.innerHTML = months[day.getMonth()];
+		m.className = "month";
+		td.appendChild(m);
+		var ca = document.createElement("span");
+		ca.innerHTML = "&#x2713;&#x2713";
+		ca.className = "compAll";
+		ca.addEventListener("click", completeAll);
+		td.appendChild(ca);
+		var daySpan = document.createElement("span");
+		daySpan.innerHTML = day.getDate();
+		daySpan.className = "day";
+		td.appendChild(daySpan);
 		if (data[p].weekend) td.className += " weekend";
 		if (data[p].otherMonth) td.className += " otherMonth";
 		if (dayMatch(data[p].day, new Date())) {
@@ -329,13 +343,13 @@ function updateCalendar() {
 			range.className = "range";
 			d.appendChild(range);
 			var section = document.createElement("section");
-			section.innerHTML = "<section><h2>"+a2.title+"</h2>"+createAttachments(a2.attachments)+a2.body+"</section>";
+			section.innerHTML = "<h2>"+a2.title+"</h2>"+createAttachments(a2.attachments)+a2.body;
 			d.appendChild(section);
 			ab.appendChild(d);
 			//ab.innerHTML = "<div><div class='close' onclick='closeThis(this)'></div><div class='pin' onclick='pinThis(this)'>p</div><div class='done' onclick='complete(this)'></div><span class='range'>"+a2.range+"</span><section><h2>"+a2.title+"</h2>"+createAttachments(a2.attachments)+a2.body+"</div></section></div>";
 			a3.appendChild(ab);
 			td.appendChild(a3);
-			if(doneBodies.indexOf(describeA(a2)) > -1) complete(a3, false);
+			if(doneBodies.indexOf(describeA(a2)) > -1) complete({target: a3}, false);
 			cp++;
 		}
 		lastTr.appendChild(td);
@@ -364,7 +378,12 @@ function updateList() {
 			if(doneBodies.indexOf(describeA(a2)) == -1 && intersects(data[p].day, new Date(), a2.endDate)) {
 				var a3 = document.createElement("div");
 				a3.className = "assignment";
-				a3.innerHTML = "<span onclick='complete(this)'></span><div><center class='range'>"+a2.range+"</center><h2>"+a2.title+"</h2>"+createAttachments(a2.attachments)+a2.body+"</div>";
+				var comp = document.createElement("span");
+				comp.addEventListener("click", complete);
+				a3.appendChild(comp);
+				var d = document.createElement("div");
+				d.innerHTML = "<center class='range'>"+a2.range+"</center><h2>"+a2.title+"</h2>"+createAttachments(a2.attachments)+a2.body;
+				a3.appendChild(d);
 				list.appendChild(a3);
 			}
 		}
@@ -467,8 +486,8 @@ function complete(event,update) {
 	}
 	closeThis({target: el});
 }
-function completeAll(el) {
-	var a = el.parentNode.getElementsByClassName("assignment");
+function completeAll(event) {
+	var a = event.target.parentNode.getElementsByClassName("assignment");
 	var completed = 0;
 	for(var x=0; x<a.length; x++) {
 		if(a[x].className.indexOf("completed") > -1) completed++;
@@ -478,9 +497,9 @@ function completeAll(el) {
 		var ic = a[x].className.indexOf("completed") > -1;
 		var c = a[x].getElementsByClassName("done")[0];
 		if(markComplete) {
-			if(!ic) complete(c);
+			if(!ic) complete({target: c});
 		} else {
-			if(ic) complete(c);
+			if(ic) complete({target: c});
 		}
 	}
 }
