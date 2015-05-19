@@ -232,7 +232,7 @@ function createAttachments(attachments) {
 	if(attachments.length===0) return "";
 	var box = '<div class="attachments">';
 	for(var at=0; at<attachments.length; at++) {
-		box += '<a href="/attachment'+attachments[at][1]+'">'+attachments[at][0]+'</a>';
+		box += '<a href="https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx'+attachments[at][1]+'">'+attachments[at][0]+'</a>';
 	}
 	return box+"</div>";
 }
@@ -287,7 +287,6 @@ function updateCalendar() {
 			var a2;
 			if(p%7===0 && a<o2.length) {
 				a2= o2[a];
-				console.log(a2);
 				overWeekends.splice(0,1); //always first index since we are removing (index decreases by 1 every time)
 			} else {
 				a2= data[p].assignments[a-(p%7===0 ? o2.length : 0)];
