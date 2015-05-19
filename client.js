@@ -95,7 +95,7 @@ function start(onComplete){
 			try {
 				handleData(xmlhttp.responseText);
 			} catch(e) {
-				console.error(e);
+				console.log(e);
 				alert("Error parsing assignments. Is PCR on list or month view?");
 			}
 		}
@@ -141,7 +141,7 @@ function dologin(val) {
 			try {
 				handleData(xmlhttp.responseText);
 			} catch(e) {
-				console.error(e);
+				console.log(e);
 				alert("Error parsing assignments. Is PCR on list or month view?");
 			}
 		}
@@ -287,9 +287,10 @@ function updateCalendar() {
 			var a2;
 			if(p%7===0 && a<o2.length) {
 				a2= o2[a];
+				console.log(a2);
 				overWeekends.splice(0,1); //always first index since we are removing (index decreases by 1 every time)
 			} else {
-				a2= data[p].assignments[a];
+				a2= data[p].assignments[a-(p%7===0 ? o2.length : 0)];
 			}
 			var a3 = document.createElement("div");
 			a3.className = "assignment "+a2.type;
