@@ -1,0 +1,861 @@
+$small-screen-up: 601px
+$medium-screen-up: 993px
+$large-screen-up: 1201px
+
+$medium-and-up: "only screen and (min-width : #{$small-screen-up})"
+$large-and-up: "only screen and (min-width : #{$medium-screen-up})"
+
+$medium-and-down: "only screen and (max-width: #{$medium-screen-up - 1px})"
+$small-and-down: "only screen and (max-width: #{$small-screen-up - 1px})"
+
+$base-color: #43A047
+$accent-color: #00AF49
+
+@import font
+
+=transition($properties...)
+	transition: $properties
+	-webkit-transition: $properties
+	-moz-transition: $properties
+	-o-transition: $properties
+=box-shadow($properties...)
+	box-shadow: $properties
+	-webkit-box-shadow: $properties
+	-moz-box-shadow: $properties
+=border-radius($lengths)
+	border-radius: $lengths
+	-webkit-border-radius: $lengths
+	-moz-border-radius: $lengths
+=border-radius-corner($corner, $length)
+	border-#{$corner}-radius: $length
+	-webkit-border-#{$corner}-radius: $length
+	-moz-border-#{$corner}-radius: $length
+=keyframes($animation-name)
+	@-webkit-keyframes #{$animation-name}
+		@content
+	@-moz-keyframes #{$animation-name}
+		@content
+	@keyframes #{$animation-name}
+		@content
+=animation($args)
+	-webkit-animation: $args
+	-moz-animation: $args
+	-ms-animation: $args
+	-o-animation: $args
+	animation: $args
+=animation-delay($delay)
+	-webkit-animation-delay: $delay
+	-moz-animation-delay: $delay
+	-ms-animation-delay: $delay
+	-o-animation-delay: $delay
+	animation-delay: $delay
+
+@import login
+
+$borderColor: #F3F3F3
+
+=z-depth-1()
+	+box-shadow(0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12))
+
+html
+	box-sizing: border-box
+*, *::before, *::after
+	box-sizing: inherit
+
+body
+	margin: 0
+	font-size: 14px
+	color: rgba(0,0,0,0.87)
+	line-height: 1.5
+	font-family: "Roboto", sans-serif
+	font-weight: normal
+	@media #{$large-and-up}
+		font-size: 13px
+
+a
+	cursor: pointer
+	color: #039be5
+	text-decoration: none
+	-webkit-tap-highlight-color: transparent
+	&:active, &:hover
+		outline: 0
+	&:hover
+		color: #0288D1
+	&:active
+		color: #0277BD
+	&:visited
+		color: #01579B
+
+$navButtonWidth: (48px-24px)/2
+nav
+	background-color: $base-color
+	color: #FFFFFF
+	width: 100%
+	+z-depth-1()
+.nav
+	height: 56px
+	padding: (56px-48px)/2 16-$navButtonWidth
+	width: 100%
+	@media #{$medium-and-up}
+		height: 64px
+		line-height: 64px
+		padding: (64px-48px)/2 24-$navButtonWidth
+
+%navButton
+	font-size: 24px
+	width: 48px
+	height: 48px
+	padding: $navButtonWidth
+	+border-radius(2px)
+	color: #FFFFFF
+	&:hover
+		background-color: #388E3C
+#collapseButton
+	float: left
+	@extend %navButton
+#searchButton
+	float: right
+	@extend %navButton
+#dockButton
+	float: right
+	@extend %navButton
+#todayButton
+	float: right
+	@extend %navButton
+#brand
+	float: left
+	font-size: 20px
+	line-height: 48px
+	margin-left: 72-((56px-48px)/2+48)
+	@media #{$medium-and-up}
+		font-size: 24px
+		margin-left: 80-((64px-48px)/2+48)
+.tabs
+	height: 48px
+	font-size: 14px
+	list-style: none
+	margin: 0
+	position: relative
+	padding: 0
+	@media #{$medium-and-up}
+		margin: 0 68px
+	$tabs: 2
+	&>li
+		text-transform: uppercase
+		line-height: 48px
+		text-align: center
+		float: left
+		width: 100% / $tabs
+		padding: 0 12px
+		max-width: 264px
+		color: rgba(255,255,255,0.6)
+		+transition(color 0.3s ease)
+		@extend a
+		&:hover
+			color: rgba(255,255,255,0.8)
+	&::after
+		content: ' '
+		height: 2px
+		position: absolute
+		width: 100% / $tabs
+		left: 0
+		bottom: 0
+		background-color: #FFFFFF
+		max-width: 264px
+		+transition(left 0.3s ease)
+	@for $tab from 1 through $tabs
+		body[data-view="#{$tab - 1}"] &
+			&>li:nth-child(#{$tab})
+				color: #FFFFFF
+				&:hover
+					color: #FFFFFF
+			&::after
+				left: 100% / $tabs * ($tab - 1)
+				@media only screen and (min-width: #{264px*$tabs+68px*2})
+					left: 264px*($tab - 1)
+
+main
+	width: 100%
+#dates, .week
+	position: relative
+	float: left
+	width: 100%
+#dates>div, .week>.day
+	width: 1/7 * 100%
+	float: left
+	height: 100%
+#dates
+	height: 48px
+	overflow: hidden
+	border-bottom: 1px solid $borderColor
+	+transition(height 0.3s ease, border-bottom-color 0.3s ease)
+	&>div
+		padding: 0 16px
+		@media #{$medium-and-up}
+			padding: 0 24px
+		font-size: 18px
+		color: rgba(0,0,0,0.54)
+		line-height: 48px
+		font-weight: 500
+	body[data-view="1"] &
+		height: 0
+		border-bottom-color: transparent
+.week>.day
+	padding: 8px 16px
+	position: relative
+	z-index: 1000
+	+transition(opacity 0.3s ease)
+	body[data-view="1"] &
+		opacity: 0
+		z-index: 0
+	@media #{$medium-and-up}
+		padding: 12px 24px
+	&:hover>.month
+		max-width: 2.5em
+		opacity: 1
+.dayTable
+	position: absolute
+	top: 0
+	bottom: 0
+	left: 0
+	right: 0
+	width: 100%
+	height: 100%
+	border-collapse: collapse
+	+transition(opacity 0.3s ease)
+	body[data-view="1"] &
+		opacity: 0
+	td
+		border-left: 1px solid $borderColor
+		border-right: 1px solid $borderColor
+		border-bottom: 1px solid $borderColor
+.date, .month
+	line-height: 1
+	font-size: 16px
+	@media #{$medium-and-up}
+		font-size: 15px
+	float: left
+	white-space: nowrap
+	position: relative
+.month
+	max-width: 0
+	overflow: hidden
+	opacity: 0
+	will-change: max-width, opacity
+	+transition(max-width 0.3s ease, opacity 0.3s ease)
+	@media only screen and (max-width: 725px)
+		display: none
+	&::after
+		display: inline-block
+		content: ""
+		width: 5px
+		.day.today>&
+			width: 8px
+.otherMonth
+	background-color: #FAFAFA
+.date
+	.day.today>&
+		color: #FFF
+		&::before
+			content: ' '
+			background-color: #2196F3
+			position: absolute
+			left: calc(50% - 10px)
+			top: -3px
+			width: 20px
+			height: 20px
+			border-radius: 50%
+			z-index: -1
+.assignment
+	color: rgba(0,0,0,0.87)
+	background-color: #757575
+	+border-radius(4px)
+	position: absolute
+	right: 0
+	padding: 2px 0 2px 10px
+	overflow: hidden
+	white-space: nowrap
+	font-size: 15px
+	font-weight: 500
+	will-change: width, top, left, right
+	max-height: 26px
+	&>.title
+		position: relative
+		top: 0
+		color: rgba(255,255,255,0.87)
+		+transition(color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease)
+	&>.close
+		position: absolute
+		top: 24px
+		left: 32px
+		color: #FFF
+		display: none
+	&>.complete
+		opacity: 0
+		display: inline-block
+		position: absolute
+		z-index: 300
+		border-radius: 50%
+		background-color: $accent-color
+		top: 245px - 28px
+		left: 24px
+		width: 56px
+		height: 56px
+		text-align: center
+		line-height: 56px
+		font-size: 28px
+		color: #FFF
+		+transition(transform 0.3s ease)
+		transform: rotate(0deg)
+		&:hover
+			background-color: #00963E
+			color: rgba(255,255,255,0.9)
+	&.done>.complete
+		color: rgba(255,255,255,0.3)
+		background-color: #00642A
+		transform: rotate(360deg)
+		&:hover
+			background-color: #007D34
+			color: rgba(255,255,255,0.4)
+	&>.range, &>.attachments
+		display: none
+		margin: 30px 32px 0 24px+28px-12px-10px
+		font-weight: 400
+		font-size: 18px
+		position: relative
+		padding-left: 40px + 24px
+		white-space: normal
+		&::before
+			@extend .material-icons
+			color: rgba(0,0,0,0.54)
+			position: absolute
+			display: inline-block
+			vertical-align: top
+			top: 4px
+			left: 0
+	&>.range
+		margin-top: #{30px-24px}
+	&>.range::before
+		content: 'schedule'
+	&>.attachments::before
+		content: 'attachment'
+	&>.attachments>a
+		width: 144px
+		height: 96px
+		background-color: #F5F5F5
+		will-change: background-color
+		+transition(background-color 0.3s ease)
+		margin-right: 8px
+		display: inline-block
+		position: relative
+		text-decoration: none
+		color: inherit
+		padding: 10px
+		font-size: 16px
+		overflow: hidden
+		white-space: nowrap
+		text-overflow: ellipsis
+		+border-radius(2px)
+		&:hover
+			background-color: #E0E0E0
+		&::after
+			content: ' '
+			width: 0
+			height: 0
+			border-style: solid
+			border-width: 0 0 20px 20px
+			border-color: transparent transparent #FFFFFF transparent
+			position: absolute
+			right: 0
+			bottom: 0
+		&::before
+			content: ' '
+			width: 0
+			height: 0
+			border-style: solid
+			border-width: 20px 20px 0 0
+			border-color: transparent
+			position: absolute
+			right: 0
+			bottom: 0
+		&>span
+			position: absolute
+			bottom: 16px
+			left: 16px
+			font-size: 14px
+			color: rgba(0,0,0,0.54)
+			&::before
+				@extend .material-icons
+				margin-right: 4px
+				font-size: 12px
+				vertical-align: middle
+		$types: (document: #2196F3 description, slides: #FFC107 crop_5_4, pdf: #F44336 insert_drive_file, plain: #009688 description)
+		@each $type, $data in $types
+			$color: nth($data, 1)
+			$icon: nth($data, 2)
+			&.#{$type}::before
+				border-top-color: $color
+			&.#{$type}>span::before
+				content: ""+$icon
+				color: $color
+	&>.body
+		white-space: normal
+		padding: 16px
+		font-weight: initial
+		line-height: 1.5
+		display: none
+		font-size: 14px
+		@media #{medium-and-up}
+			font-size: 13px
+		a
+			max-width: 500px
+			@media only screen and (max-width: 600px)
+				max-width: calc(100vw - 60px)
+			overflow: hidden
+			display: inline-block
+			white-space: nowrap
+			text-overflow: ellipsis
+			vertical-align: bottom
+	&.modify
+		position: fixed
+	body:not([data-view="1"]) &:not(.modify)
+		top: 44px !important
+	&.anim, &.anim::before, &.anim>.title, &.anim>small,
+		+transition(all 0.3s ease)
+	&.full:not(.anim)
+		overflow-y: auto
+	&.anim>.complete
+		+transition(all 0.15s 0.15s ease)
+	&::before
+		display: block
+		content: ''
+		width: 100%
+		height: 245px
+		//background-color: #1B5E20
+		position: absolute
+		top: 0
+		left: 0
+		opacity: 0
+	&.full
+		max-height: calc(100vh - 90px)
+		width: 600px !important
+		z-index: 2000
+		+border-radius(2px !important)
+		left: calc(50vw - 300px) !important
+		right: calc(50vw - 300px) !important
+		background-color: #FFFFFF !important
+		+box-shadow(0 0 5px -1px rgba(0,0,0,0.25))
+		padding-top: 245px - 26px
+		@media only screen and (max-width: 600px)
+			left: 0 !important
+			right: 0 !important
+			width: 100vw !important
+		&::before
+			opacity: 1
+		&>small
+			position: absolute
+			top: (245px-50px)/2
+			font-size: 50px
+			width: 100%
+			left: 0
+			right: 0
+			text-align: center
+			display: inline
+			max-width: none
+			@media only screen and (min-width: 551px)
+				&>.extra
+					display: inline
+		&>.title
+			font-size: 24px
+			margin-left: 100px
+			z-index: 200
+			top: -3px - 30px - 24px + 28px
+			color: #FFF
+			font-weight: 400
+			display: inline-block
+			white-space: normal
+			line-height: 1
+			margin-right: 16px
+			height: 48px
+		&>.complete
+			opacity: 1
+		&>.body, &>.attachments, &>.range, &>.close
+			display: block
+	&>small
+		margin-right: 5px
+		font-size: inherit
+		font-weight: 400
+		color: rgba(255,255,255,0.54)
+		overflow: hidden
+		text-overflow: ellipsis
+		+transition(color 0.3s ease)
+		max-width: 150px
+		display: inline-block
+		vertical-align: top
+		&>.extra
+			@media only screen and (max-width: 1300px)
+				display: none
+		@media only screen and (max-width: 900px)
+			display: none
+	&.fromWeekend
+		+border-radius-corner(top-left, 0)
+		+border-radius-corner(bottom-left, 0)
+	&.overWeekend
+		+border-radius-corner(top-right, 0)
+		+border-radius-corner(bottom-right, 0)
+	&.homework
+		background-color: #2196F3
+		&.done
+			background-color: #1565C0
+	&.classwork
+		background-color: #689F38
+		&.done
+			background-color: #33691E
+	&.tests
+		background-color: #F44336
+		&.done
+			background-color: #C62828
+	&.projects
+		background-color: #F57C00
+		&.done
+			background-color: #E65100
+	$transitions: background-color box-shadow padding max-height min-height left right margin
+	$tt: ()
+	@each $transition in $transitions
+		$tt: append($tt, $transition + " 0.3s ease", comma)
+	+transition($tt)
+	min-height: 0
+	body[data-view="1"] &
+		margin: 12px !important
+		background-color: #FFF !important
+		padding: 16px 16px 8px+8px+8px+36px 16px
+		+box-shadow(0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12))
+		max-height: 600px
+		overflow: auto
+		&.done, &:not(.listDisp)
+			display: none
+		&>small
+			color: rgba(0,0,0,0.54)
+			display: inline
+			&>.extra
+				display: inline
+		&>.title
+			color: rgba(0,0,0,0.87)
+			font-weight: normal
+			font-size: 24px
+			top: 22px + 16px
+			position: absolute
+			left: 16px
+			line-height: 24px
+		&>.body, &>.attachments, &>.range
+			display: block
+		&>.body
+			padding: 4px 0 0 0
+		&>.attachments
+			margin-top: 8px
+		&>.range
+			margin-top: 24px + 8px
+		&::before
+			display: none
+		&.done>.complete
+			transform: none
+			color: rgba(0,0,0,0.87)
+		&>.complete
+			height: 36px
+			+border-radius(2px)
+			width: auto
+			bottom: 8px
+			left: 8px
+			top: auto
+			opacity: 1
+			background-color: transparent
+			color: $accent-color
+			padding: 0 8px
+			&, &::after
+				font-size: 16px
+				line-height: 36px
+				@media #{medium-screen-up}
+					font-size: 15px
+			&:hover
+				background-color: transparent
+			&::after
+				content: 'Done'
+				font-family: "Roboto", sans-serif
+				margin-left: 4px
+				text-transform: uppercase
+				vertical-align: 2px
+			&>.wave
+				background-color: rgba(#00963E, 0.7)
+		&>.range, &>.attachments
+			margin-left: 0
+			margin-right: 0
+			padding-left: 16px+8px
+			&, &::before
+				font-size: 16px
+				@media #{medium-screen-up}
+					font-size: 15px
+
+=m($color)
+	background-color: mix($color, #1B5E20, 20%)
+
+.homework::before
+	+m(#1565C0)
+.classwork::before
+	+m(#33691E)
+.tests::before
+	+m(#C62828)
+.projects::before
+	+m(#E65100)
+
+body[data-view="0"]
+	.s
+		+border-radius(0 4px 4px 0)
+	.e
+		+border-radius(4px 0 0 4px)
+
+	.assignment:not(.full)
+		&.s
+			left: 0 !important
+		&.e
+			right: 0 !important
+
+		@for $i from 0 through 6
+			&.s#{$i}
+				left: calc(#{($i/7)*100%} + 8px) !important
+			&.fromWeekend.s#{$i}
+				left: ($i/7)*100% !important
+			&.e#{$i}
+				right: calc(#{($i/7)*100%} + 8px) !important
+			&.overWeekend.e#{$i}
+				right: ($i/7)*100% !important
+
+#background, #sideBackground, #loginBackground
+	background: #000
+	position: fixed
+	will-change: opacity
+	opacity: 0
+	z-index: 1500
+	top: 0
+	left: 0
+	width: 100%
+	height: 100%
+	display: none
+	+transition(opacity 0.3s ease)
+	&.active
+		opacity: 0.5
+
+.wave
+	background-color: rgba(255, 255, 255, 0.45)
+	position: absolute
+	border-radius: 50%
+	will-change: opacity, transform
+	display: block
+	transform: scale(0)
+	opacity: 1
+	+transition(opacity 0.55s, transform 0.55s)
+
+.waves
+	position: relative
+	overflow: hidden
+	webkit-touch-callout: none
+	-webkit-user-select: none
+	-khtml-user-select: none
+	-moz-user-select: none
+	-ms-user-select: none
+	user-select: none
+
+$scale: 15
+#empty
+	position: absolute
+	top: 112px
+	z-index: -1
+	left: 0
+	right: 0
+	bottom: 0
+	background: url(images/hills.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
+	opacity: 0
+	+transition(opacity 0.3s ease)
+	font-size: 8vmin
+	color: rgba(0,0,0,0.26)
+	text-align: center
+	line-height: 1.1
+
+	display: flex
+	align-items: center
+	justify-content: center
+	&>span
+		z-index: 1
+
+	body[data-view="1"].noList &
+		opacity: 1
+	&::after
+		content: ' '
+		position: absolute
+		top: 0
+		left: 0
+		right: 0
+		bottom: 2vmin*$scale
+		background: url(images/clouds.svg) center bottom / 100vmin 100vmin repeat
+	&::before
+		content: ' '
+		position: absolute
+		right: 30vw
+		top: 10vh
+		width: 20vmin
+		height: 20vmin
+		background: url(images/sun.svg) center center / 20vmin 20vmin no-repeat
+
+// Progress bars adapted from Materialize
+
+#progress
+	height: 6px
+	display: block
+	width: 100%
+	background-color: lighten($base-color, 40%)
+	overflow: hidden
+	position: fixed
+	bottom: 0
+	left: 0
+	right: 0
+	opacity: 0
+	transform: scaleY(0)
+	+transition(opacity 0.3s 0.5s ease, transform 0.3s 0.5s ease)
+	&.active
+		transform: scaleY(1)
+		opacity: 1
+	&>.determinate
+		position: absolute
+		background-color: inherit
+		top: 0
+		left: 0
+		bottom: 0
+		background-color: $accent-color
+		@include transition(width .3s linear)
+	&>.indeterminate
+		$scale: 1.5
+		background-color: $accent-color
+		&::before
+			content: ''
+			position: absolute
+			background-color: inherit
+			top: 0
+			left:0
+			bottom: 0
+			will-change: left, right
+			// Custom bezier
+			+animation(indeterminate 2.1s*$scale cubic-bezier(0.650, 0.815, 0.735, 0.395) infinite reverse)
+		&::after
+			content: ''
+			position: absolute
+			background-color: inherit
+			top: 0
+			left:0
+			bottom: 0
+			will-change: left, right
+			// Custom bezier
+			+animation(indeterminate-short 2.1s*$scale cubic-bezier(0.165, 0.840, 0.440, 1.000) infinite reverse)
+			+animation-delay(1.15s*$scale)
+
++keyframes(indeterminate)
+	0%
+		left: -35%
+		right:100%
+	60%
+		left: 100%
+		right: -90%
+	100%
+		left: 100%
+		right: -90%
+
++keyframes(indeterminate-short)
+	0%
+		left: -200%
+		right: 100%
+	60%
+		left: 107%
+		right: -8%
+	100%
+		left: 107%
+		right: -8%
+
+#sideNav
+	position: fixed
+	left: 0
+	top: 0
+	height: 100%
+	overflow: auto
+	width: 240px
+	z-index: 5000
+	transform: translateX(-240px)
+	background-color: #FFF
+	+box-shadow(0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12))
+	+transition(transform 0.3s ease)
+	&.active
+		transform: translateX(0)
+		& + #sideBackground
+			opacity: 0.5
+	&::before
+		content: ' '
+		position: absolute
+		z-index: -1
+		top: 0
+		left: 0
+		right: 0
+		height: 240px*9/16
+		background: url(images/bkg.png)
+	&>ul
+		margin: 8px 0
+		padding: 0
+		&>li
+			line-height: 48px
+			display: block
+			font-weight: 500
+			padding: 0 16px
+			&:hover:not(.disabled):not(.nohover)
+				background-color: rgba(0, 0, 0, 0.05)
+			&.disabled
+				color: rgba(0,0,0,0.26)
+				i
+					color: inherit
+				&>a
+					cursor: default
+			&>a
+				height: 100%
+				display: block
+				width: 100%
+				&:visited, &:active, &:hover, &
+					color: inherit
+			i
+				margin-right: 72px - 16px - 24px
+				vertical-align: middle
+				color: rgba(0,0,0,0.54)
+	&>hr
+		border-color: rgba(0,0,0,0.12)
+		margin: 0
+
+#user
+	height: 48px
+	display: block
+	width: auto
+	line-height: 48px
+	color: #FFF
+	margin-top: 240px*9/16-48px
+	font-size: 16px
+	margin-left: 16px
+
+#initials
+	+border-radius(50%)
+	position: absolute
+	left: 16px
+	top: (240px*9/16-48px)/2-64px/2
+	height: 64px
+	width: 64px
+	line-height: 64px
+	text-align: center
+	font-size: 28px
+	color: #FFF
+
+#sideBackground, #loginBackground
+	left: 0
+	top: 0
+	z-index: 4000

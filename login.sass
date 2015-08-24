@@ -1,0 +1,285 @@
+$label-font-size: 16px
+$input-border-color: #9E9E9E
+$input-focus-color: $accent-color
+
+$radio-empty-color: #5a5a5a
+$radio-fill-color: $accent-color
+$input-bg-color: #fff
+
+=transform($args)
+	-webkit-transform: $args
+	-moz-transform: $args
+	-ms-transform: $args
+	-o-transform: $args
+	transform: $args
+
+=transform-origin($args)
+	-webkit-transform-origin: $args
+	-moz-transform-origin: $args
+	-ms-transform-origin: $args
+	-o-transform-origin: $args
+	transform-origin: $args
+
+#login
+	position: fixed
+	top: calc(40vh - 130px)
+	left: 0
+	right: 0
+	margin: 0 auto
+	z-index: 7000
+	background: #FFF
+	padding: 24px 24px 24px+8px+36px+8px 24px
+	width: 56px * 5
+	+transform(scale(0,0))
+	+box-shadow(0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21))
+	+transition(transform 0.3s ease)
+	&>h1
+		margin: 0 0 20px 0
+		font-size: 20px
+		line-height: 1.1
+		font-weight: 500
+	&.active
+		+transform(scale(1,1))
+		& + #loginBackground
+			opacity: 0.5
+	&>input[type="submit"]
+		@extend a
+		color: $accent-color !important
+		background-color: transparent
+		padding: 0 8px
+		min-width: 64px
+		border: none
+		+border-radius(2px)
+		font-size: inherit
+		height: 36px
+		border: none
+		outline: none
+		position: absolute
+		bottom: 8px
+		right: 8px
+	&>.input-field:last-of-type
+		margin-bottom: 16px
+
+#loginBackground
+	z-index: 6000
+
+
+/* Everything below is adapted from Materialize */
+
+label
+	color: $input-border-color
+
+/***************************
+ *	 Text Inputs + Textarea
+ ****************************
+
+// Style Placeholders
+\::-webkit-input-placeholder
+	color: lighten($input-border-color, 20%)
+
+\:-moz-placeholder
+	// Firefox 18-
+	color: lighten($input-border-color, 20%)
+
+\::-moz-placeholder
+	// Firefox 19+
+	color: lighten($input-border-color, 20%)
+
+\:-ms-input-placeholder
+	color: lighten($input-border-color, 20%)
+
+// Text inputs
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=time],
+input[type=date],
+input[type=datetime-local],
+input[type=tel],
+input[type=number],
+input[type=search]
+	// General Styles
+	background-color: transparent
+	border: none
+	border-bottom: 1px solid $input-border-color
+	border-radius: 0
+	outline: none
+	height: 16px+16px
+	width: 100%
+	font-size: 1rem
+	margin: 0 0 8px 0
+	padding: 0
+	box-shadow: none
+	box-sizing: content-box
+	+transition(all .3s)
+	// Focused input style
+	&:focus:not([readonly])
+		border-bottom: 1px solid $input-focus-color
+		box-shadow: 0 1px 0 0 $input-focus-color
+	// Focused label style
+	&:focus:not([readonly]) + label
+		color: $input-focus-color
+	// Form Message Shared Styles
+	& + label:after
+		display: block
+		content: ""
+		position: absolute
+		top: 65px
+		opacity: 0
+		transition: .2s opacity ease-out, .2s color ease-out
+
+// Styling for input field wrapper
+.input-field
+	$fs: 16px*0.8
+	position: relative
+	margin-top: 16px+$fs
+	&>label
+		color: $input-border-color
+		position: absolute
+		top: 8px
+		left: 0
+		font-size: 16px
+		cursor: text
+		+transition(0.2s ease-out)
+		line-height: 1
+	&>label.active
+		font-size: $fs
+		+transform(translateY(#{-16px+(16px - $fs)/2 - 8px}))
+
+/***************
+ *	 Checkboxes
+ ***************
+
+/* CUSTOM CSS CHECKBOXES
+form p
+	margin-bottom: 10px
+	text-align: left
+
+form p:last-child
+	margin-bottom: 0
+
+/* Remove default checkbox
+
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked
+	position: absolute
+	left: -9999px
+	visibility: hidden
+
+// Checkbox Styles
+[type="checkbox"]
+	// Text Label Style
+	+ label
+		position: relative
+		padding-left: 35px
+		cursor: pointer
+		display: inline-block
+		height: 25px
+		line-height: 25px
+		font-size: 1rem
+		-webkit-user-select: none
+		/* webkit (safari, chrome) browsers
+		-moz-user-select: none
+		/* mozilla browsers
+		-khtml-user-select: none
+		/* webkit (konqueror) browsers
+		-ms-user-select: none
+		/* IE10+
+	/* checkbox aspect
+	+ label:before
+		content: ''
+		position: absolute
+		top: 0
+		left: 0
+		width: 18px
+		height: 18px
+		z-index: 0
+		border: 2px solid $radio-empty-color
+		border-radius: 1px
+		margin-top: 2px
+		+transition(0.2s)
+
+[type="checkbox"]:checked
+	+ label:before
+		top: -4px
+		left: -3px
+		width: 12px
+		height: 22px
+		border-top: 2px solid transparent
+		border-left: 2px solid transparent
+		border-right: 2px solid $radio-fill-color
+		border-bottom: 2px solid $radio-fill-color
+		+transform(rotate(40deg))
+		-webkit-backface-visibility: hidden
+		+transform-origin(100% 100%)
+
+/* Indeterminate checkbox
+[type="checkbox"]:indeterminate
+	+ label:before
+		left: -10px
+		top: -11px
+		width: 10px
+		height: 22px
+		border-top: none
+		border-left: none
+		border-right: 2px solid $radio-fill-color
+		border-bottom: none
+		+transform(rotate(90deg))
+		-webkit-backface-visibility: hidden
+		+transform-origin(100% 100%)
+
+// Filled in Style
+[type="checkbox"].filled-in
+	// General
+	+ label:after
+		border-radius: 2px
+	+ label:before,
+	+ label:after
+		content: ''
+		left: 0
+		position: absolute
+		/* .1s delay is for check animation
+		transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s
+		z-index: 1
+	// Unchecked style
+	&:not(:checked) + label:before
+		width: 0
+		height: 0
+		border: 3px solid transparent
+		left: 6px
+		top: 10px
+		-webkit-transform: rotateZ(37deg)
+		transform: rotateZ(37deg)
+		-webkit-transform-origin: 20% 40%
+		transform-origin: 100% 100%
+	&:not(:checked) + label:after
+		height: 20px
+		width: 20px
+		background-color: transparent
+		border: 2px solid $radio-empty-color
+		top: 0px
+		z-index: 0
+	// Checked style
+	&:checked
+		+ label:before
+			top: 0
+			left: 1px
+			width: 8px
+			height: 13px
+			border-top: 2px solid transparent
+			border-left: 2px solid transparent
+			border-right: 2px solid $input-bg-color
+			border-bottom: 2px solid $input-bg-color
+			-webkit-transform: rotateZ(37deg)
+			transform: rotateZ(37deg)
+			-webkit-transform-origin: 100% 100%
+			transform-origin: 100% 100%
+		+ label:after
+			top: 0px
+			width: 20px
+			height: 20px
+			border: 2px solid $accent-color
+			background-color: $accent-color
+			z-index: 0

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, width=device-width"/>
+		<title>PCR viewer</title>
+		<link rel="stylesheet" type="text/css" href="/style.css" />
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+	</head>
+</html>
+<body data-view="0">
+	<nav>
+		<div class="nav">
+			<a id="collapseButton" class="material-icons">menu</a>
+			<span id="brand">Check PCR</span>
+			<!--<a id="dockButton" class="material-icons">open_in_new</a>
+			<a id="todayButton" class="material-icons">today</a>
+			<a id="searchButton" class="material-icons">search</a>-->
+		</div>
+		<ul class="tabs">
+			<li>Calendar</li>
+			<li>List</li>
+		</ul>
+	</nav>
+	<div id="sideNav">
+		<div id="initials"></div>
+		<span id="user"></span>
+		<ul>
+			<li class="nohover"><i class="material-icons">hourglass_empty</i>More to come soon...</li>
+		</ul>
+		<hr />
+		<ul>
+			<li class="disabled"><a><i class="material-icons">settings</i>Settings</a></li>
+			<li><a href="http://goo.gl/forms/qvLkxDti7h"><i class="material-icons">feedback</i>Suggest a Feature</a></li>
+			<li><a href="https://github.com/19RyanA/CheckPCR/issues/new"><i class="material-icons">bug_report</i>Report a bug</a></li>
+			<li><a href="https://github.com/19RyanA/CheckPCR/blob/master/README.md"><i class="material-icons">help</i>Help</a></li>
+		</ul>
+	</div>
+	<div id="sideBackground"></div>
+	<main>
+		<section id="dates">
+			<div>Sun</div>
+			<div>Mon</div>
+			<div>Tues</div>
+			<div>Wed</div>
+			<div>Thu</div>
+			<div>Fri</div>
+			<div>Sat</div>
+		</section>
+	</main>
+	<div id="empty"><span>No more assignments for today!</span></div>
+	<div id="background"></div>
+	<div id="progress">
+		<div class="indeterminate"></div>
+	</div>
+	<form id="login">
+		<h1>Please log in to continue</h1>
+		<div class="input-field">
+			<input id="username" type="text" autocomplete="off">
+			<label for="username">Username</label>
+		</div>
+		<div class="input-field">
+			<input id="password" type="password" autocomplete="off">
+			<label for="password">Password</label>
+		</div>
+		<input type="checkbox" id="remember" />
+		<label for="remember">Remember me</label>
+		<input type="submit" value="OK">
+	</form>
+	<div id="loginBackground"></div>
+	<script src="/client.js"></script>
+</body>

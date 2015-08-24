@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Check PCR",
-  "version": "1",
+  "version": "2.0.0",
   "icons": {
 	"16": "icon_16.png",
 	"32": "icon_32.png",
@@ -13,7 +13,7 @@
   ],
   "app": {
     "launch": {
-      "local_path": "index.html"
+      "local_path": "new.html"
     }
   },
   "minimum_chrome_version": "28",
