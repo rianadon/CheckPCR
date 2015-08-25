@@ -1,4 +1,5 @@
-var attachmentify, closeOpened, dateString, display, displayFunction, dologin, element, fetch, findId, fullMonths, getCookie, input, j, k, labrgb, len, len1, loginHeaders, loginURL, mimeTypes, months, parse, parseDateHash, ref, ref1, resize, ripple, send, setCookie, tab, tzoff, updateAvatar, urlify, weekdays;
+var attachmentify, closeOpened, dateString, display, displayFunction, dologin, done, element, fetch, findId, fullMonths, getCookie, input, j, k, labrgb, len, len1, loginHeaders, loginURL, mimeTypes, months, parse, parseDateHash, ref, ref1, resize, ripple, send, setCookie, tab, tzoff, updateAvatar, urlify, weekdays,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
 
@@ -328,7 +329,7 @@ dateString = function(date, displayMonth) {
 };
 
 display = function() {
-  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, p, pos, previousAssignments, q, ref, ref1, ref2, ref3, s, separated, span, spanRelative, split, start, startSun, taken, times, today, tr, weekHeights, weekId, wk, year;
+  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, p, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, s, separated, span, spanRelative, split, start, startSun, taken, times, today, tr, weekHeights, weekId, wk, year;
   console.time("Displaying data");
   main = document.querySelector("main");
   taken = {};
@@ -446,26 +447,20 @@ display = function() {
     assignment = ref2[o];
     previousAssignments[assignment.getAttribute("id")] = assignment;
   }
-  for (p = 0, len3 = split.length; p < len3; p++) {
-    s = split[p];
-    assignment = window.data.assignments[s.assignment];
-    separated = window.data.classes[assignment["class"]].match(/((?:\d*\s+)?(?:(?:hon\w*|(?:adv\w*\s*)?core)\s+)?)(.*)/i);
-    startSun = new Date(s.start.getTime());
-    startSun.setDate(startSun.getDate() - startSun.getDay());
-    weekId = "wk" + (startSun.getMonth()) + "-" + (startSun.getDate());
-    e = element("div", ["assignment", assignment.baseType], "<small><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</small><span class='title'>" + assignment.title + "</span>", assignment.id + weekId);
-    close = element("a", ["close", "material-icons"], "close");
-    close.addEventListener("click", closeOpened);
-    e.appendChild(close);
-    complete = element("a", ["complete", "material-icons", "waves"], "done");
-    ripple(complete);
-    complete.addEventListener("mouseup", function(evt) {
+  fn = function(id) {
+    return complete.addEventListener("mouseup", function(evt) {
       var el;
       if (evt.which === 1) {
         el = evt.target;
         while (!el.classList.contains("assignment")) {
           el = el.parentNode;
         }
+        if (el.classList.contains("done")) {
+          done.splice(done.indexOf(id), 1);
+        } else {
+          done.push(id);
+        }
+        localStorage["done"] = JSON.stringify(done);
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
             el.classList.toggle("done");
@@ -476,6 +471,25 @@ display = function() {
         }
       }
     });
+  };
+  for (p = 0, len3 = split.length; p < len3; p++) {
+    s = split[p];
+    assignment = window.data.assignments[s.assignment];
+    separated = window.data.classes[assignment["class"]].match(/((?:\d*\s+)?(?:(?:hon\w*|(?:adv\w*\s*)?core)\s+)?)(.*)/i);
+    startSun = new Date(s.start.getTime());
+    startSun.setDate(startSun.getDate() - startSun.getDay());
+    weekId = "wk" + (startSun.getMonth()) + "-" + (startSun.getDate());
+    e = element("div", ["assignment", assignment.baseType], "<small><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</small><span class='title'>" + assignment.title + "</span>", assignment.id + weekId);
+    if (ref3 = assignment.id, indexOf.call(done, ref3) >= 0) {
+      e.classList.add("done");
+    }
+    close = element("a", ["close", "material-icons"], "close");
+    close.addEventListener("click", closeOpened);
+    e.appendChild(close);
+    complete = element("a", ["complete", "material-icons", "waves"], "done");
+    ripple(complete);
+    id = assignment.id;
+    fn(id);
     e.appendChild(complete);
     start = new Date(assignment.start * 1000 * 3600 * 24 + tzoff);
     end = new Date(assignment.end * 1000 * 3600 * 24 + tzoff);
@@ -483,8 +497,8 @@ display = function() {
     e.appendChild(times);
     if (assignment.attachments.length > 0) {
       attachments = element("div", "attachments");
-      ref3 = assignment.attachments;
-      fn = function(attachment) {
+      ref4 = assignment.attachments;
+      fn1 = function(attachment) {
         var a, req;
         a = element("a", [], attachment[0]);
         a.href = "https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx" + attachment[1];
@@ -506,9 +520,9 @@ display = function() {
         req.send();
         attachments.appendChild(a);
       };
-      for (q = 0, len4 = ref3.length; q < len4; q++) {
-        attachment = ref3[q];
-        fn(attachment);
+      for (q = 0, len4 = ref4.length; q < len4; q++) {
+        attachment = ref4[q];
+        fn1(attachment);
       }
       e.appendChild(attachments);
     }
@@ -851,6 +865,12 @@ updateAvatar();
     }
   });
 })();
+
+done = [];
+
+if (localStorage["done"] != null) {
+  done = JSON.parse(localStorage["done"]);
+}
 
 if (localStorage["data"] != null) {
   window.data = JSON.parse(localStorage["data"]);
