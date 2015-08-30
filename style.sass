@@ -71,6 +71,7 @@ body
 	font-weight: normal
 	@media #{$large-and-up}
 		font-size: 13px
+	padding-top: 112px
 
 a
 	cursor: pointer
@@ -92,7 +93,26 @@ nav
 	color: #FFFFFF
 	width: 100%
 	+z-depth-1()
+	+transition(transform 0.3s ease)
+	will-change: transform, max-height
+	&.headroom--pinned
+		+transform(translateY(0))
+	&.headroom--unpinned
+		+transform(translateY(-115px))
+	position: fixed
+	top: 0
+	left: 0
+	right: 0
+	z-index: 1000
+	max-height: 112px
+	.settingsShown &
+		z-index: 4600
+		max-height: 56px
+		+transform(translateY(0))
+		@media #{$medium-and-up}
+			max-height: 64px
 .nav
+	background-color: $base-color
 	height: 56px
 	padding: (56px-48px)/2 16-$navButtonWidth
 	width: 100%
@@ -113,6 +133,14 @@ nav
 #collapseButton
 	float: left
 	@extend %navButton
+	.settingsShown &
+		display: none
+#backButton
+	float: left
+	@extend %navButton
+	display: none
+	.settingsShown &
+		display: inline-block
 #searchButton
 	float: right
 	@extend %navButton
@@ -137,6 +165,11 @@ nav
 	margin: 0
 	position: relative
 	padding: 0
+	z-index: -1
+	+transition(transform 0.3s ease)
+	will-change: transform
+	.settingsShown &
+		transform: translateY(-48px)
 	@media #{$medium-and-up}
 		margin: 0 68px
 	$tabs: 2
@@ -150,6 +183,7 @@ nav
 		max-width: 264px
 		color: rgba(255,255,255,0.6)
 		+transition(color 0.3s ease)
+		will-change: color
 		@extend a
 		&:hover
 			color: rgba(255,255,255,0.8)
@@ -163,6 +197,7 @@ nav
 		background-color: #FFFFFF
 		max-width: 264px
 		+transition(left 0.3s ease)
+		will-change: left
 	@for $tab from 1 through $tabs
 		body[data-view="#{$tab - 1}"] &
 			&>li:nth-child(#{$tab})
@@ -175,7 +210,9 @@ nav
 					left: 264px*($tab - 1)
 
 main
-	width: 100%
+	width: 100
+body[data-view="1"] .week
+	height: 0 !important
 #dates, .week
 	position: relative
 	float: left
@@ -189,6 +226,7 @@ main
 	overflow: hidden
 	border-bottom: 1px solid $borderColor
 	+transition(height 0.3s ease, border-bottom-color 0.3s ease)
+	will-change: height, border-bottom-color
 	&>div
 		padding: 0 16px
 		@media #{$medium-and-up}
@@ -203,14 +241,14 @@ main
 .week>.day
 	padding: 8px 16px
 	position: relative
-	z-index: 1000
 	+transition(opacity 0.3s ease)
+	will-change: opacity
 	body[data-view="1"] &
 		opacity: 0
 		z-index: 0
 	@media #{$medium-and-up}
 		padding: 12px 24px
-	&:hover>.month
+	&:hover>.month, .hover>.month
 		max-width: 2.5em
 		opacity: 1
 .dayTable
@@ -223,6 +261,7 @@ main
 	height: 100%
 	border-collapse: collapse
 	+transition(opacity 0.3s ease)
+	will-change: opacity
 	body[data-view="1"] &
 		opacity: 0
 	td
@@ -277,13 +316,16 @@ main
 	white-space: nowrap
 	font-size: 15px
 	font-weight: 500
-	will-change: width, top, left, right
+	will-change: width, top, left, right, tranform
 	max-height: 26px
+	z-index: 100
+	cursor: pointer
 	&>.title
 		position: relative
 		top: 0
 		color: rgba(255,255,255,0.87)
 		+transition(color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease)
+		will-change: color, font-size, font-wieght, top
 	&>.close
 		position: absolute
 		top: 24px
@@ -418,6 +460,8 @@ main
 			vertical-align: bottom
 	&.modify
 		position: fixed
+	&:not(.modify)::before
+		display: none
 	body:not([data-view="1"]) &:not(.modify)
 		top: 44px !important
 	&.anim, &.anim::before, &.anim>.title, &.anim>small,
@@ -437,6 +481,7 @@ main
 		left: 0
 		opacity: 0
 	&.full
+		cursor: auto
 		max-height: calc(100vh - 90px)
 		width: 600px !important
 		z-index: 2000
@@ -489,6 +534,7 @@ main
 		overflow: hidden
 		text-overflow: ellipsis
 		+transition(color 0.3s ease)
+		will-change: color
 		max-width: 150px
 		display: inline-block
 		vertical-align: top
@@ -506,24 +552,25 @@ main
 	&.homework
 		background-color: #2196F3
 		&.done
-			background-color: #1565C0
+			background-color: #0D47A1
 	&.classwork
 		background-color: #689F38
 		&.done
 			background-color: #33691E
-	&.tests
-		background-color: #F44336
+	&.tests, &.test
+		background-color: #EF5350
 		&.done
-			background-color: #C62828
+			background-color: #B71C1C
 	&.projects
 		background-color: #F57C00
 		&.done
-			background-color: #E65100
-	$transitions: background-color box-shadow padding max-height min-height left right margin
+			background-color: #BF360C
+	$transitions: background-color, box-shadow, padding, max-height, min-height, left, right, margin
 	$tt: ()
 	@each $transition in $transitions
 		$tt: append($tt, $transition + " 0.3s ease", comma)
 	+transition($tt)
+	will-change: $transitions
 	min-height: 0
 	body[data-view="1"] &
 		margin: 12px !important
@@ -532,6 +579,7 @@ main
 		+box-shadow(0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12))
 		max-height: 600px
 		overflow: auto
+		cursor: auto
 		&.done, &:not(.listDisp)
 			display: none
 		&>small
@@ -596,13 +644,13 @@ main
 					font-size: 15px
 
 =m($color)
-	background-color: mix($color, #1B5E20, 20%)
+	background-color: mix($color, #1B5E20, 30%)
 
 .homework::before
 	+m(#1565C0)
 .classwork::before
 	+m(#33691E)
-.tests::before
+.tests::before, .test::before
 	+m(#C62828)
 .projects::before
 	+m(#E65100)
@@ -675,6 +723,7 @@ $scale: 15
 	background: url(images/hills.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
 	opacity: 0
 	+transition(opacity 0.3s ease)
+	will-change: opacity
 	font-size: 8vmin
 	color: rgba(0,0,0,0.26)
 	text-align: center
@@ -719,7 +768,9 @@ $scale: 15
 	right: 0
 	opacity: 0
 	transform: scaleY(0)
+	z-index: 1000
 	+transition(opacity 0.3s 0.5s ease, transform 0.3s 0.5s ease)
+	will-change: opacity, transform
 	&.active
 		transform: scaleY(1)
 		opacity: 1
@@ -730,7 +781,8 @@ $scale: 15
 		left: 0
 		bottom: 0
 		background-color: $accent-color
-		@include transition(width .3s linear)
+		will-change: width
+		+transition(width .3s linear)
 	&>.indeterminate
 		$scale: 1.5
 		background-color: $accent-color
@@ -739,7 +791,7 @@ $scale: 15
 			position: absolute
 			background-color: inherit
 			top: 0
-			left:0
+			left: 0
 			bottom: 0
 			will-change: left, right
 			// Custom bezier
@@ -749,7 +801,7 @@ $scale: 15
 			position: absolute
 			background-color: inherit
 			top: 0
-			left:0
+			left: 0
 			bottom: 0
 			will-change: left, right
 			// Custom bezier
@@ -759,7 +811,7 @@ $scale: 15
 +keyframes(indeterminate)
 	0%
 		left: -35%
-		right:100%
+		right: 100%
 	60%
 		left: 100%
 		right: -90%
@@ -790,10 +842,13 @@ $scale: 15
 	background-color: #FFF
 	+box-shadow(0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12))
 	+transition(transform 0.3s ease)
+	will-change: transform
 	&.active
 		transform: translateX(0)
 		& + #sideBackground
 			opacity: 0.5
+	.settingsShown &
+		transform: translateX(-240px)
 	&::before
 		content: ' '
 		position: absolute
@@ -803,35 +858,35 @@ $scale: 15
 		right: 0
 		height: 240px*9/16
 		background: url(images/bkg.png)
-	&>ul
-		margin: 8px 0
-		padding: 0
-		&>li
-			line-height: 48px
-			display: block
-			font-weight: 500
-			padding: 0 16px
-			&:hover:not(.disabled):not(.nohover)
-				background-color: rgba(0, 0, 0, 0.05)
-			&.disabled
-				color: rgba(0,0,0,0.26)
-				i
-					color: inherit
-				&>a
-					cursor: default
-			&>a
-				height: 100%
-				display: block
-				width: 100%
-				&:visited, &:active, &:hover, &
-					color: inherit
-			i
-				margin-right: 72px - 16px - 24px
-				vertical-align: middle
-				color: rgba(0,0,0,0.54)
 	&>hr
 		border-color: rgba(0,0,0,0.12)
 		margin: 0
+#sideNav>ul, #settings>ul
+	margin: 8px 0
+	padding: 0
+	&>li
+		line-height: 48px
+		display: block
+		font-weight: 500
+		padding: 0 16px
+		&:hover:not(.disabled):not(.nohover)
+			background-color: rgba(0, 0, 0, 0.05)
+		&.disabled
+			color: rgba(0,0,0,0.26)
+			i
+				color: inherit
+			&>a
+				cursor: default
+		&>a
+			height: 100%
+			display: block
+			width: 100%
+			&:visited, &:active, &:hover, &
+				color: inherit
+		i
+			margin-right: 72px - 16px - 24px
+			vertical-align: middle
+			color: rgba(0,0,0,0.54)
 
 #user
 	height: 48px
@@ -859,3 +914,50 @@ $scale: 15
 	left: 0
 	top: 0
 	z-index: 4000
+
+#settings
+	position: fixed
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	z-index: 4500
+	transform: scale(0)
+	transform-origin: 0 50%
+	background-color: #FFF
+	+transition(transform 0.3s ease)
+	will-change: transform
+	.settingsShown &
+		transform: scale(1)
+	padding-top: 56px+8px
+	@media #{$medium-and-up}
+		padding-top: 64px+8px
+	&>ul
+		font-size: 16px
+		margin: 0 auto
+		max-width: 500px
+		&>li
+			font-weight: 400
+			position: relative
+			&>.control
+				position: absolute
+				right: 16px
+				top: 16px
+			&>select.control
+				width: 125px
+				top: 8px
+			&.two
+				padding-top: 20px
+				padding-bottom: 20px
+				line-height: 16px
+				height: 72px
+				&>.control
+					top: 24px
+				&>select.control
+					top: 12px
+				&>span
+					display: block
+					font-size: 14px
+					line-height: 14px
+					margin-top: 2px
+					color: rgba(0,0,0,0.54)

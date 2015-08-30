@@ -1,4 +1,4 @@
-var attachmentify, closeOpened, dateString, display, displayFunction, dologin, done, element, fetch, findId, fullMonths, getCookie, input, j, k, labrgb, len, len1, loginHeaders, loginURL, mimeTypes, months, parse, parseDateHash, ref, ref1, resize, ripple, send, setCookie, tab, tzoff, updateAvatar, urlify, weekdays,
+var attachmentify, closeOpened, dateString, display, displayFunction, dologin, done, e, element, fetch, findId, fullMonths, getCookie, headroom, input, intervalRefresh, j, k, l, labrgb, len, len1, len2, loginHeaders, loginURL, mimeTypes, months, parse, parseDateHash, ref, ref1, ref2, resize, ripple, scroll, send, setCookie, tab, tzoff, updateAvatar, urlify, weekdays,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
@@ -23,6 +23,8 @@ mimeTypes = {
   "text/plain": ["Text Doc", "plain"]
 };
 
+scroll = 0;
+
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
     progress = false;
@@ -32,11 +34,15 @@ send = function(url, respType, headers, data, progress) {
     req = new XMLHttpRequest();
     req.open((data != null ? "POST" : "GET"), url, true);
     progressElement = document.getElementById("progress");
+    progressInner = progressElement.querySelector("div");
     if (progress) {
       progressElement.offsetWidth;
       progressElement.classList.add("active");
+      if (progressInner.classList.contains("determinate")) {
+        progressInner.classList.remove("determinate");
+        progressInner.classList.add("indeterminate");
+      }
     }
-    progressInner = progressElement.querySelector("div");
     load = localStorage["load"] || 170000;
     req.onload = function(evt) {
       localStorage["load"] = evt.loaded;
@@ -139,7 +145,7 @@ fetch = function() {
     }
   }, function(error) {
     console.log("Could not fetch assignments; You are probably offline. Here's the error:", error);
-    if (offline) {
+    if (typeof offline !== "undefined" && offline !== null) {
       offline.style.display = "block";
     }
   });
@@ -313,8 +319,8 @@ element = function(tag, cls, html, id) {
   return e;
 };
 
-dateString = function(date, displayMonth) {
-  var j, len, r, relative, today;
+dateString = function(date) {
+  var j, len, r, ref, relative, today;
   relative = ["Tomorrow", "Today", "Yesterday", "2 days ago"];
   today = new Date();
   today.setDate(today.getDate() + 1);
@@ -325,15 +331,20 @@ dateString = function(date, displayMonth) {
     }
     today.setDate(today.getDate() - 1);
   }
+  today = new Date();
+  if ((0 < (ref = (date.getTime() - today.getTime()) / 1000 / 3600 / 24) && ref <= 6)) {
+    return weekdays[date.getDay()];
+  }
   return weekdays[date.getDay()] + ", " + fullMonths[date.getMonth()] + " " + (date.getDate());
 };
 
 display = function() {
-  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, p, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, s, separated, span, spanRelative, split, start, startSun, taken, times, today, tr, weekHeights, weekId, wk, year;
+  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, p, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, s, separated, span, spanRelative, split, start, startSun, taken, times, today, todayDiv, tr, weekHeights, weekId, wk, year;
   console.time("Displaying data");
   main = document.querySelector("main");
   taken = {};
   today = Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24);
+  todayDiv = null;
   start = Math.min.apply(Math, (function() {
     var j, len, ref, results;
     ref = window.data.assignments;
@@ -388,30 +399,8 @@ display = function() {
       day = element("div", "day", null, "day");
       if (Math.floor((d - tzoff) / 1000 / 3600 / 24) === today) {
         day.classList.add("today");
+        todayDiv = day;
       }
-      day.addEventListener("click", function(evt) {
-        var e, found, l, len1, results;
-        found = [];
-        while (true) {
-          e = document.elementFromPoint(evt.clientX, evt.clientY);
-          if (e.classList.contains("assignment")) {
-            e.click();
-            break;
-          } else {
-            found.push({
-              element: e,
-              display: e.style.display
-            });
-            e.style.display = "none";
-          }
-        }
-        results = [];
-        for (l = 0, len1 = found.length; l < len1; l++) {
-          e = found[l];
-          results.push(e.element.style.display = e.display);
-        }
-        return results;
-      });
       month = element("span", "month", months[d.getMonth()]);
       day.appendChild(month);
       date = element("span", "date", d.getDate());
@@ -479,7 +468,7 @@ display = function() {
     startSun = new Date(s.start.getTime());
     startSun.setDate(startSun.getDate() - startSun.getDay());
     weekId = "wk" + (startSun.getMonth()) + "-" + (startSun.getDate());
-    e = element("div", ["assignment", assignment.baseType], "<small><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</small><span class='title'>" + assignment.title + "</span>", assignment.id + weekId);
+    e = element("div", ["assignment", assignment.baseType], "<small><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</small><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + assignment.end + "' />", assignment.id + weekId);
     if (ref3 = assignment.id, indexOf.call(done, ref3) >= 0) {
       e.classList.add("done");
     }
@@ -530,7 +519,7 @@ display = function() {
     if (start < s.start) {
       e.classList.add("fromWeekend");
     }
-    if (end > e.end) {
+    if (end > s.end) {
       e.classList.add("overWeekend");
     }
     e.classList.add("s" + (s.start.getDay()));
@@ -602,6 +591,10 @@ display = function() {
       document.getElementById("background").classList.remove("active");
     }
     assignment.remove();
+  }
+  if (todayDiv != null) {
+    scroll = todayDiv.getBoundingClientRect().top + document.body.scrollTop - 112;
+    window.scrollTo(0, scroll);
   }
   if (document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0) {
     document.body.classList.add("noList");
@@ -698,6 +691,11 @@ for (j = 0, len = ref.length; j < len; j++) {
       };
       window.requestAnimationFrame(step);
     } else {
+      window.scrollTo(0, scroll);
+      setTimeout(function() {
+        document.querySelector("nav").classList.remove("headroom--unpinned");
+        return document.querySelector("nav").classList.add("headroom--pinned");
+      }, 1000);
       window.removeEventListener("resize", resize);
       ref1 = document.getElementsByClassName("assignment");
       for (k = 0, len1 = ref1.length; k < len1; k++) {
@@ -728,7 +726,7 @@ resize = function() {
   })();
   assignments = Array.prototype.slice.call(document.querySelectorAll(".assignment.listDisp:not(.done)"));
   assignments.sort(function(a, b) {
-    return b.getElementsByClassName("body")[0].innerText.length - a.getElementsByClassName("body")[0].innerText.length;
+    return a.getElementsByClassName("due")[0].value - b.getElementsByClassName("due")[0].value;
   });
   for (n = l = 0, len2 = assignments.length; l < len2; n = ++l) {
     assignment = assignments[n];
@@ -775,6 +773,13 @@ window.addEventListener("keydown", function(evt) {
     }
   }
 });
+
+headroom = new Headroom(document.querySelector("nav"), {
+  tolerance: 10,
+  offset: 66
+});
+
+headroom.init();
 
 document.getElementById("collapseButton").addEventListener("click", function() {
   document.getElementById("sideNav").classList.add("active");
@@ -848,6 +853,70 @@ updateAvatar = function() {
 };
 
 updateAvatar();
+
+document.getElementById("settingsB").addEventListener("click", function() {
+  document.body.classList.add("settingsShown");
+  document.getElementById("brand").innerHTML = "Settings";
+  return setTimeout(function() {
+    return document.querySelector("main").style.display = "none";
+  });
+});
+
+document.getElementById("backButton").addEventListener("click", function() {
+  document.querySelector("main").style.display = "block";
+  document.body.classList.remove("settingsShown");
+  return document.getElementById("brand").innerHTML = "Check PCR";
+});
+
+if (localStorage["refreshOnFocus"] == null) {
+  localStorage["refreshOnFocus"] = JSON.stringify(true);
+}
+
+window.addEventListener("focus", function() {
+  if (JSON.parse(localStorage["refreshOnFocus"])) {
+    return fetch();
+  }
+});
+
+if (localStorage["refreshRate"] == null) {
+  localStorage["refreshRate"] = JSON.stringify(-1);
+}
+
+intervalRefresh = function() {
+  var r;
+  r = JSON.parse(localStorage["refreshRate"]);
+  if (r > 0) {
+    return setTimeout(function() {
+      console.debug("Refreshing because of timer");
+      fetch();
+      return intervalRefresh();
+    }, r * 60 * 1000);
+  }
+};
+
+intervalRefresh();
+
+ref2 = document.getElementsByClassName("settingsControl");
+for (l = 0, len2 = ref2.length; l < len2; l++) {
+  e = ref2[l];
+  if (localStorage[e.name] != null) {
+    if (e.checked != null) {
+      e.checked = JSON.parse(localStorage[e.name]);
+    } else {
+      e.value = JSON.parse(localStorage[e.name]);
+    }
+  }
+  e.addEventListener("change", function(evt) {
+    if (evt.target.checked != null) {
+      localStorage[evt.target.name] = JSON.stringify(evt.target.checked);
+    } else {
+      localStorage[evt.target.name] = JSON.stringify(evt.target.value);
+    }
+    if (evt.target.name === "refreshRate") {
+      return intervalRefresh();
+    }
+  });
+}
 
 (function() {
   return send("https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "json").then(function(resp) {

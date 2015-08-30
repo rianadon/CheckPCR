@@ -4,14 +4,17 @@ Check PCR
 A client for the homework system currently used by the Harker School, PCR.
 
 ********************************************************************************************************************************************************************
+#### <center>Important Notice</center>
 **<center>If you want to see the whole month in calendar view, leave PCR in month view. Otherwise, if you only want to see one week, put it on list view.</center>**
 ********************************************************************************************************************************************************************
+
+If you are feeling bored and have nothing else to do or are suspicious of what the program does with your password, **feel free to take a look at the [Literate Coffeescript code](client.litcoffee)**, which gets compiled into one of the two Javascript scripts used by the app (the other is headroom.js, downloaded from [here](http://wicky.nillia.ms/headroom.js/), which toggles the navbar visibility). If you are feeling extra suspicious, you can also compile `client.litcoffee` yourself.
 
 Installing
 ----------
 Because I chose not to publish Check PCR on the Chrome Webstore, you'll have to install it in developer mode by following the directions below.
 
-1. Download the repository.
+1. Download the repository (via `git clone https://github.com/19RyanA/CheckPCR` *[recommended, but git needs to be installed]* or downloading and unzipping the zip file).
 2. Navigate to `chrome://extensions` in Google Chrome.
 3. Make sure the "Developer mode" checkbox in the top is checked.
 4. Click "Load unpacked extension..." and choose the repository's folder.
@@ -23,12 +26,15 @@ If there are any problems with the program or completing the above steps, please
 
 Usage
 -----
-To view an assignment, just click the rectangle.
+To view an assignment in calendar view, just click the rectangle.
 
-To close an assignment, you can either press the close button, click anywhere outside of the viewed assignment, or press the `Esc` key on your keyboard
+To close an assignment, you can either press the close button, click anywhere outside of the viewed assignment, or press the `Esc` key on your keyboard.
+
+There's a lot more that I could write here, but the rest should be intuitive.
 
 If you ever encounter any bug, please create an issue on Github so I can hopefully fix it.
-Also, I have the page has frozen on me multiple times due to rendering issues. If this ever happens, use the Chrome task manager to kill the app and reload it. I'm not sure how I'll fix this, so you'll have to endure with me :disappointed:.
+
+Also, I the page has frozen on me multiple times due to rendering issues. If this ever happens, use the Chrome task manager to kill the app and reload it. I'm not sure how I'll fix this, so you'll have to endure with me :disappointed:. *Note: I think this is fixed now, but I don't know for sure.*
 
 Features
 --------
@@ -50,3 +56,6 @@ If you click the "Remember me" checkbox when signing in, your password will be s
 
 ### Automatic Link Detection
 Check PCR will automatically make all links clickable in assignments.
+
+### And much more
+You'll just have to install the app to know.

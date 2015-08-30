@@ -12,6 +12,7 @@
 	<nav>
 		<div class="nav">
 			<a id="collapseButton" class="material-icons">menu</a>
+			<a id="backButton" class="material-icons">arrow_back</a>
 			<span id="brand">Check PCR</span>
 			<!--<a id="dockButton" class="material-icons">open_in_new</a>
 			<a id="todayButton" class="material-icons">today</a>
@@ -26,11 +27,11 @@
 		<div id="initials"></div>
 		<span id="user"></span>
 		<ul>
-			<li class="nohover"><i class="material-icons">hourglass_empty</i>More to come soon...</li>
+			<li class="nohover disabled"><i class="material-icons">hourglass_empty</i>More to come soon...</li>
 		</ul>
 		<hr />
 		<ul>
-			<li class="disabled"><a><i class="material-icons">settings</i>Settings</a></li>
+			<li id="settingsB"><a><i class="material-icons">settings</i>Settings</a></li>
 			<li><a href="http://goo.gl/forms/qvLkxDti7h"><i class="material-icons">feedback</i>Suggest a Feature</a></li>
 			<li><a href="https://github.com/19RyanA/CheckPCR/issues/new"><i class="material-icons">bug_report</i>Report a bug</a></li>
 			<li><a href="https://github.com/19RyanA/CheckPCR/blob/master/README.md"><i class="material-icons">help</i>Help</a></li>
@@ -68,5 +69,31 @@
 		<input type="submit" value="OK">
 	</form>
 	<div id="loginBackground"></div>
+	<div id="settings">
+		<ul>
+			<li class="two">
+				Refresh on window focus
+				<span>Refresh when switching from another window</span>
+				<div class="switch control">
+					<label>
+						<input type="checkbox" name="refreshOnFocus" class="settingsControl" checked>
+						<span class="lever"></span>
+					</label>
+				</div>
+			</li>
+			<li class="two">
+				Refresh rate
+				<span>How often the page refreshes on its own</span>
+				<select class="control browser-default settingsControl" name="refreshRate">
+					<option value="-1">Never</option>
+					<option value="10">10 Minutes</option>
+					<option value="30">30 Minutes</option>
+					<option value="60">1 Hour</option>
+					<option value="120">2 Hours</option>
+				</select>
+			</li>
+		</ul>
+	</div>
+	<script src="/headroom.min.js"></script>
 	<script src="/client.js"></script>
 </body>

@@ -283,3 +283,132 @@ form p:last-child
 			border: 2px solid $accent-color
 			background-color: $accent-color
 			z-index: 0
+
+$switch-checked-lever-bg: desaturate(lighten($accent-color, 25%),25%)
+$switch-bg-color: $accent-color
+$switch-unchecked-lever-bg: #818181
+$switch-unchecked-bg: #F1F1F1
+
+.switch,
+.switch *
+	-webkit-user-select: none
+	-moz-user-select: none
+	-khtml-user-select: none
+	-ms-user-select: none
+
+.switch label
+	cursor: pointer
+
+.switch label input[type=checkbox]
+	opacity: 0
+	width: 0
+	height: 0
+
+.switch label input[type=checkbox]:checked + .lever
+	background-color: $switch-checked-lever-bg
+
+.switch label input[type=checkbox]:checked + .lever:after
+	background-color: $switch-bg-color
+
+.switch label .lever
+	content: ""
+	display: inline-block
+	position: relative
+	width: 40px
+	height: 15px
+	background-color: $switch-unchecked-lever-bg
+	border-radius: 15px
+	transition: background 0.3s ease
+	vertical-align: middle
+	margin: 4px 10px
+
+.switch label .lever:after
+	content: ""
+	position: absolute
+	display: inline-block
+	width: 21px
+	height: 21px
+	background-color: $switch-unchecked-bg
+	border-radius: 21px
+	box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2)
+	//end was 0.4
+	left: -5px
+	top: -3px
+	transition: left 0.3s ease, background .3s ease, box-shadow 0.1s ease
+
+// Switch active style
+input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after
+	box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px transparentize($switch-bg-color, 0.9)
+
+input[type=checkbox]:not(:disabled) ~ .lever:active:after
+	box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08)
+
+.switch label input[type=checkbox]:checked + .lever:after
+	left: 24px
+
+select:focus
+	outline: 1px solid lighten($accent-color, 47%)
+
+/***************
+ *	Select Field
+ ***************/
+
+.select-label
+	position: absolute
+
+.select-wrapper
+	position: relative
+	input.select-dropdown
+		position: relative
+		cursor: pointer
+		// color: #444;
+		background-color: transparent
+		border: none
+		border-bottom: 1px solid $input-border-color
+		outline: none
+		height: 3rem
+		line-height: 3rem
+		width: 100%
+		font-size: 1rem
+		margin: 0 0 15px 0
+		padding: 0
+		display: block
+	span.caret
+		color: initial
+		position: absolute
+		right: 0
+		top: 16px
+		font-size: 10px
+	& + label
+		position: absolute
+		top: -14px
+		font-size: $label-font-size
+
+select
+	display: none
+
+select.browser-default
+	display: block
+
+.select-wrapper input.select-dropdown:disabled
+	color: rgba(0, 0, 0, 0.3)
+	cursor: default
+	-webkit-user-select: none
+	-moz-user-select: none
+	-ms-user-select: none
+	border-bottom: 1px solid rgba(0, 0, 0, 0.3)
+
+.select-wrapper i
+	color: rgba(0, 0, 0, 0.3)
+
+.select-dropdown li.disabled
+	color: rgba(0, 0, 0, 0.3)
+	background-color: transparent
+
+select
+	background-color: rgba(255, 255, 255, 0.9)
+	width: 100%
+	padding: 5px
+	border: 1px solid #f2f2f2
+	border-radius: 2px
+	height: 3rem

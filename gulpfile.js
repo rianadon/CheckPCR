@@ -1,5 +1,12 @@
 var gulp = require('gulp');
-var sass = require('gulp-sass');
+var sass;
+var libSass = false;
+try {
+	sass = require('gulp-sass');
+	libSass = true;
+} catch(e) {
+	sass = require('gulp-ruby-sass'); //alternate
+}
 var coffee = require('gulp-coffee');
 var gutil = require('gulp-util');
 
@@ -9,9 +16,15 @@ gulp.task('coffee', function() {
 		.pipe(gulp.dest('./'));
 });
 gulp.task('sass', function () {
-	gulp.src('style.sass')
-		.pipe(sass().on('error', sass.logError))
-		.pipe(gulp.dest('./'));
+	if(libSass) {
+		gulp.src('style.sass')
+			.pipe(sass().on('error', sass.logError))
+			.pipe(gulp.dest('./'));
+	} else {
+		sass('style.sass')
+			.on('error', sass.logError)
+			.pipe(gulp.dest('./'));
+	}
 });
 
 gulp.task('sass:watch', function () {
