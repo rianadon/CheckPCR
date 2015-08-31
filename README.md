@@ -45,10 +45,7 @@ Each time data is successfully fetched from PCR, it will be saved to localStorag
 Then, when you visit Check PCR again, whatever was saved last to localStorage will be loaded, regardless of internet connectivity.
 
 ### List View and a Simpler Calendar view
-<table><tr>
-<td style="width: 50%; border: none; vertical-align: top">![Calendar View](images/calendar.png?raw=true)</td>
-<td style="width: 50%; border: none; vertical-align: top">![List view](images/list.png?raw=true)</td>
-</tr></table>
+<img src="https://raw.githubusercontent.com/19RyanA/CheckPCR/master/images/calendar.png" width="50%"><img src="https://raw.githubusercontent.com/19RyanA/CheckPCR/master/images/list.png" width="50%">
 
 With list view, you can easily see all of the assignments due and assigned for the day, like in HHMS.
 Also, calendar view assignments are again shown as a solid bar across multiple days.
