@@ -806,11 +806,11 @@ body[data-view="1"] .week {
   max-height: 26px;
   z-index: 100;
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, margin 0.3s ease;
-  -webkit-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, margin 0.3s ease;
-  -moz-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, margin 0.3s ease;
-  -o-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, margin 0.3s ease;
-  will-change: background-color, box-shadow, padding, max-height, min-height, left, right, margin;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
+  -webkit-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
+  -moz-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
+  -o-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
+  will-change: background-color, box-shadow, padding, max-height, min-height, left, right, top, margin;
   min-height: 0; }
   .assignment > .title {
     position: relative;

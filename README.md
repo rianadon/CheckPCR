@@ -15,12 +15,14 @@ Installing
 Because I chose not to publish Check PCR on the Chrome Webstore, you'll have to install it in developer mode by following the directions below.
 
 1. Download the repository (via `git clone https://github.com/19RyanA/CheckPCR` *[recommended, but git needs to be installed]* or downloading and unzipping the zip file).
+![Downloading](images/download.png)
 2. Navigate to `chrome://extensions` in Google Chrome.
 3. Make sure the "Developer mode" checkbox in the top is checked.
+![Developer mode](images/developer.png?raw=true)
 4. Click "Load unpacked extension..." and choose the repository's folder.
 5. Go to `chrome://apps` and click the "Check PCR" icon or use an alternate new tab page to access the app (It should behave just like any other chrome app).
 
-You may also see a "disable developer mode extensions" dialog box every time you start Chrome. That is because by following the above steps, you have just installed CheckPCR in developer mode.
+*You may also see a "disable developer mode extensions" dialog box every time you start Chrome. That is because by following the above steps, you have just installed CheckPCR in developer mode.*
 
 If there are any problems with the program or completing the above steps, please create an issue on Github.
 
@@ -43,10 +45,13 @@ Each time data is successfully fetched from PCR, it will be saved to localStorag
 Then, when you visit Check PCR again, whatever was saved last to localStorage will be loaded, regardless of internet connectivity.
 
 ### List View and a Simpler Calendar view
-![Calendar View](images/calendar.png?raw=true)
+<table><tr>
+<td style="width: 50%; border: none; vertical-align: top">![Calendar View](images/calendar.png?raw=true)</td>
+<td style="width: 50%; border: none; vertical-align: top">![List view](images/list.png?raw=true)</td>
+</tr></table>
 
-With list view, you can easily see all of the assignments due and assigned for the day.
-Also, calendar view assignments are again shown as a solid bar across multiple days (see image above).
+With list view, you can easily see all of the assignments due and assigned for the day, like in HHMS.
+Also, calendar view assignments are again shown as a solid bar across multiple days.
 
 ### ![Calendar View](images/check.png?raw=true) Assignment completion tracking
 You can mark when you have completed assignments. Completed assignments will then show up in a darker shade in calendar view and will disappear from list view.
