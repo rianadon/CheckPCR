@@ -512,10 +512,10 @@ nav {
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  transition: transform 0.3s ease;
-  -webkit-transition: transform 0.3s ease;
-  -moz-transition: transform 0.3s ease;
-  -o-transition: transform 0.3s ease;
+  transition: transform 0.3s ease, max-height 0.3s ease;
+  -webkit-transition: transform 0.3s ease, max-height 0.3s ease;
+  -moz-transition: transform 0.3s ease, max-height 0.3s ease;
+  -o-transition: transform 0.3s ease, max-height 0.3s ease;
   will-change: transform, max-height;
   position: fixed;
   top: 0;
@@ -558,7 +558,7 @@ nav {
       line-height: 64px;
       padding: 8px 12px; } }
 
-#collapseButton, #backButton, #searchButton, #dockButton, #todayButton {
+#collapseButton, #backButton, #cvButton {
   font-size: 24px;
   width: 48px;
   height: 48px;
@@ -567,7 +567,7 @@ nav {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   color: #FFFFFF; }
-  #collapseButton:hover, #backButton:hover, #searchButton:hover, #dockButton:hover, #todayButton:hover {
+  #collapseButton:hover, #backButton:hover, #cvButton:hover {
     background-color: #388E3C; }
 
 #collapseButton {
@@ -581,14 +581,35 @@ nav {
   .settingsShown #backButton {
     display: inline-block; }
 
-#searchButton {
-  float: right; }
-
-#dockButton {
-  float: right; }
-
-#todayButton {
-  float: right; }
+#cvButton {
+  float: right;
+  transition: opacity 1s ease;
+  -webkit-transition: opacity 1s ease;
+  -moz-transition: opacity 1s ease;
+  -o-transition: opacity 1s ease;
+  position: relative; }
+  body[data-view="0"] #cvButton {
+    opacity: 0;
+    cursor: default;
+    pointer-events: none; }
+  #cvButton::before, #cvButton::after {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: block;
+    transition: opacity 0.5s ease;
+    -webkit-transition: opacity 0.5s ease;
+    -moz-transition: opacity 0.5s ease;
+    -o-transition: opacity 0.5s ease; }
+  #cvButton::before {
+    content: "assignment_turned_in";
+    opacity: 0; }
+    .showDone #cvButton::before {
+      opacity: 1; }
+  #cvButton::after {
+    content: "done"; }
+    .showDone #cvButton::after {
+      opacity: 0; }
 
 #brand {
   float: left;
@@ -687,11 +708,12 @@ body[data-view="1"] .week {
   height: 48px;
   overflow: hidden;
   border-bottom: 1px solid #F3F3F3;
-  transition: height 0.3s ease, border-bottom-color 0.3s ease;
-  -webkit-transition: height 0.3s ease, border-bottom-color 0.3s ease;
-  -moz-transition: height 0.3s ease, border-bottom-color 0.3s ease;
-  -o-transition: height 0.3s ease, border-bottom-color 0.3s ease;
   will-change: height, border-bottom-color; }
+  body:not(.noTrans) #dates {
+    transition: height 0.3s ease, border-bottom-color 0.3s ease;
+    -webkit-transition: height 0.3s ease, border-bottom-color 0.3s ease;
+    -moz-transition: height 0.3s ease, border-bottom-color 0.3s ease;
+    -o-transition: height 0.3s ease, border-bottom-color 0.3s ease; }
   #dates > div {
     padding: 0 16px;
     font-size: 18px;
@@ -708,11 +730,12 @@ body[data-view="1"] .week {
 .week > .day {
   padding: 8px 16px;
   position: relative;
-  transition: opacity 0.3s ease;
-  -webkit-transition: opacity 0.3s ease;
-  -moz-transition: opacity 0.3s ease;
-  -o-transition: opacity 0.3s ease;
   will-change: opacity; }
+  body:not(.noTrans) .week > .day {
+    transition: opacity 0.3s ease;
+    -webkit-transition: opacity 0.3s ease;
+    -moz-transition: opacity 0.3s ease;
+    -o-transition: opacity 0.3s ease; }
   body[data-view="1"] .week > .day {
     opacity: 0;
     z-index: 0; }
@@ -802,25 +825,21 @@ body[data-view="1"] .week {
   white-space: nowrap;
   font-size: 15px;
   font-weight: 500;
-  will-change: width, top, left, right, tranform;
   max-height: 26px;
   z-index: 100;
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
-  -webkit-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
-  -moz-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
-  -o-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
   will-change: background-color, box-shadow, padding, max-height, min-height, left, right, top, margin;
   min-height: 0; }
   .assignment > .title {
     position: relative;
     top: 0;
     color: rgba(255, 255, 255, 0.87);
-    transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease;
-    -webkit-transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease;
-    -moz-transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease;
-    -o-transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease;
     will-change: color, font-size, font-wieght, top; }
+    body:not(.noTrans) .assignment > .title {
+      transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease;
+      -webkit-transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease;
+      -moz-transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease;
+      -o-transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease; }
   .assignment > .close {
     position: absolute;
     top: 24px;
@@ -842,11 +861,12 @@ body[data-view="1"] .week {
     line-height: 56px;
     font-size: 28px;
     color: #FFF;
-    transition: transform 0.3s ease;
-    -webkit-transition: transform 0.3s ease;
-    -moz-transition: transform 0.3s ease;
-    -o-transition: transform 0.3s ease;
     transform: rotate(0deg); }
+    body:not(.noTrans) .assignment > .complete {
+      transition: transform 0.3s ease;
+      -webkit-transition: transform 0.3s ease;
+      -moz-transition: transform 0.3s ease;
+      -o-transition: transform 0.3s ease; }
     .assignment > .complete:hover {
       background-color: #00963E;
       color: rgba(255, 255, 255, 0.9); }
@@ -1057,14 +1077,15 @@ body[data-view="1"] .week {
     color: rgba(255, 255, 255, 0.54);
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: color 0.3s ease;
-    -webkit-transition: color 0.3s ease;
-    -moz-transition: color 0.3s ease;
-    -o-transition: color 0.3s ease;
     will-change: color;
     max-width: 150px;
     display: inline-block;
     vertical-align: top; }
+    body:not(.noTrans) .assignment > small {
+      transition: color 0.3s ease;
+      -webkit-transition: color 0.3s ease;
+      -moz-transition: color 0.3s ease;
+      -o-transition: color 0.3s ease; }
     @media only screen and (max-width: 1300px) {
       .assignment > small > .extra {
         display: none; } }
@@ -1101,6 +1122,11 @@ body[data-view="1"] .week {
     background-color: #F57C00; }
     .assignment.projects.done {
       background-color: #BF360C; }
+  body:not(.noTrans) .assignment {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
+    -webkit-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
+    -moz-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease;
+    -o-transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, max-height 0.3s ease, min-height 0.3s ease, left 0.3s ease, right 0.3s ease, top 0.3s ease, margin 0.3s ease; }
   body[data-view="1"] .assignment {
     margin: 12px !important;
     background-color: #FFF !important;
@@ -1111,7 +1137,7 @@ body[data-view="1"] .week {
     max-height: 600px;
     overflow: auto;
     cursor: auto; }
-    body[data-view="1"] .assignment.done, body[data-view="1"] .assignment:not(.listDisp) {
+    body[data-view="1"] .assignment:not(.listDisp) {
       display: none; }
     body[data-view="1"] .assignment > small {
       color: rgba(0, 0, 0, 0.54);
@@ -1136,9 +1162,13 @@ body[data-view="1"] .week {
       margin-top: 32px; }
     body[data-view="1"] .assignment::before {
       display: none; }
+    body[data-view="1"] .assignment.done {
+      opacity: 0.3; }
     body[data-view="1"] .assignment.done > .complete {
       transform: none;
-      color: rgba(0, 0, 0, 0.87); }
+      color: #00AF49; }
+      body[data-view="1"] .assignment.done > .complete::after {
+        content: "Incomplete"; }
     body[data-view="1"] .assignment > .complete {
       height: 36px;
       border-radius: 2px;
@@ -1177,6 +1207,9 @@ body[data-view="1"] .week {
         @media medium-screen-up {
           body[data-view="1"] .assignment > .range, body[data-view="1"] .assignment > .range::before, body[data-view="1"] .assignment > .attachments, body[data-view="1"] .assignment > .attachments::before {
             font-size: 15px; } }
+
+body[data-view="1"]:not(.showDone) .assignment.done {
+  display: none; }
 
 .homework::before {
   background-color: #196050; }
@@ -1323,7 +1356,7 @@ body[data-view="0"] .assignment:not(.full).overWeekend.e6 {
   justify-content: center; }
   #empty > span {
     z-index: 1; }
-  body[data-view="1"].noList #empty {
+  body[data-view="1"].noList:not(.showDone) #empty {
     opacity: 1; }
   #empty::after {
     content: " ";

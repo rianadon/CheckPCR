@@ -1,11 +1,9 @@
-var attachmentify, closeOpened, dateString, display, displayFunction, dologin, done, e, element, fetch, findId, fullMonths, getCookie, headroom, input, intervalRefresh, j, k, l, labrgb, len, len1, len2, loginHeaders, loginURL, mimeTypes, months, parse, parseDateHash, ref, ref1, ref2, resize, ripple, scroll, send, setCookie, tab, tzoff, updateAvatar, urlify, weekdays,
+var attachmentify, closeOpened, dateString, display, dologin, done, e, element, fetch, findId, fullMonths, getCookie, getResizeAssignments, headroom, input, intervalRefresh, j, k, l, labrgb, len, len1, len2, loginHeaders, loginURL, mimeTypes, months, parse, parseDateHash, ref, ref1, ref2, resize, ripple, scroll, send, setCookie, tab, tzoff, updateAvatar, urlify, weekdays,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
 
 loginHeaders = {};
-
-displayFunction = void 0;
 
 months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -438,21 +436,32 @@ display = function() {
   }
   fn = function(id) {
     return complete.addEventListener("mouseup", function(evt) {
-      var el;
+      var added, el;
       if (evt.which === 1) {
         el = evt.target;
         while (!el.classList.contains("assignment")) {
           el = el.parentNode;
         }
+        added = true;
         if (el.classList.contains("done")) {
           done.splice(done.indexOf(id), 1);
         } else {
+          added = false;
           done.push(id);
         }
         localStorage["done"] = JSON.stringify(done);
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
             el.classList.toggle("done");
+            if (added) {
+              if (document.querySelectorAll(".assignment.listDisp:not(.done)").length !== 0) {
+                document.body.classList.remove("noList");
+              }
+            } else {
+              if (document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0) {
+                document.body.classList.add("noList");
+              }
+            }
             return resize();
           }, 100);
         } else {
@@ -594,10 +603,16 @@ display = function() {
   }
   if (todayDiv != null) {
     scroll = todayDiv.getBoundingClientRect().top + document.body.scrollTop - 112;
+    if (scroll < 50) {
+      scroll = 0;
+    }
     window.scrollTo(0, scroll);
   }
   if (document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0) {
     document.body.classList.add("noList");
+  }
+  if (document.body.getAttribute("data-view") === "1") {
+    resize();
   }
   return console.timeEnd("Displaying data");
 };
@@ -675,21 +690,70 @@ ref = document.querySelectorAll(".tabs>li");
 for (j = 0, len = ref.length; j < len; j++) {
   tab = ref[j];
   tab.addEventListener("click", function(evt) {
-    var assignment, k, len1, ref1, start, step;
+    var assignment, assignments, columnHeights, columns, index, k, l, len1, len2, ref1, start, step, trans, w, widths;
+    trans = JSON.parse(localStorage["viewTrans"]);
+    if (!trans) {
+      document.body.classList.add("noTrans");
+      document.body.offsetHeight;
+    }
     document.body.setAttribute("data-view", (Array.prototype.slice.call(document.querySelectorAll(".tabs>li"))).indexOf(evt.target));
     if (document.body.getAttribute("data-view") === "1") {
       window.addEventListener("resize", resize);
-      start = null;
-      step = function(timestamp) {
-        if (start == null) {
-          start = timestamp;
+      if (trans) {
+        start = null;
+        widths = [300, 800, 1500, 2400, 3500, 4800];
+        columns = null;
+        for (index = k = 0, len1 = widths.length; k < len1; index = ++k) {
+          w = widths[index];
+          if (window.innerWidth > w) {
+            columns = index + 1;
+          }
         }
+        assignments = getResizeAssignments();
+        columnHeights = (function() {
+          var l, ref1, results;
+          results = [];
+          for (l = 0, ref1 = columns; 0 <= ref1 ? l < ref1 : l > ref1; 0 <= ref1 ? l++ : l--) {
+            results.push(0);
+          }
+          return results;
+        })();
+        step = function(timestamp) {
+          var assignment, col, l, len2, n;
+          if (start == null) {
+            start = timestamp;
+          }
+          for (n = l = 0, len2 = assignments.length; l < len2; n = ++l) {
+            assignment = assignments[n];
+            col = n % columns;
+            if (n < columns) {
+              columnHeights[col] = 0;
+            }
+            assignment.style.top = columnHeights[col] + "px";
+            assignment.style.left = 100 / columns * col + "%";
+            assignment.style.right = 100 / columns * (columns - col - 1) + "%";
+            columnHeights[col] += assignment.offsetHeight + 24;
+          }
+          if (timestamp - start < 300) {
+            return window.requestAnimationFrame(step);
+          }
+        };
+        window.requestAnimationFrame(step);
+        setTimeout(function() {
+          var assignment, col, l, len2, n;
+          for (n = l = 0, len2 = assignments.length; l < len2; n = ++l) {
+            assignment = assignments[n];
+            col = n % columns;
+            if (n < columns) {
+              columnHeights[col] = 0;
+            }
+            assignment.style.top = columnHeights[col] + "px";
+            columnHeights[col] += assignment.offsetHeight + 24;
+          }
+        }, 300);
+      } else {
         resize();
-        if (timestamp - start < 300) {
-          return window.requestAnimationFrame(step);
-        }
-      };
-      window.requestAnimationFrame(step);
+      }
     } else {
       window.scrollTo(0, scroll);
       setTimeout(function() {
@@ -698,13 +762,37 @@ for (j = 0, len = ref.length; j < len; j++) {
       }, 1000);
       window.removeEventListener("resize", resize);
       ref1 = document.getElementsByClassName("assignment");
-      for (k = 0, len1 = ref1.length; k < len1; k++) {
-        assignment = ref1[k];
+      for (l = 0, len2 = ref1.length; l < len2; l++) {
+        assignment = ref1[l];
         assignment.style.top = "auto";
       }
     }
+    if (!trans) {
+      document.body.offsetHeight;
+      setTimeout(function() {
+        return document.body.classList.remove("noTrans");
+      }, 300);
+    }
   });
 }
+
+getResizeAssignments = function() {
+  var assignments;
+  assignments = Array.prototype.slice.call(document.querySelectorAll(document.body.classList.contains("showDone") ? ".assignment.listDisp" : ".assignment.listDisp:not(.done)"));
+  assignments.sort(function(a, b) {
+    var ad, bd;
+    ad = a.classList.contains("done");
+    bd = b.classList.contains("done");
+    if (ad && !bd) {
+      return 1;
+    }
+    if (bd && !ad) {
+      return -1;
+    }
+    return a.getElementsByClassName("due")[0].value - b.getElementsByClassName("due")[0].value;
+  });
+  return assignments;
+};
 
 resize = function() {
   var assignment, assignments, col, columnHeights, columns, index, k, l, len1, len2, n, w, widths;
@@ -724,10 +812,7 @@ resize = function() {
     }
     return results;
   })();
-  assignments = Array.prototype.slice.call(document.querySelectorAll(".assignment.listDisp:not(.done)"));
-  assignments.sort(function(a, b) {
-    return a.getElementsByClassName("due")[0].value - b.getElementsByClassName("due")[0].value;
-  });
+  assignments = getResizeAssignments();
   for (n = l = 0, len2 = assignments.length; l < len2; n = ++l) {
     assignment = assignments[n];
     col = n % columns;
@@ -773,6 +858,19 @@ window.addEventListener("keydown", function(evt) {
     }
   }
 });
+
+ripple(document.getElementById("cvButton"));
+
+document.getElementById("cvButton").addEventListener("mouseup", function() {
+  document.body.classList.toggle("showDone");
+  resize();
+  localStorage["showDone"] = JSON.stringify(document.body.classList.contains("showDone"));
+  return setTimeout(resize, 1000);
+});
+
+if ((localStorage["showDone"] != null) && JSON.parse(localStorage["showDone"])) {
+  document.body.classList.add("showDone");
+}
 
 headroom = new Headroom(document.querySelector("nav"), {
   tolerance: 10,
@@ -867,6 +965,10 @@ document.getElementById("backButton").addEventListener("click", function() {
   document.body.classList.remove("settingsShown");
   return document.getElementById("brand").innerHTML = "Check PCR";
 });
+
+if (localStorage["viewTrans"] == null) {
+  localStorage["viewTrans"] = JSON.stringify(true);
+}
 
 if (localStorage["refreshOnFocus"] == null) {
   localStorage["refreshOnFocus"] = JSON.stringify(true);

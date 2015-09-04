@@ -93,7 +93,7 @@ nav
 	color: #FFFFFF
 	width: 100%
 	+z-depth-1()
-	+transition(transform 0.3s ease)
+	+transition(transform 0.3s ease, max-height 0.3s ease)
 	will-change: transform, max-height
 	&.headroom--pinned
 		+transform(translateY(0))
@@ -141,15 +141,30 @@ nav
 	display: none
 	.settingsShown &
 		display: inline-block
-#searchButton
+#cvButton
 	float: right
 	@extend %navButton
-#dockButton
-	float: right
-	@extend %navButton
-#todayButton
-	float: right
-	@extend %navButton
+	+transition(opacity 1s ease)
+	position: relative
+	body[data-view="0"] &
+		opacity: 0
+		cursor: default
+		pointer-events: none
+	&::before, &::after
+		position: absolute
+		top: $navButtonWidth
+		left: $navButtonWidth
+		display: block
+		+transition(opacity 0.5s ease)
+	&::before
+		content: "assignment_turned_in"
+		opacity: 0
+		.showDone &
+			opacity: 1
+	&::after
+		content: "done"
+		.showDone &
+			opacity: 0
 #brand
 	float: left
 	font-size: 20px
@@ -225,7 +240,8 @@ body[data-view="1"] .week
 	height: 48px
 	overflow: hidden
 	border-bottom: 1px solid $borderColor
-	+transition(height 0.3s ease, border-bottom-color 0.3s ease)
+	body:not(.noTrans) &
+		+transition(height 0.3s ease, border-bottom-color 0.3s ease)
 	will-change: height, border-bottom-color
 	&>div
 		padding: 0 16px
@@ -241,7 +257,8 @@ body[data-view="1"] .week
 .week>.day
 	padding: 8px 16px
 	position: relative
-	+transition(opacity 0.3s ease)
+	body:not(.noTrans) &
+		+transition(opacity 0.3s ease)
 	will-change: opacity
 	body[data-view="1"] &
 		opacity: 0
@@ -316,7 +333,6 @@ body[data-view="1"] .week
 	white-space: nowrap
 	font-size: 15px
 	font-weight: 500
-	will-change: width, top, left, right, tranform
 	max-height: 26px
 	z-index: 100
 	cursor: pointer
@@ -324,7 +340,8 @@ body[data-view="1"] .week
 		position: relative
 		top: 0
 		color: rgba(255,255,255,0.87)
-		+transition(color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease)
+		body:not(.noTrans) &
+			+transition(color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease, top 0.3s ease)
 		will-change: color, font-size, font-wieght, top
 	&>.close
 		position: absolute
@@ -347,7 +364,8 @@ body[data-view="1"] .week
 		line-height: 56px
 		font-size: 28px
 		color: #FFF
-		+transition(transform 0.3s ease)
+		body:not(.noTrans) &
+			+transition(transform 0.3s ease)
 		transform: rotate(0deg)
 		&:hover
 			background-color: #00963E
@@ -533,7 +551,8 @@ body[data-view="1"] .week
 		color: rgba(255,255,255,0.54)
 		overflow: hidden
 		text-overflow: ellipsis
-		+transition(color 0.3s ease)
+		body:not(.noTrans) &
+			+transition(color 0.3s ease)
 		will-change: color
 		max-width: 150px
 		display: inline-block
@@ -569,7 +588,8 @@ body[data-view="1"] .week
 	$tt: ()
 	@each $transition in $transitions
 		$tt: append($tt, $transition + " 0.3s ease", comma)
-	+transition($tt)
+	body:not(.noTrans) &
+		+transition($tt)
 	will-change: $transitions
 	min-height: 0
 	body[data-view="1"] &
@@ -580,7 +600,7 @@ body[data-view="1"] .week
 		max-height: 600px
 		overflow: auto
 		cursor: auto
-		&.done, &:not(.listDisp)
+		&:not(.listDisp)
 			display: none
 		&>small
 			color: rgba(0,0,0,0.54)
@@ -605,9 +625,13 @@ body[data-view="1"] .week
 			margin-top: 24px + 8px
 		&::before
 			display: none
+		&.done
+			opacity: 0.3
 		&.done>.complete
 			transform: none
-			color: rgba(0,0,0,0.87)
+			color: $accent-color
+			&::after
+				content: 'Incomplete'
 		&>.complete
 			height: 36px
 			+border-radius(2px)
@@ -642,6 +666,9 @@ body[data-view="1"] .week
 				font-size: 16px
 				@media #{medium-screen-up}
 					font-size: 15px
+
+body[data-view="1"]:not(.showDone) .assignment.done
+	display: none
 
 =m($color)
 	background-color: mix($color, #1B5E20, 30%)
@@ -735,7 +762,7 @@ $scale: 15
 	&>span
 		z-index: 1
 
-	body[data-view="1"].noList &
+	body[data-view="1"].noList:not(.showDone) &
 		opacity: 1
 	&::after
 		content: ' '
