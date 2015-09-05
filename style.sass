@@ -568,22 +568,6 @@ body[data-view="1"] .week
 	&.overWeekend
 		+border-radius-corner(top-right, 0)
 		+border-radius-corner(bottom-right, 0)
-	&.homework
-		background-color: #2196F3
-		&.done
-			background-color: #0D47A1
-	&.classwork
-		background-color: #689F38
-		&.done
-			background-color: #33691E
-	&.tests, &.test
-		background-color: #EF5350
-		&.done
-			background-color: #B71C1C
-	&.projects
-		background-color: #F57C00
-		&.done
-			background-color: #BF360C
 	$transitions: background-color, box-shadow, padding, max-height, min-height, left, right, top, margin
 	$tt: ()
 	@each $transition in $transitions
@@ -670,18 +654,6 @@ body[data-view="1"] .week
 body[data-view="1"]:not(.showDone) .assignment.done
 	display: none
 
-=m($color)
-	background-color: mix($color, #1B5E20, 30%)
-
-.homework::before
-	+m(#1565C0)
-.classwork::before
-	+m(#33691E)
-.tests::before, .test::before
-	+m(#C62828)
-.projects::before
-	+m(#E65100)
-
 body[data-view="0"]
 	.s
 		+border-radius(0 4px 4px 0)
@@ -704,7 +676,7 @@ body[data-view="0"]
 			&.overWeekend.e#{$i}
 				right: ($i/7)*100% !important
 
-#background, #sideBackground, #loginBackground
+#background, #sideBackground, #loginBackground, #updateBackground
 	background: #000
 	position: fixed
 	will-change: opacity
@@ -937,7 +909,7 @@ $scale: 15
 	font-size: 28px
 	color: #FFF
 
-#sideBackground, #loginBackground
+#sideBackground, #loginBackground, #updateBackground
 	left: 0
 	top: 0
 	z-index: 4000
@@ -949,6 +921,7 @@ $scale: 15
 	right: 0
 	bottom: 0
 	z-index: 4500
+	overflow: auto
 	transform: scale(0)
 	transform-origin: 0 50%
 	background-color: #FFF
@@ -988,3 +961,84 @@ $scale: 15
 					line-height: 14px
 					margin-top: 2px
 					color: rgba(0,0,0,0.54)
+
+.settingsContent
+	line-height: 1
+	padding-bottom: 20px
+
+#assignmentColors, #classColors
+	display: none
+
+#colorSettings
+	line-height: 1 !important
+	padding-top: 20px !important
+
+#classColors:empty::before
+	content: "Please refresh the page to be able to change this setting."
+
+.colors
+	text-align: center
+	&>div
+		display: inline-block
+		margin: 0 8px
+		color: rgba(0,0,0,0.38)
+		vertical-align: top
+		line-height: 1.5
+		&>span
+			cursor: pointer
+			display: block
+			width: 96px
+			height: 64px
+			overflow: hidden
+			margin: 0 auto
+			+transition(background-color 0.3s ease, height 0.3s ease, width 0.3s ease)
+			&.choose
+				background-color: white !important
+				height: 48px*3
+				width: 48px*6
+				&>span
+					width: 48px
+					height: 48px
+					opacity: 1
+			&>span
+				opacity: 0
+				display: block
+				float: left
+				width: 16px
+				height: 21.33px
+				+transition(opacity 0.3s ease, border-color 0.3s ease, height 0.3s ease, width 0.3s ease)
+				position: relative
+				border: 3px solid transparent
+				&.selected
+					border-color: rgba(255,255,255,0.7)
+					border-width: 2px
+				&:hover
+					border-width: 3px
+					border-color: rgba(255,255,255,0.87)
+
+#update
+	@extend #login
+	width: 480px
+	color: rgba(0,0,0,0.54)
+	h1, h2
+		color: rgba(0,0,0,0.87)
+	h2
+		font-size: 16px
+		font-weight: 400
+		margin: 8px 0 4px 0
+	&>button:first-of-type
+		right: 64px+16px
+	&.active + #updateBackground
+		opacity: 0.5
+code
+	background-color: rgba(0,0,0,0.04)
+	border-radius: 2px
+	padding-top: 0.2em
+	padding-bottom: 0.2em
+	margin: 0
+	font-size: 85%
+	&::before, &::after
+		letter-spacing: -0.2em
+		content: "\00a0"
+#updateFeatures
+	margin-left: 8px

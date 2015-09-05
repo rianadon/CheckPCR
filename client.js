@@ -1,4 +1,4 @@
-var attachmentify, closeOpened, dateString, display, dologin, done, e, element, fetch, findId, fullMonths, getCookie, getResizeAssignments, headroom, input, intervalRefresh, j, k, l, labrgb, len, len1, len2, loginHeaders, loginURL, mimeTypes, months, parse, parseDateHash, ref, ref1, ref2, resize, ripple, scroll, send, setCookie, tab, tzoff, updateAvatar, urlify, weekdays,
+var a, aa, ac, attachmentify, c, cc, closeOpened, color, d, dateString, display, dologin, done, e, element, fetch, findId, fn, fullMonths, getCookie, getResizeAssignments, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, len, len1, len2, len3, len4, len5, len6, len7, list, listName, loginHeaders, loginURL, mimeTypes, months, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, resize, rgb2hex, ripple, scroll, send, setCookie, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
@@ -274,7 +274,7 @@ parse = function(doc) {
     ap = attachmentify(b);
     assignment.attachments = ap;
     assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
-    assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "");
+    assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
     assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "");
     ref = window.data.classes;
     for (pos = o = 0, len2 = ref.length; o < len2; pos = ++o) {
@@ -337,7 +337,7 @@ dateString = function(date) {
 };
 
 display = function() {
-  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, p, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, s, separated, span, spanRelative, split, start, startSun, taken, times, today, todayDiv, tr, weekHeights, weekId, wk, year;
+  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, s, separated, span, spanRelative, split, start, startSun, taken, times, today, todayDiv, tr, u, weekHeights, weekId, wk, year;
   console.time("Displaying data");
   main = document.querySelector("main");
   taken = {};
@@ -436,7 +436,7 @@ display = function() {
   }
   fn = function(id) {
     return complete.addEventListener("mouseup", function(evt) {
-      var added, el;
+      var added, el, elem, len4, ref3, u;
       if (evt.which === 1) {
         el = evt.target;
         while (!el.classList.contains("assignment")) {
@@ -452,7 +452,12 @@ display = function() {
         localStorage["done"] = JSON.stringify(done);
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
-            el.classList.toggle("done");
+            var elem, len4, ref3, u;
+            ref3 = document.querySelectorAll(".assignment[id*=\"" + id + "\"]");
+            for (u = 0, len4 = ref3.length; u < len4; u++) {
+              elem = ref3[u];
+              elem.classList.toggle("done");
+            }
             if (added) {
               if (document.querySelectorAll(".assignment.listDisp:not(.done)").length !== 0) {
                 document.body.classList.remove("noList");
@@ -465,13 +470,17 @@ display = function() {
             return resize();
           }, 100);
         } else {
-          el.classList.toggle("done");
+          ref3 = document.querySelectorAll(".assignment[id*=\"" + id + "\"]");
+          for (u = 0, len4 = ref3.length; u < len4; u++) {
+            elem = ref3[u];
+            elem.classList.toggle("done");
+          }
         }
       }
     });
   };
-  for (p = 0, len3 = split.length; p < len3; p++) {
-    s = split[p];
+  for (q = 0, len3 = split.length; q < len3; q++) {
+    s = split[q];
     assignment = window.data.assignments[s.assignment];
     separated = window.data.classes[assignment["class"]].match(/((?:\d*\s+)?(?:(?:hon\w*|(?:adv\w*\s*)?core)\s+)?)(.*)/i);
     startSun = new Date(s.start.getTime());
@@ -481,6 +490,7 @@ display = function() {
     if (ref3 = assignment.id, indexOf.call(done, ref3) >= 0) {
       e.classList.add("done");
     }
+    e.setAttribute("data-class", window.data.classes[assignment["class"]]);
     close = element("a", ["close", "material-icons"], "close");
     close.addEventListener("click", closeOpened);
     e.appendChild(close);
@@ -518,8 +528,8 @@ display = function() {
         req.send();
         attachments.appendChild(a);
       };
-      for (q = 0, len4 = ref4.length; q < len4; q++) {
-        attachment = ref4[q];
+      for (u = 0, len4 = ref4.length; u < len4; u++) {
+        attachment = ref4[u];
         fn1(attachment);
       }
       e.appendChild(attachments);
@@ -970,6 +980,40 @@ if (localStorage["viewTrans"] == null) {
   localStorage["viewTrans"] = JSON.stringify(true);
 }
 
+if (localStorage["colorType"] == null) {
+  localStorage["colorType"] = "assignment";
+}
+
+if (localStorage["assignmentColors"] == null) {
+  localStorage["assignmentColors"] = JSON.stringify({
+    homework: "#2196f3",
+    classwork: "#689f38",
+    test: "#f44336",
+    projects: "#f57c00"
+  });
+}
+
+if ((localStorage["data"] != null) && (localStorage["classColors"] == null)) {
+  a = {};
+  ref2 = JSON.parse(localStorage["data"]).classes;
+  for (l = 0, len2 = ref2.length; l < len2; l++) {
+    c = ref2[l];
+    a[c] = "#616161";
+  }
+  localStorage["classColors"] = JSON.stringify(a);
+}
+
+if (localStorage["assignmentColors"] == null) {
+  localStorage["assignmentColors"] = JSON.stringify({
+    homework: "#2196f3",
+    classwork: "#689f38",
+    test: "#f44336",
+    projects: "#f57c00"
+  });
+}
+
+document.getElementById(localStorage["colorType"] + "Colors").style.display = "block";
+
 if (localStorage["refreshOnFocus"] == null) {
   localStorage["refreshOnFocus"] = JSON.stringify(true);
 }
@@ -998,9 +1042,140 @@ intervalRefresh = function() {
 
 intervalRefresh();
 
-ref2 = document.getElementsByClassName("settingsControl");
-for (l = 0, len2 = ref2.length; l < len2; l++) {
-  e = ref2[l];
+ac = JSON.parse(localStorage["assignmentColors"]);
+
+cc = localStorage["classColors"] != null ? JSON.parse(localStorage["classColors"]) : {};
+
+rgb2hex = function(rgb) {
+  var hex;
+  if (/^#[0-9A-F]{6}$/i.test(rgb)) {
+    return rgb;
+  }
+  rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  hex = function(x) {
+    return ("0" + parseInt(x).toString(16)).slice(-2);
+  };
+  return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+};
+
+hex2rgb = function(hex) {
+  var result;
+  result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
+};
+
+palette = {
+  "#f44336": "#B71C1C",
+  "#e91e63": "#880E4F",
+  "#9c27b0": "#4A148C",
+  "#673ab7": "#311B92",
+  "#3f51b5": "#1A237E",
+  "#2196f3": "#0D47A1",
+  "#03a9f4": "#01579B",
+  "#00bcd4": "#006064",
+  "#009688": "#004D40",
+  "#4caf50": "#1B5E20",
+  "#689f38": "#33691E",
+  "#afb42b": "#827717",
+  "#fbc02d": "#F57F17",
+  "#ffa000": "#FF6F00",
+  "#f57c00": "#E65100",
+  "#ff5722": "#BF360C",
+  "#795548": "#3E2723",
+  "#616161": "#212121"
+};
+
+if (localStorage["data"] != null) {
+  ref3 = JSON.parse(localStorage["data"]).classes;
+  for (o = 0, len3 = ref3.length; o < len3; o++) {
+    c = ref3[o];
+    d = element("div", [], c);
+    d.setAttribute("data-control", c);
+    d.appendChild(element("span", []));
+    document.getElementById("classColors").appendChild(d);
+  }
+}
+
+ref4 = document.getElementsByClassName("colors");
+for (q = 0, len4 = ref4.length; q < len4; q++) {
+  e = ref4[q];
+  ref5 = e.getElementsByTagName("div");
+  fn = function(sp, color, list, listName) {
+    return sp.addEventListener("click", function(evt) {
+      var bg;
+      if (sp.classList.contains("choose")) {
+        bg = rgb2hex(evt.target.style.backgroundColor);
+        list[color.getAttribute("data-control")] = bg;
+        sp.style.backgroundColor = bg;
+        sp.querySelector(".selected").classList.remove("selected");
+        evt.target.classList.add("selected");
+        localStorage[listName] = JSON.stringify(list);
+        updateColors();
+      }
+      return sp.classList.toggle("choose");
+    });
+  };
+  for (u = 0, len5 = ref5.length; u < len5; u++) {
+    color = ref5[u];
+    sp = color.querySelector("span");
+    listName = e.getAttribute("id") === "classColors" ? "classColors" : "assignmentColors";
+    list = e.getAttribute("id") === "classColors" ? cc : ac;
+    sp.style.backgroundColor = list[color.getAttribute("data-control")];
+    for (p in palette) {
+      pe = element("span", []);
+      pe.style.backgroundColor = p;
+      if (p === list[color.getAttribute("data-control")]) {
+        pe.classList.add("selected");
+      }
+      sp.appendChild(pe);
+    }
+    fn(sp, color, list, listName);
+  }
+}
+
+updateColors = function() {
+  var mix, name, ref6, ref7, results, results1, sheet, style;
+  mix = function(a, b, p) {
+    var hex, rgbA, rgbB;
+    rgbA = hex2rgb(a);
+    rgbB = hex2rgb(b);
+    hex = function(x) {
+      return ("0" + parseInt(x).toString(16)).slice(-2);
+    };
+    return "#" + hex(rgbA[0] * p + rgbB[0] * (1 - p)) + hex(rgbA[1] * p + rgbB[1] * (1 - p)) + hex(rgbA[2] * p + rgbB[2] * (1 - p));
+  };
+  style = document.createElement("style");
+  style.appendChild(document.createTextNode(""));
+  document.head.appendChild(style);
+  sheet = style.sheet;
+  if (localStorage["colorType"] === "assignment") {
+    ref6 = JSON.parse(localStorage["assignmentColors"]);
+    results = [];
+    for (name in ref6) {
+      color = ref6[name];
+      sheet.insertRule(".assignment." + name + " { background-color: " + color + "; }", 0);
+      sheet.insertRule(".assignment." + name + ".done { background-color: " + palette[color] + "; }", 0);
+      results.push(sheet.insertRule(".assignment." + name + "::before { background-color: " + (mix(color, "#1B5E20", 0.3)) + "; }", 0));
+    }
+    return results;
+  } else {
+    ref7 = JSON.parse(localStorage["classColors"]);
+    results1 = [];
+    for (name in ref7) {
+      color = ref7[name];
+      sheet.insertRule(".assignment[data-class=\"" + name + "\"] { background-color: " + color + "; }", 0);
+      sheet.insertRule(".assignment[data-class=\"" + name + "\"].done { background-color: " + palette[color] + "; }", 0);
+      results1.push(sheet.insertRule(".assignment[data-class=\"" + name + "\"]::before { background-color: " + (mix(color, "#1B5E20", 0.3)) + "; }", 0));
+    }
+    return results1;
+  }
+};
+
+updateColors();
+
+ref6 = document.getElementsByClassName("settingsControl");
+for (z = 0, len6 = ref6.length; z < len6; z++) {
+  e = ref6[z];
   if (localStorage[e.name] != null) {
     if (e.checked != null) {
       e.checked = JSON.parse(localStorage[e.name]);
@@ -1020,22 +1195,59 @@ for (l = 0, len2 = ref2.length; l < len2; l++) {
   });
 }
 
+document.querySelector("input[name=\"colorType\"][value=\"" + localStorage["colorType"] + "\"]").checked = true;
+
+ref7 = document.getElementsByName("colorType");
+for (aa = 0, len7 = ref7.length; aa < len7; aa++) {
+  c = ref7[aa];
+  c.addEventListener("change", function(evt) {
+    var v;
+    v = document.querySelector('input[name="colorType"]:checked').value;
+    localStorage["colorType"] = v;
+    if (v === "class") {
+      document.getElementById("assignmentColors").style.display = "none";
+      document.getElementById("classColors").style.display = "block";
+    } else {
+      document.getElementById("assignmentColors").style.display = "block";
+      document.getElementById("classColors").style.display = "none";
+    }
+    return updateColors();
+  });
+}
+
 (function() {
   return send("https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "json").then(function(resp) {
-    var c, last, res;
+    var last;
     last = localStorage["commit"];
     c = resp.response.object.sha;
     console.debug(last, c);
     if (last == null) {
       return localStorage["commit"] = c;
     } else if (last !== c) {
-      res = prompt("Please update the application from https://github.com/19RyanA/CheckPCR.\n\n If you have already updated the application, type anything you want into the textfield below then click ok. Otherwise, click ok or cancel.");
-      if ((res != null) && res.length > 0) {
-        return localStorage["commit"] = c;
-      }
+      document.getElementById("updateIgnore").addEventListener("click", function() {
+        localStorage["commit"] = c;
+        document.getElementById("update").classList.remove("active");
+        return setTimeout(function() {
+          return document.getElementById("updateBackground").style.display = "none";
+        }, 300);
+      });
+      return send(resp.response.object.url, "json").then(function(resp) {
+        document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n") + 2).replace(/\* (.*?)(?=$|\n)/g, function(a, b) {
+          return "<li>" + b + "</li>";
+        }).replace(/>\n</g, "><").replace(/\n/g, "<br>");
+        document.getElementById("updateBackground").style.display = "block";
+        return document.getElementById("update").classList.add("active");
+      });
     }
   });
 })();
+
+document.getElementById("updateDelay").addEventListener("click", function() {
+  document.getElementById("update").classList.remove("active");
+  return setTimeout(function() {
+    return document.getElementById("updateBackground").style.display = "none";
+  }, 300);
+});
 
 done = [];
 

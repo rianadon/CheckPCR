@@ -42,7 +42,7 @@ $input-bg-color: #fff
 		+transform(scale(1,1))
 		& + #loginBackground
 			opacity: 0.5
-	&>input[type="submit"]
+	&>input[type="submit"], &>button
 		@extend a
 		color: $accent-color !important
 		background-color: transparent
@@ -412,3 +412,81 @@ select
 	border: 1px solid #f2f2f2
 	border-radius: 2px
 	height: 3rem
+
+/***************
+ *	Radio Buttons
+ ***************/
+
+/* Remove default Radio Buttons
+
+[type="radio"]:not(:checked),
+[type="radio"]:checked
+	position: absolute
+	left: -9999px
+	visibility: hidden
+
+[type="radio"]:not(:checked) + label,
+[type="radio"]:checked + label
+	position: relative
+	padding-left: 35px
+	cursor: pointer
+	display: inline-block
+	height: 25px
+	line-height: 25px
+	font-size: 1rem
+	+transition(0.28s ease)
+	-webkit-user-select: none
+	/* webkit (safari, chrome) browsers
+	-moz-user-select: none
+	/* mozilla browsers
+	-khtml-user-select: none
+	/* webkit (konqueror) browsers
+	-ms-user-select: none
+	/* IE10+
+
+[type="radio"] + label:before,
+[type="radio"] + label:after
+	content: ''
+	position: absolute
+	left: 0
+	top: 0
+	margin: 4px
+	width: 16px
+	height: 16px
+	z-index: 0
+	+transition(0.28s ease)
+
+/* Unchecked styles
+[type="radio"]:not(:checked) + label:before
+	border-radius: 50%
+	border: 2px solid $radio-empty-color
+
+[type="radio"]:not(:checked) + label:after
+	border-radius: 50%
+	border: 2px solid $radio-empty-color
+	z-index: -1
+	+transform(scale(0))
+
+/* Checked styles
+[type="radio"]:checked + label:before
+	border-radius: 50%
+	border: 2px solid transparent
+
+[type="radio"]:checked + label:after
+	border-radius: 50%
+	border: 2px solid $radio-fill-color
+	background-color: $radio-fill-color
+	z-index: 0
+	+transform(scale(1.02))
+
+/* Radio With gap
+[type="radio"].with-gap:checked + label:before
+	border-radius: 50%
+	border: 2px solid $radio-fill-color
+
+[type="radio"].with-gap:checked + label:after
+	border-radius: 50%
+	border: 2px solid $radio-fill-color
+	background-color: $radio-fill-color
+	z-index: 0
+	+transform(scale(0.5))

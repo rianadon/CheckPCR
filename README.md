@@ -36,8 +36,6 @@ There's a lot more that I could write here, but the rest should be intuitive.
 
 If you ever encounter any bug, please create an issue on Github so I can hopefully fix it.
 
-Also, I the page has frozen on me multiple times due to rendering issues. If this ever happens, use the Chrome task manager to kill the app and reload it. I'm not sure how I'll fix this, so you'll have to endure with me :disappointed:. *Note: I think this is fixed now, but I don't know for sure.*
-
 Features
 --------
 ### Immediate and Offline Loading
@@ -61,3 +59,10 @@ Check PCR will automatically make all links clickable in assignments.
 
 ### And much more
 You'll just have to install the app to know.
+
+To Do
+-----
+
+- [ ] Button to log out of PCR
+- [ ] Switching between month and week view in-app
+- [ ] Moving Check PCR to a website
