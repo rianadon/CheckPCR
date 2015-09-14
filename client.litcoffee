@@ -31,6 +31,7 @@ Basic Definitions
       "application/pdf": ["PDF File", "pdf"]
       "text/plain": ["Text Doc", "plain"]
     scroll = 0 # The location to scroll to in order to reach today in calendar view
+    viewData = {} # The data to send when switching PCR views
 
 #### Send function
 
@@ -167,21 +168,19 @@ Because this is run as a chrome extension, this page can be accessed. Otherwise,
 Now, we have the function that will log us into PCR.
 *val* is an optional argument that is an array of the username and password to log in with
 
-    dologin = (val) ->
+    dologin = (val, submitEvt=false) ->
       document.getElementById("login").classList.remove "active"
       setTimeout ->
         document.getElementById("loginBackground").style.display = "none"
       , 300
-      if document.getElementById("remember").checked #Is the "remember me" checkbox checked?
-        setCookie "userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14 # Set a cookie with the username and password so we can log in automatically in the future without having to prompt for a username and password again
       postArray = [] # Array of data to post
-      localStorage["username"] = if val? then val[0] else document.getElementById("username").value
+      localStorage["username"] = if val? and not submitEvt then val[0] else document.getElementById("username").value
       updateAvatar()
       for h of loginHeaders # Loop through the input elements contained in the login page. As mentioned before, they will be sent to PCR to log in.
         if h.toLowerCase().indexOf("user") isnt -1
-          loginHeaders[h] = if val? then val[0] else document.getElementById("username").value
+          loginHeaders[h] = if val? and not submitEvt then val[0] else document.getElementById("username").value
         if h.toLowerCase().indexOf("pass") isnt -1
-          loginHeaders[h] = if val? then val[1] else document.getElementById("password").value
+          loginHeaders[h] = if val? and not submitEvt then val[1] else document.getElementById("password").value
         postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(loginHeaders[h])
 
       # Now send the login request to PCR
@@ -190,12 +189,16 @@ Now, we have the function that will log us into PCR.
         .then (resp) ->
           console.timeEnd "Logging in"
           if resp.responseURL.indexOf("Login") isnt -1
-            # If PCR still wants us to log in, then the username or password enterred were probably not correct.
-            alert "Incorrect login"
-            ###login.className = "visible" # Display the login form again
-            loginErr.innerHTML = "The username and/or password you entered is incorrect"###
+            # If PCR still wants us to log in, then the username or password enterred were incorrect.
+            document.getElementById("loginIncorrect").style.display = "block"
+            document.getElementById("password").value = ""
+
+            document.getElementById("login").classList.add "active"
+            document.getElementById("loginBackground").style.display = "block"
           else
-            # Otherwise, we are logged in!
+            # Otherwise, we are logged in
+            if document.getElementById("remember").checked #Is the "remember me" checkbox checked?
+              setCookie "userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14 # Set a cookie with the username and password so we can log in automatically in the future without having to prompt for a username and password again
             # loadingBar.style.display = "none"
             try
               parse resp.response # Parse the data PCR has replied with
@@ -209,7 +212,7 @@ Now, we have the function that will log us into PCR.
 
     document.getElementById("login").addEventListener "submit", (evt) ->
       evt.preventDefault()
-      dologin()
+      dologin(null, true)
 
 <a name="parsing"/>
 Parsing
@@ -271,7 +274,10 @@ If you open up the developer console on CheckPCR and type in `data`, you can see
     parse = (doc) ->
       console.time "Handling data" # To time how long it takes to parse the assignments
       handledDataShort = [] # Array used to make sure we don"t parse the same assignment twice.
-      window.data = {classes: [], assignments: []} # Reset the array in which all of your assignments are stored in.
+      window.data = {classes: [], assignments: [], monthView: doc.querySelector(".rsHeaderMonth").parentNode.classList.contains("rsSelected")} # Reset the array in which all of your assignments are stored in.
+
+      for e in doc.getElementsByTagName("input")
+        viewData[e.name] = e.value or ""
 
       # Now, the classes you take are parsed (these are the checkboxes you see up top when looking at PCR).
 
@@ -322,8 +328,34 @@ If you open up the developer console on CheckPCR and type in `data`, you can see
 
       localStorage["data"] = JSON.stringify(data) # Store for offline use
       console.timeEnd "Handling data"
+
+      # Now allow the view to be switched
+      document.body.classList.add "loaded"
+
       display() # Display the data
       return
+
+The view switching button needs an event handler.
+
+    ###document.getElementById("switchViews").addEventListener "click", ->
+      if Object.keys(viewData).length > 0
+        viewData["__EVENTTARGET"] = "ctl00$ctl00$baseContent$baseContent$flashTop$ctl00$RadScheduler1"
+        viewData["__EVENTARGUMENT"] = JSON.stringify {Command: "SwitchTo#{if document.body.getAttribute("data-pcrview") is "month" then "Week" else "Month"}View"}
+        viewData["ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState"] = JSON.stringify {scrollTop:0,scrollLeft:0,isDirty:false}
+        viewData["ctl00_ctl00_RadScriptManager1_TSM"] = ";;AjaxControlToolkit, Version=4.1.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:en-US:acfc7575-cdee-46af-964f-5d85d9cdcf92:ea597d4b:b25378d2"
+        postArray = [] # Array of data to post
+        for h,v of viewData
+          postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(v)
+        send "https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
+          .then (resp) ->
+            try
+              parse resp.response # Parse the data PCR has replied with
+            catch e
+              console.log e
+              alert "Error parsing assignments. Is PCR on list or month view?"
+            return
+          , (error) ->
+            console.log "Could not switch views. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error###
 
 <a name="displaying"/>
 Displaying the assignments
@@ -346,7 +378,7 @@ This is a little helper function to simplify the creation of HTML elements
 
 Another function that will return a human-readable date string
 
-    dateString = (date) ->
+    dateString = (date, addThis=false) ->
       relative = ["Tomorrow", "Today", "Yesterday", "2 days ago"]
       today = new Date()
       today.setDate(today.getDate()+1)
@@ -357,7 +389,7 @@ Another function that will return a human-readable date string
       today = new Date()
       # If the date is within 6 days of today, only display the day of the week
       if 0<(date.getTime()-today.getTime())/1000/3600/24<=6
-        return weekdays[date.getDay()]
+        return (if addThis then "This " else "")+weekdays[date.getDay()]
       "#{weekdays[date.getDay()]}, #{fullMonths[date.getMonth()]} #{date.getDate()}"
 
 
@@ -365,26 +397,32 @@ This function will convert the array of assignments generated by *parse* into re
 
     display = ->
       console.time "Displaying data"
+      document.body.setAttribute "data-pcrview", if window.data.monthView then "month" else "other"
       main = document.querySelector "main"
       taken = {}
 
       today = Math.floor (Date.now()-tzoff)/1000/3600/24
       todayDiv = null
 
-      start = Math.min (assignment.start for assignment in window.data.assignments)... # Smallest date
-      end = Math.max (assignment.end for assignment in window.data.assignments)... # Largest date
+      if window.data.monthView
+        start = Math.min (assignment.start for assignment in window.data.assignments)... # Smallest date
+        end = Math.max (assignment.end for assignment in window.data.assignments)... # Largest date
 
-      year = (new Date()).getFullYear() # For future calculations
+        year = (new Date()).getFullYear() # For future calculations
 
-      # Calculate what month we will be displaying by computing the average of the middle date of all assignments
-      month = 0
-      for assignment in window.data.assignments
-        month += (new Date (assignment.start+assignment.end)*500*3600*24).getMonth()
-      month = Math.round month/window.data.assignments.length
+        # Calculate what month we will be displaying by computing the average of the middle date of all assignments
+        month = 0
+        for assignment in window.data.assignments
+          month += (new Date (assignment.start+assignment.end)*500*3600*24).getMonth()
+        month = Math.round month/window.data.assignments.length
 
-      # Make sure the start and end dates lie within the month
-      start = new Date Math.max start*1000*3600*24+tzoff, (new Date year, month).getTime()
-      end = new Date Math.min end*1000*3600*24+tzoff, (new Date year, month+1, 0).getTime() # If the day argument for Date is 0, then the resulting date will be of the previous month
+        # Make sure the start and end dates lie within the month
+        start = new Date Math.max start*1000*3600*24+tzoff, (new Date year, month).getTime()
+        end = new Date Math.min end*1000*3600*24+tzoff, (new Date year, month+1, 0).getTime() # If the day argument for Date is 0, then the resulting date will be of the previous month
+      else
+        today = new Date()
+        start = new Date today.getFullYear(), today.getMonth(), today.getDate()
+        end = new Date today.getFullYear(), today.getMonth(), today.getDate()
 
       # Set the start date to be a Sunday and the end date to be a Saturday
       start.setDate start.getDate()-start.getDay()
@@ -463,7 +501,7 @@ This function will convert the array of assignments generated by *parse* into re
         startSun.setDate startSun.getDate()-startSun.getDay()
         weekId = "wk#{startSun.getMonth()}-#{startSun.getDate()}"
 
-        e = element "div", ["assignment", assignment.baseType], "<small><span class='extra'>#{separated[1]}</span>#{separated[2]}</small><span class='title'>#{assignment.title}</span><input type='hidden' class='due' value='#{assignment.end}' />", assignment.id+weekId
+        e = element "div", ["assignment", assignment.baseType, "anim"], "<small><span class='extra'>#{separated[1]}</span>#{separated[2]}</small><span class='title'>#{assignment.title}</span><input type='hidden' class='due' value='#{assignment.end}' />", assignment.id+weekId
         if assignment.id in done
           e.classList.add "done"
         e.setAttribute "data-class", window.data.classes[assignment.class]
@@ -488,7 +526,7 @@ This function will convert the array of assignments generated by *parse* into re
               localStorage["done"] = JSON.stringify done
               if document.body.getAttribute("data-view") == "1"
                 setTimeout ->
-                  for elem in document.querySelectorAll ".assignment[id*=\"#{id}\"]"
+                  for elem in document.querySelectorAll ".assignment[id*=\"#{id}\"], .upcomingTest[id*=\"test#{id}\"]"
                     elem.classList.toggle "done"
                   if added
                     document.body.classList.remove "noList" if document.querySelectorAll(".assignment.listDisp:not(.done)").length != 0
@@ -497,8 +535,12 @@ This function will convert the array of assignments generated by *parse* into re
                   resize()
                 , 100
               else
-                for elem in document.querySelectorAll ".assignment[id*=\"#{id}\"]"
+                for elem in document.querySelectorAll ".assignment[id*=\"#{id}\"], .upcomingTest[id*=\"test#{id}\"]"
                   elem.classList.toggle "done"
+                if added
+                  document.body.classList.remove "noList" if document.querySelectorAll(".assignment.listDisp:not(.done)").length != 0
+                else
+                  document.body.classList.add "noList" if document.querySelectorAll(".assignment.listDisp:not(.done)").length == 0
             return
         e.appendChild complete
         start = new Date assignment.start*1000*3600*24+tzoff
@@ -566,7 +608,7 @@ This function will convert the array of assignments generated by *parse* into re
           el = evt.target
           until el.classList.contains "assignment"
             el = el.parentNode
-          if document.getElementsByClassName("full").length == 0 and (not el.classList.contains "anim") and document.body.getAttribute("data-view") == "0"
+          if document.getElementsByClassName("full").length == 0 and document.body.getAttribute("data-view") == "0"
             el.classList.add "modify"
             el.style.top = el.getBoundingClientRect().top-document.body.scrollTop-parseInt(el.style.marginTop)+44+"px"
             el.setAttribute "data-top", el.style.top
@@ -575,7 +617,6 @@ This function will convert the array of assignments generated by *parse* into re
             back.classList.add "active"
             back.style.display = "block"
             setTimeout ->
-              el.classList.add "anim"
               el.classList.add "full"
               el.style.top = 75-parseInt(el.style.marginTop)+"px"
               setTimeout ->
@@ -586,6 +627,51 @@ This function will convert the array of assignments generated by *parse* into re
 
         # Append the assignment to the correct week element and set its height to contain the assignments in it
         wk = document.getElementById weekId
+
+        # If the assignment is a test and is upcoming, add it to the upcoming tests panel.
+        if assignment.baseType is "test" and start > Date.now()
+          te = element "div", "upcomingTest", "<i class='material-icons'>assessment</i><span class='title'>#{assignment.title}</span><small>#{separated[2]}</small><div class='range'>#{dateString(end, true)}</div>", "test"+assignment.id
+          te.setAttribute "data-class", window.data.classes[assignment.class]
+          id = assignment.id
+          do(id) ->
+            te.addEventListener "click", ->
+              smoothScroll = (to) ->
+                return new Promise (resolve, reject) ->
+                  start = null
+                  from = document.body.scrollTop
+                  amount = to-from
+                  step = (timestamp) ->
+                    start ?= timestamp
+                    progress = timestamp-start
+                    window.scrollTo 0, from+amount*(progress/300)
+                    if progress < 300
+                      requestAnimationFrame step
+                    else
+                      setTimeout ->
+                        document.querySelector("nav").classList.remove "headroom--unpinned"
+                      , 1
+                      setTimeout ->
+                        resolve()
+                      , amount
+                  requestAnimationFrame step
+              doScrolling = ->
+                el = document.querySelector(".assignment[id*=\"#{id}\"]")
+                smoothScroll el.getBoundingClientRect().top+document.body.scrollTop-116
+                  .then ->
+                    el.click()
+                    return
+              if document.body.getAttribute("data-view") is "0"
+                doScrolling()
+              else
+                document.querySelector("#navTabs>li:first-child").click()
+                setTimeout doScrolling, 500
+
+          if assignment.id in done
+            te.classList.add "done"
+          if document.getElementById("test"+assignment.id)?
+            document.getElementById("test"+assignment.id).innerHTML = te.innerHTML
+          else
+            document.getElementById("infoTests").appendChild te
 
         if not weekHeights[weekId]? or pos > weekHeights[weekId]
           weekHeights[weekId] = pos
@@ -631,6 +717,8 @@ Below is a function to close the current assignment that is opened.
         el.classList.remove "anim"
         el.classList.remove "modify"
         el.style.top = "auto"
+        el.offsetHeight
+        el.classList.add "anim"
       , 300
 
 And a function to apply an ink effect
@@ -681,13 +769,13 @@ Now we assign it to clicking the background.
 
 Then, the tabs are made interactive.
 
-    for tab in document.querySelectorAll ".tabs>li"
+    for tab in document.querySelectorAll "#navTabs>li"
       tab.addEventListener "click", (evt) ->
         trans = JSON.parse localStorage["viewTrans"]
         if not trans
           document.body.classList.add "noTrans"
           document.body.offsetHeight
-        document.body.setAttribute "data-view", (Array::slice.call document.querySelectorAll ".tabs>li").indexOf evt.target
+        document.body.setAttribute "data-view", (Array::slice.call document.querySelectorAll "#navTabs>li").indexOf evt.target
         if document.body.getAttribute("data-view") == "1"
           window.addEventListener "resize", resize
           if trans
@@ -738,6 +826,12 @@ Then, the tabs are made interactive.
             document.body.classList.remove "noTrans"
           , 300
         return
+
+And the info tabs (just a little less code)
+
+    for tab in document.querySelectorAll "#infoTabs>li"
+      tab.addEventListener "click", (evt) ->
+        document.getElementById("info").setAttribute "data-view", (Array::slice.call document.querySelectorAll "#infoTabs>li").indexOf evt.target
 
 For list view, the assignments can't be on top of each other.
 Therefore, a listener is attached to the resizing of the browser window.
@@ -804,6 +898,19 @@ The button to show/hide completed assignments in list view also needs event list
 
     if localStorage["showDone"]? and JSON.parse localStorage["showDone"]
       document.body.classList.add "showDone"
+
+The same goes for the button that shows upcoming tests.
+
+    ripple document.getElementById "infoButton"
+    localStorage["showInfo"] ?= JSON.stringify true
+    document.getElementById("infoButton").addEventListener "mouseup", ->
+      document.body.classList.toggle "showInfo"
+      resize()
+      localStorage["showInfo"] = JSON.stringify document.body.classList.contains "showInfo"
+      setTimeout resize, 1000
+
+    if localStorage["showInfo"]? and JSON.parse localStorage["showInfo"]
+      document.body.classList.add "showInfo"
 
 <a name="side"/>
 Side menu and Navbar
@@ -1016,6 +1123,8 @@ Then, a function that updates the color preferences is defined.
       sheet = style.sheet
 
       if localStorage["colorType"] is "assignment"
+        sheet.insertRule(".upcomingTest[data-class]>i { background-color: #{JSON.parse(localStorage["assignmentColors"]).test}; }", 0)
+        sheet.insertRule(".upcomingTest[data-class].done>i { background-color: #{palette[JSON.parse(localStorage["assignmentColors"]).test]}; }", 0)
         for name, color of JSON.parse localStorage["assignmentColors"]
           sheet.insertRule(".assignment.#{name} { background-color: #{color}; }", 0)
           sheet.insertRule(".assignment.#{name}.done { background-color: #{palette[color]}; }", 0)
@@ -1025,7 +1134,8 @@ Then, a function that updates the color preferences is defined.
           sheet.insertRule(".assignment[data-class=\"#{name}\"] { background-color: #{color}; }", 0)
           sheet.insertRule(".assignment[data-class=\"#{name}\"].done { background-color: #{palette[color]}; }", 0)
           sheet.insertRule(".assignment[data-class=\"#{name}\"]::before { background-color: #{mix color, "#1B5E20", 0.3}; }", 0)
-
+          sheet.insertRule(".upcomingTest[data-class=\"#{name}\"]>i { background-color: #{color}; }", 0)
+          sheet.insertRule(".upcomingTest[data-class=\"#{name}\"].done>i { background-color: #{palette[color]}; }", 0)
 The function then needs to be called.
 
     updateColors()

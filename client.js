@@ -1,4 +1,4 @@
-var a, aa, ac, attachmentify, c, cc, closeOpened, color, d, dateString, display, dologin, done, e, element, fetch, findId, fn, fullMonths, getCookie, getResizeAssignments, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, len, len1, len2, len3, len4, len5, len6, len7, list, listName, loginHeaders, loginURL, mimeTypes, months, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, resize, rgb2hex, ripple, scroll, send, setCookie, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, weekdays, z,
+var a, aa, ab, ac, attachmentify, c, cc, closeOpened, color, d, dateString, display, dologin, done, e, element, fetch, findId, fn, fullMonths, getCookie, getResizeAssignments, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, len, len1, len2, len3, len4, len5, len6, len7, len8, list, listName, loginHeaders, loginURL, mimeTypes, months, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, setCookie, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
@@ -22,6 +22,8 @@ mimeTypes = {
 };
 
 scroll = 0;
+
+viewData = {};
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -149,24 +151,24 @@ fetch = function() {
   });
 };
 
-dologin = function(val) {
+dologin = function(val, submitEvt) {
   var h, postArray;
+  if (submitEvt == null) {
+    submitEvt = false;
+  }
   document.getElementById("login").classList.remove("active");
   setTimeout(function() {
     return document.getElementById("loginBackground").style.display = "none";
   }, 300);
-  if (document.getElementById("remember").checked) {
-    setCookie("userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14);
-  }
   postArray = [];
-  localStorage["username"] = val != null ? val[0] : document.getElementById("username").value;
+  localStorage["username"] = (val != null) && !submitEvt ? val[0] : document.getElementById("username").value;
   updateAvatar();
   for (h in loginHeaders) {
     if (h.toLowerCase().indexOf("user") !== -1) {
-      loginHeaders[h] = val != null ? val[0] : document.getElementById("username").value;
+      loginHeaders[h] = (val != null) && !submitEvt ? val[0] : document.getElementById("username").value;
     }
     if (h.toLowerCase().indexOf("pass") !== -1) {
-      loginHeaders[h] = val != null ? val[1] : document.getElementById("password").value;
+      loginHeaders[h] = (val != null) && !submitEvt ? val[1] : document.getElementById("password").value;
     }
     postArray.push(encodeURIComponent(h) + "=" + encodeURIComponent(loginHeaders[h]));
   }
@@ -177,12 +179,14 @@ dologin = function(val) {
     var e;
     console.timeEnd("Logging in");
     if (resp.responseURL.indexOf("Login") !== -1) {
-      alert("Incorrect login");
-
-      /*login.className = "visible" # Display the login form again
-      loginErr.innerHTML = "The username and/or password you entered is incorrect"
-       */
+      document.getElementById("loginIncorrect").style.display = "block";
+      document.getElementById("password").value = "";
+      document.getElementById("login").classList.add("active");
+      document.getElementById("loginBackground").style.display = "block";
     } else {
+      if (document.getElementById("remember").checked) {
+        setCookie("userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14);
+      }
       try {
         parse(resp.response);
       } catch (_error) {
@@ -198,7 +202,7 @@ dologin = function(val) {
 
 document.getElementById("login").addEventListener("submit", function(evt) {
   evt.preventDefault();
-  return dologin();
+  return dologin(null, true);
 });
 
 parseDateHash = function(element) {
@@ -245,21 +249,27 @@ findId = function(element, tag, id) {
 };
 
 parse = function(doc) {
-  var ap, assignment, assignments, b, c, ca, classes, d, divs, handledDataShort, j, k, l, len, len1, len2, o, pos, range, ref, t, title;
+  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, j, k, l, len, len1, len2, len3, o, pos, q, range, ref, ref1, t, title;
   console.time("Handling data");
   handledDataShort = [];
   window.data = {
     classes: [],
-    assignments: []
+    assignments: [],
+    monthView: doc.querySelector(".rsHeaderMonth").parentNode.classList.contains("rsSelected")
   };
+  ref = doc.getElementsByTagName("input");
+  for (j = 0, len = ref.length; j < len; j++) {
+    e = ref[j];
+    viewData[e.name] = e.value || "";
+  }
   classes = findId(doc, "table", "cbClasses").getElementsByTagName("label");
-  for (j = 0, len = classes.length; j < len; j++) {
-    c = classes[j];
+  for (k = 0, len1 = classes.length; k < len1; k++) {
+    c = classes[k];
     window.data.classes.push(c.innerHTML);
   }
   assignments = doc.getElementsByClassName("rsApt rsAptSimple");
-  for (k = 0, len1 = assignments.length; k < len1; k++) {
-    ca = assignments[k];
+  for (l = 0, len2 = assignments.length; l < len2; l++) {
+    ca = assignments[l];
     assignment = {};
     range = findId(ca, "span", "StartingOn").innerHTML.split(" - ");
     assignment.start = Math.floor((Date.parse(range[0])) / 1000 / 3600 / 24);
@@ -268,7 +278,7 @@ parse = function(doc) {
     title = t.innerHTML;
     b = t.parentNode.parentNode;
     divs = b.getElementsByTagName("div");
-    for (d = l = 0; l < 2; d = ++l) {
+    for (d = o = 0; o < 2; d = ++o) {
       divs[0].remove();
     }
     ap = attachmentify(b);
@@ -276,9 +286,9 @@ parse = function(doc) {
     assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
     assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
     assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "");
-    ref = window.data.classes;
-    for (pos = o = 0, len2 = ref.length; o < len2; pos = ++o) {
-      c = ref[pos];
+    ref1 = window.data.classes;
+    for (pos = q = 0, len3 = ref1.length; q < len3; pos = ++q) {
+      c = ref1[pos];
       if (title.indexOf(c) !== -1) {
         assignment["class"] = pos;
         title = title.replace(c, "");
@@ -294,8 +304,31 @@ parse = function(doc) {
   }
   localStorage["data"] = JSON.stringify(data);
   console.timeEnd("Handling data");
+  document.body.classList.add("loaded");
   display();
 };
+
+
+/*document.getElementById("switchViews").addEventListener "click", ->
+  if Object.keys(viewData).length > 0
+    viewData["__EVENTTARGET"] = "ctl00$ctl00$baseContent$baseContent$flashTop$ctl00$RadScheduler1"
+    viewData["__EVENTARGUMENT"] = JSON.stringify {Command: "SwitchTo#{if document.body.getAttribute("data-pcrview") is "month" then "Week" else "Month"}View"}
+    viewData["ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState"] = JSON.stringify {scrollTop:0,scrollLeft:0,isDirty:false}
+    viewData["ctl00_ctl00_RadScriptManager1_TSM"] = ";;AjaxControlToolkit, Version=4.1.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:en-US:acfc7575-cdee-46af-964f-5d85d9cdcf92:ea597d4b:b25378d2"
+    postArray = [] # Array of data to post
+    for h,v of viewData
+      postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(v)
+    send "https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
+      .then (resp) ->
+        try
+          parse resp.response # Parse the data PCR has replied with
+        catch e
+          console.log e
+          alert "Error parsing assignments. Is PCR on list or month view?"
+        return
+      , (error) ->
+        console.log "Could not switch views. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error
+ */
 
 element = function(tag, cls, html, id) {
   var c, e, j, len;
@@ -317,8 +350,11 @@ element = function(tag, cls, html, id) {
   return e;
 };
 
-dateString = function(date) {
+dateString = function(date, addThis) {
   var j, len, r, ref, relative, today;
+  if (addThis == null) {
+    addThis = false;
+  }
   relative = ["Tomorrow", "Today", "Yesterday", "2 days ago"];
   today = new Date();
   today.setDate(today.getDate() + 1);
@@ -331,48 +367,55 @@ dateString = function(date) {
   }
   today = new Date();
   if ((0 < (ref = (date.getTime() - today.getTime()) / 1000 / 3600 / 24) && ref <= 6)) {
-    return weekdays[date.getDay()];
+    return (addThis ? "This " : "") + weekdays[date.getDay()];
   }
   return weekdays[date.getDay()] + ", " + fullMonths[date.getMonth()] + " " + (date.getDate());
 };
 
 display = function() {
-  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, s, separated, span, spanRelative, split, start, startSun, taken, times, today, todayDiv, tr, u, weekHeights, weekId, wk, year;
+  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, s, separated, span, spanRelative, split, start, startSun, taken, te, times, today, todayDiv, tr, u, weekHeights, weekId, wk, year;
   console.time("Displaying data");
+  document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
   taken = {};
   today = Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24);
   todayDiv = null;
-  start = Math.min.apply(Math, (function() {
-    var j, len, ref, results;
+  if (window.data.monthView) {
+    start = Math.min.apply(Math, (function() {
+      var j, len, ref, results;
+      ref = window.data.assignments;
+      results = [];
+      for (j = 0, len = ref.length; j < len; j++) {
+        assignment = ref[j];
+        results.push(assignment.start);
+      }
+      return results;
+    })());
+    end = Math.max.apply(Math, (function() {
+      var j, len, ref, results;
+      ref = window.data.assignments;
+      results = [];
+      for (j = 0, len = ref.length; j < len; j++) {
+        assignment = ref[j];
+        results.push(assignment.end);
+      }
+      return results;
+    })());
+    year = (new Date()).getFullYear();
+    month = 0;
     ref = window.data.assignments;
-    results = [];
     for (j = 0, len = ref.length; j < len; j++) {
       assignment = ref[j];
-      results.push(assignment.start);
+      month += (new Date((assignment.start + assignment.end) * 500 * 3600 * 24)).getMonth();
     }
-    return results;
-  })());
-  end = Math.max.apply(Math, (function() {
-    var j, len, ref, results;
-    ref = window.data.assignments;
-    results = [];
-    for (j = 0, len = ref.length; j < len; j++) {
-      assignment = ref[j];
-      results.push(assignment.end);
-    }
-    return results;
-  })());
-  year = (new Date()).getFullYear();
-  month = 0;
-  ref = window.data.assignments;
-  for (j = 0, len = ref.length; j < len; j++) {
-    assignment = ref[j];
-    month += (new Date((assignment.start + assignment.end) * 500 * 3600 * 24)).getMonth();
+    month = Math.round(month / window.data.assignments.length);
+    start = new Date(Math.max(start * 1000 * 3600 * 24 + tzoff, (new Date(year, month)).getTime()));
+    end = new Date(Math.min(end * 1000 * 3600 * 24 + tzoff, (new Date(year, month + 1, 0)).getTime()));
+  } else {
+    today = new Date();
+    start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   }
-  month = Math.round(month / window.data.assignments.length);
-  start = new Date(Math.max(start * 1000 * 3600 * 24 + tzoff, (new Date(year, month)).getTime()));
-  end = new Date(Math.min(end * 1000 * 3600 * 24 + tzoff, (new Date(year, month + 1, 0)).getTime()));
   start.setDate(start.getDate() - start.getDay());
   end.setDate(end.getDate() + (6 - end.getDay()));
   d = new Date(start);
@@ -453,7 +496,7 @@ display = function() {
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
             var elem, len4, ref3, u;
-            ref3 = document.querySelectorAll(".assignment[id*=\"" + id + "\"]");
+            ref3 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"]");
             for (u = 0, len4 = ref3.length; u < len4; u++) {
               elem = ref3[u];
               elem.classList.toggle("done");
@@ -470,10 +513,19 @@ display = function() {
             return resize();
           }, 100);
         } else {
-          ref3 = document.querySelectorAll(".assignment[id*=\"" + id + "\"]");
+          ref3 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"]");
           for (u = 0, len4 = ref3.length; u < len4; u++) {
             elem = ref3[u];
             elem.classList.toggle("done");
+          }
+          if (added) {
+            if (document.querySelectorAll(".assignment.listDisp:not(.done)").length !== 0) {
+              document.body.classList.remove("noList");
+            }
+          } else {
+            if (document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0) {
+              document.body.classList.add("noList");
+            }
           }
         }
       }
@@ -486,7 +538,7 @@ display = function() {
     startSun = new Date(s.start.getTime());
     startSun.setDate(startSun.getDate() - startSun.getDay());
     weekId = "wk" + (startSun.getMonth()) + "-" + (startSun.getDate());
-    e = element("div", ["assignment", assignment.baseType], "<small><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</small><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + assignment.end + "' />", assignment.id + weekId);
+    e = element("div", ["assignment", assignment.baseType, "anim"], "<small><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</small><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + assignment.end + "' />", assignment.id + weekId);
     if (ref3 = assignment.id, indexOf.call(done, ref3) >= 0) {
       e.classList.add("done");
     }
@@ -573,7 +625,7 @@ display = function() {
       while (!el.classList.contains("assignment")) {
         el = el.parentNode;
       }
-      if (document.getElementsByClassName("full").length === 0 && (!el.classList.contains("anim")) && document.body.getAttribute("data-view") === "0") {
+      if (document.getElementsByClassName("full").length === 0 && document.body.getAttribute("data-view") === "0") {
         el.classList.add("modify");
         el.style.top = el.getBoundingClientRect().top - document.body.scrollTop - parseInt(el.style.marginTop) + 44 + "px";
         el.setAttribute("data-top", el.style.top);
@@ -582,7 +634,6 @@ display = function() {
         back.classList.add("active");
         back.style.display = "block";
         setTimeout(function() {
-          el.classList.add("anim");
           el.classList.add("full");
           el.style.top = 75 - parseInt(el.style.marginTop) + "px";
           return setTimeout(function() {
@@ -592,6 +643,64 @@ display = function() {
       }
     });
     wk = document.getElementById(weekId);
+    if (assignment.baseType === "test" && start > Date.now()) {
+      te = element("div", "upcomingTest", "<i class='material-icons'>assessment</i><span class='title'>" + assignment.title + "</span><small>" + separated[2] + "</small><div class='range'>" + (dateString(end, true)) + "</div>", "test" + assignment.id);
+      te.setAttribute("data-class", window.data.classes[assignment["class"]]);
+      id = assignment.id;
+      (function(id) {
+        return te.addEventListener("click", function() {
+          var doScrolling, smoothScroll;
+          smoothScroll = function(to) {
+            return new Promise(function(resolve, reject) {
+              var amount, from, step;
+              start = null;
+              from = document.body.scrollTop;
+              amount = to - from;
+              step = function(timestamp) {
+                var progress;
+                if (start == null) {
+                  start = timestamp;
+                }
+                progress = timestamp - start;
+                window.scrollTo(0, from + amount * (progress / 300));
+                if (progress < 300) {
+                  return requestAnimationFrame(step);
+                } else {
+                  setTimeout(function() {
+                    return document.querySelector("nav").classList.remove("headroom--unpinned");
+                  }, 1);
+                  return setTimeout(function() {
+                    return resolve();
+                  }, amount);
+                }
+              };
+              return requestAnimationFrame(step);
+            });
+          };
+          doScrolling = function() {
+            var el;
+            el = document.querySelector(".assignment[id*=\"" + id + "\"]");
+            return smoothScroll(el.getBoundingClientRect().top + document.body.scrollTop - 116).then(function() {
+              el.click();
+            });
+          };
+          if (document.body.getAttribute("data-view") === "0") {
+            return doScrolling();
+          } else {
+            document.querySelector("#navTabs>li:first-child").click();
+            return setTimeout(doScrolling, 500);
+          }
+        });
+      })(id);
+      if (ref5 = assignment.id, indexOf.call(done, ref5) >= 0) {
+        te.classList.add("done");
+      }
+      if (document.getElementById("test" + assignment.id) != null) {
+        document.getElementById("test" + assignment.id).innerHTML = te.innerHTML;
+      } else {
+        document.getElementById("infoTests").appendChild(te);
+      }
+    }
     if ((weekHeights[weekId] == null) || pos > weekHeights[weekId]) {
       weekHeights[weekId] = pos;
       wk.style.height = 47 + (pos + 1) * 30 + "px";
@@ -642,7 +751,9 @@ closeOpened = function(evt) {
     back.style.display = "none";
     el.classList.remove("anim");
     el.classList.remove("modify");
-    return el.style.top = "auto";
+    el.style.top = "auto";
+    el.offsetHeight;
+    return el.classList.add("anim");
   }, 300);
 };
 
@@ -696,7 +807,7 @@ ripple = function(el) {
 
 document.getElementById("background").addEventListener("click", closeOpened);
 
-ref = document.querySelectorAll(".tabs>li");
+ref = document.querySelectorAll("#navTabs>li");
 for (j = 0, len = ref.length; j < len; j++) {
   tab = ref[j];
   tab.addEventListener("click", function(evt) {
@@ -706,7 +817,7 @@ for (j = 0, len = ref.length; j < len; j++) {
       document.body.classList.add("noTrans");
       document.body.offsetHeight;
     }
-    document.body.setAttribute("data-view", (Array.prototype.slice.call(document.querySelectorAll(".tabs>li"))).indexOf(evt.target));
+    document.body.setAttribute("data-view", (Array.prototype.slice.call(document.querySelectorAll("#navTabs>li"))).indexOf(evt.target));
     if (document.body.getAttribute("data-view") === "1") {
       window.addEventListener("resize", resize);
       if (trans) {
@@ -786,6 +897,14 @@ for (j = 0, len = ref.length; j < len; j++) {
   });
 }
 
+ref1 = document.querySelectorAll("#infoTabs>li");
+for (k = 0, len1 = ref1.length; k < len1; k++) {
+  tab = ref1[k];
+  tab.addEventListener("click", function(evt) {
+    return document.getElementById("info").setAttribute("data-view", (Array.prototype.slice.call(document.querySelectorAll("#infoTabs>li"))).indexOf(evt.target));
+  });
+}
+
 getResizeAssignments = function() {
   var assignments;
   assignments = Array.prototype.slice.call(document.querySelectorAll(document.body.classList.contains("showDone") ? ".assignment.listDisp" : ".assignment.listDisp:not(.done)"));
@@ -805,25 +924,25 @@ getResizeAssignments = function() {
 };
 
 resize = function() {
-  var assignment, assignments, col, columnHeights, columns, index, k, l, len1, len2, n, w, widths;
+  var assignment, assignments, col, columnHeights, columns, index, l, len2, len3, n, o, w, widths;
   widths = [300, 800, 1500, 2400, 3500, 4800];
   columns = null;
-  for (index = k = 0, len1 = widths.length; k < len1; index = ++k) {
+  for (index = l = 0, len2 = widths.length; l < len2; index = ++l) {
     w = widths[index];
     if (window.innerWidth > w) {
       columns = index + 1;
     }
   }
   columnHeights = (function() {
-    var l, ref1, results;
+    var o, ref2, results;
     results = [];
-    for (l = 0, ref1 = columns; 0 <= ref1 ? l < ref1 : l > ref1; 0 <= ref1 ? l++ : l--) {
+    for (o = 0, ref2 = columns; 0 <= ref2 ? o < ref2 : o > ref2; 0 <= ref2 ? o++ : o--) {
       results.push(0);
     }
     return results;
   })();
   assignments = getResizeAssignments();
-  for (n = l = 0, len2 = assignments.length; l < len2; n = ++l) {
+  for (n = o = 0, len3 = assignments.length; o < len3; n = ++o) {
     assignment = assignments[n];
     col = n % columns;
     assignment.style.top = columnHeights[col] + "px";
@@ -832,8 +951,8 @@ resize = function() {
     columnHeights[col] += assignment.offsetHeight + 24;
   }
   setTimeout(function() {
-    var len3, o;
-    for (n = o = 0, len3 = assignments.length; o < len3; n = ++o) {
+    var len4, q;
+    for (n = q = 0, len4 = assignments.length; q < len4; n = ++q) {
       assignment = assignments[n];
       col = n % columns;
       if (n < columns) {
@@ -845,9 +964,9 @@ resize = function() {
   }, 300);
 };
 
-ref1 = document.querySelectorAll("input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search]");
-for (k = 0, len1 = ref1.length; k < len1; k++) {
-  input = ref1[k];
+ref2 = document.querySelectorAll("input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search]");
+for (l = 0, len2 = ref2.length; l < len2; l++) {
+  input = ref2[l];
   input.addEventListener("change", function(evt) {
     return evt.target.parentNode.querySelector("label").classList.add("active");
   });
@@ -880,6 +999,23 @@ document.getElementById("cvButton").addEventListener("mouseup", function() {
 
 if ((localStorage["showDone"] != null) && JSON.parse(localStorage["showDone"])) {
   document.body.classList.add("showDone");
+}
+
+ripple(document.getElementById("infoButton"));
+
+if (localStorage["showInfo"] == null) {
+  localStorage["showInfo"] = JSON.stringify(true);
+}
+
+document.getElementById("infoButton").addEventListener("mouseup", function() {
+  document.body.classList.toggle("showInfo");
+  resize();
+  localStorage["showInfo"] = JSON.stringify(document.body.classList.contains("showInfo"));
+  return setTimeout(resize, 1000);
+});
+
+if ((localStorage["showInfo"] != null) && JSON.parse(localStorage["showInfo"])) {
+  document.body.classList.add("showInfo");
 }
 
 headroom = new Headroom(document.querySelector("nav"), {
@@ -916,9 +1052,9 @@ labrgb = function(_L, _a, _b) {
     }
   };
   dot_product = function(a, b) {
-    var i, l, ref2, ret;
+    var i, o, ref3, ret;
     ret = 0;
-    for (i = l = 0, ref2 = a.length - 1; 0 <= ref2 ? l <= ref2 : l >= ref2; i = 0 <= ref2 ? ++l : --l) {
+    for (i = o = 0, ref3 = a.length - 1; 0 <= ref3 ? o <= ref3 : o >= ref3; i = 0 <= ref3 ? ++o : --o) {
       ret += a[i] * b[i];
     }
     return ret;
@@ -995,9 +1131,9 @@ if (localStorage["assignmentColors"] == null) {
 
 if ((localStorage["data"] != null) && (localStorage["classColors"] == null)) {
   a = {};
-  ref2 = JSON.parse(localStorage["data"]).classes;
-  for (l = 0, len2 = ref2.length; l < len2; l++) {
-    c = ref2[l];
+  ref3 = JSON.parse(localStorage["data"]).classes;
+  for (o = 0, len3 = ref3.length; o < len3; o++) {
+    c = ref3[o];
     a[c] = "#616161";
   }
   localStorage["classColors"] = JSON.stringify(a);
@@ -1086,9 +1222,9 @@ palette = {
 };
 
 if (localStorage["data"] != null) {
-  ref3 = JSON.parse(localStorage["data"]).classes;
-  for (o = 0, len3 = ref3.length; o < len3; o++) {
-    c = ref3[o];
+  ref4 = JSON.parse(localStorage["data"]).classes;
+  for (q = 0, len4 = ref4.length; q < len4; q++) {
+    c = ref4[q];
     d = element("div", [], c);
     d.setAttribute("data-control", c);
     d.appendChild(element("span", []));
@@ -1096,10 +1232,10 @@ if (localStorage["data"] != null) {
   }
 }
 
-ref4 = document.getElementsByClassName("colors");
-for (q = 0, len4 = ref4.length; q < len4; q++) {
-  e = ref4[q];
-  ref5 = e.getElementsByTagName("div");
+ref5 = document.getElementsByClassName("colors");
+for (u = 0, len5 = ref5.length; u < len5; u++) {
+  e = ref5[u];
+  ref6 = e.getElementsByTagName("div");
   fn = function(sp, color, list, listName) {
     return sp.addEventListener("click", function(evt) {
       var bg;
@@ -1115,8 +1251,8 @@ for (q = 0, len4 = ref4.length; q < len4; q++) {
       return sp.classList.toggle("choose");
     });
   };
-  for (u = 0, len5 = ref5.length; u < len5; u++) {
-    color = ref5[u];
+  for (z = 0, len6 = ref6.length; z < len6; z++) {
+    color = ref6[z];
     sp = color.querySelector("span");
     listName = e.getAttribute("id") === "classColors" ? "classColors" : "assignmentColors";
     list = e.getAttribute("id") === "classColors" ? cc : ac;
@@ -1134,7 +1270,7 @@ for (q = 0, len4 = ref4.length; q < len4; q++) {
 }
 
 updateColors = function() {
-  var mix, name, ref6, ref7, results, results1, sheet, style;
+  var mix, name, ref7, ref8, results, results1, sheet, style;
   mix = function(a, b, p) {
     var hex, rgbA, rgbB;
     rgbA = hex2rgb(a);
@@ -1149,23 +1285,27 @@ updateColors = function() {
   document.head.appendChild(style);
   sheet = style.sheet;
   if (localStorage["colorType"] === "assignment") {
-    ref6 = JSON.parse(localStorage["assignmentColors"]);
+    sheet.insertRule(".upcomingTest[data-class]>i { background-color: " + (JSON.parse(localStorage["assignmentColors"]).test) + "; }", 0);
+    sheet.insertRule(".upcomingTest[data-class].done>i { background-color: " + palette[JSON.parse(localStorage["assignmentColors"]).test] + "; }", 0);
+    ref7 = JSON.parse(localStorage["assignmentColors"]);
     results = [];
-    for (name in ref6) {
-      color = ref6[name];
+    for (name in ref7) {
+      color = ref7[name];
       sheet.insertRule(".assignment." + name + " { background-color: " + color + "; }", 0);
       sheet.insertRule(".assignment." + name + ".done { background-color: " + palette[color] + "; }", 0);
       results.push(sheet.insertRule(".assignment." + name + "::before { background-color: " + (mix(color, "#1B5E20", 0.3)) + "; }", 0));
     }
     return results;
   } else {
-    ref7 = JSON.parse(localStorage["classColors"]);
+    ref8 = JSON.parse(localStorage["classColors"]);
     results1 = [];
-    for (name in ref7) {
-      color = ref7[name];
+    for (name in ref8) {
+      color = ref8[name];
       sheet.insertRule(".assignment[data-class=\"" + name + "\"] { background-color: " + color + "; }", 0);
       sheet.insertRule(".assignment[data-class=\"" + name + "\"].done { background-color: " + palette[color] + "; }", 0);
-      results1.push(sheet.insertRule(".assignment[data-class=\"" + name + "\"]::before { background-color: " + (mix(color, "#1B5E20", 0.3)) + "; }", 0));
+      sheet.insertRule(".assignment[data-class=\"" + name + "\"]::before { background-color: " + (mix(color, "#1B5E20", 0.3)) + "; }", 0);
+      sheet.insertRule(".upcomingTest[data-class=\"" + name + "\"]>i { background-color: " + color + "; }", 0);
+      results1.push(sheet.insertRule(".upcomingTest[data-class=\"" + name + "\"].done>i { background-color: " + palette[color] + "; }", 0));
     }
     return results1;
   }
@@ -1173,9 +1313,9 @@ updateColors = function() {
 
 updateColors();
 
-ref6 = document.getElementsByClassName("settingsControl");
-for (z = 0, len6 = ref6.length; z < len6; z++) {
-  e = ref6[z];
+ref7 = document.getElementsByClassName("settingsControl");
+for (aa = 0, len7 = ref7.length; aa < len7; aa++) {
+  e = ref7[aa];
   if (localStorage[e.name] != null) {
     if (e.checked != null) {
       e.checked = JSON.parse(localStorage[e.name]);
@@ -1197,9 +1337,9 @@ for (z = 0, len6 = ref6.length; z < len6; z++) {
 
 document.querySelector("input[name=\"colorType\"][value=\"" + localStorage["colorType"] + "\"]").checked = true;
 
-ref7 = document.getElementsByName("colorType");
-for (aa = 0, len7 = ref7.length; aa < len7; aa++) {
-  c = ref7[aa];
+ref8 = document.getElementsByName("colorType");
+for (ab = 0, len8 = ref8.length; ab < len8; ab++) {
+  c = ref8[ab];
   c.addEventListener("change", function(evt) {
     var v;
     v = document.querySelector('input[name="colorType"]:checked').value;

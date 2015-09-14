@@ -14,9 +14,10 @@
 			<a id="collapseButton" class="material-icons">menu</a>
 			<a id="backButton" class="material-icons">arrow_back</a>
 			<span id="brand">Check PCR</span>
+			<a id="infoButton" class="material-icons waves"></a>
 			<a id="cvButton" class="material-icons waves"></a>
 		</div>
-		<ul class="tabs">
+		<ul class="tabs" id="navTabs">
 			<li>Calendar</li>
 			<li>List</li>
 		</ul>
@@ -26,6 +27,7 @@
 		<span id="user"></span>
 		<ul>
 			<li class="nohover disabled"><i class="material-icons">hourglass_empty</i>More to come soon...</li>
+			<!--<li id="switchViews"><a><i class="material-icons">view_week</i></a></li>-->
 		</ul>
 		<hr />
 		<ul>
@@ -47,6 +49,20 @@
 			<div>Sat</div>
 		</section>
 	</main>
+	<div id="info" data-view="0">
+		<div id="extra">
+			<i class="material-icons">keyboard_arrow_up</i>
+			Scroll up to view the navbar
+		</div>
+		<!--<ul class="tabs" id="infoTabs">
+			<li>Tests</li>
+			<li>Activity</li>
+		</ul>-->
+		<div id="infoTests"></div>
+		<div id="infoActivity">
+			Activity is coming soon in a future commit so that you can see the latest changes to PCR.
+		</div>
+	</div>
 	<div id="empty"><span>No more assignments for today!</span></div>
 	<div id="background"></div>
 	<div id="progress">
@@ -54,6 +70,9 @@
 	</div>
 	<form id="login">
 		<h1>Please log in to continue</h1>
+		<div id="loginIncorrect">
+			Incorrect Username or Password
+		</div>
 		<div class="input-field">
 			<input id="username" type="text" autocomplete="off" tabindex="1">
 			<label for="username">Username</label>

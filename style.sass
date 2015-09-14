@@ -165,6 +165,25 @@ nav
 		content: "done"
 		.showDone &
 			opacity: 0
+#infoButton
+	float: right
+	@extend %navButton
+	position: relative
+	&::before, &::after
+		position: absolute
+		top: $navButtonWidth
+		left: $navButtonWidth
+		display: block
+		+transition(opacity 0.5s ease)
+	&::before
+		content: "info"
+		opacity: 0
+		.showInfo &
+			opacity: 1
+	&::after
+		content: "info_outline"
+		.showInfo &
+			opacity: 0
 #brand
 	float: left
 	font-size: 20px
@@ -185,15 +204,11 @@ nav
 	will-change: transform
 	.settingsShown &
 		transform: translateY(-48px)
-	@media #{$medium-and-up}
-		margin: 0 68px
-	$tabs: 2
 	&>li
 		text-transform: uppercase
 		line-height: 48px
 		text-align: center
 		float: left
-		width: 100% / $tabs
 		padding: 0 12px
 		max-width: 264px
 		color: rgba(255,255,255,0.6)
@@ -206,13 +221,38 @@ nav
 		content: ' '
 		height: 2px
 		position: absolute
-		width: 100% / $tabs
 		left: 0
 		bottom: 0
 		background-color: #FFFFFF
 		max-width: 264px
 		+transition(left 0.3s ease)
 		will-change: left
+
+#infoTabs
+	$tabs: 2
+	&>li
+		width: 100% / $tabs
+		color: rgba(0,0,0,0.54)
+		&:hover
+			color: rgba(0,0,0,0.87)
+	@for $tab from 1 through $tabs
+		#info[data-view="#{$tab - 1}"] &
+			&>li:nth-child(#{$tab})
+				color: $accent-color
+				&:hover
+					color: $accent-color
+			&::after
+				left: 100% / $tabs * ($tab - 1)
+	&::after
+		width: 100% / $tabs
+		background-color: $accent-color
+
+#navTabs
+	@media #{$medium-and-up}
+		margin: 0 68px
+	$tabs: 2
+	&>li
+		width: 100% / $tabs
 	@for $tab from 1 through $tabs
 		body[data-view="#{$tab - 1}"] &
 			&>li:nth-child(#{$tab})
@@ -223,9 +263,123 @@ nav
 				left: 100% / $tabs * ($tab - 1)
 				@media only screen and (min-width: #{264px*$tabs+68px*2})
 					left: 264px*($tab - 1)
+	&::after
+		width: 100% / $tabs
 
 main
-	width: 100
+	width: 100%
+	+transition(width 0.3s ease)
+	body.showInfo>&
+		width: 40%
+		@media #{$medium-and-up}
+			width: 60%
+		@media #{$large-and-up}
+			width: 70%
+	body:not([data-pcrview])>&::after
+		content: "Loading your assignments..."
+		font-size: 8vmin
+		width: 100%
+		height: calc(80vh - 160px)
+		color: rgba(0,0,0,0.26)
+		text-align: center
+		line-height: 1.1
+
+		display: flex
+		align-items: center
+		justify-content: center
+#info
+	width: 60%
+	@media #{$medium-and-up}
+		width: 40%
+	@media #{$large-and-up}
+		width: 30%
+	position: fixed
+	right: 0
+	top: 0
+	bottom: 0
+	overflow: auto
+	border-left: 1px solid $borderColor
+	background-color: #FFF
+	padding-top: 112px
+	+transform(translateX(100%))
+	+transform-origin(100% 50%)
+	+transition(transform 0.3s ease)
+	body.showInfo>&
+		+transform(translateX(0))
+	&[data-view="0"]>#infoTests
+		display: block
+	&[data-view="1"]>#infoActivity
+		display: block
+	&>#extra
+		position: absolute
+		top: 16px
+		left: 0
+		right: 0
+		font-size: 16px
+		color: rgba(0,0,0,0.38)
+		text-align: center
+		line-height: 1.1
+		&>i
+			display: block
+			margin: 0 auto
+			font-size: 64px
+			height: 56px
+#infoActivity, #infoTests
+	padding: 8px 16px
+	display: none
+#infoTests::empty::before
+	content: "You have no upcoming tests."
+	margin-bottom: 8px
+#infoTests::after
+	margin-top: 8px
+	color: rgba(0,0,0,0.54)
+	body[data-pcrview="month"] &
+		content: "This pane will only show the tests that are visible in Check PCR's calendar view, so next month's tests will not show up here"
+	body[data-pcrview="other"] *
+		content: "This pane will only show the tests that are visible in Check PCR's calendar view. To view more upcoming tests, PCR needs to be on month view. Go to PCR and click the month button at the top."
+.upcomingTest
+	height: 88px
+	width: 100%
+	padding: 16px 16px 20px 72px
+	position: relative
+	+transition(background-color 0.3s ease)
+	will-change: background-color
+	cursor: pointer
+	border-radius: 2px
+	overflow: hidden
+	&:hover
+		background-color: rgba(0, 0, 0, 0.05)
+	&>.title
+		font-size: 16px
+		width: 100%
+		overflow: hidden
+		height: 20px
+		line-height: 1
+		white-space: nowrap
+		text-overflow: ellipsis
+		display: block
+	&>small
+		font-size: 14px
+		line-height: 16px
+		color: rgba(0,0,0,0.54)
+		display: block
+	&>.range
+		font-size: 14px
+		line-height: 16px
+		color: rgba(0,0,0,0.54)
+		display: block
+	&>i
+		position: absolute
+		left: 16px
+		top: 20px
+		border-radius: 50%
+		background-color: $accent-color
+		width: 40px
+		height: 40px
+		line-height: 40px
+		text-align: center
+		color: rgba(255,255,255,0.95)
+
 body[data-view="1"] .week
 	height: 0 !important
 #dates, .week
@@ -482,12 +636,8 @@ body[data-view="1"] .week
 		display: none
 	body:not([data-view="1"]) &:not(.modify)
 		top: 44px !important
-	&.anim, &.anim::before, &.anim>.title, &.anim>small,
-		+transition(all 0.3s ease)
 	&.full:not(.anim)
 		overflow-y: auto
-	&.anim>.complete
-		+transition(all 0.15s 0.15s ease)
 	&::before
 		display: block
 		content: ''
@@ -569,11 +719,12 @@ body[data-view="1"] .week
 		+border-radius-corner(top-right, 0)
 		+border-radius-corner(bottom-right, 0)
 	$transitions: background-color, box-shadow, padding, max-height, min-height, left, right, top, margin
-	$tt: ()
-	@each $transition in $transitions
-		$tt: append($tt, $transition + " 0.3s ease", comma)
-	body:not(.noTrans) &
-		+transition($tt)
+	&.anim
+		$tt: ()
+		@each $transition in $transitions
+			$tt: append($tt, $transition + " 0.3s ease", comma)
+		body:not(.noTrans) &
+			+transition($tt)
 	will-change: $transitions
 	min-height: 0
 	body[data-view="1"] &
@@ -676,6 +827,36 @@ body[data-view="0"]
 			&.overWeekend.e#{$i}
 				right: ($i/7)*100% !important
 
+body[data-view="0"].showInfo
+	.assignment:not(.full).modify
+		&.e
+			right: 20%
+		@for $i from 0 through 6
+			&.s#{$i}
+				left: calc(#{($i/7)*100%*0.4} + 8px) !important
+				@media #{$medium-and-up}
+					left: calc(#{($i/7)*100%*0.6} + 8px) !important
+				@media #{$large-and-up}
+					left: calc(#{($i/7)*100%*0.7} + 8px) !important
+			&.fromWeekend.s#{$i}
+				left: ($i/7)*100%*0.4 !important
+				@media #{$medium-and-up}
+					left: ($i/7)*100%*0.6 !important
+				@media #{$large-and-up}
+					left: ($i/7)*100%*0.7 !important
+			&.e#{$i}
+				right: calc(#{($i/7)*100%*0.4+60%} + 8px) !important
+				@media #{$medium-and-up}
+					right: calc(#{($i/7)*100%*0.6+40%} + 8px) !important
+				@media #{$large-and-up}
+					right: calc(#{($i/7)*100%*0.7+30%} + 8px) !important
+			&.overWeekend.e#{$i}
+				right: ($i/7)*100%*0.4 + 60% !important
+				@media #{$medium-and-up}
+					right: ($i/7)*100%*0.6 + 40% !important
+				@media #{$large-and-up}
+					right: ($i/7)*100%*0.7 + 30% !important
+
 #background, #sideBackground, #loginBackground, #updateBackground
 	background: #000
 	position: fixed
@@ -719,10 +900,16 @@ $scale: 15
 	left: 0
 	right: 0
 	bottom: 0
+	body.showInfo>&
+		right: 60%
+		@media #{$medium-and-up}
+			right: 40%
+		@media #{$large-and-up}
+			right: 30%
 	background: url(images/hills.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
 	opacity: 0
-	+transition(opacity 0.3s ease)
-	will-change: opacity
+	+transition(opacity 0.3s ease, right 0.3s ease)
+	will-change: opacity, right
 	font-size: 8vmin
 	color: rgba(0,0,0,0.26)
 	text-align: center
@@ -747,7 +934,7 @@ $scale: 15
 	&::before
 		content: ' '
 		position: absolute
-		right: 30vw
+		right: 30%
 		top: 10vh
 		width: 20vmin
 		height: 20vmin
@@ -913,6 +1100,15 @@ $scale: 15
 	left: 0
 	top: 0
 	z-index: 4000
+
+#switchViews
+	display: none !important
+	body.loaded &
+		display: block !important
+	body[data-pcrview="month"] &>a::after
+		content: "Switch to week view"
+	body[data-pcrview="other"] &>a::after
+		content: "Switch to month view"
 
 #settings
 	position: fixed
