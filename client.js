@@ -373,7 +373,7 @@ dateString = function(date, addThis) {
 };
 
 display = function() {
-  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, s, separated, span, spanRelative, split, start, startSun, taken, te, times, today, todayDiv, tr, u, weekHeights, weekId, wk, year;
+  var already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, len, len1, len2, len3, len4, main, month, n, name, nextSat, num, o, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, s, separated, span, spanRelative, split, start, startSun, taken, te, times, today, todayDiv, todaySE, tr, u, weekHeights, weekId, wk, year;
   console.time("Displaying data");
   document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
@@ -412,9 +412,9 @@ display = function() {
     start = new Date(Math.max(start * 1000 * 3600 * 24 + tzoff, (new Date(year, month)).getTime()));
     end = new Date(Math.min(end * 1000 * 3600 * 24 + tzoff, (new Date(year, month + 1, 0)).getTime()));
   } else {
-    today = new Date();
-    start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    todaySE = new Date();
+    start = new Date(todaySE.getFullYear(), todaySE.getMonth(), todaySE.getDate());
+    end = new Date(todaySE.getFullYear(), todaySE.getMonth(), todaySE.getDate());
   }
   start.setDate(start.getDate() - start.getDay());
   end.setDate(end.getDate() + (6 - end.getDay()));
