@@ -233,6 +233,7 @@ nav
 	&>li
 		width: 100% / $tabs
 		color: rgba(0,0,0,0.54)
+		max-width: none
 		&:hover
 			color: rgba(0,0,0,0.87)
 	@for $tab from 1 through $tabs
@@ -287,6 +288,16 @@ main
 		display: flex
 		align-items: center
 		justify-content: center
+#lastUpdate
+	&::before
+		content: "Last updated "
+	position: fixed
+	bottom: 8px
+	right: 8px
+	z-index: 1000
+	darken(#FFF, 87%)
+	@media #{$medium-and-down}
+		display: none
 #info
 	width: 60%
 	@media #{$medium-and-up}
@@ -297,7 +308,8 @@ main
 	right: 0
 	top: 0
 	bottom: 0
-	overflow: auto
+	overflow-y: auto
+	overflow-x: hidden
 	border-left: 1px solid $borderColor
 	background-color: #FFF
 	padding-top: 112px
@@ -306,10 +318,10 @@ main
 	+transition(transform 0.3s ease)
 	body.showInfo>&
 		+transform(translateX(0))
-	&[data-view="0"]>#infoTests
-		display: block
-	&[data-view="1"]>#infoActivity
-		display: block
+	&[data-view="0"]>#infoContent
+		+transform(translateX(0))
+	&[data-view="1"]>#infoContent
+		+transform(translateX(-50%))
 	&>#extra
 		position: absolute
 		top: 16px
@@ -324,19 +336,27 @@ main
 			margin: 0 auto
 			font-size: 64px
 			height: 56px
+#infoContent
+	+transition(transform 0.3s ease-in-out)
+	width: 200%
 #infoActivity, #infoTests
 	padding: 8px 16px
-	display: none
-#infoTests::empty::before
+	display: inline-block
+	width: 50%
+	vertical-align: top
+#infoTests:empty::before
 	content: "You have no upcoming tests."
 	margin-bottom: 8px
+	display: block
 #infoTests::after
 	margin-top: 8px
 	color: rgba(0,0,0,0.54)
 	body[data-pcrview="month"] &
 		content: "This pane will only show the tests that are visible in Check PCR's calendar view, so next month's tests will not show up here"
-	body[data-pcrview="other"] *
+	body[data-pcrview="other"] &
 		content: "This pane will only show the tests that are visible in Check PCR's calendar view. To view more upcoming tests, PCR needs to be on month view. Go to PCR and click the month button at the top."
+#infoActivity:empty::before
+	content: "No activity has been generated yet. After using Check PCR for a while, this pane should populate itself."
 .upcomingTest
 	height: 88px
 	width: 100%
@@ -379,6 +399,10 @@ main
 		line-height: 40px
 		text-align: center
 		color: rgba(255,255,255,0.95)
+		background-size: cover
+
+.activity
+	@extend .upcomingTest
 
 body[data-view="1"] .week
 	height: 0 !important
@@ -518,8 +542,9 @@ body[data-view="1"] .week
 		line-height: 56px
 		font-size: 28px
 		color: #FFF
+		+transition(background-color 0.3s ease)
 		body:not(.noTrans) &
-			+transition(transform 0.3s ease)
+			+transition(transform 0.3s ease, background-color 0.3s ease)
 		transform: rotate(0deg)
 		&:hover
 			background-color: #00963E
@@ -665,7 +690,7 @@ body[data-view="1"] .week
 			width: 100vw !important
 		&::before
 			opacity: 1
-		&>small
+		&>small, &>.linked
 			position: absolute
 			top: (245px-50px)/2
 			font-size: 50px
@@ -678,6 +703,8 @@ body[data-view="1"] .week
 			@media only screen and (min-width: 551px)
 				&>.extra
 					display: inline
+		&>.linked:hover
+			color: #FFF
 		&>.title
 			font-size: 24px
 			margin-left: 100px
@@ -694,7 +721,7 @@ body[data-view="1"] .week
 			opacity: 1
 		&>.body, &>.attachments, &>.range, &>.close
 			display: block
-	&>small
+	&>small, &>.linked
 		margin-right: 5px
 		font-size: inherit
 		font-weight: 400
@@ -721,10 +748,18 @@ body[data-view="1"] .week
 	$transitions: background-color, box-shadow, padding, max-height, min-height, left, right, top, margin
 	&.anim
 		$tt: ()
+		$ttIn: ()
+		$ttOut: ()
 		@each $transition in $transitions
-			$tt: append($tt, $transition + " 0.3s ease", comma)
+			$tt: append($tt, $transition + " 0.3s ease-out", comma)
+			$ttIn: append($ttIn, $transition + " 0.3s ease-out", comma)
+			$ttOut: append($ttOut, $transition + " 0.3s ease-in", comma)
 		body:not(.noTrans) &
 			+transition($tt)
+		body[data-view="0"]:not(.noTrans) &
+			+transition($ttIn)
+			&.full
+				+transition($ttOut)
 	will-change: $transitions
 	min-height: 0
 	body[data-view="1"] &
@@ -737,11 +772,13 @@ body[data-view="1"] .week
 		cursor: auto
 		&:not(.listDisp)
 			display: none
-		&>small
+		&>small, &>.linked
 			color: rgba(0,0,0,0.54)
 			display: inline
 			&>.extra
 				display: inline
+		&>.linked:hover
+			color: #000
 		&>.title
 			color: rgba(0,0,0,0.87)
 			font-weight: normal
@@ -784,7 +821,7 @@ body[data-view="1"] .week
 				@media #{medium-screen-up}
 					font-size: 15px
 			&:hover
-				background-color: transparent
+				background-color: rgba(0, 0, 0, 0.05)
 			&::after
 				content: 'Done'
 				font-family: "Roboto", sans-serif
@@ -1128,6 +1165,7 @@ $scale: 15
 	padding-top: 56px+8px
 	@media #{$medium-and-up}
 		padding-top: 64px+8px
+	padding-bottom: 48px
 	&>ul
 		font-size: 16px
 		margin: 0 auto
@@ -1138,7 +1176,8 @@ $scale: 15
 			&>.control
 				position: absolute
 				right: 16px
-				top: 16px
+				top: 12px
+				line-height: 1
 			&>select.control
 				width: 125px
 				top: 8px
@@ -1238,3 +1277,38 @@ code
 		content: "\00a0"
 #updateFeatures
 	margin-left: 8px
+
+.snackbar
+	z-index: 5000
+	position: fixed
+	bottom: 0
+	left: 0
+	right: 0
+	text-align: center
+	+transform(translateY(100%))
+	+transition(transform 0.3s ease)
+	&.active
+		+transform(translateY(0))
+
+.snackInner
+	height: 48px
+	font-size: 14px
+	line-height: 20px
+	padding: 14px 24px
+	background: #323232
+	color: #FFF
+	display: inline-block
+	width: 100%
+	@media #{$medium-and-up}
+		width: auto
+		min-width: 288px
+		max-width: 568px
+		border-radius: 2px 2px 0 0
+	&>a
+		text-transform: uppercase
+		color: $accent-color
+		float: right
+		margin-left: 24px
+		font-weight: 500
+		@media #{$medium-and-up}
+			margin-left: 48px

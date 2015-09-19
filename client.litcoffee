@@ -9,8 +9,10 @@ It is written in [Literate CoffeeScript](http://coffeescript.org/#literate), a v
 * [Parsing](#parsing")
 * [Displaying the assignments](#displaying)
 * [Side menu and Navbar](#side)
+* [Athena (Schoology)](#athena)
 * [Settings](#settings)
 * [Starting everything](#starting)
+* [Analytics](#analytics)
 
 ##### So, here is the annotated code:
 
@@ -32,6 +34,7 @@ Basic Definitions
       "text/plain": ["Text Doc", "plain"]
     scroll = 0 # The location to scroll to in order to reach today in calendar view
     viewData = {} # The data to send when switching PCR views
+    activity = []
 
 #### Send function
 
@@ -122,9 +125,56 @@ To set a cookie, this function is called.
       document.cookie = cname + "=" + cvalue + "; " + expires
       return
 
+This function displays a snackbar to tell the user something
+
+    snackbar = (message, action, f) ->
+      snack = element "div", "snackbar"
+      snackInner = element "div", "snackInner", message
+      snack.appendChild snackInner
+      if action? and f?
+        actionE = element "a", [], action
+        actionE.addEventListener "click", f
+        snackInner.appendChild actionE
+
+      add = ->
+        document.body.appendChild snack
+        snack.offsetHeight
+        snack.classList.add "active"
+        setTimeout ->
+          snack.classList.remove "active"
+          setTimeout ->
+            snack.remove()
+          , 900
+        , 5000
+
+      existing = document.getElementsByClassName("snackbar")
+      if existing.length>0
+        existing[0].classList.remove "active"
+        setTimeout add, 300
+      else
+        add()
+      return
+
 <a name="ret"/>
 Retrieving data
 ---------------
+
+The function below converts an update time to a human-readable date.
+
+    formatUpdate = (date) ->
+      now = new Date()
+      update = new Date(+date)
+      if now.getDate() is update.getDate()
+        ampm = "AM"
+        hr = update.getHours()
+        if hr > 12
+          ampm = "PM"
+          hr -= 12
+        min = update.getMinutes()
+        "Today at #{hr}:#{if min<10 then "0"+min else min} #{ampm}"
+      else
+        daysPast = Math.ceil (now.getTime()-update.getTime())/1000/3600/24
+        if daysPast is 1 then "Yesterday" else daysPast+" days ago"
 
 This is the function that retrieves your assignments from PCR.
 
@@ -152,6 +202,9 @@ Because this is run as a chrome extension, this page can be accessed. Otherwise,
           else
             # Logged in now
             console.log "Fetching assignments successful"
+            t = Date.now()
+            localStorage["lastUpdate"] = t
+            document.getElementById("lastUpdate").innerHTML = formatUpdate t
             try
               parse resp.response
             catch e
@@ -160,8 +213,7 @@ Because this is run as a chrome extension, this page can be accessed. Otherwise,
           return
         , (error) ->
           console.log "Could not fetch assignments; You are probably offline. Here's the error:", error
-          if offline?
-            offline.style.display = "block"
+          snackbar "Could not fetch your assignments", "Retry", fetch
           return
       return
 
@@ -172,7 +224,7 @@ Now, we have the function that will log us into PCR.
       document.getElementById("login").classList.remove "active"
       setTimeout ->
         document.getElementById("loginBackground").style.display = "none"
-      , 300
+      , 350
       postArray = [] # Array of data to post
       localStorage["username"] = if val? and not submitEvt then val[0] else document.getElementById("username").value
       updateAvatar()
@@ -200,6 +252,9 @@ Now, we have the function that will log us into PCR.
             if document.getElementById("remember").checked #Is the "remember me" checkbox checked?
               setCookie "userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14 # Set a cookie with the username and password so we can log in automatically in the future without having to prompt for a username and password again
             # loadingBar.style.display = "none"
+            t = Date.now()
+            localStorage["lastUpdate"] = t
+            document.getElementById("lastUpdate").innerHTML = formatUpdate t
             try
               parse resp.response # Parse the data PCR has replied with
             catch e
@@ -392,6 +447,64 @@ Another function that will return a human-readable date string
         return (if addThis then "This " else "")+weekdays[date.getDay()]
       "#{weekdays[date.getDay()]}, #{fullMonths[date.getMonth()]} #{date.getDate()}"
 
+This function separates the parts of a class name.
+
+    separate = (cl) ->
+      cl.match /// (
+        (?:\d*\s+)?                           # digits and a space(s) if they exist [the grade level for the class]
+        (?:(?:hon\w*|(?:adv\w*\s*)?core)\s+)? # matches the honors, advanced core, or core if that exists
+      )
+      (.*)                                    # the actual class name (English, Science, Math, etc.)
+      ///i
+
+The one below scrolls smoothly to a y position.
+
+    smoothScroll = (to) ->
+      return new Promise (resolve, reject) ->
+        start = null
+        from = document.body.scrollTop
+        amount = to-from
+        step = (timestamp) ->
+          start ?= timestamp
+          progress = timestamp-start
+          window.scrollTo 0, from+amount*(progress/350)
+          if progress < 350
+            requestAnimationFrame step
+          else
+            setTimeout ->
+              document.querySelector("nav").classList.remove "headroom--unpinned"
+            , 1
+            setTimeout ->
+              resolve()
+            , amount
+        requestAnimationFrame step
+
+Now the functions that actually display something are defined. First up is one to add an activity line to the activity panel.
+
+    addActivity = (type, assignment, newActivity) ->
+      date = if newActivity is true then Date.now() else newActivity
+      if newActivity is true then activity.push [type, assignment, Date.now()]
+      te = element "div", ["activity", "assignmentItem", assignment.baseType], "<i class='material-icons'>#{type}</i><span class='title'>#{assignment.title}</span><small>#{separate(window.data.classes[assignment.class])[2]}</small><div class='range'>#{dateString(new Date date)}</div>", "activity"+assignment.id
+      te.setAttribute "data-class", window.data.classes[assignment.class]
+      id = assignment.id
+      if type isnt "delete"
+        do(id) ->
+          te.addEventListener "click", ->
+            doScrolling = ->
+              el = document.querySelector(".assignment[id*=\"#{id}\"]")
+              smoothScroll el.getBoundingClientRect().top+document.body.scrollTop-116
+                .then ->
+                  el.click()
+                  return
+            if document.body.getAttribute("data-view") is "0"
+              doScrolling()
+            else
+              document.querySelector("#navTabs>li:first-child").click()
+              setTimeout doScrolling, 500
+
+      if assignment.id in done
+        te.classList.add "done"
+      document.getElementById("infoActivity").insertBefore te, document.getElementById("infoActivity").firstChild
 
 This function will convert the array of assignments generated by *parse* into readable HTML.
 
@@ -431,6 +544,7 @@ This function will convert the array of assignments generated by *parse* into re
       # First populate the calendar with boxes for each day
       d = new Date start
       wk = null
+      lastAssignments = if localStorage["data"] then JSON.parse(localStorage["data"]).assignments else null
       while d <= end
         if d.getDay() is 0
           id = "wk#{d.getMonth()}-#{d.getDate()}" # Don't create a new week element if one already exists
@@ -480,6 +594,27 @@ This function will convert the array of assignments generated by *parse* into re
             start: new Date Math.max s, (nextSat+n)*1000*3600*24
             end: new Date Math.min e, (nextSat+n+6)*1000*3600*24
           n+=7
+
+        # Activity stuff
+        if lastAssignments?
+          found = false
+          for oldAssignment, num in lastAssignments
+            if oldAssignment.id is assignment.id
+              found = true
+              if oldAssignment.body isnt assignment.body
+                addActivity "edit", assignment, true
+              lastAssignments.splice(num, 1)
+              break
+          if not found
+            addActivity "add", assignment, true
+
+      # Check if any of the last assignments weren't deleted (so they have been deleted in PCR)
+      for assignment in lastAssignments
+        addActivity "delete", assignment, true
+
+      # Then save activity
+      localStorage["activity"] = JSON.stringify activity
+
       # Then add assignments
 
       weekHeights = {}
@@ -490,24 +625,34 @@ This function will convert the array of assignments generated by *parse* into re
         assignment = window.data.assignments[s.assignment]
 
         # Separate the class description from the actual class
-        separated = window.data.classes[assignment.class].match /// (
-          (?:\d*\s+)?                           # digits and a space(s) if they exist [the grade level for the class]
-          (?:(?:hon\w*|(?:adv\w*\s*)?core)\s+)? # matches the honors, advanced core, or core if that exists
-        )
-        (.*)                                    # the actual class name (English, Science, Math, etc.)
-        ///i
+        separated = separate window.data.classes[assignment.class]
 
         startSun = new Date(s.start.getTime())
         startSun.setDate startSun.getDate()-startSun.getDay()
         weekId = "wk#{startSun.getMonth()}-#{startSun.getDate()}"
 
-        e = element "div", ["assignment", assignment.baseType, "anim"], "<small><span class='extra'>#{separated[1]}</span>#{separated[2]}</small><span class='title'>#{assignment.title}</span><input type='hidden' class='due' value='#{assignment.end}' />", assignment.id+weekId
+        smallTag = "small"
+        link = null
+        if athenaData? and athenaData[window.data.classes[assignment.class]]?
+          link = athenaData[window.data.classes[assignment.class]].link
+          smallTag = "a"
+
+        e = element "div", ["assignment", assignment.baseType, "anim"], "<#{smallTag}#{if link? then " href='#{link}' class='linked'" else ""}><span class='extra'>#{separated[1]}</span>#{separated[2]}</#{smallTag}><span class='title'>#{assignment.title}</span><input type='hidden' class='due' value='#{assignment.end}' />", assignment.id+weekId
         if assignment.id in done
           e.classList.add "done"
         e.setAttribute "data-class", window.data.classes[assignment.class]
         close = element "a", ["close", "material-icons"], "close"
         close.addEventListener "click", closeOpened
         e.appendChild close
+
+        if link?
+          e.querySelector("a").addEventListener "click", (evt) ->
+            el = evt.target
+            until el.classList.contains "assignment"
+              el = el.parentNode
+            if not (document.body.getAttribute("data-view") isnt "0" or el.classList.contains "full")
+              evt.preventDefault()
+
         complete = element "a", ["complete", "material-icons", "waves"], "done"
         ripple complete
         id = assignment.id
@@ -526,7 +671,7 @@ This function will convert the array of assignments generated by *parse* into re
               localStorage["done"] = JSON.stringify done
               if document.body.getAttribute("data-view") == "1"
                 setTimeout ->
-                  for elem in document.querySelectorAll ".assignment[id*=\"#{id}\"], .upcomingTest[id*=\"test#{id}\"]"
+                  for elem in document.querySelectorAll ".assignment[id*=\"#{id}\"], .upcomingTest[id*=\"test#{id}\"], .activity[id*=\"activity#{id}\"]"
                     elem.classList.toggle "done"
                   if added
                     document.body.classList.remove "noList" if document.querySelectorAll(".assignment.listDisp:not(.done)").length != 0
@@ -535,7 +680,7 @@ This function will convert the array of assignments generated by *parse* into re
                   resize()
                 , 100
               else
-                for elem in document.querySelectorAll ".assignment[id*=\"#{id}\"], .upcomingTest[id*=\"test#{id}\"]"
+                for elem in document.querySelectorAll ".assignment[id*=\"#{id}\"], .upcomingTest[id*=\"test#{id}\"], .activity[id*=\"activity#{id}\"]"
                   elem.classList.toggle "done"
                 if added
                   document.body.classList.remove "noList" if document.querySelectorAll(".assignment.listDisp:not(.done)").length != 0
@@ -609,6 +754,7 @@ This function will convert the array of assignments generated by *parse* into re
           until el.classList.contains "assignment"
             el = el.parentNode
           if document.getElementsByClassName("full").length == 0 and document.body.getAttribute("data-view") == "0"
+            el.classList.remove "anim"
             el.classList.add "modify"
             el.style.top = el.getBoundingClientRect().top-document.body.scrollTop-parseInt(el.style.marginTop)+44+"px"
             el.setAttribute "data-top", el.style.top
@@ -616,12 +762,13 @@ This function will convert the array of assignments generated by *parse* into re
             back = document.getElementById("background")
             back.classList.add "active"
             back.style.display = "block"
+            el.classList.add "anim"
             setTimeout ->
               el.classList.add "full"
               el.style.top = 75-parseInt(el.style.marginTop)+"px"
               setTimeout ->
                 el.classList.remove "anim"
-              , 300
+              , 350
             , 0
           return
 
@@ -629,31 +776,12 @@ This function will convert the array of assignments generated by *parse* into re
         wk = document.getElementById weekId
 
         # If the assignment is a test and is upcoming, add it to the upcoming tests panel.
-        if assignment.baseType is "test" and start > Date.now()
-          te = element "div", "upcomingTest", "<i class='material-icons'>assessment</i><span class='title'>#{assignment.title}</span><small>#{separated[2]}</small><div class='range'>#{dateString(end, true)}</div>", "test"+assignment.id
+        if assignment.baseType is "test" and assignment.start >= today
+          te = element "div", ["upcomingTest", "assignmentItem", "test"], "<i class='material-icons'>assessment</i><span class='title'>#{assignment.title}</span><small>#{separated[2]}</small><div class='range'>#{dateString(end, true)}</div>", "test"+assignment.id
           te.setAttribute "data-class", window.data.classes[assignment.class]
           id = assignment.id
           do(id) ->
             te.addEventListener "click", ->
-              smoothScroll = (to) ->
-                return new Promise (resolve, reject) ->
-                  start = null
-                  from = document.body.scrollTop
-                  amount = to-from
-                  step = (timestamp) ->
-                    start ?= timestamp
-                    progress = timestamp-start
-                    window.scrollTo 0, from+amount*(progress/300)
-                    if progress < 300
-                      requestAnimationFrame step
-                    else
-                      setTimeout ->
-                        document.querySelector("nav").classList.remove "headroom--unpinned"
-                      , 1
-                      setTimeout ->
-                        resolve()
-                      , amount
-                  requestAnimationFrame step
               doScrolling = ->
                 el = document.querySelector(".assignment[id*=\"#{id}\"]")
                 smoothScroll el.getBoundingClientRect().top+document.body.scrollTop-116
@@ -678,6 +806,7 @@ This function will convert the array of assignments generated by *parse* into re
           wk.style.height = 47+(pos+1)*30+"px"
         already = document.getElementById assignment.id+weekId
         if already? # Assignment already exists
+          already.style.marginTop = e.style.marginTop
           already.getElementsByClassName("body")[0].innerHTML = e.getElementsByClassName("body")[0].innerHTML
         else
           wk.appendChild e
@@ -719,7 +848,7 @@ Below is a function to close the current assignment that is opened.
         el.style.top = "auto"
         el.offsetHeight
         el.classList.add "anim"
-      , 300
+      , 350
 
 And a function to apply an ink effect
 
@@ -771,6 +900,9 @@ Then, the tabs are made interactive.
 
     for tab in document.querySelectorAll "#navTabs>li"
       tab.addEventListener "click", (evt) ->
+        ga 'send', 'event', 'navigation', evt.target.textContent,
+          page: '/new.html'
+          title: "Version #{localStorage["commit"] or "New"}"
         trans = JSON.parse localStorage["viewTrans"]
         if not trans
           document.body.classList.add "noTrans"
@@ -781,7 +913,7 @@ Then, the tabs are made interactive.
           if trans
             start = null
             # The code below is the same code used in the resize() function. It basically just positions the assignments correctly as they animate
-            widths = [300,800,1500,2400,3500,4800]
+            widths = [350,800,1500,2400,3500,4800]
             columns = null
             for w,index in widths
               columns = index+1 if window.innerWidth > w
@@ -797,7 +929,7 @@ Then, the tabs are made interactive.
                 assignment.style.left = 100/columns*col+"%"
                 assignment.style.right = 100/columns*(columns-col-1)+"%"
                 columnHeights[col] += assignment.offsetHeight+24
-              if timestamp-start < 300
+              if timestamp-start < 350
                 window.requestAnimationFrame step
             window.requestAnimationFrame step
             setTimeout ->
@@ -808,7 +940,7 @@ Then, the tabs are made interactive.
                 assignment.style.top = columnHeights[col]+"px"
                 columnHeights[col] += assignment.offsetHeight+24
               return
-            , 300
+            , 350
           else
             resize()
         else
@@ -824,7 +956,7 @@ Then, the tabs are made interactive.
           document.body.offsetHeight
           setTimeout ->
             document.body.classList.remove "noTrans"
-          , 300
+          , 350
         return
 
 And the info tabs (just a little less code)
@@ -847,7 +979,7 @@ Therefore, a listener is attached to the resizing of the browser window.
       assignments
     resize = ->
       #To calculate the number of columns, the below algorithm is used becase as the screen size increases, the column width increases
-      widths = [300,800,1500,2400,3500,4800]
+      widths = [350,800,1500,2400,3500,4800]
       columns = null
       for w,index in widths
         columns = index+1 if window.innerWidth > w
@@ -867,7 +999,7 @@ Therefore, a listener is attached to the resizing of the browser window.
           assignment.style.top = columnHeights[col]+"px"
           columnHeights[col] += assignment.offsetHeight+24
         return
-      , 300
+      , 350
       return
 
 Additionally, the active class needs to be added when inputs are selected (for the login box).
@@ -933,7 +1065,7 @@ Also, the side menu needs event listeners.
       document.getElementById("sideNav").classList.remove "active"
       setTimeout ->
         document.getElementById("sideBackground").style.display = "none"
-      , 300
+      , 350
 
 Then, the username in the sidebar needs to be set and we need to generate an "avatar" based on initals.
 To do that, some code to convert from LAB to RGB colors is borrowed from https://github.com/boronine/colorspaces.js
@@ -1002,6 +1134,41 @@ The function below uses this algorithm to generate a background color for the in
         document.getElementById("initials").innerHTML = initials[1]+initials[2]
     updateAvatar()
 
+<a name="athena"/>
+Athena (Schoology)
+------------------
+
+Now, there's the schoology/athena integration stuff.
+First, we need to check if it's been more than a day. There's no point constantly retrieving classes from Athena; they dont't change that much.
+
+    lastAthena = if localStorage["lastAthena"] then parseInt(localStorage["lastAthena"]) else 0
+    athenaData = if localStorage["athenaData"]? then JSON.parse(localStorage["athenaData"]) else null
+    er = null
+
+Then, once the variable for the last date is initialized, it's time to get the classes from athena.
+Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any better! Seriously! It's just too bad the login page isn't in JSON.
+
+    if Date.now()-lastAthena >= 1000*3600*24 and (navigator.onLine or not navigator.onLine?) and not localStorage["noSchoology"]?
+      console.log "Updating classes from Athena"
+      send "https://athena.harker.org/iapi/course/active", "json"
+        .then (resp) ->
+          if resp.responseURL.indexOf("login") isnt -1
+            console.log "Couldn't fetch courses from Athena because you're not logged in."
+          else
+            athenaData = {}
+            localStorage["lastAthena"] = Date.now()
+            if resp.response.response_code is 200 # Just to make sure
+              for course,n in resp.response.body.courses.courses
+                courseDetails = resp.response.body.courses.sections[n]
+                athenaData[course.course_title] =
+                  link: "https://athena.harker.org"+courseDetails.link
+                  logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg")
+                  period: courseDetails.section_title
+              localStorage["athenaData"] = JSON.stringify athenaData
+        , (error) ->
+          if not confirm "Please grant the extension permission to access Athena/Schoology.\nYou can do this by going to chrome://extensions then clicking the \"Reload\" button under Check PCR.\n\nIf you don't want Check PCR to access Schoology, click the cancel button. Otherwise, just click OK."
+            localStorage["noSchoology"] = "true"
+
 <a name="settings"/>
 Settings
 --------
@@ -1024,6 +1191,7 @@ The back button also needs to close the settings window.
 The code below is what the settings control.
 
     localStorage["viewTrans"] ?= JSON.stringify true
+    localStorage["googleA"] ?= JSON.stringify true
     localStorage["colorType"] ?= "assignment"
     localStorage["assignmentColors"] ?= JSON.stringify {homework: "#2196f3", classwork: "#689f38", test: "#f44336", projects: "#f57c00"}
     if localStorage["data"]? and not localStorage["classColors"]?
@@ -1123,19 +1291,19 @@ Then, a function that updates the color preferences is defined.
       sheet = style.sheet
 
       if localStorage["colorType"] is "assignment"
-        sheet.insertRule(".upcomingTest[data-class]>i { background-color: #{JSON.parse(localStorage["assignmentColors"]).test}; }", 0)
-        sheet.insertRule(".upcomingTest[data-class].done>i { background-color: #{palette[JSON.parse(localStorage["assignmentColors"]).test]}; }", 0)
         for name, color of JSON.parse localStorage["assignmentColors"]
           sheet.insertRule(".assignment.#{name} { background-color: #{color}; }", 0)
           sheet.insertRule(".assignment.#{name}.done { background-color: #{palette[color]}; }", 0)
           sheet.insertRule(".assignment.#{name}::before { background-color: #{mix color, "#1B5E20", 0.3}; }", 0)
+          sheet.insertRule(".assignmentItem.#{name}>i { background-color: #{color}; }", 0)
+          sheet.insertRule(".assignmentItem.#{name}.done>i { background-color: #{palette[color]}; }", 0)
       else
         for name, color of JSON.parse localStorage["classColors"]
           sheet.insertRule(".assignment[data-class=\"#{name}\"] { background-color: #{color}; }", 0)
           sheet.insertRule(".assignment[data-class=\"#{name}\"].done { background-color: #{palette[color]}; }", 0)
           sheet.insertRule(".assignment[data-class=\"#{name}\"]::before { background-color: #{mix color, "#1B5E20", 0.3}; }", 0)
-          sheet.insertRule(".upcomingTest[data-class=\"#{name}\"]>i { background-color: #{color}; }", 0)
-          sheet.insertRule(".upcomingTest[data-class=\"#{name}\"].done>i { background-color: #{palette[color]}; }", 0)
+          sheet.insertRule(".assignmentItem[data-class=\"#{name}\"]>i { background-color: #{color}; }", 0)
+          sheet.insertRule(".assignmentItem[data-class=\"#{name}\"].done>i { background-color: #{palette[color]}; }", 0)
 The function then needs to be called.
 
     updateColors()
@@ -1192,12 +1360,14 @@ For updating, a request will be send to Github to get the current commit id and 
               document.getElementById("update").classList.remove "active"
               setTimeout ->
                 document.getElementById("updateBackground").style.display = "none"
-              , 300
+              , 350
             send resp.response.object.url, "json"
               .then (resp) ->
                 document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n")+2).replace(/\* (.*?)(?=$|\n)/g, (a,b) -> "<li>#{b}</li>").replace(/>\n</g, "><").replace(/\n/g, "<br>")
                 document.getElementById("updateBackground").style.display = "block"
                 document.getElementById("update").classList.add "active"
+        , (err) ->
+          console.log "Could not access Github. Here's the error:", err
 
 This update dialog also needs to be closed when the butons are clicked.
 
@@ -1205,7 +1375,7 @@ This update dialog also needs to be closed when the butons are clicked.
       document.getElementById("update").classList.remove "active"
       setTimeout ->
         document.getElementById("updateBackground").style.display = "none"
-      , 300
+      , 350
 
 The completed assignments are then loaded.
 
@@ -1213,10 +1383,49 @@ The completed assignments are then loaded.
     if localStorage["done"]?
       done = JSON.parse localStorage["done"]
 
+The "last updated" text is set to the correct date.
+
+    document.getElementById("lastUpdate").innerHTML = if localStorage["lastUpdate"]? then formatUpdate(localStorage["lastUpdate"]) else "Never"
+
 Now, we load the saved assignments (if any) and fetch the current assignments from PCR.
 
     if localStorage["data"]?
       window.data = JSON.parse localStorage["data"]
+
+      # Now check if there's activity
+      if localStorage["activity"]?
+        activity = JSON.parse localStorage["activity"]
+        for act in activity
+          addActivity act[0], act[1], act[2]
+
       display()
 
     fetch()
+
+<a name="analytics"/>
+Analytics
+---------
+
+This is the code for Google Analytics. There's not much more to explain.
+
+    if not JSON.parse(localStorage["googleA"])
+      window['ga-disable-UA-66932824-1'] = true
+
+    `(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');`
+
+    ga 'create', 'UA-66932824-1', 'auto'
+    ga 'set', 'checkProtocolTask', (->)
+    ga 'require', 'displayfeatures'
+    ga 'send', 'pageview',
+      page: '/new.html'
+      title: "Version #{localStorage["commit"] or "New"}"
+
+The user is also alerted that the page uses Google Analytics just to be nice.
+
+    if not localStorage["askGoogleAnalytics"]?
+      snackbar "This page uses Google Analytics. You can opt out vai Settings.", "Settings", ->
+        document.getElementById("settingsB").click()
+      localStorage["askGoogleAnalytics"] = "false"

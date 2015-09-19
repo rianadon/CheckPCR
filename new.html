@@ -49,18 +49,18 @@
 			<div>Sat</div>
 		</section>
 	</main>
+	<span id="lastUpdate"></span>
 	<div id="info" data-view="0">
 		<div id="extra">
 			<i class="material-icons">keyboard_arrow_up</i>
 			Scroll up to view the navbar
 		</div>
-		<!--<ul class="tabs" id="infoTabs">
+		<ul class="tabs" id="infoTabs">
 			<li>Tests</li>
 			<li>Activity</li>
-		</ul>-->
-		<div id="infoTests"></div>
-		<div id="infoActivity">
-			Activity is coming soon in a future commit so that you can see the latest changes to PCR.
+		</ul>
+		<div id="infoContent">
+			<div id="infoTests"></div><div id="infoActivity"></div>
 		</div>
 	</div>
 	<div id="empty"><span>No more assignments for today!</span></div>
@@ -145,6 +145,16 @@
 						<div data-control="homework">Homework<span></span></div><div data-control="classwork">Classwork<span></span></div><div data-control="projects">Projects<span></span></div><div data-control="test">Tests<span></span></div>
 					</div>
 					<div id="classColors" class="colors"></div>
+				</div>
+			</li>
+			<li class="two">
+				Use Google Analytics
+				<span>Feel free to opt out, but it helps me improve the app</span>
+				<div class="switch control">
+					<label>
+						<input type="checkbox" name="googleA" class="settingsControl" checked>
+						<span class="lever"></span>
+					</label>
 				</div>
 			</li>
 		</ul>
