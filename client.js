@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, addActivity, ae, athenaData, attachmentify, c, cc, closeOpened, color, d, dateString, display, dologin, done, e, element, er, fetch, findId, fn, formatUpdate, fullMonths, getCookie, getResizeAssignments, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, mimeTypes, months, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, addActivity, ae, athenaData, attachmentify, c, cc, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, element, er, fetch, findId, fn, formatUpdate, fullMonths, getCookie, getResizeAssignments, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
@@ -361,10 +361,10 @@ parse = function(doc) {
       window.data.assignments.push(assignment);
     }
   }
-  localStorage["data"] = JSON.stringify(data);
   console.timeEnd("Handling data");
   document.body.classList.add("loaded");
   display();
+  localStorage["data"] = JSON.stringify(data);
 };
 
 
@@ -897,8 +897,10 @@ closeOpened = function(evt) {
     el.style.top = "auto";
     el.offsetHeight;
     return el.classList.add("anim");
-  }, 350);
+  }, 1000);
 };
+
+document.getElementById("background").addEventListener("click", closeOpened);
 
 ripple = function(el) {
   el.addEventListener("mousedown", function(evt) {
@@ -947,8 +949,6 @@ ripple = function(el) {
     }
   });
 };
-
-document.getElementById("background").addEventListener("click", closeOpened);
 
 ref = document.querySelectorAll("#navTabs>li");
 for (j = 0, len = ref.length; j < len; j++) {
@@ -1024,10 +1024,12 @@ for (j = 0, len = ref.length; j < len; j++) {
       }
     } else {
       window.scrollTo(0, scroll);
+      document.querySelector("nav").classList.add("headroom--locked");
       setTimeout(function() {
         document.querySelector("nav").classList.remove("headroom--unpinned");
+        document.querySelector("nav").classList.remove("headroom--locked");
         return document.querySelector("nav").classList.add("headroom--pinned");
-      }, 1000);
+      }, 350);
       window.removeEventListener("resize", resize);
       ref1 = document.getElementsByClassName("assignment");
       for (l = 0, len2 = ref1.length; l < len2; l++) {
@@ -1173,13 +1175,17 @@ headroom = new Headroom(document.querySelector("nav"), {
 headroom.init();
 
 document.getElementById("collapseButton").addEventListener("click", function() {
+  document.body.style.overflow = "hidden";
   document.getElementById("sideNav").classList.add("active");
   return document.getElementById("sideBackground").style.display = "block";
 });
 
 document.getElementById("sideBackground").addEventListener("click", function() {
+  document.getElementById("sideBackground").style.opacity = 0;
   document.getElementById("sideNav").classList.remove("active");
+  document.getElementById("dragTarget").style.width = "";
   return setTimeout(function() {
+    document.body.style.overflow = "auto";
     return document.getElementById("sideBackground").style.display = "none";
   }, 350);
 });
@@ -1626,3 +1632,92 @@ if (localStorage["askGoogleAnalytics"] == null) {
   });
   localStorage["askGoogleAnalytics"] = "false";
 }
+
+delete Hammer.defaults.cssProps.userSelect;
+
+hammertime = new Hammer.Manager(document.body, {
+  recognizers: [
+    [
+      Hammer.Pan, {
+        direction: Hammer.DIRECTION_HORIZONTAL
+      }
+    ]
+  ]
+});
+
+menuOut = false;
+
+dragTarget = new Hammer(document.getElementById("dragTarget"));
+
+dragTarget.on("pan", function(e) {
+  var direction, overlayPerc, sbkg, x, y;
+  if (e.pointerType === "touch") {
+    e.preventDefault();
+    direction = e.direction;
+    x = e.center.x;
+    y = e.center.y;
+    sbkg = document.getElementById("sideBackground");
+    sbkg.style.display = "block";
+    sbkg.style.opacity = 0;
+    document.getElementById("sideNav").classList.add("manual");
+    if (x > 240) {
+      x = 240;
+    } else if (x < 0) {
+      x = 0;
+      if (x < 120) {
+        menuOut = false;
+      } else if (x >= 120) {
+        menuOut = true;
+      }
+    }
+    document.getElementById("sideNav").style.transform = "translateX(" + (x - 240) + "px)";
+    overlayPerc = Math.min(x / 480, 0.5);
+    return sbkg.style.opacity = overlayPerc;
+  }
+});
+
+dragTarget.on("panend", function(e) {
+  var sideNav, velocityX;
+  if (e.pointerType === "touch") {
+    velocityX = e.velocityX;
+    if ((menuOut && velocityX <= 0.3) || velocityX < -0.5) {
+      sideNav = document.getElementById("sideNav");
+      sideNav.classList.remove("manual");
+      sideNav.classList.add("active");
+      sideNav.style.transform = "";
+      return document.getElementById("dragTarget").style.width = "100%";
+    } else if (!menuOut || velocityX > 0.3) {
+      document.body.style.overflow = "auto";
+      sideNav = document.getElementById("sideNav");
+      sideNav.classList.remove("manual");
+      sideNav.classList.remove("active");
+      sideNav.style.transform = "";
+      document.getElementById("sideBackground").style.opacity = "";
+      document.getElementById("dragTarget").style.width = "10px";
+      return setTimeout(function() {
+        return document.getElementById("sideBackground").style.display = "none";
+      }, 350);
+    }
+  }
+});
+
+dragTarget.on("tap", function(e) {
+  document.getElementById("sideBackground").click();
+  return e.preventDefault();
+});
+
+dt = document.getElementById("dragTarget");
+
+hammertime.on("pan", function(e) {
+  var el, ref9;
+  if ((-200 < (ref9 = e.deltaX) && ref9 < 200) && e.target !== dt) {
+    if (e.velocityX > 0.3) {
+      el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view") + 2) + ")");
+    } else if (e.velocityX < -0.3) {
+      el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view")) + ")");
+    }
+    if (el != null) {
+      el.click();
+    }
+  }
+});

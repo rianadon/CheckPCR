@@ -72,6 +72,7 @@ body
 	@media #{$large-and-up}
 		font-size: 13px
 	padding-top: 112px
+	background-color: #FFF
 
 a
 	cursor: pointer
@@ -99,6 +100,8 @@ nav
 		+transform(translateY(0))
 	&.headroom--unpinned
 		+transform(translateY(-115px))
+	&.headroom--locked
+		+transform(translateY(0) !important)
 	position: fixed
 	top: 0
 	left: 0
@@ -295,7 +298,7 @@ main
 	bottom: 8px
 	right: 8px
 	z-index: 1000
-	darken(#FFF, 87%)
+	color: darken(#FFF, 87%)
 	@media #{$medium-and-down}
 		display: none
 #info
@@ -1053,6 +1056,15 @@ $scale: 15
 		left: 107%
 		right: -8%
 
+#dragTarget
+	position: fixed
+	width: 10px
+	position: fixed
+	top: 0
+	bottom: 0
+	left: 0
+	z-index: 4500
+
 #sideNav
 	position: fixed
 	left: 0
@@ -1069,7 +1081,11 @@ $scale: 15
 	&.active
 		transform: translateX(0)
 		& + #sideBackground
-			opacity: 0.5
+			opacity: 0.5 !important
+	&.manual
+		+transition(none)
+		& + #sideBackground
+			+transition(none)
 	.settingsShown &
 		transform: translateX(-240px)
 	&::before

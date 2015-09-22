@@ -8,7 +8,7 @@ A client for the homework system currently used by the Harker School, PCR.
 **<center>If you want to see the whole month in calendar view, leave PCR in month view. Otherwise, if you only want to see one week, put it on list view.</center>**
 ********************************************************************************************************************************************************************
 
-If you are feeling bored and have nothing else to do or are suspicious of what the program does with your password, **feel free to take a look at the [Literate Coffeescript code](client.litcoffee)**, which gets compiled into one of the two Javascript scripts used by the app (the other is headroom.js, downloaded from [here](http://wicky.nillia.ms/headroom.js/), which toggles the navbar visibility). If you are feeling extra suspicious, you can also compile `client.litcoffee` yourself.
+If you are feeling bored and have nothing else to do or are suspicious of what the program does with your password, **feel free to take a look at the [Literate Coffeescript code](client.litcoffee)**, which gets compiled into one of the three Javascript scripts used by the app (the others are headroom.js, downloaded from [here](http://wicky.nillia.ms/headroom.js/), which toggles the navbar visibility; and hammer.js, downloaded from [here](http://hammerjs.github.io/dist/hammer.min.js), which enables touch interactions events such as panning and swiping). If you are feeling extra suspicious, you can also compile `client.litcoffee` yourself.
 
 Installing
 ----------

@@ -13,6 +13,7 @@ It is written in [Literate CoffeeScript](http://coffeescript.org/#literate), a v
 * [Settings](#settings)
 * [Starting everything](#starting)
 * [Analytics](#analytics)
+* [Events](#events)
 
 ##### So, here is the annotated code:
 
@@ -381,13 +382,13 @@ If you open up the developer console on CheckPCR and type in `data`, you can see
           handledDataShort.push assignment.id
           window.data.assignments.push assignment
 
-      localStorage["data"] = JSON.stringify(data) # Store for offline use
       console.timeEnd "Handling data"
 
       # Now allow the view to be switched
       document.body.classList.add "loaded"
 
       display() # Display the data
+      localStorage["data"] = JSON.stringify(data) # Store for offline use
       return
 
 The view switching button needs an event handler.
@@ -848,7 +849,11 @@ Below is a function to close the current assignment that is opened.
         el.style.top = "auto"
         el.offsetHeight
         el.classList.add "anim"
-      , 350
+      , 1000
+
+Now we assign it to clicking the background.
+
+    document.getElementById("background").addEventListener "click", closeOpened
 
 And a function to apply an ink effect
 
@@ -891,10 +896,6 @@ And a function to apply an ink effect
               , delay
         return
       return
-
-Now we assign it to clicking the background.
-
-    document.getElementById("background").addEventListener "click", closeOpened
 
 Then, the tabs are made interactive.
 
@@ -945,10 +946,12 @@ Then, the tabs are made interactive.
             resize()
         else
           window.scrollTo 0, scroll
+          document.querySelector("nav").classList.add "headroom--locked"
           setTimeout ->
             document.querySelector("nav").classList.remove "headroom--unpinned"
+            document.querySelector("nav").classList.remove "headroom--locked"
             document.querySelector("nav").classList.add "headroom--pinned"
-          , 1000
+          , 350
           window.removeEventListener "resize", resize
           for assignment in document.getElementsByClassName "assignment"
             assignment.style.top = "auto"
@@ -1058,12 +1061,16 @@ The [Headroom library](https://github.com/WickyNilliams/headroom.js) is used to 
 Also, the side menu needs event listeners.
 
     document.getElementById("collapseButton").addEventListener "click", ->
+      document.body.style.overflow = "hidden"
       document.getElementById("sideNav").classList.add "active"
       document.getElementById("sideBackground").style.display = "block"
 
     document.getElementById("sideBackground").addEventListener "click", ->
+      document.getElementById("sideBackground").style.opacity = 0
       document.getElementById("sideNav").classList.remove "active"
+      document.getElementById("dragTarget").style.width = ""
       setTimeout ->
+        document.body.style.overflow = "auto"
         document.getElementById("sideBackground").style.display = "none"
       , 350
 
@@ -1429,3 +1436,86 @@ The user is also alerted that the page uses Google Analytics just to be nice.
       snackbar "This page uses Google Analytics. You can opt out vai Settings.", "Settings", ->
         document.getElementById("settingsB").click()
       localStorage["askGoogleAnalytics"] = "false"
+
+<a name="events"/>
+Events
+------
+
+The document body needs to be enabled for hammer.js events.
+
+    delete Hammer.defaults.cssProps.userSelect
+    hammertime = new Hammer.Manager document.body,
+      recognizers: [
+        [Hammer.Pan, {direction: Hammer.DIRECTION_HORIZONTAL}]
+      ]
+
+For touch displays, hammer.js is used to make the side menu appear/disappear. The code below is adapted from Materialize's implementation.
+
+    menuOut = false
+    dragTarget = new Hammer document.getElementById "dragTarget"
+    dragTarget.on "pan", (e) ->
+      if e.pointerType is "touch"
+        e.preventDefault()
+        direction = e.direction
+        x = e.center.x
+        y = e.center.y
+
+        sbkg = document.getElementById("sideBackground")
+        sbkg.style.display = "block"
+        sbkg.style.opacity = 0
+        document.getElementById("sideNav").classList.add "manual"
+
+        # Keep within boundaries
+        if x > 240
+          x = 240
+        else if x < 0
+          x = 0
+
+          # Left Direction
+          if x < 120
+            menuOut = false
+          # Right Direction
+          else if x >= 120
+            menuOut = true
+
+        document.getElementById("sideNav").style.transform = "translateX(#{x-240}px)"
+        overlayPerc = Math.min(x / 480, 0.5)
+        sbkg.style.opacity = overlayPerc
+
+    dragTarget.on "panend", (e) ->
+      if e.pointerType is "touch"
+        velocityX = e.velocityX
+        # If velocityX <= 0.3 then the user is flinging the menu closed so ignore menuOut
+        if (menuOut and velocityX <= 0.3) or velocityX < -0.5
+          sideNav = document.getElementById("sideNav")
+          sideNav.classList.remove "manual"
+          sideNav.classList.add "active"
+          sideNav.style.transform = ""
+          document.getElementById("dragTarget").style.width = "100%"
+
+        else if !menuOut or velocityX > 0.3
+          document.body.style.overflow = "auto"
+          sideNav = document.getElementById("sideNav")
+          sideNav.classList.remove "manual"
+          sideNav.classList.remove "active"
+          sideNav.style.transform = ""
+          document.getElementById("sideBackground").style.opacity = ""
+          document.getElementById("dragTarget").style.width = "10px"
+          setTimeout ->
+            document.getElementById("sideBackground").style.display = "none"
+          , 350
+
+    dragTarget.on "tap", (e) ->
+      document.getElementById("sideBackground").click()
+      e.preventDefault()
+
+    dt = document.getElementById("dragTarget")
+    hammertime.on "pan", (e) ->
+      if -200 < e.deltaX < 200 and e.target isnt dt
+        if e.velocityX > 0.3
+          el = document.querySelector("#navTabs>li:nth-child(#{document.body.getAttribute("data-view")+2})")
+        else if e.velocityX < -0.3
+          el = document.querySelector("#navTabs>li:nth-child(#{document.body.getAttribute("data-view")})")
+        if el?
+          el.click()
+      return
