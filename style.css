@@ -588,7 +588,7 @@ body {
   font-family: "Roboto", sans-serif;
   font-weight: normal;
   padding-top: 112px;
-  background-color: #FFF; }
+  background-color: #FAFAFA; }
   @media only screen and (min-width: 993px) {
     body {
       font-size: 13px; } }
@@ -666,7 +666,7 @@ nav {
       line-height: 64px;
       padding: 8px 12px; } }
 
-#collapseButton, #backButton, #cvButton, #infoButton {
+#collapseButton, #backButton, #cvButton, #infoButton, #lightButton {
   font-size: 24px;
   width: 48px;
   height: 48px;
@@ -675,7 +675,7 @@ nav {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   color: #FFFFFF; }
-  #collapseButton:hover, #backButton:hover, #cvButton:hover, #infoButton:hover {
+  #collapseButton:hover, #backButton:hover, #cvButton:hover, #infoButton:hover, #lightButton:hover {
     background-color: #388E3C; }
 
 #collapseButton {
@@ -719,10 +719,10 @@ nav {
     .showDone #cvButton::after {
       opacity: 0; }
 
-#infoButton {
+#infoButton, #lightButton {
   float: right;
   position: relative; }
-  #infoButton::before, #infoButton::after {
+  #infoButton::before, #lightButton::before, #infoButton::after, #lightButton::after {
     position: absolute;
     top: 12px;
     left: 12px;
@@ -731,15 +731,30 @@ nav {
     -webkit-transition: opacity 0.5s ease;
     -moz-transition: opacity 0.5s ease;
     -o-transition: opacity 0.5s ease; }
-  #infoButton::before {
-    content: "info";
+
+#infoButton::before {
+  content: "info";
+  opacity: 0; }
+  .showInfo #infoButton::before {
+    opacity: 1; }
+#infoButton::after {
+  content: "info_outline"; }
+  .showInfo #infoButton::after {
     opacity: 0; }
-    .showInfo #infoButton::before {
-      opacity: 1; }
-  #infoButton::after {
-    content: "info_outline"; }
-    .showInfo #infoButton::after {
-      opacity: 0; }
+
+#lightButton::before {
+  content: "brightness_3";
+  opacity: 0; }
+  .dark #lightButton::before {
+    opacity: 1; }
+#lightButton::after {
+  content: "brightness_7"; }
+  .dark #lightButton::after {
+    opacity: 0; }
+#lightButton:hover::before {
+  content: "brightness_2"; }
+#lightButton:hover::after {
+  content: "brightness_5"; }
 
 #brand {
   float: left;
@@ -2357,3 +2372,46 @@ code {
     @media only screen and (min-width: 601px) {
       .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, .tabs.snackInner > li {
         margin-left: 48px; } }
+
+body.dark {
+  color: #FFF;
+  background-color: #303030; }
+  body.dark nav, body.dark .nav, body.dark #navTabs {
+    background-color: #2E7D32; }
+  body.dark #lastUpdate {
+    color: #FFF; }
+  body.dark #info {
+    background-color: #424242;
+    border-color: #424242; }
+  body.dark #infoTabs > li:hover {
+    color: #FFF; }
+  body.dark .dayTable td, body.dark #dates {
+    border-color: #424242; }
+  body.dark #sideNav, body.dark #settings {
+    background-color: #424242; }
+  body.dark #sideNav > ul > li i, body.dark #settings > ul > li i {
+    color: rgba(255, 255, 255, 0.7); }
+  body.dark #sideNav > ul > li.disabled, body.dark #settings > ul > li.disabled {
+    color: rgba(255, 255, 255, 0.3); }
+  body.dark .upcomingTest > small, body.dark .activity > small, body.dark .activity > small, body.dark .upcomingTest > .range, body.dark .activity > .range, body.dark .activity > .range, body.dark #infoTests::after, body.dark #dates > div, body.dark #infoTabs > li, body.dark #settings > ul > li.two > span {
+    color: rgba(255, 255, 255, 0.7); }
+  body.dark #info > #extra, body.dark .colors > div {
+    color: rgba(255, 255, 255, 0.3); }
+  body.dark #empty {
+    filter: invert(80%);
+    -webkit-filter: invert(80%); }
+    body.dark #empty > span {
+      color: #333; }
+  body.dark[data-view="1"] .assignment, body.dark .assignment.full {
+    background-color: #424242 !important;
+    color: #FFF; }
+    body.dark[data-view="1"] .assignment > .title, body.dark .assignment.full > .title {
+      color: #FFF; }
+    body.dark[data-view="1"] .assignment > .range::before, body.dark[data-view="1"] .assignment > .attachments::before, body.dark[data-view="1"] .assignment > small, body.dark[data-view="1"] .assignment > .linked, body.dark .assignment.full > .range::before, body.dark .assignment.full > .attachments::before, body.dark .assignment.full > small, body.dark .assignment.full > .linked {
+      color: rgba(255, 255, 255, 0.7); }
+    body.dark[data-view="1"] .assignment > .linked:hover, body.dark .assignment.full > .linked:hover {
+      color: #FFF; }
+  body.dark #progress {
+    background-color: #163417; }
+    body.dark #progress > .determinate, body.dark #progress > .indeterminate {
+      background-color: #006329; }

@@ -134,7 +134,9 @@ This function displays a snackbar to tell the user something
       snack.appendChild snackInner
       if action? and f?
         actionE = element "a", [], action
-        actionE.addEventListener "click", f
+        actionE.addEventListener "click", ->
+            snack.classList.remove "active"
+            f()
         snackInner.appendChild actionE
 
       add = ->
@@ -148,9 +150,9 @@ This function displays a snackbar to tell the user something
           , 900
         , 5000
 
-      existing = document.getElementsByClassName("snackbar")
-      if existing.length>0
-        existing[0].classList.remove "active"
+      existing = document.querySelector(".snackbar")
+      if existing?
+        existing.classList.remove "active"
         setTimeout add, 300
       else
         add()
@@ -1002,7 +1004,7 @@ Therefore, a listener is attached to the resizing of the browser window.
           assignment.style.top = columnHeights[col]+"px"
           columnHeights[col] += assignment.offsetHeight+24
         return
-      , 350
+      , 500
       return
 
 Additionally, the active class needs to be added when inputs are selected (for the login box).
@@ -1022,30 +1024,31 @@ When the escape key is pressed, the current assignment should be closed.
       if evt.which is 27 # Escape key pressed
         closeOpened(new Event("Generated Event")) if document.getElementsByClassName("full").length isnt 0
 
+For the navbar toggle buttons, a funtion to toggle the action is defined to eliminate code.
+
+    navToggle = (element, ls, f) ->
+        ripple document.getElementById element
+        document.getElementById(element).addEventListener "mouseup", ->
+          document.body.classList.toggle ls
+          resize()
+          localStorage[ls] = JSON.stringify document.body.classList.contains ls
+          if f? then f()
+
+        if localStorage[ls]? and JSON.parse localStorage[ls]
+          document.body.classList.add ls
+
 The button to show/hide completed assignments in list view also needs event listeners.
 
-    ripple document.getElementById "cvButton"
-    document.getElementById("cvButton").addEventListener "mouseup", ->
-      document.body.classList.toggle "showDone"
-      resize()
-      localStorage["showDone"] = JSON.stringify document.body.classList.contains "showDone"
-      setTimeout resize, 1000
-
-    if localStorage["showDone"]? and JSON.parse localStorage["showDone"]
-      document.body.classList.add "showDone"
+    navToggle "cvButton", "showDone", ->
+        setTimeout resize, 1000
 
 The same goes for the button that shows upcoming tests.
 
-    ripple document.getElementById "infoButton"
-    localStorage["showInfo"] ?= JSON.stringify true
-    document.getElementById("infoButton").addEventListener "mouseup", ->
-      document.body.classList.toggle "showInfo"
-      resize()
-      localStorage["showInfo"] = JSON.stringify document.body.classList.contains "showInfo"
-      setTimeout resize, 1000
+    navToggle "infoButton", "showInfo"
 
-    if localStorage["showInfo"]? and JSON.parse localStorage["showInfo"]
-      document.body.classList.add "showInfo"
+This also gets repeated for the theme toggling.
+
+    navToggle "lightButton", "dark"
 
 <a name="side"/>
 Side menu and Navbar
@@ -1511,7 +1514,7 @@ For touch displays, hammer.js is used to make the side menu appear/disappear. Th
 
     dt = document.getElementById("dragTarget")
     hammertime.on "pan", (e) ->
-      if -200 < e.deltaX < 200 and e.target isnt dt
+      if e.deltaX < -100 or e.deltaX > 100 and e.target isnt dt
         if e.velocityX > 0.3
           el = document.querySelector("#navTabs>li:nth-child(#{document.body.getAttribute("data-view")+2})")
         else if e.velocityX < -0.3

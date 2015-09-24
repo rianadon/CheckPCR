@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, addActivity, ae, athenaData, attachmentify, c, cc, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, element, er, fetch, findId, fn, formatUpdate, fullMonths, getCookie, getResizeAssignments, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, addActivity, ae, athenaData, attachmentify, c, cc, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, element, er, fetch, findId, fn, formatUpdate, fullMonths, getCookie, getResizeAssignments, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
@@ -122,7 +122,10 @@ snackbar = function(message, action, f) {
   snack.appendChild(snackInner);
   if ((action != null) && (f != null)) {
     actionE = element("a", [], action);
-    actionE.addEventListener("click", f);
+    actionE.addEventListener("click", function() {
+      snack.classList.remove("active");
+      return f();
+    });
     snackInner.appendChild(actionE);
   }
   add = function() {
@@ -136,9 +139,9 @@ snackbar = function(message, action, f) {
       }, 900);
     }, 5000);
   };
-  existing = document.getElementsByClassName("snackbar");
-  if (existing.length > 0) {
-    existing[0].classList.remove("active");
+  existing = document.querySelector(".snackbar");
+  if (existing != null) {
+    existing.classList.remove("active");
     setTimeout(add, 300);
   } else {
     add();
@@ -1110,7 +1113,7 @@ resize = function() {
       assignment.style.top = columnHeights[col] + "px";
       columnHeights[col] += assignment.offsetHeight + 24;
     }
-  }, 350);
+  }, 500);
 };
 
 ref2 = document.querySelectorAll("input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search]");
@@ -1137,35 +1140,28 @@ window.addEventListener("keydown", function(evt) {
   }
 });
 
-ripple(document.getElementById("cvButton"));
+navToggle = function(element, ls, f) {
+  ripple(document.getElementById(element));
+  document.getElementById(element).addEventListener("mouseup", function() {
+    document.body.classList.toggle(ls);
+    resize();
+    localStorage[ls] = JSON.stringify(document.body.classList.contains(ls));
+    if (f != null) {
+      return f();
+    }
+  });
+  if ((localStorage[ls] != null) && JSON.parse(localStorage[ls])) {
+    return document.body.classList.add(ls);
+  }
+};
 
-document.getElementById("cvButton").addEventListener("mouseup", function() {
-  document.body.classList.toggle("showDone");
-  resize();
-  localStorage["showDone"] = JSON.stringify(document.body.classList.contains("showDone"));
+navToggle("cvButton", "showDone", function() {
   return setTimeout(resize, 1000);
 });
 
-if ((localStorage["showDone"] != null) && JSON.parse(localStorage["showDone"])) {
-  document.body.classList.add("showDone");
-}
+navToggle("infoButton", "showInfo");
 
-ripple(document.getElementById("infoButton"));
-
-if (localStorage["showInfo"] == null) {
-  localStorage["showInfo"] = JSON.stringify(true);
-}
-
-document.getElementById("infoButton").addEventListener("mouseup", function() {
-  document.body.classList.toggle("showInfo");
-  resize();
-  localStorage["showInfo"] = JSON.stringify(document.body.classList.contains("showInfo"));
-  return setTimeout(resize, 1000);
-});
-
-if ((localStorage["showInfo"] != null) && JSON.parse(localStorage["showInfo"])) {
-  document.body.classList.add("showInfo");
-}
+navToggle("lightButton", "dark");
 
 headroom = new Headroom(document.querySelector("nav"), {
   tolerance: 10,
@@ -1709,8 +1705,8 @@ dragTarget.on("tap", function(e) {
 dt = document.getElementById("dragTarget");
 
 hammertime.on("pan", function(e) {
-  var el, ref9;
-  if ((-200 < (ref9 = e.deltaX) && ref9 < 200) && e.target !== dt) {
+  var el;
+  if (e.deltaX < -100 || e.deltaX > 100 && e.target !== dt) {
     if (e.velocityX > 0.3) {
       el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view") + 2) + ")");
     } else if (e.velocityX < -0.3) {

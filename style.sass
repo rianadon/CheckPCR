@@ -72,7 +72,7 @@ body
 	@media #{$large-and-up}
 		font-size: 13px
 	padding-top: 112px
-	background-color: #FFF
+	background-color: #FAFAFA
 
 a
 	cursor: pointer
@@ -168,7 +168,8 @@ nav
 		content: "done"
 		.showDone &
 			opacity: 0
-#infoButton
+
+%navToggleButton
 	float: right
 	@extend %navButton
 	position: relative
@@ -178,6 +179,8 @@ nav
 		left: $navButtonWidth
 		display: block
 		+transition(opacity 0.5s ease)
+#infoButton
+	@extend %navToggleButton
 	&::before
 		content: "info"
 		opacity: 0
@@ -187,6 +190,24 @@ nav
 		content: "info_outline"
 		.showInfo &
 			opacity: 0
+
+#lightButton
+	@extend %navToggleButton
+	&::before
+		content: "brightness_3"
+		opacity: 0
+		.dark &
+			opacity: 1
+	&::after
+		content: "brightness_7"
+		.dark &
+			opacity: 0
+	&:hover
+		&::before
+			content: "brightness_2"
+		&::after
+			content: "brightness_5"
+
 #brand
 	float: left
 	font-size: 20px
@@ -1328,3 +1349,57 @@ code
 		font-weight: 500
 		@media #{$medium-and-up}
 			margin-left: 48px
+
+body.dark
+	color: #FFF
+	background-color: #303030
+
+	nav, .nav, #navTabs
+		background-color: #2E7D32
+
+	#lastUpdate
+		color: #FFF
+
+	#info
+		background-color: #424242
+		border-color: #424242
+
+	#infoTabs > li:hover
+		color: #FFF
+
+	.dayTable td, #dates
+		border-color: #424242
+
+	#sideNav, #settings
+		background-color: #424242
+	#sideNav > ul > li i, #settings > ul > li i
+		color: rgba(255,255,255,0.7)
+
+	#sideNav > ul > li.disabled, #settings > ul > li.disabled
+		color: rgba(255,255,255,0.3)
+
+	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #settings > ul > li.two > span
+		color: rgba(255,255,255,0.7)
+	#info > #extra, .colors > div
+		color: rgba(255,255,255,0.3)
+
+	#empty
+		filter: invert(80%)
+		-webkit-filter: invert(80%)
+		&>span
+			color: #333
+
+	&[data-view="1"] .assignment, .assignment.full
+		background-color: #424242 !important
+		color: #FFF
+		&>.title
+			color: #FFF
+		&>.range::before, &>.attachments::before,  &>small, &>.linked
+			color: rgba(255,255,255,0.7)
+		&>.linked:hover
+			color: #FFF
+
+	#progress
+		background-color: darken($base-color, 30%)
+		&>.determinate, &>.indeterminate
+			background-color: darken($accent-color, 15%)
