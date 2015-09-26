@@ -918,7 +918,7 @@ body[data-view="0"].showInfo
 				@media #{$large-and-up}
 					right: ($i/7)*100%*0.7 + 30% !important
 
-#background, #sideBackground, #loginBackground, #updateBackground
+#background, #sideBackground, #loginBackground, #updateBackground, #newsBackground
 	background: #000
 	position: fixed
 	will-change: opacity
@@ -1170,7 +1170,7 @@ $scale: 15
 	font-size: 28px
 	color: #FFF
 
-#sideBackground, #loginBackground, #updateBackground
+#sideBackground, #loginBackground, #updateBackground, #newsBackground
 	left: 0
 	top: 0
 	z-index: 4000
@@ -1403,3 +1403,21 @@ body.dark
 		background-color: darken($base-color, 30%)
 		&>.determinate, &>.indeterminate
 			background-color: darken($accent-color, 15%)
+
+#news
+	@extend #update
+	&.active + #newsBackground
+		opacity: 0.5
+	#newsOk
+		right: 8px
+	width: 640px
+	max-width: 100%
+	h2
+		margin-top: 16px
+.newsItem
+	&:not(:last-of-type)
+		padding-bottom: 16px
+		border-bottom: 1px solid rgba(0,0,0,0.12)
+
+#newsContent:empty::before
+	content: "It seems as if GitHub cannot be reached right now. Check your internet connection or try using a different Wifi network"

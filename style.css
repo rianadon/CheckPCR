@@ -1,32 +1,37 @@
-@charset "UTF-8";
 @font-face {
   font-family: "Roboto";
   src: url("/font/roboto/Roboto-Thin.woff2") format("woff2"), url("/font/roboto/Roboto-Thin.woff") format("woff"), url("/font/roboto/Roboto-Thin.ttf") format("truetype");
   font-weight: 200; }
+
 @font-face {
   font-family: "Roboto";
   src: url("/font/roboto/Roboto-Light.woff2") format("woff2"), url("/font/roboto/Roboto-Light.woff") format("woff"), url("/font/roboto/Roboto-Light.ttf") format("truetype");
   font-weight: 300; }
+
 @font-face {
   font-family: "Roboto";
   src: url("/font/roboto/Roboto-Regular.woff2") format("woff2"), url("/font/roboto/Roboto-Regular.woff") format("woff"), url("/font/roboto/Roboto-Regular.ttf") format("truetype");
   font-weight: 400; }
+
 @font-face {
   font-family: "Roboto";
   src: url("/font/roboto/Roboto-Medium.woff2") format("woff2"), url("/font/roboto/Roboto-Medium.woff") format("woff"), url("/font/roboto/Roboto-Medium.ttf") format("truetype");
   font-weight: 500; }
+
 @font-face {
   font-family: "Roboto";
   src: url("/font/roboto/Roboto-Bold.woff2") format("woff2"), url("/font/roboto/Roboto-Bold.woff") format("woff"), url("/font/roboto/Roboto-Bold.ttf") format("truetype");
   font-weight: 700; }
+
 @font-face {
-  font-family: "Material Icons";
+  font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
   src: url(https://example.com/MaterialIcons-Regular.eot);
   src: local("Material Icons"), local("MaterialIcons-Regular"), url("/font/material-design-icons/MaterialIcons-Regular.woff2") format("woff2"), url("/font/material-design-icons/MaterialIcons-Regular.woff") format("woff"), url("/font/material-design-icons/MaterialIcons-Regular.ttf") format("truetype"); }
-.material-icons, .assignment > .range::before, .assignment > .attachments::before, .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #update.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #update.attachments > button > span::before, .assignment > .tabs.attachments > li > span::before {
-  font-family: "Material Icons";
+
+.material-icons, .assignment > .range::before, .assignment > .attachments::before, .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #update.attachments > input[type="submit"] > span::before, .assignment > #news.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #update.attachments > button > span::before, .assignment > #news.attachments > button > span::before, .assignment > .tabs.attachments > li > span::before {
+  font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
@@ -44,9 +49,9 @@
   /* Support for Firefox. */
   -moz-osx-font-smoothing: grayscale;
   /* Support for IE. */
-  font-feature-settings: "liga"; }
+  font-feature-settings: 'liga'; }
 
-#login, #update {
+#login, #update, #news {
   position: fixed;
   top: calc(40vh - 130px);
   left: 0;
@@ -68,20 +73,20 @@
   -webkit-transition: transform 0.3s ease;
   -moz-transition: transform 0.3s ease;
   -o-transition: transform 0.3s ease; }
-  #login > h1, #update > h1 {
+  #login > h1, #update > h1, #news > h1 {
     margin: 0 0 20px 0;
     font-size: 20px;
     line-height: 1.1;
     font-weight: 500; }
-  #login.active, .active#update {
+  #login.active, .active#update, .active#news {
     -webkit-transform: scale(1, 1);
     -moz-transform: scale(1, 1);
     -ms-transform: scale(1, 1);
     -o-transform: scale(1, 1);
     transform: scale(1, 1); }
-    #login.active + #loginBackground, .active#update + #loginBackground {
+    #login.active + #loginBackground, .active#update + #loginBackground, .active#news + #loginBackground {
       opacity: 0.5; }
-  #login > input[type="submit"], #update > input[type="submit"], #login > button, #update > button {
+  #login > input[type="submit"], #update > input[type="submit"], #news > input[type="submit"], #login > button, #update > button, #news > button {
     color: #00AF49 !important;
     background-color: transparent;
     padding: 0 8px;
@@ -97,7 +102,7 @@
     position: absolute;
     bottom: 8px;
     right: 8px; }
-  #login > .input-field:last-of-type, #update > .input-field:last-of-type {
+  #login > .input-field:last-of-type, #update > .input-field:last-of-type, #news > .input-field:last-of-type {
     margin-bottom: 16px; }
 
 #loginBackground {
@@ -116,16 +121,16 @@ label {
 /***************************
  *	 Text Inputs + Textarea
  **************************** */
-::-webkit-input-placeholder {
+\::-webkit-input-placeholder {
   color: #d1d1d1; }
 
-:-moz-placeholder {
+\:-moz-placeholder {
   color: #d1d1d1; }
 
-::-moz-placeholder {
+\::-moz-placeholder {
   color: #d1d1d1; }
 
-:-ms-input-placeholder {
+\:-ms-input-placeholder {
   color: #d1d1d1; }
 
 input[type=text],
@@ -254,7 +259,7 @@ form p:last-child {
     -ms-user-select: none;
     /* IE10+ */ }
   [type="checkbox"] + label:before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
@@ -314,14 +319,16 @@ form p:last-child {
 
 [type="checkbox"].filled-in + label:after {
   border-radius: 2px; }
+
 [type="checkbox"].filled-in + label:before,
 [type="checkbox"].filled-in + label:after {
-  content: "";
+  content: '';
   left: 0;
   position: absolute;
   /* .1s delay is for check animation */
   transition: border 0.25s, background-color 0.25s, width 0.2s 0.1s, height 0.2s 0.1s, top 0.2s 0.1s, left 0.2s 0.1s;
   z-index: 1; }
+
 [type="checkbox"].filled-in:not(:checked) + label:before {
   width: 0;
   height: 0;
@@ -332,6 +339,7 @@ form p:last-child {
   transform: rotateZ(37deg);
   -webkit-transform-origin: 20% 40%;
   transform-origin: 100% 100%; }
+
 [type="checkbox"].filled-in:not(:checked) + label:after {
   height: 20px;
   width: 20px;
@@ -339,6 +347,7 @@ form p:last-child {
   border: 2px solid #5a5a5a;
   top: 0px;
   z-index: 0; }
+
 [type="checkbox"].filled-in:checked + label:before {
   top: 0;
   left: 1px;
@@ -352,6 +361,7 @@ form p:last-child {
   transform: rotateZ(37deg);
   -webkit-transform-origin: 100% 100%;
   transform-origin: 100% 100%; }
+
 [type="checkbox"].filled-in:checked + label:after {
   top: 0px;
   width: 20px;
@@ -420,7 +430,7 @@ select:focus {
 
 /***************
  *	Select Field
- ************** */
+ ***************/
 .select-label {
   position: absolute; }
 
@@ -482,7 +492,7 @@ select {
 
 /***************
  *	Radio Buttons
- ************** */
+ ***************/
 /* Remove default Radio Buttons */
 [type="radio"]:not(:checked),
 [type="radio"]:checked {
@@ -514,7 +524,7 @@ select {
 
 [type="radio"] + label:before,
 [type="radio"] + label:after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 0;
@@ -593,18 +603,18 @@ body {
     body {
       font-size: 13px; } }
 
-a, #login > input[type="submit"], #update > input[type="submit"], #login > button, #update > button, .tabs > li {
+a, #login > input[type="submit"], #update > input[type="submit"], #news > input[type="submit"], #login > button, #update > button, #news > button, .tabs > li {
   cursor: pointer;
   color: #039be5;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent; }
-  a:active, #login > input[type="submit"]:active, #update > input[type="submit"]:active, #login > button:active, #update > button:active, .tabs > li:active, a:hover, #login > input[type="submit"]:hover, #update > input[type="submit"]:hover, #login > button:hover, #update > button:hover, .tabs > li:hover {
+  a:active, #login > input[type="submit"]:active, #update > input[type="submit"]:active, #news > input[type="submit"]:active, #login > button:active, #update > button:active, #news > button:active, .tabs > li:active, a:hover, #login > input[type="submit"]:hover, #update > input[type="submit"]:hover, #news > input[type="submit"]:hover, #login > button:hover, #update > button:hover, #news > button:hover, .tabs > li:hover {
     outline: 0; }
-  a:hover, #login > input[type="submit"]:hover, #update > input[type="submit"]:hover, #login > button:hover, #update > button:hover, .tabs > li:hover {
+  a:hover, #login > input[type="submit"]:hover, #update > input[type="submit"]:hover, #news > input[type="submit"]:hover, #login > button:hover, #update > button:hover, #news > button:hover, .tabs > li:hover {
     color: #0288D1; }
-  a:active, #login > input[type="submit"]:active, #update > input[type="submit"]:active, #login > button:active, #update > button:active, .tabs > li:active {
+  a:active, #login > input[type="submit"]:active, #update > input[type="submit"]:active, #news > input[type="submit"]:active, #login > button:active, #update > button:active, #news > button:active, .tabs > li:active {
     color: #0277BD; }
-  a:visited, #login > input[type="submit"]:visited, #update > input[type="submit"]:visited, #login > button:visited, #update > button:visited, .tabs > li:visited {
+  a:visited, #login > input[type="submit"]:visited, #update > input[type="submit"]:visited, #news > input[type="submit"]:visited, #login > button:visited, #update > button:visited, #news > button:visited, .tabs > li:visited {
     color: #01579B; }
 
 nav {
@@ -737,6 +747,7 @@ nav {
   opacity: 0; }
   .showInfo #infoButton::before {
     opacity: 1; }
+
 #infoButton::after {
   content: "info_outline"; }
   .showInfo #infoButton::after {
@@ -747,12 +758,15 @@ nav {
   opacity: 0; }
   .dark #lightButton::before {
     opacity: 1; }
+
 #lightButton::after {
   content: "brightness_7"; }
   .dark #lightButton::after {
     opacity: 0; }
+
 #lightButton:hover::before {
   content: "brightness_2"; }
+
 #lightButton:hover::after {
   content: "brightness_5"; }
 
@@ -797,7 +811,7 @@ nav {
     .tabs > li:hover {
       color: rgba(255, 255, 255, 0.8); }
   .tabs::after {
-    content: " ";
+    content: ' ';
     height: 2px;
     position: absolute;
     left: 0;
@@ -816,18 +830,23 @@ nav {
   max-width: none; }
   #infoTabs > li:hover {
     color: rgba(0, 0, 0, 0.87); }
+
 #info[data-view="0"] #infoTabs > li:nth-child(1) {
   color: #00AF49; }
   #info[data-view="0"] #infoTabs > li:nth-child(1):hover {
     color: #00AF49; }
+
 #info[data-view="0"] #infoTabs::after {
   left: 0%; }
+
 #info[data-view="1"] #infoTabs > li:nth-child(2) {
   color: #00AF49; }
   #info[data-view="1"] #infoTabs > li:nth-child(2):hover {
     color: #00AF49; }
+
 #info[data-view="1"] #infoTabs::after {
   left: 50%; }
+
 #infoTabs::after {
   width: 50%;
   background-color: #00AF49; }
@@ -835,26 +854,32 @@ nav {
 @media only screen and (min-width: 601px) {
   #navTabs {
     margin: 0 68px; } }
+
 #navTabs > li {
   width: 50%; }
+
 body[data-view="0"] #navTabs > li:nth-child(1) {
   color: #FFFFFF; }
   body[data-view="0"] #navTabs > li:nth-child(1):hover {
     color: #FFFFFF; }
+
 body[data-view="0"] #navTabs::after {
   left: 0%; }
   @media only screen and (min-width: 664px) {
     body[data-view="0"] #navTabs::after {
       left: 0px; } }
+
 body[data-view="1"] #navTabs > li:nth-child(2) {
   color: #FFFFFF; }
   body[data-view="1"] #navTabs > li:nth-child(2):hover {
     color: #FFFFFF; }
+
 body[data-view="1"] #navTabs::after {
   left: 50%; }
   @media only screen and (min-width: 664px) {
     body[data-view="1"] #navTabs::after {
       left: 264px; } }
+
 #navTabs::after {
   width: 50%; }
 
@@ -1147,7 +1172,7 @@ body[data-view="1"] .week {
 .day.today > .date {
   color: #FFF; }
   .day.today > .date::before {
-    content: " ";
+    content: ' ';
     background-color: #2196F3;
     position: absolute;
     left: calc(50% - 10px);
@@ -1244,10 +1269,10 @@ body[data-view="1"] .week {
   .assignment > .range {
     margin-top: 6px; }
   .assignment > .range::before {
-    content: "schedule"; }
+    content: 'schedule'; }
   .assignment > .attachments::before {
-    content: "attachment"; }
-  .assignment > .attachments > a, .assignment > #login.attachments > input[type="submit"], .assignment > #update.attachments > input[type="submit"], .assignment > #login.attachments > button, .assignment > #update.attachments > button, .assignment > .tabs.attachments > li {
+    content: 'attachment'; }
+  .assignment > .attachments > a, .assignment > #login.attachments > input[type="submit"], .assignment > #update.attachments > input[type="submit"], .assignment > #news.attachments > input[type="submit"], .assignment > #login.attachments > button, .assignment > #update.attachments > button, .assignment > #news.attachments > button, .assignment > .tabs.attachments > li {
     width: 144px;
     height: 96px;
     background-color: #F5F5F5;
@@ -1269,10 +1294,10 @@ body[data-view="1"] .week {
     border-radius: 2px;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px; }
-    .assignment > .attachments > a:hover, .assignment > #login.attachments > input[type="submit"]:hover, .assignment > #update.attachments > input[type="submit"]:hover, .assignment > #login.attachments > button:hover, .assignment > #update.attachments > button:hover, .assignment > .tabs.attachments > li:hover {
+    .assignment > .attachments > a:hover, .assignment > #login.attachments > input[type="submit"]:hover, .assignment > #update.attachments > input[type="submit"]:hover, .assignment > #news.attachments > input[type="submit"]:hover, .assignment > #login.attachments > button:hover, .assignment > #update.attachments > button:hover, .assignment > #news.attachments > button:hover, .assignment > .tabs.attachments > li:hover {
       background-color: #E0E0E0; }
-    .assignment > .attachments > a::after, .assignment > #login.attachments > input[type="submit"]::after, .assignment > #update.attachments > input[type="submit"]::after, .assignment > #login.attachments > button::after, .assignment > #update.attachments > button::after, .assignment > .tabs.attachments > li::after {
-      content: " ";
+    .assignment > .attachments > a::after, .assignment > #login.attachments > input[type="submit"]::after, .assignment > #update.attachments > input[type="submit"]::after, .assignment > #news.attachments > input[type="submit"]::after, .assignment > #login.attachments > button::after, .assignment > #update.attachments > button::after, .assignment > #news.attachments > button::after, .assignment > .tabs.attachments > li::after {
+      content: ' ';
       width: 0;
       height: 0;
       border-style: solid;
@@ -1281,8 +1306,8 @@ body[data-view="1"] .week {
       position: absolute;
       right: 0;
       bottom: 0; }
-    .assignment > .attachments > a::before, .assignment > #login.attachments > input[type="submit"]::before, .assignment > #update.attachments > input[type="submit"]::before, .assignment > #login.attachments > button::before, .assignment > #update.attachments > button::before, .assignment > .tabs.attachments > li::before {
-      content: " ";
+    .assignment > .attachments > a::before, .assignment > #login.attachments > input[type="submit"]::before, .assignment > #update.attachments > input[type="submit"]::before, .assignment > #news.attachments > input[type="submit"]::before, .assignment > #login.attachments > button::before, .assignment > #update.attachments > button::before, .assignment > #news.attachments > button::before, .assignment > .tabs.attachments > li::before {
+      content: ' ';
       width: 0;
       height: 0;
       border-style: solid;
@@ -1291,34 +1316,34 @@ body[data-view="1"] .week {
       position: absolute;
       right: 0;
       bottom: 0; }
-    .assignment > .attachments > a > span, .assignment > #login.attachments > input[type="submit"] > span, .assignment > #update.attachments > input[type="submit"] > span, .assignment > #login.attachments > button > span, .assignment > #update.attachments > button > span, .assignment > .tabs.attachments > li > span {
+    .assignment > .attachments > a > span, .assignment > #login.attachments > input[type="submit"] > span, .assignment > #update.attachments > input[type="submit"] > span, .assignment > #news.attachments > input[type="submit"] > span, .assignment > #login.attachments > button > span, .assignment > #update.attachments > button > span, .assignment > #news.attachments > button > span, .assignment > .tabs.attachments > li > span {
       position: absolute;
       bottom: 16px;
       left: 16px;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.54); }
-      .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #update.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #update.attachments > button > span::before, .assignment > .tabs.attachments > li > span::before {
+      .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #update.attachments > input[type="submit"] > span::before, .assignment > #news.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #update.attachments > button > span::before, .assignment > #news.attachments > button > span::before, .assignment > .tabs.attachments > li > span::before {
         margin-right: 4px;
         font-size: 12px;
         vertical-align: middle; }
-    .assignment > .attachments > a.document::before, .assignment > #login.attachments > input.document[type="submit"]::before, .assignment > #update.attachments > input.document[type="submit"]::before, .assignment > #login.attachments > button.document::before, .assignment > #update.attachments > button.document::before, .assignment > .tabs.attachments > li.document::before {
+    .assignment > .attachments > a.document::before, .assignment > #login.attachments > input.document[type="submit"]::before, .assignment > #update.attachments > input.document[type="submit"]::before, .assignment > #news.attachments > input.document[type="submit"]::before, .assignment > #login.attachments > button.document::before, .assignment > #update.attachments > button.document::before, .assignment > #news.attachments > button.document::before, .assignment > .tabs.attachments > li.document::before {
       border-top-color: #2196F3; }
-    .assignment > .attachments > a.document > span::before, .assignment > #login.attachments > input.document[type="submit"] > span::before, .assignment > #update.attachments > input.document[type="submit"] > span::before, .assignment > #login.attachments > button.document > span::before, .assignment > #update.attachments > button.document > span::before, .assignment > .tabs.attachments > li.document > span::before {
+    .assignment > .attachments > a.document > span::before, .assignment > #login.attachments > input.document[type="submit"] > span::before, .assignment > #update.attachments > input.document[type="submit"] > span::before, .assignment > #news.attachments > input.document[type="submit"] > span::before, .assignment > #login.attachments > button.document > span::before, .assignment > #update.attachments > button.document > span::before, .assignment > #news.attachments > button.document > span::before, .assignment > .tabs.attachments > li.document > span::before {
       content: "description";
       color: #2196F3; }
-    .assignment > .attachments > a.slides::before, .assignment > #login.attachments > input.slides[type="submit"]::before, .assignment > #update.attachments > input.slides[type="submit"]::before, .assignment > #login.attachments > button.slides::before, .assignment > #update.attachments > button.slides::before, .assignment > .tabs.attachments > li.slides::before {
+    .assignment > .attachments > a.slides::before, .assignment > #login.attachments > input.slides[type="submit"]::before, .assignment > #update.attachments > input.slides[type="submit"]::before, .assignment > #news.attachments > input.slides[type="submit"]::before, .assignment > #login.attachments > button.slides::before, .assignment > #update.attachments > button.slides::before, .assignment > #news.attachments > button.slides::before, .assignment > .tabs.attachments > li.slides::before {
       border-top-color: #FFC107; }
-    .assignment > .attachments > a.slides > span::before, .assignment > #login.attachments > input.slides[type="submit"] > span::before, .assignment > #update.attachments > input.slides[type="submit"] > span::before, .assignment > #login.attachments > button.slides > span::before, .assignment > #update.attachments > button.slides > span::before, .assignment > .tabs.attachments > li.slides > span::before {
+    .assignment > .attachments > a.slides > span::before, .assignment > #login.attachments > input.slides[type="submit"] > span::before, .assignment > #update.attachments > input.slides[type="submit"] > span::before, .assignment > #news.attachments > input.slides[type="submit"] > span::before, .assignment > #login.attachments > button.slides > span::before, .assignment > #update.attachments > button.slides > span::before, .assignment > #news.attachments > button.slides > span::before, .assignment > .tabs.attachments > li.slides > span::before {
       content: "crop_5_4";
       color: #FFC107; }
-    .assignment > .attachments > a.pdf::before, .assignment > #login.attachments > input.pdf[type="submit"]::before, .assignment > #update.attachments > input.pdf[type="submit"]::before, .assignment > #login.attachments > button.pdf::before, .assignment > #update.attachments > button.pdf::before, .assignment > .tabs.attachments > li.pdf::before {
+    .assignment > .attachments > a.pdf::before, .assignment > #login.attachments > input.pdf[type="submit"]::before, .assignment > #update.attachments > input.pdf[type="submit"]::before, .assignment > #news.attachments > input.pdf[type="submit"]::before, .assignment > #login.attachments > button.pdf::before, .assignment > #update.attachments > button.pdf::before, .assignment > #news.attachments > button.pdf::before, .assignment > .tabs.attachments > li.pdf::before {
       border-top-color: #F44336; }
-    .assignment > .attachments > a.pdf > span::before, .assignment > #login.attachments > input.pdf[type="submit"] > span::before, .assignment > #update.attachments > input.pdf[type="submit"] > span::before, .assignment > #login.attachments > button.pdf > span::before, .assignment > #update.attachments > button.pdf > span::before, .assignment > .tabs.attachments > li.pdf > span::before {
+    .assignment > .attachments > a.pdf > span::before, .assignment > #login.attachments > input.pdf[type="submit"] > span::before, .assignment > #update.attachments > input.pdf[type="submit"] > span::before, .assignment > #news.attachments > input.pdf[type="submit"] > span::before, .assignment > #login.attachments > button.pdf > span::before, .assignment > #update.attachments > button.pdf > span::before, .assignment > #news.attachments > button.pdf > span::before, .assignment > .tabs.attachments > li.pdf > span::before {
       content: "insert_drive_file";
       color: #F44336; }
-    .assignment > .attachments > a.plain::before, .assignment > #login.attachments > input.plain[type="submit"]::before, .assignment > #update.attachments > input.plain[type="submit"]::before, .assignment > #login.attachments > button.plain::before, .assignment > #update.attachments > button.plain::before, .assignment > .tabs.attachments > li.plain::before {
+    .assignment > .attachments > a.plain::before, .assignment > #login.attachments > input.plain[type="submit"]::before, .assignment > #update.attachments > input.plain[type="submit"]::before, .assignment > #news.attachments > input.plain[type="submit"]::before, .assignment > #login.attachments > button.plain::before, .assignment > #update.attachments > button.plain::before, .assignment > #news.attachments > button.plain::before, .assignment > .tabs.attachments > li.plain::before {
       border-top-color: #009688; }
-    .assignment > .attachments > a.plain > span::before, .assignment > #login.attachments > input.plain[type="submit"] > span::before, .assignment > #update.attachments > input.plain[type="submit"] > span::before, .assignment > #login.attachments > button.plain > span::before, .assignment > #update.attachments > button.plain > span::before, .assignment > .tabs.attachments > li.plain > span::before {
+    .assignment > .attachments > a.plain > span::before, .assignment > #login.attachments > input.plain[type="submit"] > span::before, .assignment > #update.attachments > input.plain[type="submit"] > span::before, .assignment > #news.attachments > input.plain[type="submit"] > span::before, .assignment > #login.attachments > button.plain > span::before, .assignment > #update.attachments > button.plain > span::before, .assignment > #news.attachments > button.plain > span::before, .assignment > .tabs.attachments > li.plain > span::before {
       content: "description";
       color: #009688; }
   .assignment > .body {
@@ -1331,7 +1356,7 @@ body[data-view="1"] .week {
     @media medium-and-up {
       .assignment > .body {
         font-size: 13px; } }
-    .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body .tabs > li {
+    .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #news > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body #news > button, .assignment > .body .tabs > li {
       max-width: 500px;
       overflow: hidden;
       display: inline-block;
@@ -1339,7 +1364,7 @@ body[data-view="1"] .week {
       text-overflow: ellipsis;
       vertical-align: bottom; }
       @media only screen and (max-width: 600px) {
-        .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body .tabs > li {
+        .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #news > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body #news > button, .assignment > .body .tabs > li {
           max-width: calc(100vw - 60px); } }
   .assignment.modify {
     position: fixed; }
@@ -1351,7 +1376,7 @@ body[data-view="1"] .week {
     overflow-y: auto; }
   .assignment::before {
     display: block;
-    content: "";
+    content: '';
     width: 100%;
     height: 245px;
     position: absolute;
@@ -1505,7 +1530,7 @@ body[data-view="1"] .week {
       transform: none;
       color: #00AF49; }
       body[data-view="1"] .assignment.done > .complete::after {
-        content: "Incomplete"; }
+        content: 'Incomplete'; }
     body[data-view="1"] .assignment > .complete {
       height: 36px;
       border-radius: 2px;
@@ -1528,7 +1553,7 @@ body[data-view="1"] .week {
       body[data-view="1"] .assignment > .complete:hover {
         background-color: rgba(0, 0, 0, 0.05); }
       body[data-view="1"] .assignment > .complete::after {
-        content: "Done";
+        content: 'Done';
         font-family: "Roboto", sans-serif;
         margin-left: 4px;
         text-transform: uppercase;
@@ -1552,73 +1577,105 @@ body[data-view="0"] .s {
   border-radius: 0 4px 4px 0;
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0; }
+
 body[data-view="0"] .e {
   border-radius: 4px 0 0 4px;
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px; }
+
 body[data-view="0"] .assignment:not(.full).s {
   left: 0 !important; }
+
 body[data-view="0"] .assignment:not(.full).e {
   right: 0 !important; }
+
 body[data-view="0"] .assignment:not(.full).s0 {
   left: calc(0% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).fromWeekend.s0 {
   left: 0% !important; }
+
 body[data-view="0"] .assignment:not(.full).e0 {
   right: calc(0% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).overWeekend.e0 {
   right: 0% !important; }
+
 body[data-view="0"] .assignment:not(.full).s1 {
   left: calc(14.28571% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).fromWeekend.s1 {
   left: 14.28571% !important; }
+
 body[data-view="0"] .assignment:not(.full).e1 {
   right: calc(14.28571% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).overWeekend.e1 {
   right: 14.28571% !important; }
+
 body[data-view="0"] .assignment:not(.full).s2 {
   left: calc(28.57143% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).fromWeekend.s2 {
   left: 28.57143% !important; }
+
 body[data-view="0"] .assignment:not(.full).e2 {
   right: calc(28.57143% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).overWeekend.e2 {
   right: 28.57143% !important; }
+
 body[data-view="0"] .assignment:not(.full).s3 {
   left: calc(42.85714% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).fromWeekend.s3 {
   left: 42.85714% !important; }
+
 body[data-view="0"] .assignment:not(.full).e3 {
   right: calc(42.85714% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).overWeekend.e3 {
   right: 42.85714% !important; }
+
 body[data-view="0"] .assignment:not(.full).s4 {
   left: calc(57.14286% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).fromWeekend.s4 {
   left: 57.14286% !important; }
+
 body[data-view="0"] .assignment:not(.full).e4 {
   right: calc(57.14286% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).overWeekend.e4 {
   right: 57.14286% !important; }
+
 body[data-view="0"] .assignment:not(.full).s5 {
   left: calc(71.42857% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).fromWeekend.s5 {
   left: 71.42857% !important; }
+
 body[data-view="0"] .assignment:not(.full).e5 {
   right: calc(71.42857% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).overWeekend.e5 {
   right: 71.42857% !important; }
+
 body[data-view="0"] .assignment:not(.full).s6 {
   left: calc(85.71429% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).fromWeekend.s6 {
   left: 85.71429% !important; }
+
 body[data-view="0"] .assignment:not(.full).e6 {
   right: calc(85.71429% + 8px) !important; }
+
 body[data-view="0"] .assignment:not(.full).overWeekend.e6 {
   right: 85.71429% !important; }
 
 body[data-view="0"].showInfo .assignment:not(.full).modify.e {
   right: 20%; }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.s0 {
   left: calc(0% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1627,6 +1684,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.s0 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.s0 {
       left: calc(0% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s0 {
   left: 0% !important; }
   @media only screen and (min-width: 601px) {
@@ -1635,6 +1693,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s0 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s0 {
       left: 0% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.e0 {
   right: calc(60% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1643,6 +1702,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.e0 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.e0 {
       right: calc(30% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e0 {
   right: 60% !important; }
   @media only screen and (min-width: 601px) {
@@ -1651,6 +1711,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e0 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e0 {
       right: 30% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.s1 {
   left: calc(5.71429% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1658,7 +1719,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.s1 {
       left: calc(8.57143% + 8px) !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.s1 {
-      left: calc(10.0% + 8px) !important; } }
+      left: calc(10% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s1 {
   left: 5.71429% !important; }
   @media only screen and (min-width: 601px) {
@@ -1666,7 +1728,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s1 {
       left: 8.57143% !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s1 {
-      left: 10.0% !important; } }
+      left: 10% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.e1 {
   right: calc(65.71429% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1675,6 +1738,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.e1 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.e1 {
       right: calc(40% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e1 {
   right: 65.71429% !important; }
   @media only screen and (min-width: 601px) {
@@ -1683,6 +1747,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e1 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e1 {
       right: 40% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.s2 {
   left: calc(11.42857% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1690,7 +1755,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.s2 {
       left: calc(17.14286% + 8px) !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.s2 {
-      left: calc(20.0% + 8px) !important; } }
+      left: calc(20% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s2 {
   left: 11.42857% !important; }
   @media only screen and (min-width: 601px) {
@@ -1698,7 +1764,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s2 {
       left: 17.14286% !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s2 {
-      left: 20.0% !important; } }
+      left: 20% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.e2 {
   right: calc(71.42857% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1707,6 +1774,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.e2 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.e2 {
       right: calc(50% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e2 {
   right: 71.42857% !important; }
   @media only screen and (min-width: 601px) {
@@ -1715,6 +1783,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e2 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e2 {
       right: 50% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.s3 {
   left: calc(17.14286% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1722,7 +1791,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.s3 {
       left: calc(25.71429% + 8px) !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.s3 {
-      left: calc(30.0% + 8px) !important; } }
+      left: calc(30% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s3 {
   left: 17.14286% !important; }
   @media only screen and (min-width: 601px) {
@@ -1730,7 +1800,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s3 {
       left: 25.71429% !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s3 {
-      left: 30.0% !important; } }
+      left: 30% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.e3 {
   right: calc(77.14286% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1739,6 +1810,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.e3 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.e3 {
       right: calc(60% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e3 {
   right: 77.14286% !important; }
   @media only screen and (min-width: 601px) {
@@ -1747,6 +1819,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e3 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e3 {
       right: 60% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.s4 {
   left: calc(22.85714% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1754,7 +1827,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.s4 {
       left: calc(34.28571% + 8px) !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.s4 {
-      left: calc(40.0% + 8px) !important; } }
+      left: calc(40% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s4 {
   left: 22.85714% !important; }
   @media only screen and (min-width: 601px) {
@@ -1762,7 +1836,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s4 {
       left: 34.28571% !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s4 {
-      left: 40.0% !important; } }
+      left: 40% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.e4 {
   right: calc(82.85714% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1771,6 +1846,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.e4 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.e4 {
       right: calc(70% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e4 {
   right: 82.85714% !important; }
   @media only screen and (min-width: 601px) {
@@ -1779,6 +1855,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e4 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e4 {
       right: 70% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.s5 {
   left: calc(28.57143% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1787,6 +1864,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.s5 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.s5 {
       left: calc(50% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s5 {
   left: 28.57143% !important; }
   @media only screen and (min-width: 601px) {
@@ -1795,6 +1873,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s5 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s5 {
       left: 50% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.e5 {
   right: calc(88.57143% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1803,6 +1882,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.e5 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.e5 {
       right: calc(80% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e5 {
   right: 88.57143% !important; }
   @media only screen and (min-width: 601px) {
@@ -1811,6 +1891,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e5 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e5 {
       right: 80% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.s6 {
   left: calc(34.28571% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1818,7 +1899,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.s6 {
       left: calc(51.42857% + 8px) !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.s6 {
-      left: calc(60.0% + 8px) !important; } }
+      left: calc(60% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s6 {
   left: 34.28571% !important; }
   @media only screen and (min-width: 601px) {
@@ -1826,7 +1908,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s6 {
       left: 51.42857% !important; } }
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.fromWeekend.s6 {
-      left: 60.0% !important; } }
+      left: 60% !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.e6 {
   right: calc(94.28571% + 8px) !important; }
   @media only screen and (min-width: 601px) {
@@ -1835,6 +1918,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.e6 {
   @media only screen and (min-width: 993px) {
     body[data-view="0"].showInfo .assignment:not(.full).modify.e6 {
       right: calc(90% + 8px) !important; } }
+
 body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   right: 94.28571% !important; }
   @media only screen and (min-width: 601px) {
@@ -1844,7 +1928,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
     body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
       right: 90% !important; } }
 
-#background, #sideBackground, #loginBackground, #updateBackground {
+#background, #sideBackground, #loginBackground, #updateBackground, #newsBackground {
   background: #000;
   position: fixed;
   will-change: opacity;
@@ -1859,7 +1943,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   -webkit-transition: opacity 0.3s ease;
   -moz-transition: opacity 0.3s ease;
   -o-transition: opacity 0.3s ease; }
-  #background.active, #sideBackground.active, #loginBackground.active, #updateBackground.active {
+  #background.active, #sideBackground.active, #loginBackground.active, #updateBackground.active, #newsBackground.active {
     opacity: 0.5; }
 
 .wave {
@@ -1892,7 +1976,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url(images/hills.svg) center bottom / 75vmin 22.5vmin repeat-x;
+  background: url(images/hills.svg) center bottom/75vmin 22.5vmin repeat-x;
   opacity: 0;
   transition: opacity 0.3s ease, right 0.3s ease;
   -webkit-transition: opacity 0.3s ease, right 0.3s ease;
@@ -1919,7 +2003,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   body[data-view="1"].noList:not(.showDone) #empty {
     opacity: 1; }
   #empty::after {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: 0;
     left: 0;
@@ -1927,7 +2011,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
     bottom: 30vmin;
     background: url(images/clouds.svg) center bottom/100vmin 100vmin repeat; }
   #empty::before {
-    content: " ";
+    content: ' ';
     position: absolute;
     right: 30%;
     top: 10vh;
@@ -1971,7 +2055,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   #progress > .indeterminate {
     background-color: #00AF49; }
     #progress > .indeterminate::before {
-      content: "";
+      content: '';
       position: absolute;
       background-color: inherit;
       top: 0;
@@ -1984,7 +2068,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
       -o-animation: indeterminate 3.15s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite reverse;
       animation: indeterminate 3.15s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite reverse; }
     #progress > .indeterminate::after {
-      content: "";
+      content: '';
       position: absolute;
       background-color: inherit;
       top: 0;
@@ -2012,6 +2096,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   100% {
     left: 100%;
     right: -90%; } }
+
 @-moz-keyframes indeterminate {
   0% {
     left: -35%;
@@ -2022,6 +2107,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   100% {
     left: 100%;
     right: -90%; } }
+
 @keyframes indeterminate {
   0% {
     left: -35%;
@@ -2032,6 +2118,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   100% {
     left: 100%;
     right: -90%; } }
+
 @-webkit-keyframes indeterminate-short {
   0% {
     left: -200%;
@@ -2042,6 +2129,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   100% {
     left: 107%;
     right: -8%; } }
+
 @-moz-keyframes indeterminate-short {
   0% {
     left: -200%;
@@ -2052,6 +2140,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   100% {
     left: 107%;
     right: -8%; } }
+
 @keyframes indeterminate-short {
   0% {
     left: -200%;
@@ -2062,6 +2151,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   100% {
     left: 107%;
     right: -8%; } }
+
 #dragTarget {
   position: fixed;
   width: 10px;
@@ -2106,7 +2196,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   .settingsShown #sideNav {
     transform: translateX(-240px); }
   #sideNav::before {
-    content: " ";
+    content: ' ';
     position: absolute;
     z-index: -1;
     top: 0;
@@ -2132,13 +2222,13 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
       color: rgba(0, 0, 0, 0.26); }
       #sideNav > ul > li.disabled i, #settings > ul > li.disabled i {
         color: inherit; }
-      #sideNav > ul > li.disabled > a, #sideNav > ul > li#login.disabled > input[type="submit"], #sideNav > ul > li#update.disabled > input[type="submit"], #sideNav > ul > li#login.disabled > button, #sideNav > ul > li#update.disabled > button, #sideNav > ul > li.tabs.disabled > li, #settings > ul > li.disabled > a, #settings > ul > li#login.disabled > input[type="submit"], #settings > ul > li#update.disabled > input[type="submit"], #settings > ul > li#login.disabled > button, #settings > ul > li#update.disabled > button, #settings > ul > li.tabs.disabled > li {
+      #sideNav > ul > li.disabled > a, #sideNav > ul > li#login.disabled > input[type="submit"], #sideNav > ul > li#update.disabled > input[type="submit"], #sideNav > ul > li#news.disabled > input[type="submit"], #sideNav > ul > li#login.disabled > button, #sideNav > ul > li#update.disabled > button, #sideNav > ul > li#news.disabled > button, #sideNav > ul > li.tabs.disabled > li, #settings > ul > li.disabled > a, #settings > ul > li#login.disabled > input[type="submit"], #settings > ul > li#update.disabled > input[type="submit"], #settings > ul > li#news.disabled > input[type="submit"], #settings > ul > li#login.disabled > button, #settings > ul > li#update.disabled > button, #settings > ul > li#news.disabled > button, #settings > ul > li.tabs.disabled > li {
         cursor: default; }
-    #sideNav > ul > li > a, #sideNav > ul > li#login > input[type="submit"], #sideNav > ul > li#update > input[type="submit"], #sideNav > ul > li#login > button, #sideNav > ul > li#update > button, #sideNav > ul > li.tabs > li, #settings > ul > li > a, #settings > ul > li#login > input[type="submit"], #settings > ul > li#update > input[type="submit"], #settings > ul > li#login > button, #settings > ul > li#update > button, #settings > ul > li.tabs > li {
+    #sideNav > ul > li > a, #sideNav > ul > li#login > input[type="submit"], #sideNav > ul > li#update > input[type="submit"], #sideNav > ul > li#news > input[type="submit"], #sideNav > ul > li#login > button, #sideNav > ul > li#update > button, #sideNav > ul > li#news > button, #sideNav > ul > li.tabs > li, #settings > ul > li > a, #settings > ul > li#login > input[type="submit"], #settings > ul > li#update > input[type="submit"], #settings > ul > li#news > input[type="submit"], #settings > ul > li#login > button, #settings > ul > li#update > button, #settings > ul > li#news > button, #settings > ul > li.tabs > li {
       height: 100%;
       display: block;
       width: 100%; }
-      #sideNav > ul > li > a:visited, #sideNav > ul > li#login > input[type="submit"]:visited, #sideNav > ul > li#update > input[type="submit"]:visited, #sideNav > ul > li#login > button:visited, #sideNav > ul > li#update > button:visited, #sideNav > ul > li.tabs > li:visited, #sideNav > ul > li > a:active, #sideNav > ul > li#login > input[type="submit"]:active, #sideNav > ul > li#update > input[type="submit"]:active, #sideNav > ul > li#login > button:active, #sideNav > ul > li#update > button:active, #sideNav > ul > li.tabs > li:active, #sideNav > ul > li > a:hover, #sideNav > ul > li#login > input[type="submit"]:hover, #sideNav > ul > li#update > input[type="submit"]:hover, #sideNav > ul > li#login > button:hover, #sideNav > ul > li#update > button:hover, #sideNav > ul > li.tabs > li:hover, #sideNav > ul > li > a, #sideNav > ul > li#login > input[type="submit"], #sideNav > ul > li#update > input[type="submit"], #sideNav > ul > li#login > button, #sideNav > ul > li#update > button, #sideNav > ul > li.tabs > li, #settings > ul > li > a:visited, #settings > ul > li#login > input[type="submit"]:visited, #settings > ul > li#update > input[type="submit"]:visited, #settings > ul > li#login > button:visited, #settings > ul > li#update > button:visited, #settings > ul > li.tabs > li:visited, #settings > ul > li > a:active, #settings > ul > li#login > input[type="submit"]:active, #settings > ul > li#update > input[type="submit"]:active, #settings > ul > li#login > button:active, #settings > ul > li#update > button:active, #settings > ul > li.tabs > li:active, #settings > ul > li > a:hover, #settings > ul > li#login > input[type="submit"]:hover, #settings > ul > li#update > input[type="submit"]:hover, #settings > ul > li#login > button:hover, #settings > ul > li#update > button:hover, #settings > ul > li.tabs > li:hover, #settings > ul > li > a, #settings > ul > li#login > input[type="submit"], #settings > ul > li#update > input[type="submit"], #settings > ul > li#login > button, #settings > ul > li#update > button, #settings > ul > li.tabs > li {
+      #sideNav > ul > li > a:visited, #sideNav > ul > li#login > input[type="submit"]:visited, #sideNav > ul > li#update > input[type="submit"]:visited, #sideNav > ul > li#news > input[type="submit"]:visited, #sideNav > ul > li#login > button:visited, #sideNav > ul > li#update > button:visited, #sideNav > ul > li#news > button:visited, #sideNav > ul > li.tabs > li:visited, #sideNav > ul > li > a:active, #sideNav > ul > li#login > input[type="submit"]:active, #sideNav > ul > li#update > input[type="submit"]:active, #sideNav > ul > li#news > input[type="submit"]:active, #sideNav > ul > li#login > button:active, #sideNav > ul > li#update > button:active, #sideNav > ul > li#news > button:active, #sideNav > ul > li.tabs > li:active, #sideNav > ul > li > a:hover, #sideNav > ul > li#login > input[type="submit"]:hover, #sideNav > ul > li#update > input[type="submit"]:hover, #sideNav > ul > li#news > input[type="submit"]:hover, #sideNav > ul > li#login > button:hover, #sideNav > ul > li#update > button:hover, #sideNav > ul > li#news > button:hover, #sideNav > ul > li.tabs > li:hover, #sideNav > ul > li > a, #sideNav > ul > li#login > input[type="submit"], #sideNav > ul > li#update > input[type="submit"], #sideNav > ul > li#news > input[type="submit"], #sideNav > ul > li#login > button, #sideNav > ul > li#update > button, #sideNav > ul > li#news > button, #sideNav > ul > li.tabs > li, #settings > ul > li > a:visited, #settings > ul > li#login > input[type="submit"]:visited, #settings > ul > li#update > input[type="submit"]:visited, #settings > ul > li#news > input[type="submit"]:visited, #settings > ul > li#login > button:visited, #settings > ul > li#update > button:visited, #settings > ul > li#news > button:visited, #settings > ul > li.tabs > li:visited, #settings > ul > li > a:active, #settings > ul > li#login > input[type="submit"]:active, #settings > ul > li#update > input[type="submit"]:active, #settings > ul > li#news > input[type="submit"]:active, #settings > ul > li#login > button:active, #settings > ul > li#update > button:active, #settings > ul > li#news > button:active, #settings > ul > li.tabs > li:active, #settings > ul > li > a:hover, #settings > ul > li#login > input[type="submit"]:hover, #settings > ul > li#update > input[type="submit"]:hover, #settings > ul > li#news > input[type="submit"]:hover, #settings > ul > li#login > button:hover, #settings > ul > li#update > button:hover, #settings > ul > li#news > button:hover, #settings > ul > li.tabs > li:hover, #settings > ul > li > a, #settings > ul > li#login > input[type="submit"], #settings > ul > li#update > input[type="submit"], #settings > ul > li#news > input[type="submit"], #settings > ul > li#login > button, #settings > ul > li#update > button, #settings > ul > li#news > button, #settings > ul > li.tabs > li {
         color: inherit; }
     #sideNav > ul > li i, #settings > ul > li i {
       margin-right: 32px;
@@ -2169,7 +2259,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   font-size: 28px;
   color: #FFF; }
 
-#sideBackground, #loginBackground, #updateBackground {
+#sideBackground, #loginBackground, #updateBackground, #newsBackground {
   left: 0;
   top: 0;
   z-index: 4000; }
@@ -2297,18 +2387,18 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
           border-width: 3px;
           border-color: rgba(255, 255, 255, 0.87); }
 
-#update {
+#update, #news {
   width: 480px;
   color: rgba(0, 0, 0, 0.54); }
-  #update h1, #update h2 {
+  #update h1, #news h1, #update h2, #news h2 {
     color: rgba(0, 0, 0, 0.87); }
-  #update h2 {
+  #update h2, #news h2 {
     font-size: 16px;
     font-weight: 400;
     margin: 8px 0 4px 0; }
-  #update > button:first-of-type {
+  #update > button:first-of-type, #news > button:first-of-type {
     right: 80px; }
-  #update.active + #updateBackground {
+  #update.active + #updateBackground, .active#news + #updateBackground {
     opacity: 0.5; }
 
 code {
@@ -2320,7 +2410,7 @@ code {
   font-size: 85%; }
   code::before, code::after {
     letter-spacing: -0.2em;
-    content: " "; }
+    content: "\00a0"; }
 
 #updateFeatures {
   margin-left: 8px; }
@@ -2363,14 +2453,14 @@ code {
       min-width: 288px;
       max-width: 568px;
       border-radius: 2px 2px 0 0; } }
-  .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, .tabs.snackInner > li {
+  .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #news.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, #news.snackInner > button, .tabs.snackInner > li {
     text-transform: uppercase;
     color: #00AF49;
     float: right;
     margin-left: 24px;
     font-weight: 500; }
     @media only screen and (min-width: 601px) {
-      .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, .tabs.snackInner > li {
+      .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #news.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, #news.snackInner > button, .tabs.snackInner > li {
         margin-left: 48px; } }
 
 body.dark {
@@ -2414,4 +2504,21 @@ body.dark {
   body.dark #progress {
     background-color: #163417; }
     body.dark #progress > .determinate, body.dark #progress > .indeterminate {
-      background-color: #006329; }
+      background-color: #006229; }
+
+#news {
+  width: 640px;
+  max-width: 100%; }
+  #news.active + #newsBackground {
+    opacity: 0.5; }
+  #news #newsOk {
+    right: 8px; }
+  #news h2 {
+    margin-top: 16px; }
+
+.newsItem:not(:last-of-type) {
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12); }
+
+#newsContent:empty::before {
+  content: "It seems as if GitHub cannot be reached right now. Check your internet connection or try using a different Wifi network"; }

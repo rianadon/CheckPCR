@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, addActivity, ae, athenaData, attachmentify, c, cc, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, element, er, fetch, findId, fn, formatUpdate, fullMonths, getCookie, getResizeAssignments, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, addActivity, ae, athenaData, attachmentify, c, cc, closeNews, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, element, er, fetch, findId, firstTime, fn, formatUpdate, fullMonths, getCookie, getResizeAssignments, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
@@ -621,7 +621,7 @@ display = function() {
     assignment = lastAssignments[q];
     addActivity("delete", assignment, true);
   }
-  localStorage["activity"] = JSON.stringify(activity);
+  localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 16, activity.length));
   weekHeights = {};
   previousAssignments = {};
   ref2 = document.getElementsByClassName("assignment");
@@ -1284,6 +1284,7 @@ if (Date.now() - lastAthena >= 1000 * 3600 * 24 && (navigator.onLine || (navigat
 }
 
 document.getElementById("settingsB").addEventListener("click", function() {
+  document.getElementById("sideBackground").click();
   document.body.classList.add("settingsShown");
   document.getElementById("brand").innerHTML = "Settings";
   return setTimeout(function() {
@@ -1715,5 +1716,103 @@ hammertime.on("pan", function(e) {
     if (el != null) {
       el.click();
     }
+  }
+});
+
+firstTime = !localStorage["commit"];
+
+(function() {
+  return send("https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "json").then(function(resp) {
+    var last;
+    last = localStorage["commit"];
+    c = resp.response.object.sha;
+    console.debug(last, c);
+    if (last == null) {
+      return localStorage["commit"] = c;
+    } else if (last !== c) {
+      document.getElementById("updateIgnore").addEventListener("click", function() {
+        localStorage["commit"] = c;
+        document.getElementById("update").classList.remove("active");
+        return setTimeout(function() {
+          return document.getElementById("updateBackground").style.display = "none";
+        }, 350);
+      });
+      return send(resp.response.object.url, "json").then(function(resp) {
+        document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n") + 2).replace(/\* (.*?)(?=$|\n)/g, function(a, b) {
+          return "<li>" + b + "</li>";
+        }).replace(/>\n</g, "><").replace(/\n/g, "<br>");
+        document.getElementById("updateBackground").style.display = "block";
+        return document.getElementById("update").classList.add("active");
+      });
+    }
+  }, function(err) {
+    return console.log("Could not access Github. Here's the error:", err);
+  });
+})();
+
+document.getElementById("updateDelay").addEventListener("click", function() {
+  document.getElementById("update").classList.remove("active");
+  return setTimeout(function() {
+    return document.getElementById("updateBackground").style.display = "none";
+  }, 350);
+});
+
+send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(resp) {
+  var last;
+  last = localStorage["newsCommit"];
+  c = resp.response.history[0].version;
+  window.getNews = function(onfail) {
+    return send(resp.response.files["updates.htm"].raw_url).then(function(resp) {
+      var af, len10, news, ref9;
+      localStorage["newsCommit"] = c;
+      ref9 = resp.responseText.split("<hr>");
+      for (af = 0, len10 = ref9.length; af < len10; af++) {
+        news = ref9[af];
+        document.getElementById("newsContent").appendChild(element("div", "newsItem", news));
+      }
+      document.getElementById("newsBackground").style.display = "block";
+      return document.getElementById("news").classList.add("active");
+    }, function(err) {
+      if (onfail != null) {
+        return onfail();
+      }
+    });
+  };
+  if (last !== c && !firstTime) {
+    window.getNews();
+  }
+  if (last == null) {
+    return localStorage["newsCommit"] = c;
+  }
+}, function(err) {
+  return console.log("Could not access Github. Here's the error:", err);
+});
+
+closeNews = function() {
+  document.getElementById("news").classList.remove("active");
+  return setTimeout(function() {
+    return document.getElementById("newsBackground").style.display = "none";
+  }, 350);
+};
+
+document.getElementById("newsOk").addEventListener("click", closeNews);
+
+document.getElementById("newsBackground").addEventListener("click", closeNews);
+
+document.getElementById("newsB").addEventListener("click", function() {
+  var dispNews;
+  document.getElementById("sideBackground").click();
+  dispNews = function() {
+    document.getElementById("newsBackground").style.display = "block";
+    return document.getElementById("news").classList.add("active");
+  };
+  if (document.getElementById("newsContent").childNodes.length === 0) {
+    if (typeof getNews !== "undefined" && getNews !== null) {
+      return getNews(dispNews);
+    } else {
+      return dispNews();
+    }
+  } else {
+    return dispNews();
   }
 });
