@@ -2397,7 +2397,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
     font-weight: 400;
     margin: 8px 0 4px 0; }
   #update > button:first-of-type, #news > button:first-of-type {
-    right: 80px; }
+    right: 129px; }
   #update.active + #updateBackground, .active#news + #updateBackground {
     opacity: 0.5; }
 

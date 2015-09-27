@@ -1758,13 +1758,13 @@ document.getElementById("updateDelay").addEventListener("click", function() {
 });
 
 send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(resp) {
-  var last;
+  var last, nc;
   last = localStorage["newsCommit"];
-  c = resp.response.history[0].version;
+  nc = resp.response.history[0].version;
   window.getNews = function(onfail) {
     return send(resp.response.files["updates.htm"].raw_url).then(function(resp) {
       var af, len10, news, ref9;
-      localStorage["newsCommit"] = c;
+      localStorage["newsCommit"] = nc;
       ref9 = resp.responseText.split("<hr>");
       for (af = 0, len10 = ref9.length; af < len10; af++) {
         news = ref9[af];
@@ -1778,11 +1778,11 @@ send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(
       }
     });
   };
-  if (last !== c && !firstTime) {
+  if (last !== nc && !firstTime) {
     window.getNews();
   }
   if (last == null) {
-    return localStorage["newsCommit"] = c;
+    return localStorage["newsCommit"] = nc;
   }
 }, function(err) {
   return console.log("Could not access Github. Here's the error:", err);

@@ -1568,12 +1568,12 @@ For news, the latest news is fetched from a GitHub gist.
     send "https://api.github.com/gists/b42a5a3c491be081e9c9", "json"
       .then (resp) ->
         last = localStorage["newsCommit"]
-        c = resp.response.history[0].version
+        nc = resp.response.history[0].version
 
         window.getNews = (onfail) ->
           send resp.response.files["updates.htm"].raw_url
             .then (resp) ->
-              localStorage["newsCommit"] = c
+              localStorage["newsCommit"] = nc
               for news in resp.responseText.split("<hr>")
                 document.getElementById("newsContent").appendChild element "div", "newsItem", news
               document.getElementById("newsBackground").style.display = "block"
@@ -1581,10 +1581,10 @@ For news, the latest news is fetched from a GitHub gist.
             , (err) ->
               if onfail? then onfail()
 
-        if last isnt c and not firstTime
+        if last isnt nc and not firstTime
           window.getNews()
         if not last?
-          localStorage["newsCommit"] = c
+          localStorage["newsCommit"] = nc
       , (err) ->
         console.log "Could not access Github. Here's the error:", err
 
