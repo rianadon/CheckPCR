@@ -672,13 +672,13 @@ display = function() {
       if (!found) {
         addActivity("add", assignment, true);
       }
+      for (_m = 0, _len3 = lastAssignments.length; _m < _len3; _m++) {
+        assignment = lastAssignments[_m];
+        addActivity("delete", assignment, true);
+      }
+      localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
     }
   }
-  for (_m = 0, _len3 = lastAssignments.length; _m < _len3; _m++) {
-    assignment = lastAssignments[_m];
-    addActivity("delete", assignment, true);
-  }
-  localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
   weekHeights = {};
   previousAssignments = {};
   _ref2 = document.getElementsByClassName("assignment");
