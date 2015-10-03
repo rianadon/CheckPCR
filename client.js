@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, addActivity, ae, athenaData, attachmentify, c, cc, closeNews, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, element, er, fetch, findId, firstTime, fn, formatUpdate, fullMonths, getCookie, getResizeAssignments, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tzoff, u, updateAvatar, updateColors, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, athenaData, attachmentify, c, cc, closeNews, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, element, enabled, er, fetch, findId, firstTime, fn, fn1, formatUpdate, fullMonths, getCookie, getResizeAssignments, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 loginURL = "";
@@ -472,7 +472,7 @@ addActivity = function(type, assignment, newActivity) {
   if (newActivity === true) {
     activity.push([type, assignment, Date.now()]);
   }
-  te = element("div", ["activity", "assignmentItem", assignment.baseType], "<i class='material-icons'>" + type + "</i><span class='title'>" + assignment.title + "</span><small>" + (separate(window.data.classes[assignment["class"]])[2]) + "</small><div class='range'>" + (dateString(new Date(date))) + "</div>", "activity" + assignment.id);
+  te = element("div", ["activity", "assignmentItem", assignment.baseType, type], "<i class='material-icons'>" + type + "</i><span class='title'>" + assignment.title + "</span><small>" + (separate(window.data.classes[assignment["class"]])[2]) + "</small><div class='range'>" + (dateString(new Date(date))) + "</div>", "activity" + assignment.id);
   te.setAttribute("data-class", window.data.classes[assignment["class"]]);
   id = assignment.id;
   if (type !== "delete") {
@@ -498,7 +498,7 @@ addActivity = function(type, assignment, newActivity) {
   if (ref = assignment.id, indexOf.call(done, ref) >= 0) {
     te.classList.add("done");
   }
-  return document.getElementById("infoActivity").insertBefore(te, document.getElementById("infoActivity").firstChild);
+  return document.getElementById("infoActivity").insertBefore(te, document.getElementById("infoActivity").querySelector(".activity"));
 };
 
 display = function() {
@@ -621,7 +621,7 @@ display = function() {
     assignment = lastAssignments[q];
     addActivity("delete", assignment, true);
   }
-  localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 16, activity.length));
+  localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
   weekHeights = {};
   previousAssignments = {};
   ref2 = document.getElementsByClassName("assignment");
@@ -878,6 +878,7 @@ display = function() {
   }
   if (document.body.getAttribute("data-view") === "1") {
     resize();
+    setTimeout(resize, 300);
   }
   return console.timeEnd("Displaying data");
 };
@@ -953,6 +954,10 @@ ripple = function(el) {
   });
 };
 
+if (localStorage["view"] != null) {
+  document.body.setAttribute("data-view", localStorage["view"]);
+}
+
 ref = document.querySelectorAll("#navTabs>li");
 for (j = 0, len = ref.length; j < len; j++) {
   tab = ref[j];
@@ -967,12 +972,12 @@ for (j = 0, len = ref.length; j < len; j++) {
       document.body.classList.add("noTrans");
       document.body.offsetHeight;
     }
-    document.body.setAttribute("data-view", (Array.prototype.slice.call(document.querySelectorAll("#navTabs>li"))).indexOf(evt.target));
+    document.body.setAttribute("data-view", localStorage["view"] = (Array.prototype.slice.call(document.querySelectorAll("#navTabs>li"))).indexOf(evt.target));
     if (document.body.getAttribute("data-view") === "1") {
       window.addEventListener("resize", resize);
       if (trans) {
         start = null;
-        widths = [350, 800, 1500, 2400, 3500, 4800];
+        widths = document.body.classList.contains("showInfo") ? [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800];
         columns = null;
         for (index = k = 0, len1 = widths.length; k < len1; index = ++k) {
           w = widths[index];
@@ -1077,7 +1082,7 @@ getResizeAssignments = function() {
 
 resize = function() {
   var assignment, assignments, col, columnHeights, columns, index, l, len2, len3, n, o, w, widths;
-  widths = [350, 800, 1500, 2400, 3500, 4800];
+  widths = document.body.classList.contains("showInfo") ? [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800];
   columns = null;
   for (index = l = 0, len2 = widths.length; l < len2; index = ++l) {
     w = widths[index];
@@ -1545,35 +1550,6 @@ for (ab = 0, len8 = ref8.length; ab < len8; ab++) {
   });
 }
 
-(function() {
-  return send("https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "json").then(function(resp) {
-    var last;
-    last = localStorage["commit"];
-    c = resp.response.object.sha;
-    console.debug(last, c);
-    if (last == null) {
-      return localStorage["commit"] = c;
-    } else if (last !== c) {
-      document.getElementById("updateIgnore").addEventListener("click", function() {
-        localStorage["commit"] = c;
-        document.getElementById("update").classList.remove("active");
-        return setTimeout(function() {
-          return document.getElementById("updateBackground").style.display = "none";
-        }, 350);
-      });
-      return send(resp.response.object.url, "json").then(function(resp) {
-        document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n") + 2).replace(/\* (.*?)(?=$|\n)/g, function(a, b) {
-          return "<li>" + b + "</li>";
-        }).replace(/>\n</g, "><").replace(/\n/g, "<br>");
-        document.getElementById("updateBackground").style.display = "block";
-        return document.getElementById("update").classList.add("active");
-      });
-    }
-  }, function(err) {
-    return console.log("Could not access Github. Here's the error:", err);
-  });
-})();
-
 document.getElementById("updateDelay").addEventListener("click", function() {
   document.getElementById("update").classList.remove("active");
   return setTimeout(function() {
@@ -1718,6 +1694,48 @@ hammertime.on("pan", function(e) {
     }
   }
 });
+
+ripple(document.getElementById("filterActivity"));
+
+document.getElementById("filterActivity").addEventListener("click", function() {
+  return document.getElementById("infoActivity").classList.toggle("filter");
+});
+
+activityTypes = localStorage["shownActivity"] ? JSON.parse(localStorage["shownActivity"]) : {
+  add: true,
+  edit: true,
+  "delete": true
+};
+
+updateSelectNum = function() {
+  c = function(bool) {
+    if (bool) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+  return document.getElementById("selectNum").innerHTML = c(activityTypes.add) + c(activityTypes.edit) + c(activityTypes["delete"]);
+};
+
+updateSelectNum();
+
+fn1 = function(type) {
+  return document.getElementById(type + "Select").addEventListener("change", function(evt) {
+    activityTypes[type] = evt.target.checked;
+    document.getElementById("infoActivity").setAttribute("data-filtered", updateSelectNum());
+    document.getElementById("infoActivity").classList.toggle(type);
+    return localStorage["shownActivity"] = JSON.stringify(activityTypes);
+  });
+};
+for (type in activityTypes) {
+  enabled = activityTypes[type];
+  document.getElementById(type + "Select").checked = enabled;
+  if (enabled) {
+    document.getElementById("infoActivity").classList.add(type);
+  }
+  fn1(type);
+}
 
 firstTime = !localStorage["commit"];
 

@@ -62,7 +62,20 @@
 			<li>Activity</li>
 		</ul>
 		<div id="infoContent">
-			<div id="infoTests"></div><div id="infoActivity"></div>
+			<div id="infoTests"></div><div id="infoActivity">
+				<div id="activitySelectOverview">
+					Showing <span id="selectNum">0</span> type<span id="selectNumS">s</span>
+					<a id="filterActivity" class="material-icons waves"></a>
+				</div>
+				<div id="activitySelectControl">
+					<input type="checkbox" id="addSelect">
+					<label for="addSelect">Additions</label>
+					<input type="checkbox" id="editSelect">
+					<label for="editSelect">Modifications</label>
+					<input type="checkbox" id="deleteSelect">
+					<label for="deleteSelect">Deletions</label>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="empty"><span>No more assignments for today!</span></div>

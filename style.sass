@@ -427,6 +427,12 @@ main
 
 .activity
 	@extend .upcomingTest
+	display: none
+
+	$types: add, edit, delete
+	@each $type in $types
+		#infoActivity.#{$type}>&.#{$type}
+			display: block
 
 body[data-view="1"] .week
 	height: 0 !important
@@ -1370,7 +1376,7 @@ body.dark
 	.dayTable td, #dates
 		border-color: #424242
 
-	#sideNav, #settings
+	#sideNav, #settings, #news, #login
 		background-color: #424242
 	#sideNav > ul > li i, #settings > ul > li i
 		color: rgba(255,255,255,0.7)
@@ -1378,7 +1384,7 @@ body.dark
 	#sideNav > ul > li.disabled, #settings > ul > li.disabled
 		color: rgba(255,255,255,0.3)
 
-	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #settings > ul > li.two > span
+	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #settings > ul > li.two > span #filterActivity, label, .input-field > label
 		color: rgba(255,255,255,0.7)
 	#info > #extra, .colors > div
 		color: rgba(255,255,255,0.3)
@@ -1404,6 +1410,31 @@ body.dark
 		&>.determinate, &>.indeterminate
 			background-color: darken($accent-color, 15%)
 
+	.attachments>a
+		background-color: #616161
+		&:hover
+			background-color: #757575
+		&::after
+			border-bottom-color: #424242
+		&>span
+			color: rgba(255,255,255,0.7)
+
+	#update, #news
+		color: rgba(255,255,255,0.7)
+		h1, h2
+			color: #FFF
+
+	[type="checkbox"]:not(:checked) + label:before
+		border-color: rgba(255,255,255,0.3)
+
+	input[type=text], input[type=password], input[type=email], input[type=url], input[type=time], input[type=date], input[type=datetime-local], input[type=tel], input[type=number], input[type=search]
+		border-bottom-color: rgba(255,255,255,0.7)
+
+	#filterActivity
+		color: rgba(255,255,255,0.7)
+		&:hover
+			color: #FFF
+
 #news
 	@extend #update
 	&.active + #newsBackground
@@ -1421,3 +1452,33 @@ body.dark
 
 #newsContent:empty::before
 	content: "It seems as if GitHub cannot be reached right now. Check your internet connection or try using a different Wifi network"
+
+#activitySelectOverview
+	font-size: 16px
+	position: relative
+	line-height: 1
+	text-align: center
+	margin-bottom: 8px
+#filterActivity
+	font-size: 16px
+	right: 16px
+	top: 0
+	color: rgba(0,0,0,0.54)
+	position: absolute
+	&::before
+		content: "filter_list"
+		#infoActivity.filter &
+			content: "keyboard_arrow_up"
+#infoActivity[data-filters="1"] #selectNumS
+	display: none
+#activitySelectControl
+	+transition(max-height 0.3s ease)
+	max-height: 0
+	overflow: hidden
+	padding-left: 16px
+	&>label
+		display: block
+		&:last-child
+			padding-bottom: 8px
+	#infoActivity.filter &
+		max-height: 100px
