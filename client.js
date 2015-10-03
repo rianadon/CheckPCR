@@ -174,7 +174,7 @@ formatUpdate = function(date) {
 fetch = function() {
   console.time("Fetching assignments");
   send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-    var e, j, len, ref, t, up;
+    var e, error1, j, len, ref, t, up;
     console.timeEnd("Fetching assignments");
     if (resp.responseURL.indexOf("Login") !== -1) {
       loginURL = resp.responseURL;
@@ -198,8 +198,8 @@ fetch = function() {
       document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
       try {
         parse(resp.response);
-      } catch (_error) {
-        e = _error;
+      } catch (error1) {
+        e = error1;
         console.log(e);
         alert("Error parsing assignments. Is PCR on list or month view?");
       }
@@ -235,7 +235,7 @@ dologin = function(val, submitEvt) {
   send(loginURL, "document", {
     "Content-type": "application/x-www-form-urlencoded"
   }, postArray.join("&"), true).then(function(resp) {
-    var e, t;
+    var e, error1, t;
     console.timeEnd("Logging in");
     if (resp.responseURL.indexOf("Login") !== -1) {
       document.getElementById("loginIncorrect").style.display = "block";
@@ -251,8 +251,8 @@ dologin = function(val, submitEvt) {
       document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
       try {
         parse(resp.response);
-      } catch (_error) {
-        e = _error;
+      } catch (error1) {
+        e = error1;
         console.log(e);
         alert("Error parsing assignments. Is PCR on list or month view?");
       }
@@ -617,11 +617,13 @@ display = function() {
       }
     }
   }
-  for (q = 0, len3 = lastAssignments.length; q < len3; q++) {
-    assignment = lastAssignments[q];
-    addActivity("delete", assignment, true);
+  if (lastAssignments != null) {
+    for (q = 0, len3 = lastAssignments.length; q < len3; q++) {
+      assignment = lastAssignments[q];
+      addActivity("delete", assignment, true);
+    }
+    localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
   }
-  localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
   weekHeights = {};
   previousAssignments = {};
   ref2 = document.getElementsByClassName("assignment");
