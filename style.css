@@ -99,6 +99,14 @@
     right: 8px; }
   #login > .input-field:last-of-type, #update > .input-field:last-of-type, #news > .input-field:last-of-type {
     margin-bottom: 16px; }
+  #login.large, .large#update, .large#news {
+    width: 480px; }
+    #login.large > .input-field, .large#update > .input-field, .large#news > .input-field {
+      margin-left: auto;
+      margin-right: auto;
+      width: 280px; }
+    #login.large > label, .large#update > label, .large#news > label {
+      margin-left: 76px; }
 
 #loginBackground {
   z-index: 6000; }
@@ -108,6 +116,13 @@
   display: none;
   text-align: center;
   font-size: 14px; }
+
+#loginExtra {
+  display: block;
+  margin-top: 16px; }
+  #loginExtra > b {
+    display: block;
+    margin-bottom: 8px; }
 
 /* Everything below is adapted from Materialize */
 label {

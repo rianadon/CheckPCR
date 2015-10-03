@@ -14,7 +14,7 @@
   ],
   "app": {
     "launch": {
-      "local_path": "new.html"
+      "local_path": "index.html"
     }
   },
   "minimum_chrome_version": "28",

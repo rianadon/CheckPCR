@@ -187,38 +187,64 @@ First, a request is sent to PCR to load the page you would normally see when acc
 Because this is run as a chrome extension, this page can be accessed. Otherwise, the browser would throw an error for security reasons (you don't want a random website being able to access confidential data from a website you have logged into).
 
     fetch = ->
-      console.time "Fetching assignments"
-      send "https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true
-        .then (resp) ->
-          console.timeEnd "Fetching assignments"
-          if resp.responseURL.indexOf("Login") isnt -1
-            # We have to log in now
-            loginURL = resp.responseURL
-            for e in resp.response.getElementsByTagName("input")
-              loginHeaders[e.name] = e.value or ""
-            console.log "Need to log in"
-            up = getCookie("userPass") # Attempts to get the cookie *userPass*, which is set if the "Remember me" checkbox is checked when logging in through CheckPCR
-            if up is ""
-              document.getElementById("loginBackground").style.display = "block"
-              document.getElementById("login").classList.add "active"
+      if location.protocol is "chrome-extension:"
+        console.time "Fetching assignments"
+        send "https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true
+          .then (resp) ->
+            console.timeEnd "Fetching assignments"
+            if resp.responseURL.indexOf("Login") isnt -1
+              # We have to log in now
+              loginURL = resp.responseURL
+              for e in resp.response.getElementsByTagName("input")
+                loginHeaders[e.name] = e.value or ""
+              console.log "Need to log in"
+              up = getCookie("userPass") # Attempts to get the cookie *userPass*, which is set if the "Remember me" checkbox is checked when logging in through CheckPCR
+              if up is ""
+                document.getElementById("loginBackground").style.display = "block"
+                document.getElementById("login").classList.add "active"
+              else
+                dologin window.atob(up).split(":") # Because we were remembered, we can log in immediately without waiting for the user to log in through the login form
             else
-              dologin window.atob(up).split(":") # Because we were remembered, we can log in immediately without waiting for the user to log in through the login form
-          else
-            # Logged in now
-            console.log "Fetching assignments successful"
-            t = Date.now()
-            localStorage["lastUpdate"] = t
-            document.getElementById("lastUpdate").innerHTML = formatUpdate t
-            try
-              parse resp.response
-            catch e
-              console.log e
-              alert "Error parsing assignments. Is PCR on list or month view?"
-          return
-        , (error) ->
-          console.log "Could not fetch assignments; You are probably offline. Here's the error:", error
-          snackbar "Could not fetch your assignments", "Retry", fetch
-          return
+              # Logged in now
+              console.log "Fetching assignments successful"
+              t = Date.now()
+              localStorage["lastUpdate"] = t
+              document.getElementById("lastUpdate").innerHTML = formatUpdate t
+              try
+                parse resp.response
+              catch e
+                console.log e
+                alert "Error parsing assignments. Is PCR on list or month view?"
+            return
+          , (error) ->
+            console.log "Could not fetch assignments; You are probably offline. Here's the error:", error
+            snackbar "Could not fetch your assignments", "Retry", fetch
+            return
+      else
+        send "/api/start", "json", null, null, true
+          .then (resp) ->
+            console.debug "Fetching assignments:",resp.response.time
+            if resp.response.login
+              loginHeaders = resp.response.loginHeaders
+              up = getCookie("userPass") # Attempts to get the cookie *userPass*, which is set if the "Remember me" checkbox is checked when logging in through CheckPCR
+              if up is ""
+                document.getElementById("loginBackground").style.display = "block"
+                document.getElementById("login").classList.add "active"
+              else
+                dologin window.atob(up).split(":") # Because we were remembered, we can log in immediately without waiting for the user to log in through the login form
+            else
+              console.log "Fetching assignments successful"
+              t = Date.now()
+              localStorage["lastUpdate"] = t
+              document.getElementById("lastUpdate").innerHTML = formatUpdate t
+
+              window.data = resp.response.data
+              display()
+              localStorage["data"] = JSON.stringify(data)
+            return
+          , (error) ->
+            console.log "Could not fetch assignments; You are probably offline. Here's the error:", error
+            snackbar "Could not fetch your assignments", "Retry", fetch
       return
 
 Now, we have the function that will log us into PCR.
@@ -240,33 +266,60 @@ Now, we have the function that will log us into PCR.
         postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(loginHeaders[h])
 
       # Now send the login request to PCR
-      console.time "Logging in"
-      send loginURL, "document", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
-        .then (resp) ->
-          console.timeEnd "Logging in"
-          if resp.responseURL.indexOf("Login") isnt -1
-            # If PCR still wants us to log in, then the username or password enterred were incorrect.
-            document.getElementById("loginIncorrect").style.display = "block"
-            document.getElementById("password").value = ""
+      if location.protocol is "chrome-extension:"
+        console.time "Logging in"
+        send loginURL, "document", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
+          .then (resp) ->
+            console.timeEnd "Logging in"
+            if resp.responseURL.indexOf("Login") isnt -1
+              # If PCR still wants us to log in, then the username or password enterred were incorrect.
+              document.getElementById("loginIncorrect").style.display = "block"
+              document.getElementById("password").value = ""
 
-            document.getElementById("login").classList.add "active"
-            document.getElementById("loginBackground").style.display = "block"
-          else
-            # Otherwise, we are logged in
-            if document.getElementById("remember").checked #Is the "remember me" checkbox checked?
-              setCookie "userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14 # Set a cookie with the username and password so we can log in automatically in the future without having to prompt for a username and password again
-            # loadingBar.style.display = "none"
-            t = Date.now()
-            localStorage["lastUpdate"] = t
-            document.getElementById("lastUpdate").innerHTML = formatUpdate t
-            try
-              parse resp.response # Parse the data PCR has replied with
-            catch e
-              console.log e
-              alert "Error parsing assignments. Is PCR on list or month view?"
-          return
-        , (error) ->
-          console.log "Could not log in to PCR. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error
+              document.getElementById("login").classList.add "active"
+              document.getElementById("loginBackground").style.display = "block"
+            else
+              # Otherwise, we are logged in
+              if document.getElementById("remember").checked #Is the "remember me" checkbox checked?
+                setCookie "userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14 # Set a cookie with the username and password so we can log in automatically in the future without having to prompt for a username and password again
+              # loadingBar.style.display = "none"
+              t = Date.now()
+              localStorage["lastUpdate"] = t
+              document.getElementById("lastUpdate").innerHTML = formatUpdate t
+              try
+                parse resp.response # Parse the data PCR has replied with
+              catch e
+                console.log e
+                alert "Error parsing assignments. Is PCR on list or month view?"
+              return
+          , (error) ->
+            console.log "Could not log in to PCR. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error
+      else
+        console.log postArray
+        send "/api/login", "json", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
+          .then (resp) ->
+            console.debug "Logging in:",resp.response.time
+            if resp.response.login
+              # If PCR still wants us to log in, then the username or password enterred were incorrect.
+              document.getElementById("loginIncorrect").style.display = "block"
+              document.getElementById("password").value = ""
+
+              document.getElementById("login").classList.add "active"
+              document.getElementById("loginBackground").style.display = "block"
+            else
+              if document.getElementById("remember").checked #Is the "remember me" checkbox checked?
+                setCookie "userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14 # Set a cookie with the username and password so we can log in automatically in the future without having to prompt for a username and password again
+              # loadingBar.style.display = "none"
+              t = Date.now()
+              localStorage["lastUpdate"] = t
+              document.getElementById("lastUpdate").innerHTML = formatUpdate t
+
+              window.data = resp.response.data
+              display()
+              localStorage["data"] = JSON.stringify(data)
+            return
+          , (error) ->
+            console.log "Could not log in to PCR. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error
       return
 
     document.getElementById("login").addEventListener "submit", (evt) ->
@@ -701,7 +754,8 @@ This function will convert the array of assignments generated by *parse* into re
           for attachment in assignment.attachments
             do (attachment) ->
               a = element "a", [], attachment[0]
-              a.href = "https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx#{attachment[1]}"
+              a.href = if location.protocol is "chrome-extension:" then "https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx#{attachment[1]}" else "/api/attachment#{attachment[1]}"
+              console.log a.href
               req = new XMLHttpRequest()
               req.open "HEAD", a.href
               req.onload = ->
@@ -1051,6 +1105,7 @@ The button to show/hide completed assignments in list view also needs event list
 
 The same goes for the button that shows upcoming tests.
 
+    localStorage["showInfo"] ?= JSON.stringify true
     navToggle "infoButton", "showInfo"
 
 This also gets repeated for the theme toggling.
@@ -1160,12 +1215,11 @@ First, we need to check if it's been more than a day. There's no point constantl
 
     lastAthena = if localStorage["lastAthena"] then parseInt(localStorage["lastAthena"]) else 0
     athenaData = if localStorage["athenaData"]? then JSON.parse(localStorage["athenaData"]) else null
-    er = null
 
 Then, once the variable for the last date is initialized, it's time to get the classes from athena.
 Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any better! Seriously! It's just too bad the login page isn't in JSON.
 
-    if Date.now()-lastAthena >= 1000*3600*24 and (navigator.onLine or not navigator.onLine?) and not localStorage["noSchoology"]?
+    if location.protocol is "chrome-extension:" and Date.now()-lastAthena >= 1000*3600*24 and (navigator.onLine or not navigator.onLine?) and not localStorage["noSchoology"]?
       console.log "Updating classes from Athena"
       send "https://athena.harker.org/iapi/course/active", "json"
         .then (resp) ->
@@ -1241,7 +1295,7 @@ For choosing colors, the color choosing boxes need to be initialized.
     rgb2hex = (rgb) ->
       return rgb if /^#[0-9A-F]{6}$/i.test rgb
       rgb = rgb.match /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
-      hex = (x) -> ("0" + parseInt(x).toString(16)).slice(-2);
+      hex = (x) -> ("0" + parseInt(x).toString(16)).slice(-2)
       "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])
     hex2rgb = (hex) ->
       result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec hex
@@ -1301,7 +1355,7 @@ Then, a function that updates the color preferences is defined.
       mix = (a,b,p) ->
         rgbA = hex2rgb a
         rgbB = hex2rgb b
-        hex = (x) -> ("0" + parseInt(x).toString(16)).slice(-2);
+        hex = (x) -> ("0" + parseInt(x).toString(16)).slice(-2)
         "#" + hex(rgbA[0]*p+rgbB[0]*(1-p)) + hex(rgbA[1]*p+rgbB[1]*(1-p)) + hex(rgbA[2]*p+rgbB[2]*(1-p))
       style = document.createElement "style"
       style.appendChild document.createTextNode("")
@@ -1362,15 +1416,7 @@ Starting everything
 -------------------
 
 Finally! We are (almost) done!
-This update dialog  needs to be closed when the butons are clicked.
-
-    document.getElementById("updateDelay").addEventListener "click", ->
-      document.getElementById("update").classList.remove "active"
-      setTimeout ->
-        document.getElementById("updateBackground").style.display = "none"
-      , 350
-
-The completed assignments are then loaded.
+The completed assignments are loaded.
 
     done = []
     if localStorage["done"]?
@@ -1395,9 +1441,36 @@ Now, we load the saved assignments (if any) and fetch the current assignments fr
 
     fetch()
 
+If the page is being viewed from the website, a couple changes need to be made.
+
+    if location.protocol isnt "chrome-extension:"
+      document.getElementById("brand").innerHTML = "Check PCR <b>Preview</b>"
+      document.getElementById("login").classList.add "large"
+      document.getElementById("login").appendChild element "span", [],
+        """<b>This is a preview of the online version of Check PCR. This means that the online version is far from finished and several features are missing (e.g. Schoology integration and credential remembering). If you encounter any bugs, please report them to <a href='https://github.com/19RyanA/CheckPCR/issues'>GitHub</a>.</b>
+        The online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.
+        If you do not trust me to avoid stealing your credentials, you can use
+        <a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.""", "loginExtra"
+      document.querySelector("#remember+label").style.display = "none"
+      document.getElementById("remember").style.display = "none"
+      up = document.getElementById("update")
+      up.querySelector("h1").innerHTML = "A new update has been applied."
+      for el in up.childNodes by -1
+        el.remove() if el.nodeType is 3 or el.tagName is "BR" or el.tagName is "CODE" or el.tagName is "A"
+      up.insertBefore document.createTextNode("Because you are using the online version, the update has already been applied, so there is nothing you need to do."), up.querySelector("h2")
+      document.getElementById("updateDelay").style.display = "none"
+      document.getElementById("updateIgnore").innerHTML = "GOT IT"
+      document.getElementById("updateIgnore").style.right = "8px"
+
 <a name="analytics"/>
 Analytics
 ---------
+
+The page to be sent to Google Analytics is set to the correct one.
+
+    gp =
+      page: '/new.html'
+      title: if location.protocol is "chrome-extension:" then "Version #{localStorage["commit"] or "New"}" else "Online"
 
 This is the code for Google Analytics. There's not much more to explain.
 
@@ -1412,9 +1485,7 @@ This is the code for Google Analytics. There's not much more to explain.
     ga 'create', 'UA-66932824-1', 'auto'
     ga 'set', 'checkProtocolTask', (->)
     ga 'require', 'displayfeatures'
-    ga 'send', 'pageview',
-      page: '/new.html'
-      title: "Version #{localStorage["commit"] or "New"}"
+    ga 'send', 'pageview', gp
 
 The user is also alerted that the page uses Google Analytics just to be nice.
 
@@ -1535,6 +1606,13 @@ At the start, it needs to be correctly populated
 <a name="updates"/>
 Updates and News
 ----------------
+
+If the application cache has been updated, reload the page to reflect the changes.
+
+    window.applicationCache.addEventListener "updateready", ->
+      if window.applicationCache.status is window.applicationCache.UPDATEREADY
+        window.location.reload()
+    , false
 
 For updating, a request will be send to Github to get the current commit id and check that against what's stored
 
