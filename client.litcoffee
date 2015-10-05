@@ -22,6 +22,13 @@ It is written in [Literate CoffeeScript](http://coffeescript.org/#literate), a v
 Basic Definitions
 -----------------
 
+First of all, if the online version is used, the http version is redirected to https.
+
+    if window.location.protocol is "http:" and location.hostname isnt "localhost"
+      window.location.href = "https:" + window.location.href.substring(window.location.protocol.length)
+
+Then we have most of the global variables.
+
     loginURL = ""
     loginHeaders = {}
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -1608,13 +1615,6 @@ At the start, it needs to be correctly populated
 Updates and News
 ----------------
 
-If the application cache has been updated, reload the page to reflect the changes.
-
-    window.applicationCache.addEventListener "updateready", ->
-      if window.applicationCache.status is window.applicationCache.UPDATEREADY
-        window.location.reload()
-    , false
-
 For updating, a request will be send to Github to get the current commit id and check that against what's stored
 
     firstTime = not localStorage["commit"] # It's the user's first time if the commit hasn't been saved yet
@@ -1629,10 +1629,13 @@ For updating, a request will be send to Github to get the current commit id and 
           else if last isnt c
             document.getElementById("updateIgnore").addEventListener "click", ->
               localStorage["commit"] = c
-              document.getElementById("update").classList.remove "active"
-              setTimeout ->
-                document.getElementById("updateBackground").style.display = "none"
-              , 350
+              if location.protocol is "chrome-extension:"
+                document.getElementById("update").classList.remove "active"
+                setTimeout ->
+                  document.getElementById("updateBackground").style.display = "none"
+                , 350
+              else
+                window.location.reload()
             send resp.response.object.url, "json"
               .then (resp) ->
                 document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n")+2).replace(/\* (.*?)(?=$|\n)/g, (a,b) -> "<li>#{b}</li>").replace(/>\n</g, "><").replace(/\n/g, "<br>")
