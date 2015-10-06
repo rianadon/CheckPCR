@@ -174,7 +174,7 @@ formatUpdate = function(date) {
 fetch = function() {
   console.time("Fetching assignments");
   send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-    var e, error1, j, len, ref, t, up;
+    var e, j, len, ref, t, up;
     console.timeEnd("Fetching assignments");
     if (resp.responseURL.indexOf("Login") !== -1) {
       loginURL = resp.responseURL;
@@ -198,8 +198,8 @@ fetch = function() {
       document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
       try {
         parse(resp.response);
-      } catch (error1) {
-        e = error1;
+      } catch (_error) {
+        e = _error;
         console.log(e);
         alert("Error parsing assignments. Is PCR on list or month view?");
       }
@@ -235,7 +235,7 @@ dologin = function(val, submitEvt) {
   send(loginURL, "document", {
     "Content-type": "application/x-www-form-urlencoded"
   }, postArray.join("&"), true).then(function(resp) {
-    var e, error1, t;
+    var e, t;
     console.timeEnd("Logging in");
     if (resp.responseURL.indexOf("Login") !== -1) {
       document.getElementById("loginIncorrect").style.display = "block";
@@ -251,8 +251,8 @@ dologin = function(val, submitEvt) {
       document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
       try {
         parse(resp.response);
-      } catch (error1) {
-        e = error1;
+      } catch (_error) {
+        e = _error;
         console.log(e);
         alert("Error parsing assignments. Is PCR on list or month view?");
       }
@@ -956,10 +956,6 @@ ripple = function(el) {
   });
 };
 
-if (localStorage["view"] != null) {
-  document.body.setAttribute("data-view", localStorage["view"]);
-}
-
 ref = document.querySelectorAll("#navTabs>li");
 for (j = 0, len = ref.length; j < len; j++) {
   tab = ref[j];
@@ -1122,6 +1118,13 @@ resize = function() {
     }
   }, 500);
 };
+
+if (localStorage["view"] != null) {
+  document.body.setAttribute("data-view", localStorage["view"]);
+  if (localStorage["view"] === "1") {
+    window.addEventListener("resize", resize);
+  }
+}
 
 ref2 = document.querySelectorAll("input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search]");
 for (l = 0, len2 = ref2.length; l < len2; l++) {

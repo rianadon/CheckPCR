@@ -902,11 +902,6 @@ And a function to apply an ink effect
         return
       return
 
-The view is set to what it was last.
-
-    if localStorage["view"]?
-      document.body.setAttribute "data-view", localStorage["view"]
-
 Then, the tabs are made interactive.
 
     for tab in document.querySelectorAll "#navTabs>li"
@@ -1014,6 +1009,13 @@ Therefore, a listener is attached to the resizing of the browser window.
         return
       , 500
       return
+
+The view is set to what it was last.
+
+    if localStorage["view"]?
+      document.body.setAttribute "data-view", localStorage["view"]
+      if localStorage["view"] is "1"
+        window.addEventListener "resize", resize
 
 Additionally, the active class needs to be added when inputs are selected (for the login box).
 
