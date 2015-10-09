@@ -20,6 +20,9 @@ $input-bg-color: #fff
 	-o-transform-origin: $args
 	transform-origin: $args
 
+input
+	color: inherit
+
 #login
 	position: fixed
 	top: calc(40vh - 130px)
@@ -219,7 +222,7 @@ form p:last-child
 		border: 2px solid $radio-empty-color
 		border-radius: 1px
 		margin-top: 2px
-		+transition(0.2s)
+		+transition(all 0.2s)
 
 [type="checkbox"]:checked
 	+ label:before

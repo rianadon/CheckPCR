@@ -13,11 +13,46 @@ $accent-color: #00AF49
 
 @import font
 
-=transition($properties...)
-	transition: $properties
-	-webkit-transition: $properties
-	-moz-transition: $properties
-	-o-transition: $properties
+//transition mixin adapted from http://log.vieron.net/articles/sass-mixins-for-vendor-prefixed-transitions-including-properties/
+
+@function prefix($property, $prefixes: webkit moz o ms)
+	$vendor-prefixed-properties: transform background-clip background-size
+	$result: ()
+	@each $prefix in $prefixes
+		@if index($vendor-prefixed-properties, $property)
+			$property: -#{$prefix}-#{$property}
+		$result: append($result, $property)
+	@return $result
+
+@function trans-prefix($transition, $prefix: moz)
+	$prefixed: ()
+	@each $trans in $transition
+		$prop-name: nth($trans, 1)
+		$vendor-prop-name: prefix($prop-name, $prefix)
+		@if length($trans)>1
+			$prop-vals: nth($trans, 2)
+			$prefixed: append($prefixed, $vendor-prop-name $prop-vals, comma)
+		@else
+			$prefixed: append($prefixed, $vendor-prop-name, comma)
+	@return $prefixed
+
+=transition($values...)
+	$transitions: ()
+	@each $declaration in $values
+		$length: length($declaration)
+		$trans: $declaration
+		@if $length > 1
+			$prop: nth($declaration, 1)
+			$prop-opts: ()
+			@for $i from 2 through $length
+				$prop-opts: append($prop-opts, nth($declaration, $i))
+			$trans: $prop, $prop-opts
+		$transitions: append($transitions, $trans, comma)
+	-webkit-transition: trans-prefix($transitions, webkit)
+	-moz-transition: trans-prefix($transitions, moz)
+	-o-transition: trans-prefix($transitions, o)
+	transition: $values
+
 =box-shadow($properties...)
 	box-shadow: $properties
 	-webkit-box-shadow: $properties
@@ -1400,7 +1435,7 @@ body.dark
 		color: #FFF
 		&>.title
 			color: #FFF
-		&>.range::before, &>.attachments::before,  &>small, &>.linked
+		&>.range::before, &>.attachments::before,	&>small, &>.linked
 			color: rgba(255,255,255,0.7)
 		&>.linked:hover
 			color: #FFF
