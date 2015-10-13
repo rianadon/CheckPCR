@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, athenaData, attachmentify, c, cc, closeNews, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, athenaData, attachmentify, c, cc, checkCommit, closeNews, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, lc, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -215,17 +215,12 @@ fetch = function() {
     });
   } else {
     send("/api/start", "json", null, null, true).then(function(resp) {
-      var t, up;
+      var t;
       console.debug("Fetching assignments:", resp.response.time);
       if (resp.response.login) {
         loginHeaders = resp.response.loginHeaders;
-        up = getCookie("userPass");
-        if (up === "") {
-          document.getElementById("loginBackground").style.display = "block";
-          document.getElementById("login").classList.add("active");
-        } else {
-          dologin(window.atob(up).split(":"));
-        }
+        document.getElementById("loginBackground").style.display = "block";
+        document.getElementById("login").classList.add("active");
       } else {
         console.log("Fetching assignments successful");
         t = Date.now();
@@ -295,7 +290,7 @@ dologin = function(val, submitEvt) {
     });
   } else {
     console.log(postArray);
-    send("/api/login", "json", {
+    send("/api/login?remember=" + (document.getElementById("remember").checked), "json", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
       var t;
@@ -306,9 +301,6 @@ dologin = function(val, submitEvt) {
         document.getElementById("login").classList.add("active");
         document.getElementById("loginBackground").style.display = "block";
       } else {
-        if (document.getElementById("remember").checked) {
-          setCookie("userPass", window.btoa(document.getElementById("username").value + ":" + document.getElementById("password").value), 14);
-        }
         t = Date.now();
         localStorage["lastUpdate"] = t;
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
@@ -562,13 +554,12 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function() {
-  var aa, already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, id, j, k, l, lastAssignments, len, len1, len2, len3, len4, len5, len6, link, main, month, n, name, nextSat, num, o, oldAssignment, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, s, separated, smallTag, span, spanRelative, split, start, startSun, taken, te, times, today, todayDiv, todaySE, tr, u, weekHeights, weekId, wk, year, z;
+  var aa, already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, h, id, j, k, l, lastAssignments, len, len1, len2, len3, len4, len5, len6, link, main, month, n, name, nextSat, num, o, oldAssignment, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   console.time("Displaying data");
   document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
   taken = {};
   today = Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24);
-  todayDiv = null;
   if (window.data.monthView) {
     start = Math.min.apply(Math, (function() {
       var j, len, ref, results;
@@ -630,7 +621,6 @@ display = function() {
       day = element("div", "day", null, "day");
       if (Math.floor((d - tzoff) / 1000 / 3600 / 24) === today) {
         day.classList.add("today");
-        todayDiv = day;
       }
       month = element("span", "month", months[d.getMonth()]);
       day.appendChild(month);
@@ -684,6 +674,9 @@ display = function() {
     }
     localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
   }
+  tdst = new Date();
+  tdst.setDate(tdst.getDate() - tdst.getDay());
+  todayWkId = "wk" + (tdst.getMonth()) + "-" + (tdst.getDate());
   weekHeights = {};
   previousAssignments = {};
   ref2 = document.getElementsByClassName("assignment");
@@ -794,7 +787,6 @@ display = function() {
         var a, req;
         a = element("a", [], attachment[0]);
         a.href = location.protocol === "chrome-extension:" ? "https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx" + attachment[1] : "/api/attachment" + attachment[1];
-        console.log(a.href);
         req = new XMLHttpRequest();
         req.open("HEAD", a.href);
         req.onload = function() {
@@ -929,12 +921,33 @@ display = function() {
     }
     assignment.remove();
   }
-  if (todayDiv != null) {
-    scroll = todayDiv.getBoundingClientRect().top + document.body.scrollTop - 112;
+  if (weekHeights[todayWkId] != null) {
+    h = 0;
+    sw = function(wkid) {
+      var ab, len7, ref6, results, x;
+      ref6 = wkid.substring(2).split("-");
+      results = [];
+      for (ab = 0, len7 = ref6.length; ab < len7; ab++) {
+        x = ref6[ab];
+        results.push(parseInt(x));
+      }
+      return results;
+    };
+    todayWk = sw(todayWkId);
+    for (wkId in weekHeights) {
+      val = weekHeights[wkId];
+      wk = sw(wkId);
+      if (wk[0] < todayWk[0] || (wk[0] === todayWk[0] && wk[1] < todayWk[1])) {
+        h += val;
+      }
+    }
+    scroll = h * 30 + 112 + 14;
     if (scroll < 50) {
       scroll = 0;
     }
-    window.scrollTo(0, scroll);
+    if (document.body.getAttribute("data-view") === "0") {
+      window.scrollTo(0, scroll);
+    }
   }
   if (document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0) {
     document.body.classList.add("noList");
@@ -1639,20 +1652,21 @@ fetch();
 
 if (location.protocol !== "chrome-extension:") {
   document.getElementById("brand").innerHTML = "Check PCR <b>Preview</b>";
+  lc = document.querySelector("#login .content");
   document.getElementById("login").classList.add("large");
-  document.getElementById("login").appendChild(element("span", [], "<b>This is a preview of the online version of Check PCR. This means that the online version is far from finished and several features are missing (e.g. Schoology integration and credential remembering). If you encounter any bugs, please report them to <a href='https://github.com/19RyanA/CheckPCR/issues'>GitHub</a>.</b>\nThe online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.\nIf you do not trust me to avoid stealing your credentials, you can use\n<a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.", "loginExtra"));
-  document.querySelector("#remember+label").style.display = "none";
-  document.getElementById("remember").style.display = "none";
+  lc.appendChild(element("span", [], "<b>This is a preview of the online version of Check PCR. This means that the online version is far from finished and several features are missing (e.g. Schoology integration). If you encounter any bugs, please report them to <a href='https://github.com/19RyanA/CheckPCR/issues'>GitHub</a>.</b>\nThe online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.\nIf you do not trust me to avoid stealing your credentials, you can use\n<a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.", "loginExtra"));
   up = document.getElementById("update");
+  upc = up.getElementsByClassName("content")[0];
   up.querySelector("h1").innerHTML = "A new update has been applied.";
-  ref9 = up.childNodes;
+  ref9 = upc.childNodes;
   for (af = ref9.length - 1; af >= 0; af += -1) {
     el = ref9[af];
     if (el.nodeType === 3 || el.tagName === "BR" || el.tagName === "CODE" || el.tagName === "A") {
       el.remove();
     }
   }
-  up.insertBefore(document.createTextNode("Because you are using the online version, the update has already been applied, so there is nothing you need to do."), up.querySelector("h2"));
+  upc.insertBefore(document.createTextNode("Because you are using the online version, the update has already been download. Click GOT IT to reload the page and apply the changes."), upc.querySelector("h2"));
+  lc.appendChild(element("div", [], "While this feature is very useful, it will store your credentials on the server's database. If you are uncomfortable with this, then unckeck the box to only have the servery proxy your credentials to PCR.", "storeAbout"));
   document.getElementById("updateDelay").style.display = "none";
   document.getElementById("updateIgnore").innerHTML = "GOT IT";
   document.getElementById("updateIgnore").style.right = "8px";
@@ -1817,10 +1831,8 @@ for (type in activityTypes) {
   fn1(type);
 }
 
-firstTime = !localStorage["commit"];
-
-(function() {
-  return send("https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master", "json").then(function(resp) {
+checkCommit = function() {
+  return send((location.protocol === "chrome-extension:" ? "https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master" : "/api/commit"), "json").then(function(resp) {
     var last;
     last = localStorage["commit"];
     c = resp.response.object.sha;
@@ -1839,7 +1851,7 @@ firstTime = !localStorage["commit"];
           return window.location.reload();
         }
       });
-      return send(resp.response.object.url, "json").then(function(resp) {
+      return send((location.protocol === "chrome-extension" ? resp.response.object.url : "/api/commit/" + c), "json").then(function(resp) {
         document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n") + 2).replace(/\* (.*?)(?=$|\n)/g, function(a, b) {
           return "<li>" + b + "</li>";
         }).replace(/>\n</g, "><").replace(/\n/g, "<br>");
@@ -1850,7 +1862,15 @@ firstTime = !localStorage["commit"];
   }, function(err) {
     return console.log("Could not access Github. Here's the error:", err);
   });
-})();
+};
+
+firstTime = !localStorage["commit"];
+
+if (location.protocol === "chrome-extension:" || firstTime) {
+  checkCommit();
+}
+
+window.applicationCache.addEventListener("updateready", checkCommit);
 
 document.getElementById("updateDelay").addEventListener("click", function() {
   document.getElementById("update").classList.remove("active");

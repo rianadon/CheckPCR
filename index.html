@@ -3,11 +3,17 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1, width=device-width"/>
-		<title>PCR viewer</title>
+		<title>Check PCR</title>
 		<link rel="stylesheet" type="text/css" href="/style.css" />
+		<!-- The wonderful long list of favicons -->
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="icon" href="/icon_16.png" sizes="16x16">
+		<link rel="icon" href="/icon_32.png" sizes="32x32">
+		<link rel="apple-touch-icon-precomposed" href="/favicon-152.png">
+		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/favicon-120.png">
+		<meta name="msapplication-TileColor" content="#FFFFFF">
+		<meta name="msapplication-TileImage" content="/favicon-144.png">
 	</head>
-</html>
 <body data-view="0">
 	<nav>
 		<div class="nav">
@@ -85,36 +91,40 @@
 	</div>
 	<form id="login">
 		<h1>Please log in to continue</h1>
-		<div id="loginIncorrect">
-			Incorrect Username or Password
+		<div class="content">
+			<div id="loginIncorrect">
+				Incorrect Username or Password
+			</div>
+			<div class="input-field">
+				<input id="username" type="text" autocomplete="off" tabindex="1">
+				<label for="username">Username</label>
+			</div>
+			<div class="input-field">
+				<input id="password" type="password" autocomplete="off" tabindex="2">
+				<label for="password">Password</label>
+			</div>
+			<input type="checkbox" id="remember" tabindex="3">
+			<label for="remember">Remember me</label>
 		</div>
-		<div class="input-field">
-			<input id="username" type="text" autocomplete="off" tabindex="1">
-			<label for="username">Username</label>
-		</div>
-		<div class="input-field">
-			<input id="password" type="password" autocomplete="off" tabindex="2">
-			<label for="password">Password</label>
-		</div>
-		<input type="checkbox" id="remember" tabindex="3">
-		<label for="remember">Remember me</label>
 		<input type="submit" value="OK" tabindex="4">
 	</form>
 	<div id="loginBackground"></div>
 	<div id="update">
 		<h1>A new update has been detected/installed.</h1>
-		If you have already installed it, please ignore this message.<br>
-		Otherwise, navigate to where you installed CheckPCR in a terminal and type <code>git pull</code> if you installed it using git.
-		If you installed it by downloading the zip file from <a href="https://github.com/19RyanA/CheckPCR">GitHub</a>, then do that again.
-		<h2>New features</h2>
-		<div id="updateFeatures"></div>
+		<div class="content">
+			If you have already installed it, please ignore this message.<br>
+			Otherwise, navigate to where you installed CheckPCR in a terminal and type <code>git pull</code> if you installed it using git.
+			If you installed it by downloading the zip file from <a href="https://github.com/19RyanA/CheckPCR">GitHub</a>, then do that again.
+			<h2>New features</h2>
+			<div id="updateFeatures"></div>
+		</div>
 		<button id="updateIgnore">IGNORE</button>
 		<button id="updateDelay">REMIND LATER</button>
 	</div>
 	<div id="updateBackground"></div>
 	<div id="news">
 		<h1>There's been news!</h1>
-		<div id="newsContent"></div>
+		<div id="newsContent" class="content"></div>
 		<button id="newsOk">OK</button>
 	</div>
 	<div id="newsBackground"></div>
@@ -185,3 +195,4 @@
 	<script src="/hammer.min.js"></script>
 	<script src="/client.js"></script>
 </body>
+</html>

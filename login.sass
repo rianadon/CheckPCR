@@ -31,7 +31,7 @@ input
 	margin: 0 auto
 	z-index: 7000
 	background: #FFF
-	padding: 24px 24px 24px+8px+36px+8px 24px
+	padding: 24px 0 24px+8px+36px+8px 0
 	width: 56px * 5
 	+transform(scale(0,0))
 	+box-shadow(0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21))
@@ -41,6 +41,7 @@ input
 		font-size: 20px
 		line-height: 1.1
 		font-weight: 500
+		padding: 0 24px
 	&.active
 		+transform(scale(1,1))
 		& + #loginBackground
@@ -60,16 +61,22 @@ input
 		position: absolute
 		bottom: 8px
 		right: 8px
-	&>.input-field:last-of-type
-		margin-bottom: 16px
+	&>.content
+		$offsetPx: 130px - 8px - 24px - 76px - 44px
+		max-height: calc(60vh + #{$offsetPx})
+		padding: 0 24px
+		overflow: auto
+		&>.input-field:last-of-type
+			margin-bottom: 16px
 	&.large
 		width: 480px
-		&>.input-field
-			margin-left: auto
-			margin-right: auto
-			width: 280px
-		&>label
-			margin-left: 76px
+		&>.content
+			&>.input-field
+				margin-left: auto
+				margin-right: auto
+				width: 280px
+			&>label
+				margin-left: 76px
 
 #loginBackground
 	z-index: 6000
@@ -86,6 +93,13 @@ input
 	&>b
 		display: block
 		margin-bottom: 8px
+
+#storeAbout
+	display: none
+	margin-left: 76px
+	margin-top: 8px
+	#remember:checked + label + &
+		display: block
 
 /* Everything below is adapted from Materialize */
 

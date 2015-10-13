@@ -62,7 +62,7 @@ input {
   margin: 0 auto;
   z-index: 7000;
   background: #FFF;
-  padding: 24px 24px 76px 24px;
+  padding: 24px 0 76px 0;
   width: 280px;
   -webkit-transform: scale(0, 0);
   -moz-transform: scale(0, 0);
@@ -80,7 +80,8 @@ input {
     margin: 0 0 20px 0;
     font-size: 20px;
     line-height: 1.1;
-    font-weight: 500; }
+    font-weight: 500;
+    padding: 0 24px; }
   #login.active, .active#update, .active#news {
     -webkit-transform: scale(1, 1);
     -moz-transform: scale(1, 1);
@@ -105,15 +106,19 @@ input {
     position: absolute;
     bottom: 8px;
     right: 8px; }
-  #login > .input-field:last-of-type, #update > .input-field:last-of-type, #news > .input-field:last-of-type {
-    margin-bottom: 16px; }
+  #login > .content, #update > .content, #news > .content {
+    max-height: calc(60vh + -22px);
+    padding: 0 24px;
+    overflow: auto; }
+    #login > .content > .input-field:last-of-type, #update > .content > .input-field:last-of-type, #news > .content > .input-field:last-of-type {
+      margin-bottom: 16px; }
   #login.large, .large#update, .large#news {
     width: 480px; }
-    #login.large > .input-field, .large#update > .input-field, .large#news > .input-field {
+    #login.large > .content > .input-field, .large#update > .content > .input-field, .large#news > .content > .input-field {
       margin-left: auto;
       margin-right: auto;
       width: 280px; }
-    #login.large > label, .large#update > label, .large#news > label {
+    #login.large > .content > label, .large#update > .content > label, .large#news > .content > label {
       margin-left: 76px; }
 
 #loginBackground {
@@ -131,6 +136,13 @@ input {
   #loginExtra > b {
     display: block;
     margin-bottom: 8px; }
+
+#storeAbout {
+  display: none;
+  margin-left: 76px;
+  margin-top: 8px; }
+  #remember:checked + label + #storeAbout {
+    display: block; }
 
 /* Everything below is adapted from Materialize */
 label {
