@@ -1030,10 +1030,6 @@ ripple = function(el) {
   });
 };
 
-if (localStorage["view"] != null) {
-  document.body.setAttribute("data-view", localStorage["view"]);
-}
-
 ref = document.querySelectorAll("#navTabs>li");
 for (j = 0, len = ref.length; j < len; j++) {
   tab = ref[j];
@@ -1196,6 +1192,13 @@ resize = function() {
     }
   }, 500);
 };
+
+if (localStorage["view"] != null) {
+  document.body.setAttribute("data-view", localStorage["view"]);
+  if (localStorage["view"] === "1") {
+    window.addEventListener("resize", resize);
+  }
+}
 
 ref2 = document.querySelectorAll("input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search]");
 for (l = 0, len2 = ref2.length; l < len2; l++) {
