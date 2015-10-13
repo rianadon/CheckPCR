@@ -1854,7 +1854,7 @@ checkCommit = function() {
           return window.location.reload();
         }
       });
-      return send((location.protocol === "chrome-extension" ? resp.response.object.url : "/api/commit/" + c), "json").then(function(resp) {
+      return send((location.protocol === "chrome-extension:" ? resp.response.object.url : "/api/commit/" + c), "json").then(function(resp) {
         document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n") + 2).replace(/\* (.*?)(?=$|\n)/g, function(a, b) {
           return "<li>" + b + "</li>";
         }).replace(/>\n</g, "><").replace(/\n/g, "<br>");

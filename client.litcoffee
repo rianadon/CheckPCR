@@ -1642,7 +1642,7 @@ For updating, a request will be send to Github to get the current commit id and 
                 , 350
               else
                 window.location.reload()
-            send (if location.protocol is "chrome-extension" then resp.response.object.url else "/api/commit/#{c}"), "json"
+            send (if location.protocol is "chrome-extension:" then resp.response.object.url else "/api/commit/#{c}"), "json"
               .then (resp) ->
                 document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n")+2).replace(/\* (.*?)(?=$|\n)/g, (a,b) -> "<li>#{b}</li>").replace(/>\n</g, "><").replace(/\n/g, "<br>")
                 document.getElementById("updateBackground").style.display = "block"

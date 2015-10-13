@@ -63,6 +63,4 @@ You'll just have to install the app to know.
 To Do
 -----
 
-- [ ] Button to log out of PCR
-- [ ] Switching between month and week view in-app
-- [ ] Moving Check PCR to a website
+See the wiki at https://github.com/19RyanA/CheckPCR/wiki.
