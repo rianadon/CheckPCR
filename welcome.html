@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html manifest="app.cache">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, width=device-width"/>
+		<title>Check PCR</title>
+		<link rel="stylesheet" type="text/css" href="/welcome.css" />
+		<!-- The wonderful long list of favicons -->
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="icon" href="/icon_16.png" sizes="16x16">
+		<link rel="icon" href="/icon_32.png" sizes="32x32">
+		<link rel="apple-touch-icon-precomposed" href="/favicon-152.png">
+		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/favicon-120.png">
+		<meta name="msapplication-TileColor" content="#FFFFFF">
+		<meta name="msapplication-TileImage" content="/favicon-144.png">
+	</head>
+<body>
+	<h1>Welcome to Check PCR.</h1>
+	<main data-view="0">
+		<section style="display: inline-block">
+			<p>
+				Well, at least you got here.<br>
+				Now, you're probably wondering what is <i>here</i>, unless you have done some research before entering a some url or downloading a an extension you've been told is helpful.
+			</p>
+			<p>
+				So, here's what this Check PCR is and what it does:
+			</p>
+			<figure>
+				<img src="icon.svg" class="svg" />
+				<figcaption>
+					Check PCR, as you can probably deduce by it's name, is an alternative interface to PCR. It's meant to simplify it, and aims to make checking homework something as easy as glancing at a screen rather than staring at it for several minutes.
+				</figcaption>
+			</figure><figure>
+				<img src="/images/check.png" />
+				<figcaption>
+					Also, as you can also tell its the name, Check PCR allows you to "check," or to check assignments off like a todo list, decluttering everything and improving glancability.
+				</figcaption>
+			</figure><figure>
+				<img src="/images/calendar.png" class="expand" />
+				<figcaption>
+					First of all, Check PCR builds on the interface that PCR has. Instead of using boxes, it uses thinner bars to denote your asignments, easily showing you all of your homework, classwork, and projects.
+				</figcaption>
+			</figure><figure>
+				<img src="images/list.png" class="expand" />
+				<figcaption>
+					Then, arguably the best feature, Check PCR has an interface called List view. List view displays all of your asignments assigned today or earlier and due today or later (pretty much everything you would have to worry about) laid out nicely on one page.
+				</figcaption>
+			</figure><figure>
+				<img src="images/wifi.svg" class="svg" />
+				<figcaption>
+					Whether you're online, offline, or have a very slow internet connection, Check PCR will instantly load a copy of your assignments from the last time you visited the page so you don't always have to keep a tab open.
+				</figcaption>
+			</figure><figure>
+				<img src="images/assignments.png" style="max-height:250px" />
+				<figcaption>
+					Check PCR has many more features, such as the ability to view upcoming tests and view recent changes to your homework. To see all of them, try it out!
+				</figcaption>
+			</figure><figure>
+				<img src="images/GitHub-Mark-120px-plus.png" />
+				<figcaption>
+					Check PCR's extension and frontend are open source and are hosted on <a href="https://www.github.com/19RyanA/CheckPCR">GitHub</a>. Feel free to modify them and maybe submit a pull request. Once I perfect the backend, I'll put that on GitHub too so you can host your modified copy of the website if you want.
+				</figcaption>
+			</figure>
+			<p>
+				I hope this gives you an idea of what Check PCR is all about. Now, for more important stuff.
+			</p>
+			<a class="next">Next</a>
+		</section><section>
+			<h2>A word on security</h2>
+			<p>
+				If you are using the extension, you can ignore all of this. Otherwise, please read the following notice.
+			</p>
+			<p>
+				Because of the way browsers work, webpages cannot access data from other domains unless under very special conditions.
+				This is because it would be dangerous for a malicious page to be able to read data from and send requests to websites such as your bank's while you are logged in (which is very bad for obvious reasons).
+			</p>
+			<p>
+				This is why Check PCR started off as a chrome extension. Chrome extensions can obtain special permissions to do things such as read and modify data on your current tab or read and modify data on specific websites.<br>
+				However, normal websites behave the way stated above. The only solution currently out there is to proxy data through the server hosting the online version (which means PCR's data is coming from the same domain as the online version).
+				This means that in order to proxy data from PCR thought the server, your credentials must be passed through it.
+			</p>
+			<p>
+				So, by submitting your credentials to this site, you are trusting me with the job of not stealing them. I can promise you a thousand times that I have no desire to go against Harker's values and steal your credentials, but it's your call.
+			</p>
+			<p>
+				If you are concerned about this, you can alternatively use the <a href="https://www.github.com/19RyanA/CheckPCR">Chrome extension</a>, which communicates directly with PCR instead of sending data through this server (you can review the source code to make sure of this). Because I chose not to publish it to the Chrome web store, it cannot update itself, so it can become a little annoying to redownload it when there are updates.<br>
+				However, it has all of the same features of the online version, so don't feel bad about using it instead.
+			</p>
+			<a class="next">Continue</a>
+		</section><section>
+			<h2>Please log in to continue</h2>
+			<form id="login" class="large">
+				<div class="content">
+					<div id="loginIncorrect">
+						Incorrect Username or Password
+					</div>
+					<div class="input-field">
+						<input id="username" type="text" autocomplete="off" tabindex="1">
+						<label for="username">Username</label>
+					</div>
+					<div class="input-field">
+						<input id="password" type="password" autocomplete="off" tabindex="2">
+						<label for="password">Password</label>
+					</div>
+					<input type="checkbox" id="remember" tabindex="3">
+					<label for="remember">Remember me</label>
+				</div>
+				<input type="submit" value="Log in" tabindex="4">
+			</form>
+		</section>
+	</main>
+	<div id="progress">
+		<div class="indeterminate"></div>
+	</div>
+	<script src="welcome.js"></script>
+</body>
+</html>

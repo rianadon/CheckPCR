@@ -5,6 +5,11 @@ if (window.location.protocol === "http:" && location.hostname !== "localhost") {
   window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
 }
 
+if ((localStorage["noWelcome"] == null) && (localStorage["commit"] == null)) {
+  localStorage["noWelcome"] = "true";
+  window.location = "welcome.html";
+}
+
 loginURL = "";
 
 loginHeaders = {};
@@ -179,7 +184,7 @@ fetch = function() {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-      var e, error1, j, len, ref, t, up;
+      var e, j, len, ref, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -203,8 +208,8 @@ fetch = function() {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (error1) {
-          e = error1;
+        } catch (_error) {
+          e = _error;
           console.log(e);
           alert("Error parsing assignments. Is PCR on list or month view?");
         }
@@ -263,7 +268,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, error1, t;
+      var e, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -279,8 +284,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (error1) {
-          e = error1;
+        } catch (_error) {
+          e = _error;
           console.log(e);
           alert("Error parsing assignments. Is PCR on list or month view?");
         }
@@ -1657,6 +1662,7 @@ if (location.protocol !== "chrome-extension:") {
   document.getElementById("brand").innerHTML = "Check PCR <b>Preview</b>";
   lc = document.querySelector("#login .content");
   document.getElementById("login").classList.add("large");
+  lc.appendChild(element("div", [], "While this feature is very useful, it will store your credentials on the server's database. If you are uncomfortable with this, then unckeck the box to only have the servery proxy your credentials to PCR.", "storeAbout"));
   lc.appendChild(element("span", [], "<b>This is a preview of the online version of Check PCR. This means that the online version is far from finished and several features are missing (e.g. Schoology integration). If you encounter any bugs, please report them to <a href='https://github.com/19RyanA/CheckPCR/issues'>GitHub</a>.</b>\nThe online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.\nIf you do not trust me to avoid stealing your credentials, you can use\n<a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.", "loginExtra"));
   up = document.getElementById("update");
   upc = up.getElementsByClassName("content")[0];
@@ -1669,7 +1675,6 @@ if (location.protocol !== "chrome-extension:") {
     }
   }
   upc.insertBefore(document.createTextNode("Because you are using the online version, the update has already been download. Click GOT IT to reload the page and apply the changes."), upc.querySelector("h2"));
-  lc.appendChild(element("div", [], "While this feature is very useful, it will store your credentials on the server's database. If you are uncomfortable with this, then unckeck the box to only have the servery proxy your credentials to PCR.", "storeAbout"));
   document.getElementById("updateDelay").style.display = "none";
   document.getElementById("updateIgnore").innerHTML = "GOT IT";
   document.getElementById("updateIgnore").style.right = "8px";

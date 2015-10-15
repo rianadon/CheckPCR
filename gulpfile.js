@@ -33,17 +33,20 @@ function exec(command, args, log, cb) {
 }
 
 gulp.task('coffee', function() {
-	gulp.src('client.litcoffee')
+	gulp.src(['client.litcoffee', 'welcome.litcoffee'])
 		.pipe(coffee({bare: true}).on('error', function(err) {gutil.log(err.toString());}))
 		.pipe(gulp.dest('./'));
 });
 gulp.task('sass', function () {
 	if(libSass) {
-		gulp.src('style.sass')
+		gulp.src(['style.sass', 'welcome.sass'])
 			.pipe(sass().on('error', sass.logError))
 			.pipe(gulp.dest('./'));
 	} else {
 		sass('style.sass')
+			.on('error', sass.logError)
+			.pipe(gulp.dest('./'));
+		sass('welcome.sass')
 			.on('error', sass.logError)
 			.pipe(gulp.dest('./'));
 	}
@@ -72,7 +75,7 @@ gulp.task('sass:watch', function () {
 	gulp.watch('*.sass', ['sass']);
 });
 gulp.task('coffee:watch', function() {
-	gulp.watch('client.litcoffee', ['coffee']);
+	gulp.watch('*.litcoffee', ['coffee']);
 });
 gulp.task('icon:watch', function() {
 	gulp.watch('icon.svg', ['icon']);

@@ -27,6 +27,12 @@ First of all, if the online version is used, the http version is redirected to h
     if window.location.protocol is "http:" and location.hostname isnt "localhost"
       window.location.href = "https:" + window.location.href.substring(window.location.protocol.length)
 
+Additionally, if it's the user's first time, the page is set to the welcome page.
+
+    if not localStorage["noWelcome"]? and not localStorage["commit"]?
+      localStorage["noWelcome"] = "true"
+      window.location = "welcome.html"
+
 Then we have most of the global variables.
 
     loginURL = ""
@@ -1459,6 +1465,7 @@ If the page is being viewed from the website, a couple changes need to be made.
       document.getElementById("brand").innerHTML = "Check PCR <b>Preview</b>"
       lc = document.querySelector("#login .content")
       document.getElementById("login").classList.add "large"
+      lc.appendChild element "div", [], "While this feature is very useful, it will store your credentials on the server's database. If you are uncomfortable with this, then unckeck the box to only have the servery proxy your credentials to PCR.", "storeAbout"
       lc.appendChild element "span", [],
         """<b>This is a preview of the online version of Check PCR. This means that the online version is far from finished and several features are missing (e.g. Schoology integration). If you encounter any bugs, please report them to <a href='https://github.com/19RyanA/CheckPCR/issues'>GitHub</a>.</b>
         The online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.
@@ -1470,9 +1477,6 @@ If the page is being viewed from the website, a couple changes need to be made.
       for el in upc.childNodes by -1
         el.remove() if el.nodeType is 3 or el.tagName is "BR" or el.tagName is "CODE" or el.tagName is "A"
       upc.insertBefore document.createTextNode("Because you are using the online version, the update has already been download. Click GOT IT to reload the page and apply the changes."), upc.querySelector("h2")
-      lc.appendChild(
-        element("div", [], "While this feature is very useful, it will store your credentials on the server's database. If you are uncomfortable with this, then unckeck the box to only have the servery proxy your credentials to PCR.", "storeAbout")
-      )
       document.getElementById("updateDelay").style.display = "none"
       document.getElementById("updateIgnore").innerHTML = "GOT IT"
       document.getElementById("updateIgnore").style.right = "8px"
