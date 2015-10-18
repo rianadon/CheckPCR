@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, athenaData, attachmentify, c, cc, checkCommit, closeNews, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastAthena, lc, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseDateHash, pe, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeNews, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -1160,7 +1160,7 @@ getResizeAssignments = function() {
 resize = function() {
   var assignment, assignments, col, columnHeights, columns, index, l, len2, len3, n, o, w, widths;
   widths = document.body.classList.contains("showInfo") ? [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800];
-  columns = null;
+  columns = 1;
   for (index = l = 0, len2 = widths.length; l < len2; index = ++l) {
     w = widths[index];
     if (window.innerWidth > w) {
@@ -1340,39 +1340,40 @@ updateAvatar = function() {
 
 updateAvatar();
 
-lastAthena = localStorage["lastAthena"] ? parseInt(localStorage["lastAthena"]) : 0;
-
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
-if (location.protocol === "chrome-extension:" && Date.now() - lastAthena >= 1000 * 3600 * 24 && (navigator.onLine || (navigator.onLine == null)) && (localStorage["noSchoology"] == null)) {
-  console.log("Updating classes from Athena");
-  send("https://athena.harker.org/iapi/course/active", "json").then(function(resp) {
-    var course, courseDetails, len3, n, o, ref3;
-    if (resp.responseURL.indexOf("login") !== -1) {
-      return console.log("Couldn't fetch courses from Athena because you're not logged in.");
-    } else {
-      athenaData = {};
-      localStorage["lastAthena"] = Date.now();
-      if (resp.response.response_code === 200) {
-        ref3 = resp.response.body.courses.courses;
-        for (n = o = 0, len3 = ref3.length; o < len3; n = ++o) {
-          course = ref3[n];
-          courseDetails = resp.response.body.courses.sections[n];
-          athenaData[course.course_title] = {
-            link: "https://athena.harker.org" + courseDetails.link,
-            logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg"),
-            period: courseDetails.section_title
-          };
-        }
-        return localStorage["athenaData"] = JSON.stringify(athenaData);
+parseAthenaData = function(dat) {
+  var athenaData2, course, courseDetails, d, e, len3, n, o, ref3;
+  if (dat === "") {
+    athenaData = null;
+    localStorage.removeItem("athenaData");
+  } else {
+    try {
+      d = JSON.parse(dat);
+      athenaData2 = {};
+      ref3 = d.body.courses.courses;
+      for (n = o = 0, len3 = ref3.length; o < len3; n = ++o) {
+        course = ref3[n];
+        courseDetails = d.body.courses.sections[n];
+        athenaData2[course.course_title] = {
+          link: "https://athena.harker.org" + courseDetails.link,
+          logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg"),
+          period: courseDetails.section_title
+        };
       }
+      athenaData = athenaData2;
+      localStorage["athenaData"] = JSON.stringify(athenaData);
+      document.getElementById("athenaDataError").style.display = "none";
+      document.getElementById("athenaDataRefresh").style.display = "block";
+      display();
+    } catch (_error) {
+      e = _error;
+      document.getElementById("athenaDataError").style.display = "block";
+      document.getElementById("athenaDataRefresh").style.display = "none";
+      document.getElementById("athenaDataError").innerHTML = e.message;
     }
-  }, function(error) {
-    if (!confirm("Please grant the extension permission to access Athena/Schoology.\nYou can do this by going to chrome://extensions then clicking the \"Reload\" button under Check PCR.\n\nIf you don't want Check PCR to access Schoology, click the cancel button. Otherwise, just click OK.")) {
-      return localStorage["noSchoology"] = "true";
-    }
-  });
-}
+  }
+};
 
 document.getElementById("settingsB").addEventListener("click", function() {
   document.getElementById("sideBackground").click();
@@ -1636,6 +1637,21 @@ for (ab = 0, len8 = ref8.length; ab < len8; ab++) {
   });
 }
 
+ref9 = document.getElementsByTagName("textarea");
+for (ae = 0, len9 = ref9.length; ae < len9; ae++) {
+  e = ref9[ae];
+  console.log(e.name);
+  if (localStorage[e.name] != null) {
+    e.value = localStorage[e.name];
+  }
+  e.addEventListener("input", function(evt) {
+    localStorage[evt.target.name] = evt.target.value;
+    if (evt.target.name === "athenaDataRaw") {
+      return parseAthenaData(evt.target.value);
+    }
+  });
+}
+
 done = [];
 
 if (localStorage["done"] != null) {
@@ -1648,8 +1664,8 @@ if (localStorage["data"] != null) {
   window.data = JSON.parse(localStorage["data"]);
   if (localStorage["activity"] != null) {
     activity = JSON.parse(localStorage["activity"]);
-    for (ae = 0, len9 = activity.length; ae < len9; ae++) {
-      act = activity[ae];
+    for (af = 0, len10 = activity.length; af < len10; af++) {
+      act = activity[af];
       addActivity(act[0], act[1], act[2]);
     }
   }
@@ -1659,17 +1675,16 @@ if (localStorage["data"] != null) {
 fetch();
 
 if (location.protocol !== "chrome-extension:") {
-  document.getElementById("brand").innerHTML = "Check PCR <b>Preview</b>";
   lc = document.querySelector("#login .content");
   document.getElementById("login").classList.add("large");
   lc.appendChild(element("div", [], "While this feature is very useful, it will store your credentials on the server's database. If you are uncomfortable with this, then unckeck the box to only have the servery proxy your credentials to PCR.", "storeAbout"));
-  lc.appendChild(element("span", [], "<b>This is a preview of the online version of Check PCR. This means that the online version is far from finished and several features are missing (e.g. Schoology integration). If you encounter any bugs, please report them to <a href='https://github.com/19RyanA/CheckPCR/issues'>GitHub</a>.</b>\nThe online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.\nIf you do not trust me to avoid stealing your credentials, you can use\n<a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.", "loginExtra"));
+  lc.appendChild(element("span", [], "The online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.\nIf you do not trust me to avoid stealing your credentials, you can use\n<a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.", "loginExtra"));
   up = document.getElementById("update");
   upc = up.getElementsByClassName("content")[0];
   up.querySelector("h1").innerHTML = "A new update has been applied.";
-  ref9 = upc.childNodes;
-  for (af = ref9.length - 1; af >= 0; af += -1) {
-    el = ref9[af];
+  ref10 = upc.childNodes;
+  for (ag = ref10.length - 1; ag >= 0; ag += -1) {
+    el = ref10[ag];
     if (el.nodeType === 3 || el.tagName === "BR" || el.tagName === "CODE" || el.tagName === "A") {
       el.remove();
     }
@@ -1893,11 +1908,11 @@ send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(
   nc = resp.response.history[0].version;
   window.getNews = function(onfail) {
     return send(resp.response.files["updates.htm"].raw_url).then(function(resp) {
-      var ag, len10, news, ref10;
+      var ah, len11, news, ref11;
       localStorage["newsCommit"] = nc;
-      ref10 = resp.responseText.split("<hr>");
-      for (ag = 0, len10 = ref10.length; ag < len10; ag++) {
-        news = ref10[ag];
+      ref11 = resp.responseText.split("<hr>");
+      for (ah = 0, len11 = ref11.length; ah < len11; ah++) {
+        news = ref11[ah];
         document.getElementById("newsContent").appendChild(element("div", "newsItem", news));
       }
       document.getElementById("newsBackground").style.display = "block";

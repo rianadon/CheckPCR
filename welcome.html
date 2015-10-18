@@ -14,9 +14,12 @@
 		<meta name="msapplication-TileColor" content="#FFFFFF">
 		<meta name="msapplication-TileImage" content="/favicon-144.png">
 	</head>
-<body>
-	<h1>Welcome to Check PCR.</h1>
-	<main data-view="0">
+<body data-view="0">
+	<h1>
+		Welcome to Check PCR.
+		<span id="step"></span>
+	</h1>
+	<main>
 		<section style="display: inline-block">
 			<p>
 				Well, at least you got here.<br>
@@ -107,6 +110,35 @@
 				</div>
 				<input type="submit" value="Log in" tabindex="4">
 			</form>
+		</section>
+		<section>
+			<h2>Set up Athena Integration</h2>
+			<p>
+				By connecting Check PCR with Athena, you can quickly navigate from an assignment to Athena by clicking the class name in either List view or in Calendar view (after clicking the assignment to expand it).<br>
+				Just go to <a href="https://athena.harker.org/iapi/course/active" target="_blank">https://athena.harker.org/iapi/course/active</a>, log in if you need to, and copy + paste everything here.
+			</p>
+			<p>
+				You can skip this step if you want as it is always configurable in the settings.
+			</p>
+			<table>
+				<tr>
+					<td>
+						<span id="athenaDataError" style="display: none"></span>
+						<textarea placeholder="Paste the data here." id="athenaData"></textarea>
+					</td>
+					<td>
+						<div class="assignment">
+							<a class="linked">
+								<span class="extra"></span>The class<img src="images/cursor.svg" id="cursor" /></a>
+								<span class="title">Integrate with Athena</span>
+								<a class="complete material-icons waves">done</a>
+								<div class="range">Today – Tomorrow</div>
+								<div class="body">As you can see, you can visit the Schoology page for this class by clicking "The class."</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<a class="next" href="/index.html">Finish</a>
 		</section>
 	</main>
 	<div id="progress">

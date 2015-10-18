@@ -200,7 +200,8 @@ input[type=date],
 input[type=datetime-local],
 input[type=tel],
 input[type=number],
-input[type=search] {
+input[type=search],
+textarea {
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #9E9E9E;
@@ -226,7 +227,8 @@ input[type=search] {
   input[type=datetime-local]:focus:not([readonly]),
   input[type=tel]:focus:not([readonly]),
   input[type=number]:focus:not([readonly]),
-  input[type=search]:focus:not([readonly]) {
+  input[type=search]:focus:not([readonly]),
+  textarea:focus:not([readonly]) {
     border-bottom: 1px solid #00AF49;
     box-shadow: 0 1px 0 0 #00AF49; }
   input[type=text]:focus:not([readonly]) + label,
@@ -238,7 +240,8 @@ input[type=search] {
   input[type=datetime-local]:focus:not([readonly]) + label,
   input[type=tel]:focus:not([readonly]) + label,
   input[type=number]:focus:not([readonly]) + label,
-  input[type=search]:focus:not([readonly]) + label {
+  input[type=search]:focus:not([readonly]) + label,
+  textarea:focus:not([readonly]) + label {
     color: #00AF49; }
   input[type=text] + label:after,
   input[type=password] + label:after,
@@ -249,7 +252,8 @@ input[type=search] {
   input[type=datetime-local] + label:after,
   input[type=tel] + label:after,
   input[type=number] + label:after,
-  input[type=search] + label:after {
+  input[type=search] + label:after,
+  textarea + label:after {
     display: block;
     content: "";
     position: absolute;
@@ -279,6 +283,17 @@ input[type=search] {
     -ms-transform: translateY(-22.4px);
     -o-transform: translateY(-22.4px);
     transform: translateY(-22.4px); }
+
+textarea {
+  width: 100%;
+  height: 3rem;
+  line-height: 1;
+  background-color: transparent;
+  padding: 2px 0;
+  margin-top: 8px;
+  margin-bottom: 0;
+  resize: none;
+  box-sizing: border-box; }
 
 /***************
  *	 Checkboxes
@@ -2275,6 +2290,16 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
           line-height: 14px;
           margin-top: 2px;
           color: rgba(0, 0, 0, 0.54); }
+      #settings > ul > li.infin {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        line-height: 16px; }
+        #settings > ul > li.infin > span {
+          display: block;
+          font-size: 14px;
+          line-height: 1.25;
+          margin-top: 2px;
+          color: rgba(0, 0, 0, 0.54); }
 
 .settingsContent {
   line-height: 1;
@@ -2335,6 +2360,19 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
         .colors > div > span > span:hover {
           border-width: 3px;
           border-color: rgba(255, 255, 255, 0.87); }
+
+#athenaData {
+  word-break: break-all; }
+
+#athenaDataError {
+  color: #F44336 !important;
+  margin-top: 8px !important; }
+  #athenaDataError::before {
+    content: "Encountered an error when parsing: "; }
+
+#athenaDataRefresh {
+  margin-top: 8px !important;
+  color: inherit !important; }
 
 #update, #news {
   width: 480px;

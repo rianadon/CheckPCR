@@ -1,17 +1,17 @@
-var attachmentify, display, dologin, element, findId, getCookie, input, j, k, len, len1, loginHeaders, loginURL, nextButton, parse, ref, ref1, send, setCookie, snackbar, urlify, viewData;
+var advance, attachmentify, display, dologin, element, findId, getCookie, input, j, k, len, len1, loginHeaders, loginURL, nextButton, parse, parseAthenaData, ref, ref1, send, setCookie, snackbar, urlify, viewData;
 
 ref = document.getElementsByClassName("next");
 for (j = 0, len = ref.length; j < len; j++) {
   nextButton = ref[j];
-  nextButton.addEventListener("click", function() {
+  nextButton.addEventListener("click", advance = function() {
     var container, npage, view;
-    container = document.querySelector("main");
+    container = document.body;
     view = +container.getAttribute("data-view");
     (npage = document.querySelector("section:nth-child(" + (view + 2) + ")")).style.display = "inline-block";
     npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(" + (view * 100) + "%)";
     container.setAttribute("data-view", view + 1);
     window.scrollTo(0, 0);
-    return setTimeout(function() {
+    setTimeout(function() {
       npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(" + (view + 1) + "00%)";
       return document.querySelector("section:nth-child(" + (view + 1) + ")").style.display = "none";
     }, 50);
@@ -33,6 +33,40 @@ for (k = 0, len1 = ref1.length; k < len1; k++) {
     }
   });
 }
+
+parseAthenaData = function(dat) {
+  var athenaData, athenaData2, course, courseDetails, d, e, l, len2, n, ref2;
+  if (dat === "") {
+    athenaData = null;
+    localStorage.removeItem("athenaData");
+  } else {
+    try {
+      d = JSON.parse(dat);
+      athenaData2 = {};
+      ref2 = d.body.courses.courses;
+      for (n = l = 0, len2 = ref2.length; l < len2; n = ++l) {
+        course = ref2[n];
+        courseDetails = d.body.courses.sections[n];
+        athenaData2[course.course_title] = {
+          link: "https://athena.harker.org" + courseDetails.link,
+          logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg"),
+          period: courseDetails.section_title
+        };
+      }
+      athenaData = athenaData2;
+      localStorage["athenaData"] = JSON.stringify(athenaData);
+      document.getElementById("athenaDataError").style.display = "none";
+    } catch (_error) {
+      e = _error;
+      document.getElementById("athenaDataError").style.display = "block";
+      document.getElementById("athenaDataError").innerHTML = e.message;
+    }
+  }
+};
+
+document.getElementById("athenaData").addEventListener("input", function(evt) {
+  return parseAthenaData(evt.target.value);
+});
 
 loginURL = "";
 
@@ -287,7 +321,7 @@ findId = function(element, tag, id) {
 };
 
 parse = function(doc) {
-  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, l, len2, len3, len4, len5, m, n, o, p, pos, range, ref2, ref3, t, title;
+  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, l, len2, len3, len4, len5, m, o, p, pos, q, range, ref2, ref3, t, title;
   console.time("Handling data");
   handledDataShort = [];
   window.data = {
@@ -306,8 +340,8 @@ parse = function(doc) {
     window.data.classes.push(c.innerHTML);
   }
   assignments = doc.getElementsByClassName("rsApt rsAptSimple");
-  for (n = 0, len4 = assignments.length; n < len4; n++) {
-    ca = assignments[n];
+  for (o = 0, len4 = assignments.length; o < len4; o++) {
+    ca = assignments[o];
     assignment = {};
     range = findId(ca, "span", "StartingOn").innerHTML.split(" - ");
     assignment.start = Math.floor((Date.parse(range[0])) / 1000 / 3600 / 24);
@@ -316,7 +350,7 @@ parse = function(doc) {
     title = t.innerHTML;
     b = t.parentNode.parentNode;
     divs = b.getElementsByTagName("div");
-    for (d = o = 0; o < 2; d = ++o) {
+    for (d = p = 0; p < 2; d = ++p) {
       divs[0].remove();
     }
     ap = attachmentify(b);
@@ -325,7 +359,7 @@ parse = function(doc) {
     assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
     assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "");
     ref3 = window.data.classes;
-    for (pos = p = 0, len5 = ref3.length; p < len5; pos = ++p) {
+    for (pos = q = 0, len5 = ref3.length; q < len5; pos = ++q) {
       c = ref3[pos];
       if (title.indexOf(c) !== -1) {
         assignment["class"] = pos;
@@ -377,13 +411,7 @@ parse = function(doc) {
         console.log("Fetching assignments successful");
         t = Date.now();
         localStorage["lastUpdate"] = t;
-        try {
-          parse(resp.response);
-        } catch (_error) {
-          e = _error;
-          console.log(e);
-          alert("Error parsing assignments. Is PCR on list or month view?");
-        }
+        alert("Have you used Check PCR already?\nIf you have, you won't be able to log in from here.");
       }
     }, function(error) {
       console.log("Could not fetch assignments; You are probably offline. Here's the error:", error);
@@ -405,8 +433,8 @@ parse = function(doc) {
         t = Date.now();
         localStorage["lastUpdate"] = t;
         window.data = resp.response.data;
-        display();
         localStorage["data"] = JSON.stringify(data);
+        alert("Have you used Check PCR already?\nIf you have, you won't be able to log in from here.");
       }
     }, function(error) {
       console.log("Could not fetch assignments; You are probably offline. Here's the error:", error);
@@ -415,6 +443,4 @@ parse = function(doc) {
   }
 })();
 
-display = function() {
-  return window.location = "index.html";
-};
+display = advance;

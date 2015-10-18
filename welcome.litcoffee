@@ -8,10 +8,10 @@ Also, if you haven't noticed yet, I'm trying my best to use the word welcome as 
 First off, the buttons big, green, welcoming buttons on the bottom of the welcome page are assigned event listeners so that they can make the page show more welcoming information.
 
     for nextButton in document.getElementsByClassName "next"
-      nextButton.addEventListener "click", ->
+      nextButton.addEventListener "click", advance = ->
         # The box holding the individual pages that ge scrolled
         # when pressing the "next" button is assigned to a varialbe.
-        container = document.querySelector("main")
+        container = document.body
         # show the next page
         view = +container.getAttribute("data-view")
         (npage = document.querySelector("section:nth-child(#{view+2})")).style.display = "inline-block"
@@ -24,6 +24,7 @@ First off, the buttons big, green, welcoming buttons on the bottom of the welcom
           npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(#{view+1}00%)"
           document.querySelector("section:nth-child(#{view+1})").style.display = "none"
         , 50
+        return
 
 Additionally, the active class needs to be added when text fields are selected (for the login box) [copied from main script].
 
@@ -35,6 +36,40 @@ Additionally, the active class needs to be added when text fields are selected (
       input.addEventListener "blur", (evt) ->
         if evt.target.value.length is 0
           evt.target.parentNode.querySelector("label").classList.remove "active"
+
+When there is an error with parsing the data for Athena, a welcoming warning needs to be displayed (and the data needs to be saved too).
+
+This code below is copied from the main script with two unwelcome lines commented out.
+
+    parseAthenaData = (dat) ->
+      if dat is ""
+        athenaData = null
+        localStorage.removeItem "athenaData"
+      else
+        try
+          d = JSON.parse dat
+          athenaData2 = {}
+          for course,n in d.body.courses.courses
+            courseDetails = d.body.courses.sections[n]
+            athenaData2[course.course_title] =
+              link: "https://athena.harker.org"+courseDetails.link
+              logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg")
+              period: courseDetails.section_title
+          athenaData = athenaData2
+          localStorage["athenaData"] = JSON.stringify athenaData
+          document.getElementById("athenaDataError").style.display = "none"
+          #document.getElementById("athenaDataRefresh").style.display = "block"
+          #display()
+        catch e
+          document.getElementById("athenaDataError").style.display = "block"
+          #document.getElementById("athenaDataRefresh").style.display = "none"
+          document.getElementById("athenaDataError").innerHTML = e.message
+      return
+
+The text box also needs to execute this function when anything is typed / pasted.
+
+    document.getElementById("athenaData").addEventListener "input", (evt) ->
+      parseAthenaData evt.target.value
 
 To avoid some unwelcoming errors, some constants are defined.
 
@@ -351,11 +386,12 @@ A slightly modified fetch function is then called
               t = Date.now()
               localStorage["lastUpdate"] = t
               # document.getElementById("lastUpdate").innerHTML = formatUpdate t
-              try
-                parse resp.response
-              catch e
-                console.log e
-                alert "Error parsing assignments. Is PCR on list or month view?"
+              # try
+              #   parse resp.response
+              # catch e
+              #   console.log e
+              #   alert "Error parsing assignments. Is PCR on list or month view?"
+              alert "Have you used Check PCR already?\nIf you have, you won't be able to log in from here."
             return
           , (error) ->
             console.log "Could not fetch assignments; You are probably offline. Here's the error:", error
@@ -381,15 +417,14 @@ A slightly modified fetch function is then called
               # document.getElementById("lastUpdate").innerHTML = formatUpdate t
 
               window.data = resp.response.data
-              display()
               localStorage["data"] = JSON.stringify(data)
+              alert "Have you used Check PCR already?\nIf you have, you won't be able to log in from here."
             return
           , (error) ->
             console.log "Could not fetch assignments; You are probably offline. Here's the error:", error
             snackbar "Could not fetch your assignments", "Retry", fetch
       return
 
-The display function is defined so there aren't any unwelcoming errors.
+The display function is set to advance the setup proccess so there aren't any unwelcoming errors.
 
-    display = ->
-      window.location = "index.html"
+    display = advance

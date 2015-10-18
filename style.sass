@@ -1158,6 +1158,17 @@ $scale: 15
 					line-height: 14px
 					margin-top: 2px
 					color: rgba(0,0,0,0.54)
+			&.infin
+				padding-top: 20px
+				padding-bottom: 20px
+				line-height: 16px
+				&>span
+					display: block
+					font-size: 14px
+					line-height: 1.25
+					margin-top: 2px
+					color: rgba(0,0,0,0.54)
+
 
 .settingsContent
 	line-height: 1
@@ -1212,6 +1223,19 @@ $scale: 15
 				&:hover
 					border-width: 3px
 					border-color: rgba(255,255,255,0.87)
+
+#athenaData
+	word-break: break-all
+
+#athenaDataError
+	color: #F44336 !important
+	margin-top: 8px !important
+	&::before
+		content: "Encountered an error when parsing: "
+
+#athenaDataRefresh
+	margin-top: 8px !important
+	color: inherit !important
 
 #update
 	@extend #login

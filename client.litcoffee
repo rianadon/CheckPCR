@@ -281,7 +281,7 @@ Now, we have the function that will log us into PCR.
           .then (resp) ->
             console.timeEnd "Logging in"
             if resp.responseURL.indexOf("Login") isnt -1
-              # If PCR still wants us to log in, then the username or password enterred were incorrect.
+              # If PCR still wants us to log in, then the username or password entered were incorrect.
               document.getElementById("loginIncorrect").style.display = "block"
               document.getElementById("password").value = ""
 
@@ -309,7 +309,7 @@ Now, we have the function that will log us into PCR.
           .then (resp) ->
             console.debug "Logging in:",resp.response.time
             if resp.response.login
-              # If PCR still wants us to log in, then the username or password enterred were incorrect.
+              # If PCR still wants us to log in, then the username or password entered were incorrect.
               document.getElementById("loginIncorrect").style.display = "block"
               document.getElementById("password").value = ""
 
@@ -1057,7 +1057,7 @@ Therefore, a listener is attached to the resizing of the browser window.
     resize = ->
       #To calculate the number of columns, the below algorithm is used becase as the screen size increases, the column width increases
       widths = if document.body.classList.contains "showInfo" then [650,1100,1800,2700,3800,5100] else [350,800,1500,2400,3500,4800]
-      columns = null
+      columns = 1
       for w,index in widths
         columns = index+1 if window.innerWidth > w
       columnHeights = (0 for [0...columns])
@@ -1231,32 +1231,35 @@ Athena (Schoology)
 Now, there's the schoology/athena integration stuff.
 First, we need to check if it's been more than a day. There's no point constantly retrieving classes from Athena; they dont't change that much.
 
-    lastAthena = if localStorage["lastAthena"] then parseInt(localStorage["lastAthena"]) else 0
     athenaData = if localStorage["athenaData"]? then JSON.parse(localStorage["athenaData"]) else null
 
 Then, once the variable for the last date is initialized, it's time to get the classes from athena.
 Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any better! Seriously! It's just too bad the login page isn't in JSON.
 
-    if location.protocol is "chrome-extension:" and Date.now()-lastAthena >= 1000*3600*24 and (navigator.onLine or not navigator.onLine?) and not localStorage["noSchoology"]?
-      console.log "Updating classes from Athena"
-      send "https://athena.harker.org/iapi/course/active", "json"
-        .then (resp) ->
-          if resp.responseURL.indexOf("login") isnt -1
-            console.log "Couldn't fetch courses from Athena because you're not logged in."
-          else
-            athenaData = {}
-            localStorage["lastAthena"] = Date.now()
-            if resp.response.response_code is 200 # Just to make sure
-              for course,n in resp.response.body.courses.courses
-                courseDetails = resp.response.body.courses.sections[n]
-                athenaData[course.course_title] =
-                  link: "https://athena.harker.org"+courseDetails.link
-                  logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg")
-                  period: courseDetails.section_title
-              localStorage["athenaData"] = JSON.stringify athenaData
-        , (error) ->
-          if not confirm "Please grant the extension permission to access Athena/Schoology.\nYou can do this by going to chrome://extensions then clicking the \"Reload\" button under Check PCR.\n\nIf you don't want Check PCR to access Schoology, click the cancel button. Otherwise, just click OK."
-            localStorage["noSchoology"] = "true"
+    parseAthenaData = (dat) ->
+      if dat is ""
+        athenaData = null
+        localStorage.removeItem "athenaData"
+      else
+        try
+          d = JSON.parse dat
+          athenaData2 = {}
+          for course,n in d.body.courses.courses
+            courseDetails = d.body.courses.sections[n]
+            athenaData2[course.course_title] =
+              link: "https://athena.harker.org"+courseDetails.link
+              logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg")
+              period: courseDetails.section_title
+          athenaData = athenaData2
+          localStorage["athenaData"] = JSON.stringify athenaData
+          document.getElementById("athenaDataError").style.display = "none"
+          document.getElementById("athenaDataRefresh").style.display = "block"
+          display()
+        catch e
+          document.getElementById("athenaDataError").style.display = "block"
+          document.getElementById("athenaDataRefresh").style.display = "none"
+          document.getElementById("athenaDataError").innerHTML = e.message
+      return
 
 <a name="settings"/>
 Settings
@@ -1429,6 +1432,17 @@ This also needs to be done for radio buttons
           document.getElementById("classColors").style.display = "none"
         updateColors()
 
+The same goes for textareas.
+
+    for e in document.getElementsByTagName("textarea")
+      console.log e.name
+      if localStorage[e.name]?
+        e.value = localStorage[e.name]
+      e.addEventListener "input", (evt) ->
+        localStorage[evt.target.name] = evt.target.value
+        if evt.target.name is "athenaDataRaw"
+          parseAthenaData evt.target.value
+
 <a name="starting"/>
 Starting everything
 -------------------
@@ -1462,13 +1476,11 @@ Now, we load the saved assignments (if any) and fetch the current assignments fr
 If the page is being viewed from the website, a couple changes need to be made.
 
     if location.protocol isnt "chrome-extension:"
-      document.getElementById("brand").innerHTML = "Check PCR <b>Preview</b>"
       lc = document.querySelector("#login .content")
       document.getElementById("login").classList.add "large"
       lc.appendChild element "div", [], "While this feature is very useful, it will store your credentials on the server's database. If you are uncomfortable with this, then unckeck the box to only have the servery proxy your credentials to PCR.", "storeAbout"
       lc.appendChild element "span", [],
-        """<b>This is a preview of the online version of Check PCR. This means that the online version is far from finished and several features are missing (e.g. Schoology integration). If you encounter any bugs, please report them to <a href='https://github.com/19RyanA/CheckPCR/issues'>GitHub</a>.</b>
-        The online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.
+        """The online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.
         If you do not trust me to avoid stealing your credentials, you can use
         <a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.""", "loginExtra"
       up = document.getElementById("update")
