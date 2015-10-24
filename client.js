@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeNews, closeOpened, color, d, dateString, display, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeNews, closeOpened, color, d, dateString, display, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -35,6 +35,8 @@ scroll = 0;
 viewData = {};
 
 activity = [];
+
+dmp = new diff_match_patch();
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -559,7 +561,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function() {
-  var aa, already, assignment, attachment, attachments, close, complete, d, date, day, dayTable, e, end, fn, fn1, found, h, id, j, k, l, lastAssignments, len, len1, len2, len3, len4, len5, len6, link, main, month, n, name, nextSat, num, o, oldAssignment, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var aa, ab, added, already, assignment, attachment, attachments, body, close, complete, d, date, day, dayTable, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, len, len1, len2, len3, len4, len5, len6, len7, link, m, main, month, n, name, nextSat, num, o, oldAssignment, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   console.time("Displaying data");
   document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
@@ -662,6 +664,7 @@ display = function() {
           found = true;
           if (oldAssignment.body !== assignment.body) {
             addActivity("edit", assignment, true);
+            delete modified[assignment.id];
           }
           lastAssignments.splice(num, 1);
           break;
@@ -676,8 +679,12 @@ display = function() {
     for (q = 0, len3 = lastAssignments.length; q < len3; q++) {
       assignment = lastAssignments[q];
       addActivity("delete", assignment, true);
+      done.splice(done.indexOf(assignment.id, 1));
+      delete modified[assignment.id];
     }
     localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
+    localStorage["done"] = JSON.stringify(done);
+    localStorage["modified"] = JSON.stringify(modified);
   }
   tdst = new Date();
   tdst.setDate(tdst.getDate() - tdst.getDay());
@@ -743,6 +750,66 @@ display = function() {
       }
     });
   };
+  fn1 = function(id) {
+    return edit.addEventListener("mouseup", function(evt) {
+      var done, el, remove;
+      if (evt.which === 1) {
+        el = evt.target;
+        while (!el.classList.contains("editAssignment")) {
+          el = el.parentNode;
+        }
+        remove = el.classList.contains("active");
+        el.classList.toggle("active");
+        el.parentNode.querySelector(".body").setAttribute("contentEditable", remove ? "false" : "true");
+        if (!remove) {
+          el.parentNode.querySelector(".body").focus();
+        }
+        done = el.parentNode.querySelector(".complete");
+        done.style.display = remove ? "block" : "none";
+      }
+    });
+  };
+  fn2 = function(b, ad, di, ed, id) {
+    return body.addEventListener("input", function(evt) {
+      var aa, additions, deletions, diff, len6;
+      modified[id] = evt.target.innerHTML;
+      localStorage["modified"] = JSON.stringify(modified);
+      d = dmp.diff_main(b, evt.target.innerHTML);
+      dmp.diff_cleanupSemantic(d);
+      additions = 0;
+      deletions = 0;
+      for (aa = 0, len6 = d.length; aa < len6; aa++) {
+        diff = d[aa];
+        if (diff[0] === 1) {
+          additions++;
+        }
+        if (diff[0] === -1) {
+          deletions++;
+        }
+      }
+      ad.innerHTML = additions !== 0 ? "+" + additions : "";
+      di.innerHTML = deletions !== 0 ? "-" + deletions : "";
+      if (additions !== 0 || deletions !== 0) {
+        ed.classList.add("notEmpty");
+      } else {
+        ed.classList.remove("notEmpty");
+      }
+      if (document.body.getAttribute("data-view") === "1") {
+        return resize();
+      }
+    });
+  };
+  fn3 = function(b, bd, ed, id) {
+    return restore.addEventListener("click", function() {
+      delete modified[id];
+      localStorage["modified"] = JSON.stringify(modified);
+      bd.innerHTML = b;
+      ed.classList.remove("notEmpty");
+      if (document.body.getAttribute("data-view") === "1") {
+        return resize();
+      }
+    });
+  };
   for (z = 0, len5 = split.length; z < len5; z++) {
     s = split[z];
     assignment = window.data.assignments[s.assignment];
@@ -756,7 +823,7 @@ display = function() {
       link = athenaData[window.data.classes[assignment["class"]]].link;
       smallTag = "a";
     }
-    e = element("div", ["assignment", assignment.baseType, "anim"], "<" + smallTag + (link != null ? " href='" + link + "' class='linked'" : "") + "><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</" + smallTag + "><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + assignment.end + "' />", assignment.id + weekId);
+    e = element("div", ["assignment", assignment.baseType, "anim"], "<" + smallTag + (link != null ? " href='" + link + "' class='linked' target='_blank'" : "") + "><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</" + smallTag + "><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + assignment.end + "' />", assignment.id + weekId);
     if (ref3 = assignment.id, indexOf.call(done, ref3) >= 0) {
       e.classList.add("done");
     }
@@ -781,6 +848,10 @@ display = function() {
     id = assignment.id;
     fn(id);
     e.appendChild(complete);
+    edit = element("a", ["editAssignment", "material-icons", "waves"], "edit");
+    fn1(id);
+    ripple(edit);
+    e.appendChild(edit);
     start = new Date(assignment.start * 1000 * 3600 * 24 + tzoff);
     end = new Date(assignment.end * 1000 * 3600 * 24 + tzoff);
     times = element("div", "range", assignment.start === assignment.end ? dateString(start) : (dateString(start)) + " &ndash; " + (dateString(end)));
@@ -788,7 +859,7 @@ display = function() {
     if (assignment.attachments.length > 0) {
       attachments = element("div", "attachments");
       ref4 = assignment.attachments;
-      fn1 = function(attachment) {
+      fn4 = function(attachment) {
         var a, req;
         a = element("a", [], attachment[0]);
         a.href = location.protocol === "chrome-extension:" ? "https://webappsca.pcrsoft.com/Clue/Common/AttachmentRender.aspx" + attachment[1] : "/api/attachment" + attachment[1];
@@ -812,11 +883,38 @@ display = function() {
       };
       for (aa = 0, len6 = ref4.length; aa < len6; aa++) {
         attachment = ref4[aa];
-        fn1(attachment);
+        fn4(attachment);
       }
       e.appendChild(attachments);
     }
-    e.appendChild(element("div", "body", assignment.body));
+    body = element("div", "body", assignment.body);
+    edits = element("div", "edits", "<span class='additions'></span><span class='deletions'></span>");
+    if ((m = modified[assignment.id]) != null) {
+      d = dmp.diff_main(assignment.body, m);
+      dmp.diff_cleanupSemantic(d);
+      if (d.length !== 0) {
+        added = 0;
+        deleted = 0;
+        for (ab = 0, len7 = d.length; ab < len7; ab++) {
+          diff = d[ab];
+          if (diff[0] === 1) {
+            added++;
+          }
+          if (diff[0] === -1) {
+            deleted++;
+          }
+        }
+        edits.querySelector(".additions").innerHTML = added !== 0 ? "+" + added : "";
+        edits.querySelector(".deletions").innerHTML = deleted !== 0 ? "-" + deleted : "";
+        edits.classList.add("notEmpty");
+      }
+    }
+    fn2(assignment.body, edits.querySelector(".additions"), edits.querySelector(".deletions"), edits, assignment.id);
+    e.appendChild(body);
+    restore = element("a", ["material-icons", "restore"], "settings_backup_restore");
+    fn3(assignment.body, body, edits, assignment.id);
+    edits.appendChild(restore);
+    e.appendChild(edits);
     if (start < s.start) {
       e.classList.add("fromWeekend");
     }
@@ -913,7 +1011,10 @@ display = function() {
     already = document.getElementById(assignment.id + weekId);
     if (already != null) {
       already.style.marginTop = e.style.marginTop;
-      already.getElementsByClassName("body")[0].innerHTML = e.getElementsByClassName("body")[0].innerHTML;
+      if (modified[assignment.id] == null) {
+        already.getElementsByClassName("body")[0].innerHTML = e.getElementsByClassName("body")[0].innerHTML;
+      }
+      already.querySelector(".edits").className = e.querySelector(".edits").className;
     } else {
       wk.appendChild(e);
     }
@@ -929,11 +1030,11 @@ display = function() {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var ab, len7, ref6, results, x;
+      var ae, len8, ref6, results, x;
       ref6 = wkid.substring(2).split("-");
       results = [];
-      for (ab = 0, len7 = ref6.length; ab < len7; ab++) {
-        x = ref6[ab];
+      for (ae = 0, len8 = ref6.length; ae < len8; ae++) {
+        x = ref6[ae];
         results.push(parseInt(x));
       }
       return results;
@@ -959,7 +1060,7 @@ display = function() {
   }
   if (document.body.getAttribute("data-view") === "1") {
     resize();
-    setTimeout(resize, 300);
+    setTimeout(resize, 1000);
   }
   return console.timeEnd("Displaying data");
 };
@@ -989,20 +1090,18 @@ document.getElementById("background").addEventListener("click", closeOpened);
 
 ripple = function(el) {
   el.addEventListener("mousedown", function(evt) {
-    var e, size, target, wave, x, y;
+    var e, rect, size, target, wave, x, y;
     if (evt.which === 1) {
       target = evt.target.classList.contains("wave") ? evt.target.parentNode : evt.target;
       wave = element("span", "wave");
       size = Math.max(parseInt(target.offsetWidth), parseInt(target.offsetHeight));
       wave.style.width = wave.style.height = size + "px";
       e = evt.target;
-      x = evt.pageX;
-      y = evt.pageY;
-      while (e) {
-        x -= e.offsetLeft;
-        y -= e.offsetTop;
-        e = e.offsetParent;
-      }
+      x = evt.clientX;
+      y = evt.clientY;
+      rect = e.getBoundingClientRect();
+      x -= rect.left;
+      y -= rect.top;
       wave.style.top = y - size / 2 + "px";
       wave.style.left = x - size / 2 + "px";
       target.appendChild(wave);
@@ -1195,7 +1294,7 @@ resize = function() {
       assignment.style.top = columnHeights[col] + "px";
       columnHeights[col] += assignment.offsetHeight + 24;
     }
-  }, 500);
+  }, 700);
 };
 
 if (localStorage["view"] != null) {
@@ -1656,6 +1755,12 @@ done = [];
 
 if (localStorage["done"] != null) {
   done = JSON.parse(localStorage["done"]);
+}
+
+modified = {};
+
+if (localStorage["modified"] != null) {
+  modified = JSON.parse(localStorage["modified"]);
 }
 
 document.getElementById("lastUpdate").innerHTML = localStorage["lastUpdate"] != null ? formatUpdate(localStorage["lastUpdate"]) : "Never";

@@ -1251,6 +1251,8 @@ body[data-view="1"] .week {
     position: absolute;
     z-index: 300;
     border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
     background-color: #00AF49;
     top: 217px;
     left: 24px;
@@ -1273,6 +1275,12 @@ body[data-view="1"] .week {
     .assignment > .complete:hover {
       background-color: #00963E;
       color: rgba(255, 255, 255, 0.9); }
+  .assignment > .edits {
+    margin-bottom: 8px;
+    padding-right: 48px;
+    text-align: right;
+    display: none;
+    position: relative; }
   .assignment.done > .complete {
     color: rgba(255, 255, 255, 0.3);
     background-color: #00642A;
@@ -1280,6 +1288,29 @@ body[data-view="1"] .week {
     .assignment.done > .complete:hover {
       background-color: #007D34;
       color: rgba(255, 255, 255, 0.4); }
+  .assignment > .editAssignment {
+    color: rgba(0, 0, 0, 0.54);
+    opacity: 0;
+    display: inline-block;
+    position: absolute;
+    z-index: 300;
+    top: 245px;
+    right: 0;
+    padding: 8px;
+    width: 40px;
+    height: 40px;
+    will-change: color;
+    -webkit-transition: color 0.3s ease;
+    -moz-transition: color 0.3s ease;
+    -o-transition: color 0.3s ease;
+    transition: color 0.3s ease;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%; }
+    .assignment > .editAssignment:hover {
+      color: rgba(0, 0, 0, 0.87); }
+    .assignment > .editAssignment > .wave, .assignment > .editAssignment.active {
+      background-color: rgba(0, 0, 0, 0.2); }
   .assignment > .range, .assignment > .attachments {
     display: none;
     margin: 30px 32px 0 30px;
@@ -1377,7 +1408,8 @@ body[data-view="1"] .week {
       color: #009688; }
   .assignment > .body {
     white-space: normal;
-    padding: 16px;
+    padding: 8px;
+    margin: 8px;
     font-weight: initial;
     line-height: 1.5;
     display: none;
@@ -1395,6 +1427,10 @@ body[data-view="1"] .week {
       @media only screen and (max-width: 600px) {
         .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #news > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body #news > button, .assignment > .body .tabs > li {
           max-width: calc(100vw - 60px); } }
+    .assignment > .body[contentEditable="true"] {
+      outline: 1px solid rgba(0, 175, 73, 0.5); }
+      .assignment > .body[contentEditable="true"]:focus {
+        outline-color: #00AF49; }
   .assignment.modify {
     position: fixed; }
   .assignment:not(.modify)::before {
@@ -1461,10 +1497,12 @@ body[data-view="1"] .week {
       line-height: 1;
       margin-right: 16px;
       height: 48px; }
-    .assignment.full > .complete {
+    .assignment.full > .complete, .assignment.full > .editAssignment {
       opacity: 1; }
     .assignment.full > .body, .assignment.full > .attachments, .assignment.full > .range, .assignment.full > .close {
       display: block; }
+  .assignment > .edits.notEmpty {
+    display: block; }
   .assignment > small, .assignment > .linked {
     margin-right: 5px;
     font-size: inherit;
@@ -1546,7 +1584,8 @@ body[data-view="1"] .week {
     body[data-view="1"] .assignment > .body, body[data-view="1"] .assignment > .attachments, body[data-view="1"] .assignment > .range {
       display: block; }
     body[data-view="1"] .assignment > .body {
-      padding: 4px 0 0 0; }
+      padding: 4px 0 0 0;
+      margin: 0; }
     body[data-view="1"] .assignment > .attachments {
       margin-top: 8px; }
     body[data-view="1"] .assignment > .range {
@@ -1589,6 +1628,11 @@ body[data-view="1"] .week {
         vertical-align: 2px; }
       body[data-view="1"] .assignment > .complete > .wave {
         background-color: rgba(0, 150, 62, 0.7); }
+    body[data-view="1"] .assignment > .editAssignment {
+      bottom: 3px;
+      top: auto;
+      right: 3px;
+      opacity: 1; }
     body[data-view="1"] .assignment > .range, body[data-view="1"] .assignment > .attachments {
       margin-left: 0;
       margin-right: 0;
@@ -1598,6 +1642,14 @@ body[data-view="1"] .week {
         @media medium-screen-up {
           body[data-view="1"] .assignment > .range, body[data-view="1"] .assignment > .range::before, body[data-view="1"] .assignment > .attachments, body[data-view="1"] .assignment > .attachments::before {
             font-size: 15px; } }
+    body[data-view="1"] .assignment > .edits.notEmpty {
+      display: block;
+      margin: 8px 0 0 0;
+      padding-right: 72px;
+      height: 8px;
+      overflow: visible; }
+      body[data-view="1"] .assignment > .edits.notEmpty > .restore {
+        right: 40px; }
 
 body[data-view="1"]:not(.showDone) .assignment.done {
   display: none; }
@@ -2565,3 +2617,20 @@ body.dark {
       padding-bottom: 8px; }
   #infoActivity.filter #activitySelectControl {
     max-height: 100px; }
+
+.additions {
+  color: #4CAF50; }
+
+.deletions {
+  color: #F44336; }
+
+.additions, .deletions {
+  margin: 0 4px; }
+
+.restore {
+  position: absolute;
+  top: 0;
+  right: 8px;
+  color: rgba(0, 0, 0, 0.54); }
+  .restore:hover {
+    color: rgba(0, 0, 0, 0.87); }

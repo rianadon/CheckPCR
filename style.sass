@@ -481,7 +481,7 @@ body[data-view="1"] .week
 		display: inline-block
 		position: absolute
 		z-index: 300
-		border-radius: 50%
+		+border-radius(50%)
 		background-color: $accent-color
 		top: 245px - 28px
 		left: 24px
@@ -498,6 +498,12 @@ body[data-view="1"] .week
 		&:hover
 			background-color: #00963E
 			color: rgba(255,255,255,0.9)
+	&>.edits
+		margin-bottom: 8px
+		padding-right: 16px+32px
+		text-align: right
+		display: none
+		position: relative
 	&.done>.complete
 		color: rgba(255,255,255,0.3)
 		background-color: #00642A
@@ -505,6 +511,25 @@ body[data-view="1"] .week
 		&:hover
 			background-color: #007D34
 			color: rgba(255,255,255,0.4)
+	&>.editAssignment
+		color: rgba(0,0,0,0.54)
+		opacity: 0
+		display: inline-block
+		position: absolute
+		z-index: 300
+		top: 245px
+		right: 0
+		padding: 8px
+		width: 24px+16px
+		height: 24px+16px
+		will-change: color
+		+transition(color 0.3s ease)
+		+border-radius(50%)
+		&:hover
+			color: rgba(0,0,0,0.87)
+		&>.wave, &.active
+			background-color: rgba(0,0,0,0.2)
+
 	&>.range, &>.attachments
 		display: none
 		margin: 30px 32px 0 24px+28px-12px-10px
@@ -588,7 +613,8 @@ body[data-view="1"] .week
 				color: $color
 	&>.body
 		white-space: normal
-		padding: 16px
+		padding: 8px
+		margin: 8px
 		font-weight: initial
 		line-height: 1.5
 		display: none
@@ -604,6 +630,11 @@ body[data-view="1"] .week
 			white-space: nowrap
 			text-overflow: ellipsis
 			vertical-align: bottom
+
+		&[contentEditable="true"]
+			outline: 1px solid transparentize($accent-color, 0.5)
+			&:focus
+				outline-color: $accent-color
 	&.modify
 		position: fixed
 	&:not(.modify)::before
@@ -666,10 +697,12 @@ body[data-view="1"] .week
 			line-height: 1
 			margin-right: 16px
 			height: 48px
-		&>.complete
+		&>.complete, &>.editAssignment
 			opacity: 1
 		&>.body, &>.attachments, &>.range, &>.close
 			display: block
+	&>.edits.notEmpty
+		display: block
 	&>small, &>.linked
 		margin-right: 5px
 		font-size: inherit
@@ -740,6 +773,7 @@ body[data-view="1"] .week
 			display: block
 		&>.body
 			padding: 4px 0 0 0
+			margin: 0
 		&>.attachments
 			margin-top: 8px
 		&>.range
@@ -779,6 +813,11 @@ body[data-view="1"] .week
 				vertical-align: 2px
 			&>.wave
 				background-color: rgba(#00963E, 0.7)
+		&>.editAssignment
+			bottom: 3px
+			top: auto
+			right: 3px
+			opacity: 1
 		&>.range, &>.attachments
 			margin-left: 0
 			margin-right: 0
@@ -787,6 +826,15 @@ body[data-view="1"] .week
 				font-size: 16px
 				@media #{medium-screen-up}
 					font-size: 15px
+		&>.edits.notEmpty
+			display: block
+			margin: 8px 0 0 0
+			$extraRight: 32px
+			padding-right: 8px+32px+$extraRight
+			height: 8px
+			overflow: visible
+			&>.restore
+				right: 8px+$extraRight
 
 body[data-view="1"]:not(.showDone) .assignment.done
 	display: none
@@ -1425,3 +1473,17 @@ body.dark
 			padding-bottom: 8px
 	#infoActivity.filter &
 		max-height: 100px
+
+.additions
+	color: #4CAF50
+.deletions
+	color: #F44336
+.additions, .deletions
+	margin: 0 4px
+.restore
+	position: absolute
+	top: 0
+	right: 8px
+	color: rgba(0,0,0,0.54)
+	&:hover
+		color: rgba(0,0,0,0.87)
