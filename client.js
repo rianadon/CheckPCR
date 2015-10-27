@@ -907,6 +907,7 @@ display = function() {
         edits.querySelector(".additions").innerHTML = added !== 0 ? "+" + added : "";
         edits.querySelector(".deletions").innerHTML = deleted !== 0 ? "-" + deleted : "";
         edits.classList.add("notEmpty");
+        body.innerHTML = m;
       }
     }
     fn2(assignment.body, edits.querySelector(".additions"), edits.querySelector(".deletions"), edits, assignment.id);
