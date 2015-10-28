@@ -350,7 +350,7 @@ The following code is copied from the main script and slightly modified since th
       # Now allow the view to be switched
       document.body.classList.add "loaded"
 
-      display() # Display the data
+      #display() # Display the data
       localStorage["data"] = JSON.stringify(data) # Store for offline use
       return
 
@@ -386,12 +386,13 @@ A slightly modified fetch function is then called
               t = Date.now()
               localStorage["lastUpdate"] = t
               # document.getElementById("lastUpdate").innerHTML = formatUpdate t
-              # try
-              #   parse resp.response
-              # catch e
-              #   console.log e
-              #   alert "Error parsing assignments. Is PCR on list or month view?"
-              alert "Have you used Check PCR already?\nIf you have, you won't be able to log in from here."
+              try
+                parse resp.response
+              catch e
+                console.log e
+                alert "Error parsing assignments. Is PCR on list or month view?"
+              document.getElementById("loginNext").style.display = ""
+              document.getElementById("login").classList.add "done"
             return
           , (error) ->
             console.log "Could not fetch assignments; You are probably offline. Here's the error:", error
@@ -418,7 +419,8 @@ A slightly modified fetch function is then called
 
               window.data = resp.response.data
               localStorage["data"] = JSON.stringify(data)
-              alert "Have you used Check PCR already?\nIf you have, you won't be able to log in from here."
+              document.getElementById("loginNext").style.display = ""
+              document.getElementById("login").classList.add "done"
             return
           , (error) ->
             console.log "Could not fetch assignments; You are probably offline. Here's the error:", error

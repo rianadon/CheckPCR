@@ -376,7 +376,6 @@ parse = function(doc) {
   }
   console.timeEnd("Handling data");
   document.body.classList.add("loaded");
-  display();
   localStorage["data"] = JSON.stringify(data);
 };
 
@@ -411,7 +410,15 @@ parse = function(doc) {
         console.log("Fetching assignments successful");
         t = Date.now();
         localStorage["lastUpdate"] = t;
-        alert("Have you used Check PCR already?\nIf you have, you won't be able to log in from here.");
+        try {
+          parse(resp.response);
+        } catch (_error) {
+          e = _error;
+          console.log(e);
+          alert("Error parsing assignments. Is PCR on list or month view?");
+        }
+        document.getElementById("loginNext").style.display = "";
+        document.getElementById("login").classList.add("done");
       }
     }, function(error) {
       console.log("Could not fetch assignments; You are probably offline. Here's the error:", error);
@@ -434,7 +441,8 @@ parse = function(doc) {
         localStorage["lastUpdate"] = t;
         window.data = resp.response.data;
         localStorage["data"] = JSON.stringify(data);
-        alert("Have you used Check PCR already?\nIf you have, you won't be able to log in from here.");
+        document.getElementById("loginNext").style.display = "";
+        document.getElementById("login").classList.add("done");
       }
     }, function(error) {
       console.log("Could not fetch assignments; You are probably offline. Here's the error:", error);

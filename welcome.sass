@@ -135,6 +135,12 @@ h2
 			color: #9F9F9F
 	&:not(.ready)::after
 		content: "In order to log you in, Check PCR is fetching the login page from PCR. Please wait for it to load."
+		margin-top: 8px
+		display: block
+	&.done::after
+		content: "You're already logged into PCR. Just click Next below to continue."
+		margin-top: 8px
+		display: block
 	@media #{$medium-and-up}
 		width: 600px !important
 	&>.content

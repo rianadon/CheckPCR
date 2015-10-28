@@ -847,7 +847,13 @@ h2 {
       background-color: #DFDFDF;
       color: #9F9F9F; }
   #login:not(.ready)::after {
-    content: "In order to log you in, Check PCR is fetching the login page from PCR. Please wait for it to load."; }
+    content: "In order to log you in, Check PCR is fetching the login page from PCR. Please wait for it to load.";
+    margin-top: 8px;
+    display: block; }
+  #login.done::after {
+    content: "You're already logged into PCR. Just click Next below to continue.";
+    margin-top: 8px;
+    display: block; }
   @media only screen and (min-width: 601px) {
     #login {
       width: 600px !important; } }
