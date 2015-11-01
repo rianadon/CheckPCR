@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeNews, closeOpened, color, d, dateString, display, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeNews, closeOpened, color, d, dateString, display, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -157,6 +157,20 @@ snackbar = function(message, action, f) {
   } else {
     add();
   }
+};
+
+fromDateNum = function(days) {
+  var d;
+  d = new Date(days * 1000 * 3600 * 24 + tzoff);
+  if (d.getHours() === 1) {
+    d.setHours(0);
+  }
+  if (d.getHours() === 22) {
+    d.setHours(24);
+    d.setMinutes(0);
+    d.setSeconds(0);
+  }
+  return d.getTime();
 };
 
 formatUpdate = function(date) {
@@ -561,7 +575,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function() {
-  var aa, ab, added, already, assignment, attachment, attachments, body, close, complete, d, date, day, dayTable, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, len, len1, len2, len3, len4, len5, len6, len7, link, m, main, month, n, name, nextSat, num, o, oldAssignment, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var aa, ab, added, already, assignment, attachment, attachments, body, close, complete, d, date, day, dayTable, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len2, len3, len4, len5, len6, len7, link, m, main, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   console.time("Displaying data");
   document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
@@ -596,8 +610,8 @@ display = function() {
       month += (new Date((assignment.start + assignment.end) * 500 * 3600 * 24)).getMonth();
     }
     month = Math.round(month / window.data.assignments.length);
-    start = new Date(Math.max(start * 1000 * 3600 * 24 + tzoff, (new Date(year, month)).getTime()));
-    end = new Date(Math.min(end * 1000 * 3600 * 24 + tzoff, (new Date(year, month + 1, 0)).getTime()));
+    start = new Date(Math.max(fromDateNum(start), (new Date(year, month)).getTime()));
+    end = new Date(Math.min(fromDateNum(end), (new Date(year, month + 1, 0)).getTime()));
   } else {
     todaySE = new Date();
     start = new Date(todaySE.getFullYear(), todaySE.getMonth(), todaySE.getDate());
@@ -626,7 +640,7 @@ display = function() {
     }
     if (wk.getElementsByClassName("day").length <= d.getDay()) {
       day = element("div", "day", null, "day");
-      if (Math.floor((d - tzoff) / 1000 / 3600 / 24) === today) {
+      if (Math.floor((d.getTime() - d.getTimezoneOffset()) / 1000 / 3600 / 24) === today) {
         day.classList.add("today");
       }
       month = element("span", "month", months[d.getMonth()]);
@@ -642,17 +656,22 @@ display = function() {
   ref1 = window.data.assignments;
   for (num = l = 0, len1 = ref1.length; l < len1; num = ++l) {
     assignment = ref1[num];
-    s = Math.max(start.getTime(), assignment.start * 1000 * 3600 * 24 + tzoff);
-    e = Math.min(end.getTime(), assignment.end * 1000 * 3600 * 24 + tzoff);
+    s = Math.max(start.getTime(), fromDateNum(assignment.start));
+    e = Math.min(end.getTime(), fromDateNum(assignment.end));
     span = (e - s) / 1000 / 3600 / 24;
-    spanRelative = span - (6 - (new Date(s)).getDay());
-    nextSat = e / 1000 / 3600 / 24 - spanRelative;
+    spanRelative = 6 - (new Date(s)).getDay();
+    ns = new Date(s);
+    ns.setDate(ns.getDate() + spanRelative);
     n = -6;
-    while (n < spanRelative) {
+    while (n < span - spanRelative) {
+      lastSun = new Date(ns);
+      lastSun.setDate(lastSun.getDate() + n);
+      nextSat = new Date(lastSun);
+      nextSat.setDate(nextSat.getDate() + 6);
       split.push({
         assignment: num,
-        start: new Date(Math.max(s, (nextSat + n) * 1000 * 3600 * 24)),
-        end: new Date(Math.min(e, (nextSat + n + 6) * 1000 * 3600 * 24))
+        start: new Date(Math.max(s, lastSun.getTime())),
+        end: new Date(Math.min(e, nextSat.getTime()))
       });
       n += 7;
     }
@@ -852,8 +871,8 @@ display = function() {
     fn1(id);
     ripple(edit);
     e.appendChild(edit);
-    start = new Date(assignment.start * 1000 * 3600 * 24 + tzoff);
-    end = new Date(assignment.end * 1000 * 3600 * 24 + tzoff);
+    start = new Date(fromDateNum(assignment.start));
+    end = new Date(fromDateNum(assignment.end));
     times = element("div", "range", assignment.start === assignment.end ? dateString(start) : (dateString(start)) + " &ndash; " + (dateString(end)));
     e.appendChild(times);
     if (assignment.attachments.length > 0) {
@@ -1740,7 +1759,6 @@ for (ab = 0, len8 = ref8.length; ab < len8; ab++) {
 ref9 = document.getElementsByTagName("textarea");
 for (ae = 0, len9 = ref9.length; ae < len9; ae++) {
   e = ref9[ae];
-  console.log(e.name);
   if (localStorage[e.name] != null) {
     e.value = localStorage[e.name];
   }
