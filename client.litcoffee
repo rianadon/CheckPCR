@@ -173,6 +173,16 @@ This function displays a snackbar to tell the user something
         add()
       return
 
+*displayError* displays a dialog containing information about an error.
+
+    displayError = (e) ->
+      errorHTML = "Messsage: #{e.message}\nStack: #{e.stack or e.lineNumber}\nBrowser: #{navigator.userAgent}\nVersion: #{localStorage["commit"] or "New"}"
+      document.getElementById("errorContent").innerHTML = errorHTML.replace("\n", "<br>")
+      document.getElementById("errorGoogle").href = "https://docs.google.com/a/students.harker.org/forms/d/1sa2gUtYFPdKT5YENXIEYauyRPucqsQCVaQAPeF3bZ4Q/viewform?entry.120036223=#{encodeURIComponent(errorHTML)}"
+      document.getElementById("errorGitHub").href = "https://github.com/19RyanA/CheckPCR/issues/new?body=#{encodeURIComponent("I've encountered an bug.\n\n```\n#{errorHTML}\n```")}"
+      document.getElementById("errorBackground").style.display = "block"
+      document.getElementById("error").classList.add "active"
+
 *FromDateNum* converts a number of days to a number of seconds
 
     fromDateNum = (days) ->
@@ -239,7 +249,7 @@ Because this is run as a chrome extension, this page can be accessed. Otherwise,
                 parse resp.response
               catch e
                 console.log e
-                alert "Error parsing assignments. Is PCR on list or month view?"
+                displayError e
             return
           , (error) ->
             console.log "Could not fetch assignments; You are probably offline. Here's the error:", error
@@ -311,7 +321,7 @@ Now, we have the function that will log us into PCR.
                 parse resp.response # Parse the data PCR has replied with
               catch e
                 console.log e
-                alert "Error parsing assignments. Is PCR on list or month view?"
+                displayError e
               return
           , (error) ->
             console.log "Could not log in to PCR. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error
@@ -1694,10 +1704,10 @@ For touch displays, hammer.js is used to make the side menu appear/disappear. Th
 
     dt = document.getElementById("dragTarget")
     hammertime.on "pan", (e) ->
-      if e.deltaX < -100 or e.deltaX > 100 and e.target isnt dt
-        if e.velocityX > 0.3
+      if e.pointerType is "touch" and e.deltaX < -100 or e.deltaX > 100 and e.target isnt dt and (-25 < e.deltaY < 25)
+        if e.velocityX > 0.5
           el = document.querySelector("#navTabs>li:nth-child(#{document.body.getAttribute("data-view")+2})")
-        else if e.velocityX < -0.3
+        else if e.velocityX < -0.5
           el = document.querySelector("#navTabs>li:nth-child(#{document.body.getAttribute("data-view")})")
         if el?
           el.click()
@@ -1824,3 +1834,14 @@ It also needs to be opened when the news button is clicked.
         if getNews? then getNews dispNews else dispNews()
       else
         dispNews()
+
+The same goes for the error dialog.
+
+    closeError = ->
+      document.getElementById("error").classList.remove "active"
+      setTimeout ->
+        document.getElementById("errorBackground").style.display = "none"
+      , 350
+
+    document.getElementById("errorNo").addEventListener "click", closeError
+    document.getElementById("errorBackground").addEventListener "click", closeError

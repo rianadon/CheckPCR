@@ -18,18 +18,18 @@ body {
     body {
       font-size: 13px; } }
 
-a, #login > input[type="submit"], #update > input[type="submit"], #news > input[type="submit"], #login > button, #update > button, #news > button, .tabs > li {
+a, #login > input[type="submit"], #update > input[type="submit"], #news > input[type="submit"], #error > input[type="submit"], #login > button, #update > button, #news > button, #error > button, .tabs > li {
   cursor: pointer;
   color: #039be5;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent; }
-  a:active, #login > input[type="submit"]:active, #update > input[type="submit"]:active, #news > input[type="submit"]:active, #login > button:active, #update > button:active, #news > button:active, .tabs > li:active, a:hover, #login > input[type="submit"]:hover, #update > input[type="submit"]:hover, #news > input[type="submit"]:hover, #login > button:hover, #update > button:hover, #news > button:hover, .tabs > li:hover {
+  a:active, #login > input[type="submit"]:active, #update > input[type="submit"]:active, #news > input[type="submit"]:active, #error > input[type="submit"]:active, #login > button:active, #update > button:active, #news > button:active, #error > button:active, .tabs > li:active, a:hover, #login > input[type="submit"]:hover, #update > input[type="submit"]:hover, #news > input[type="submit"]:hover, #error > input[type="submit"]:hover, #login > button:hover, #update > button:hover, #news > button:hover, #error > button:hover, .tabs > li:hover {
     outline: 0; }
-  a:hover, #login > input[type="submit"]:hover, #update > input[type="submit"]:hover, #news > input[type="submit"]:hover, #login > button:hover, #update > button:hover, #news > button:hover, .tabs > li:hover {
+  a:hover, #login > input[type="submit"]:hover, #update > input[type="submit"]:hover, #news > input[type="submit"]:hover, #error > input[type="submit"]:hover, #login > button:hover, #update > button:hover, #news > button:hover, #error > button:hover, .tabs > li:hover {
     color: #0288D1; }
-  a:active, #login > input[type="submit"]:active, #update > input[type="submit"]:active, #news > input[type="submit"]:active, #login > button:active, #update > button:active, #news > button:active, .tabs > li:active {
+  a:active, #login > input[type="submit"]:active, #update > input[type="submit"]:active, #news > input[type="submit"]:active, #error > input[type="submit"]:active, #login > button:active, #update > button:active, #news > button:active, #error > button:active, .tabs > li:active {
     color: #0277BD; }
-  a:visited, #login > input[type="submit"]:visited, #update > input[type="submit"]:visited, #news > input[type="submit"]:visited, #login > button:visited, #update > button:visited, #news > button:visited, .tabs > li:visited {
+  a:visited, #login > input[type="submit"]:visited, #update > input[type="submit"]:visited, #news > input[type="submit"]:visited, #error > input[type="submit"]:visited, #login > button:visited, #update > button:visited, #news > button:visited, #error > button:visited, .tabs > li:visited {
     color: #01579B; }
 
 @font-face {
@@ -58,7 +58,7 @@ a, #login > input[type="submit"], #update > input[type="submit"], #news > input[
   font-weight: 400;
   src: url(https://example.com/MaterialIcons-Regular.eot);
   src: local("Material Icons"), local("MaterialIcons-Regular"), url("/font/material-design-icons/MaterialIcons-Regular.woff2") format("woff2"), url("/font/material-design-icons/MaterialIcons-Regular.woff") format("woff"), url("/font/material-design-icons/MaterialIcons-Regular.ttf") format("truetype"); }
-.material-icons, .assignment > .range::before, .assignment > .attachments::before, .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #update.attachments > input[type="submit"] > span::before, .assignment > #news.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #update.attachments > button > span::before, .assignment > #news.attachments > button > span::before, .assignment > .tabs.attachments > li > span::before {
+.material-icons, .assignment > .range::before, .assignment > .attachments::before, .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #update.attachments > input[type="submit"] > span::before, .assignment > #news.attachments > input[type="submit"] > span::before, .assignment > #error.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #update.attachments > button > span::before, .assignment > #news.attachments > button > span::before, .assignment > #error.attachments > button > span::before, .assignment > .tabs.attachments > li > span::before {
   font-family: "Material Icons";
   font-weight: normal;
   font-style: normal;
@@ -82,7 +82,7 @@ a, #login > input[type="submit"], #update > input[type="submit"], #news > input[
 input {
   color: inherit; }
 
-#login, #update, #news {
+#login, #update, #news, #error {
   position: fixed;
   top: calc(40vh - 130px);
   left: 0;
@@ -104,21 +104,21 @@ input {
   -moz-transition: -moz-transform 0.3s ease;
   -o-transition: -o-transform 0.3s ease;
   transition: transform 0.3s ease; }
-  #login > h1, #update > h1, #news > h1 {
+  #login > h1, #update > h1, #news > h1, #error > h1 {
     margin: 0 0 20px 0;
     font-size: 20px;
     line-height: 1.1;
     font-weight: 500;
     padding: 0 24px; }
-  #login.active, .active#update, .active#news {
+  #login.active, .active#update, .active#news, .active#error {
     -webkit-transform: scale(1, 1);
     -moz-transform: scale(1, 1);
     -ms-transform: scale(1, 1);
     -o-transform: scale(1, 1);
     transform: scale(1, 1); }
-    #login.active + #loginBackground, .active#update + #loginBackground, .active#news + #loginBackground {
+    #login.active + #loginBackground, .active#update + #loginBackground, .active#news + #loginBackground, .active#error + #loginBackground {
       opacity: 0.5; }
-  #login > input[type="submit"], #update > input[type="submit"], #news > input[type="submit"], #login > button, #update > button, #news > button {
+  #login > input[type="submit"], #update > input[type="submit"], #news > input[type="submit"], #error > input[type="submit"], #login > button, #update > button, #news > button, #error > button {
     color: #00AF49 !important;
     background-color: transparent;
     padding: 0 8px;
@@ -134,19 +134,19 @@ input {
     position: absolute;
     bottom: 8px;
     right: 8px; }
-  #login > .content, #update > .content, #news > .content {
+  #login > .content, #update > .content, #news > .content, #error > .content {
     max-height: calc(60vh + -22px);
     padding: 0 24px;
     overflow: auto; }
-    #login > .content > .input-field:last-of-type, #update > .content > .input-field:last-of-type, #news > .content > .input-field:last-of-type {
+    #login > .content > .input-field:last-of-type, #update > .content > .input-field:last-of-type, #news > .content > .input-field:last-of-type, #error > .content > .input-field:last-of-type {
       margin-bottom: 16px; }
-  #login.large, .large#update, .large#news {
+  #login.large, .large#update, .large#news, .large#error {
     width: 480px; }
-    #login.large > .content > .input-field, .large#update > .content > .input-field, .large#news > .content > .input-field {
+    #login.large > .content > .input-field, .large#update > .content > .input-field, .large#news > .content > .input-field, .large#error > .content > .input-field {
       margin-left: auto;
       margin-right: auto;
       width: 280px; }
-    #login.large > .content > label, .large#update > .content > label, .large#news > .content > label {
+    #login.large > .content > label, .large#update > .content > label, .large#news > .content > label, .large#error > .content > label {
       margin-left: 76px; }
 
 #loginBackground {
@@ -1332,7 +1332,7 @@ body[data-view="1"] .week {
     content: "schedule"; }
   .assignment > .attachments::before {
     content: "attachment"; }
-  .assignment > .attachments > a, .assignment > #login.attachments > input[type="submit"], .assignment > #update.attachments > input[type="submit"], .assignment > #news.attachments > input[type="submit"], .assignment > #login.attachments > button, .assignment > #update.attachments > button, .assignment > #news.attachments > button, .assignment > .tabs.attachments > li {
+  .assignment > .attachments > a, .assignment > #login.attachments > input[type="submit"], .assignment > #update.attachments > input[type="submit"], .assignment > #news.attachments > input[type="submit"], .assignment > #error.attachments > input[type="submit"], .assignment > #login.attachments > button, .assignment > #update.attachments > button, .assignment > #news.attachments > button, .assignment > #error.attachments > button, .assignment > .tabs.attachments > li {
     width: 144px;
     height: 96px;
     background-color: #F5F5F5;
@@ -1354,9 +1354,9 @@ body[data-view="1"] .week {
     border-radius: 2px;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px; }
-    .assignment > .attachments > a:hover, .assignment > #login.attachments > input[type="submit"]:hover, .assignment > #update.attachments > input[type="submit"]:hover, .assignment > #news.attachments > input[type="submit"]:hover, .assignment > #login.attachments > button:hover, .assignment > #update.attachments > button:hover, .assignment > #news.attachments > button:hover, .assignment > .tabs.attachments > li:hover {
+    .assignment > .attachments > a:hover, .assignment > #login.attachments > input[type="submit"]:hover, .assignment > #update.attachments > input[type="submit"]:hover, .assignment > #news.attachments > input[type="submit"]:hover, .assignment > #error.attachments > input[type="submit"]:hover, .assignment > #login.attachments > button:hover, .assignment > #update.attachments > button:hover, .assignment > #news.attachments > button:hover, .assignment > #error.attachments > button:hover, .assignment > .tabs.attachments > li:hover {
       background-color: #E0E0E0; }
-    .assignment > .attachments > a::after, .assignment > #login.attachments > input[type="submit"]::after, .assignment > #update.attachments > input[type="submit"]::after, .assignment > #news.attachments > input[type="submit"]::after, .assignment > #login.attachments > button::after, .assignment > #update.attachments > button::after, .assignment > #news.attachments > button::after, .assignment > .tabs.attachments > li::after {
+    .assignment > .attachments > a::after, .assignment > #login.attachments > input[type="submit"]::after, .assignment > #update.attachments > input[type="submit"]::after, .assignment > #news.attachments > input[type="submit"]::after, .assignment > #error.attachments > input[type="submit"]::after, .assignment > #login.attachments > button::after, .assignment > #update.attachments > button::after, .assignment > #news.attachments > button::after, .assignment > #error.attachments > button::after, .assignment > .tabs.attachments > li::after {
       content: " ";
       width: 0;
       height: 0;
@@ -1366,7 +1366,7 @@ body[data-view="1"] .week {
       position: absolute;
       right: 0;
       bottom: 0; }
-    .assignment > .attachments > a::before, .assignment > #login.attachments > input[type="submit"]::before, .assignment > #update.attachments > input[type="submit"]::before, .assignment > #news.attachments > input[type="submit"]::before, .assignment > #login.attachments > button::before, .assignment > #update.attachments > button::before, .assignment > #news.attachments > button::before, .assignment > .tabs.attachments > li::before {
+    .assignment > .attachments > a::before, .assignment > #login.attachments > input[type="submit"]::before, .assignment > #update.attachments > input[type="submit"]::before, .assignment > #news.attachments > input[type="submit"]::before, .assignment > #error.attachments > input[type="submit"]::before, .assignment > #login.attachments > button::before, .assignment > #update.attachments > button::before, .assignment > #news.attachments > button::before, .assignment > #error.attachments > button::before, .assignment > .tabs.attachments > li::before {
       content: " ";
       width: 0;
       height: 0;
@@ -1376,34 +1376,34 @@ body[data-view="1"] .week {
       position: absolute;
       right: 0;
       bottom: 0; }
-    .assignment > .attachments > a > span, .assignment > #login.attachments > input[type="submit"] > span, .assignment > #update.attachments > input[type="submit"] > span, .assignment > #news.attachments > input[type="submit"] > span, .assignment > #login.attachments > button > span, .assignment > #update.attachments > button > span, .assignment > #news.attachments > button > span, .assignment > .tabs.attachments > li > span {
+    .assignment > .attachments > a > span, .assignment > #login.attachments > input[type="submit"] > span, .assignment > #update.attachments > input[type="submit"] > span, .assignment > #news.attachments > input[type="submit"] > span, .assignment > #error.attachments > input[type="submit"] > span, .assignment > #login.attachments > button > span, .assignment > #update.attachments > button > span, .assignment > #news.attachments > button > span, .assignment > #error.attachments > button > span, .assignment > .tabs.attachments > li > span {
       position: absolute;
       bottom: 16px;
       left: 16px;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.54); }
-      .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #update.attachments > input[type="submit"] > span::before, .assignment > #news.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #update.attachments > button > span::before, .assignment > #news.attachments > button > span::before, .assignment > .tabs.attachments > li > span::before {
+      .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #update.attachments > input[type="submit"] > span::before, .assignment > #news.attachments > input[type="submit"] > span::before, .assignment > #error.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #update.attachments > button > span::before, .assignment > #news.attachments > button > span::before, .assignment > #error.attachments > button > span::before, .assignment > .tabs.attachments > li > span::before {
         margin-right: 4px;
         font-size: 12px;
         vertical-align: middle; }
-    .assignment > .attachments > a.document::before, .assignment > #login.attachments > input.document[type="submit"]::before, .assignment > #update.attachments > input.document[type="submit"]::before, .assignment > #news.attachments > input.document[type="submit"]::before, .assignment > #login.attachments > button.document::before, .assignment > #update.attachments > button.document::before, .assignment > #news.attachments > button.document::before, .assignment > .tabs.attachments > li.document::before {
+    .assignment > .attachments > a.document::before, .assignment > #login.attachments > input.document[type="submit"]::before, .assignment > #update.attachments > input.document[type="submit"]::before, .assignment > #news.attachments > input.document[type="submit"]::before, .assignment > #error.attachments > input.document[type="submit"]::before, .assignment > #login.attachments > button.document::before, .assignment > #update.attachments > button.document::before, .assignment > #news.attachments > button.document::before, .assignment > #error.attachments > button.document::before, .assignment > .tabs.attachments > li.document::before {
       border-top-color: #2196F3; }
-    .assignment > .attachments > a.document > span::before, .assignment > #login.attachments > input.document[type="submit"] > span::before, .assignment > #update.attachments > input.document[type="submit"] > span::before, .assignment > #news.attachments > input.document[type="submit"] > span::before, .assignment > #login.attachments > button.document > span::before, .assignment > #update.attachments > button.document > span::before, .assignment > #news.attachments > button.document > span::before, .assignment > .tabs.attachments > li.document > span::before {
+    .assignment > .attachments > a.document > span::before, .assignment > #login.attachments > input.document[type="submit"] > span::before, .assignment > #update.attachments > input.document[type="submit"] > span::before, .assignment > #news.attachments > input.document[type="submit"] > span::before, .assignment > #error.attachments > input.document[type="submit"] > span::before, .assignment > #login.attachments > button.document > span::before, .assignment > #update.attachments > button.document > span::before, .assignment > #news.attachments > button.document > span::before, .assignment > #error.attachments > button.document > span::before, .assignment > .tabs.attachments > li.document > span::before {
       content: "description";
       color: #2196F3; }
-    .assignment > .attachments > a.slides::before, .assignment > #login.attachments > input.slides[type="submit"]::before, .assignment > #update.attachments > input.slides[type="submit"]::before, .assignment > #news.attachments > input.slides[type="submit"]::before, .assignment > #login.attachments > button.slides::before, .assignment > #update.attachments > button.slides::before, .assignment > #news.attachments > button.slides::before, .assignment > .tabs.attachments > li.slides::before {
+    .assignment > .attachments > a.slides::before, .assignment > #login.attachments > input.slides[type="submit"]::before, .assignment > #update.attachments > input.slides[type="submit"]::before, .assignment > #news.attachments > input.slides[type="submit"]::before, .assignment > #error.attachments > input.slides[type="submit"]::before, .assignment > #login.attachments > button.slides::before, .assignment > #update.attachments > button.slides::before, .assignment > #news.attachments > button.slides::before, .assignment > #error.attachments > button.slides::before, .assignment > .tabs.attachments > li.slides::before {
       border-top-color: #FFC107; }
-    .assignment > .attachments > a.slides > span::before, .assignment > #login.attachments > input.slides[type="submit"] > span::before, .assignment > #update.attachments > input.slides[type="submit"] > span::before, .assignment > #news.attachments > input.slides[type="submit"] > span::before, .assignment > #login.attachments > button.slides > span::before, .assignment > #update.attachments > button.slides > span::before, .assignment > #news.attachments > button.slides > span::before, .assignment > .tabs.attachments > li.slides > span::before {
+    .assignment > .attachments > a.slides > span::before, .assignment > #login.attachments > input.slides[type="submit"] > span::before, .assignment > #update.attachments > input.slides[type="submit"] > span::before, .assignment > #news.attachments > input.slides[type="submit"] > span::before, .assignment > #error.attachments > input.slides[type="submit"] > span::before, .assignment > #login.attachments > button.slides > span::before, .assignment > #update.attachments > button.slides > span::before, .assignment > #news.attachments > button.slides > span::before, .assignment > #error.attachments > button.slides > span::before, .assignment > .tabs.attachments > li.slides > span::before {
       content: "crop_5_4";
       color: #FFC107; }
-    .assignment > .attachments > a.pdf::before, .assignment > #login.attachments > input.pdf[type="submit"]::before, .assignment > #update.attachments > input.pdf[type="submit"]::before, .assignment > #news.attachments > input.pdf[type="submit"]::before, .assignment > #login.attachments > button.pdf::before, .assignment > #update.attachments > button.pdf::before, .assignment > #news.attachments > button.pdf::before, .assignment > .tabs.attachments > li.pdf::before {
+    .assignment > .attachments > a.pdf::before, .assignment > #login.attachments > input.pdf[type="submit"]::before, .assignment > #update.attachments > input.pdf[type="submit"]::before, .assignment > #news.attachments > input.pdf[type="submit"]::before, .assignment > #error.attachments > input.pdf[type="submit"]::before, .assignment > #login.attachments > button.pdf::before, .assignment > #update.attachments > button.pdf::before, .assignment > #news.attachments > button.pdf::before, .assignment > #error.attachments > button.pdf::before, .assignment > .tabs.attachments > li.pdf::before {
       border-top-color: #F44336; }
-    .assignment > .attachments > a.pdf > span::before, .assignment > #login.attachments > input.pdf[type="submit"] > span::before, .assignment > #update.attachments > input.pdf[type="submit"] > span::before, .assignment > #news.attachments > input.pdf[type="submit"] > span::before, .assignment > #login.attachments > button.pdf > span::before, .assignment > #update.attachments > button.pdf > span::before, .assignment > #news.attachments > button.pdf > span::before, .assignment > .tabs.attachments > li.pdf > span::before {
+    .assignment > .attachments > a.pdf > span::before, .assignment > #login.attachments > input.pdf[type="submit"] > span::before, .assignment > #update.attachments > input.pdf[type="submit"] > span::before, .assignment > #news.attachments > input.pdf[type="submit"] > span::before, .assignment > #error.attachments > input.pdf[type="submit"] > span::before, .assignment > #login.attachments > button.pdf > span::before, .assignment > #update.attachments > button.pdf > span::before, .assignment > #news.attachments > button.pdf > span::before, .assignment > #error.attachments > button.pdf > span::before, .assignment > .tabs.attachments > li.pdf > span::before {
       content: "insert_drive_file";
       color: #F44336; }
-    .assignment > .attachments > a.plain::before, .assignment > #login.attachments > input.plain[type="submit"]::before, .assignment > #update.attachments > input.plain[type="submit"]::before, .assignment > #news.attachments > input.plain[type="submit"]::before, .assignment > #login.attachments > button.plain::before, .assignment > #update.attachments > button.plain::before, .assignment > #news.attachments > button.plain::before, .assignment > .tabs.attachments > li.plain::before {
+    .assignment > .attachments > a.plain::before, .assignment > #login.attachments > input.plain[type="submit"]::before, .assignment > #update.attachments > input.plain[type="submit"]::before, .assignment > #news.attachments > input.plain[type="submit"]::before, .assignment > #error.attachments > input.plain[type="submit"]::before, .assignment > #login.attachments > button.plain::before, .assignment > #update.attachments > button.plain::before, .assignment > #news.attachments > button.plain::before, .assignment > #error.attachments > button.plain::before, .assignment > .tabs.attachments > li.plain::before {
       border-top-color: #009688; }
-    .assignment > .attachments > a.plain > span::before, .assignment > #login.attachments > input.plain[type="submit"] > span::before, .assignment > #update.attachments > input.plain[type="submit"] > span::before, .assignment > #news.attachments > input.plain[type="submit"] > span::before, .assignment > #login.attachments > button.plain > span::before, .assignment > #update.attachments > button.plain > span::before, .assignment > #news.attachments > button.plain > span::before, .assignment > .tabs.attachments > li.plain > span::before {
+    .assignment > .attachments > a.plain > span::before, .assignment > #login.attachments > input.plain[type="submit"] > span::before, .assignment > #update.attachments > input.plain[type="submit"] > span::before, .assignment > #news.attachments > input.plain[type="submit"] > span::before, .assignment > #error.attachments > input.plain[type="submit"] > span::before, .assignment > #login.attachments > button.plain > span::before, .assignment > #update.attachments > button.plain > span::before, .assignment > #news.attachments > button.plain > span::before, .assignment > #error.attachments > button.plain > span::before, .assignment > .tabs.attachments > li.plain > span::before {
       content: "description";
       color: #009688; }
   .assignment > .body {
@@ -1417,7 +1417,7 @@ body[data-view="1"] .week {
     @media medium-and-up {
       .assignment > .body {
         font-size: 13px; } }
-    .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #news > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body #news > button, .assignment > .body .tabs > li {
+    .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #news > input[type="submit"], .assignment > .body #error > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body #news > button, .assignment > .body #error > button, .assignment > .body .tabs > li {
       max-width: 500px;
       overflow: hidden;
       display: inline-block;
@@ -1425,7 +1425,7 @@ body[data-view="1"] .week {
       text-overflow: ellipsis;
       vertical-align: bottom; }
       @media only screen and (max-width: 600px) {
-        .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #news > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body #news > button, .assignment > .body .tabs > li {
+        .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #news > input[type="submit"], .assignment > .body #error > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body #news > button, .assignment > .body #error > button, .assignment > .body .tabs > li {
           max-width: calc(100vw - 60px); } }
     .assignment > .body[contentEditable="true"] {
       outline: 1px solid rgba(0, 175, 73, 0.5); }
@@ -1950,7 +1950,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
     body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
       right: 90% !important; } }
 
-#background, #sideBackground, #loginBackground, #updateBackground, #newsBackground {
+#background, #sideBackground, #loginBackground, #updateBackground, #newsBackground, #errorBackground {
   background: #000;
   position: fixed;
   will-change: opacity;
@@ -1965,7 +1965,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   -moz-transition: opacity 0.3s ease;
   -o-transition: opacity 0.3s ease;
   transition: opacity 0.3s ease; }
-  #background.active, #sideBackground.active, #loginBackground.active, #updateBackground.active, #newsBackground.active {
+  #background.active, #sideBackground.active, #loginBackground.active, #updateBackground.active, #newsBackground.active, #errorBackground.active {
     opacity: 0.5; }
 
 .wave {
@@ -2238,13 +2238,13 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
       color: rgba(0, 0, 0, 0.26); }
       #sideNav > ul > li.disabled i, #settings > ul > li.disabled i {
         color: inherit; }
-      #sideNav > ul > li.disabled > a, #sideNav > ul > li#login.disabled > input[type="submit"], #sideNav > ul > li#update.disabled > input[type="submit"], #sideNav > ul > li#news.disabled > input[type="submit"], #sideNav > ul > li#login.disabled > button, #sideNav > ul > li#update.disabled > button, #sideNav > ul > li#news.disabled > button, #sideNav > ul > li.tabs.disabled > li, #settings > ul > li.disabled > a, #settings > ul > li#login.disabled > input[type="submit"], #settings > ul > li#update.disabled > input[type="submit"], #settings > ul > li#news.disabled > input[type="submit"], #settings > ul > li#login.disabled > button, #settings > ul > li#update.disabled > button, #settings > ul > li#news.disabled > button, #settings > ul > li.tabs.disabled > li {
+      #sideNav > ul > li.disabled > a, #sideNav > ul > li#login.disabled > input[type="submit"], #sideNav > ul > li#update.disabled > input[type="submit"], #sideNav > ul > li#news.disabled > input[type="submit"], #sideNav > ul > li#error.disabled > input[type="submit"], #sideNav > ul > li#login.disabled > button, #sideNav > ul > li#update.disabled > button, #sideNav > ul > li#news.disabled > button, #sideNav > ul > li#error.disabled > button, #sideNav > ul > li.tabs.disabled > li, #settings > ul > li.disabled > a, #settings > ul > li#login.disabled > input[type="submit"], #settings > ul > li#update.disabled > input[type="submit"], #settings > ul > li#news.disabled > input[type="submit"], #settings > ul > li#error.disabled > input[type="submit"], #settings > ul > li#login.disabled > button, #settings > ul > li#update.disabled > button, #settings > ul > li#news.disabled > button, #settings > ul > li#error.disabled > button, #settings > ul > li.tabs.disabled > li {
         cursor: default; }
-    #sideNav > ul > li > a, #sideNav > ul > li#login > input[type="submit"], #sideNav > ul > li#update > input[type="submit"], #sideNav > ul > li#news > input[type="submit"], #sideNav > ul > li#login > button, #sideNav > ul > li#update > button, #sideNav > ul > li#news > button, #sideNav > ul > li.tabs > li, #settings > ul > li > a, #settings > ul > li#login > input[type="submit"], #settings > ul > li#update > input[type="submit"], #settings > ul > li#news > input[type="submit"], #settings > ul > li#login > button, #settings > ul > li#update > button, #settings > ul > li#news > button, #settings > ul > li.tabs > li {
+    #sideNav > ul > li > a, #sideNav > ul > li#login > input[type="submit"], #sideNav > ul > li#update > input[type="submit"], #sideNav > ul > li#news > input[type="submit"], #sideNav > ul > li#error > input[type="submit"], #sideNav > ul > li#login > button, #sideNav > ul > li#update > button, #sideNav > ul > li#news > button, #sideNav > ul > li#error > button, #sideNav > ul > li.tabs > li, #settings > ul > li > a, #settings > ul > li#login > input[type="submit"], #settings > ul > li#update > input[type="submit"], #settings > ul > li#news > input[type="submit"], #settings > ul > li#error > input[type="submit"], #settings > ul > li#login > button, #settings > ul > li#update > button, #settings > ul > li#news > button, #settings > ul > li#error > button, #settings > ul > li.tabs > li {
       height: 100%;
       display: block;
       width: 100%; }
-      #sideNav > ul > li > a:visited, #sideNav > ul > li#login > input[type="submit"]:visited, #sideNav > ul > li#update > input[type="submit"]:visited, #sideNav > ul > li#news > input[type="submit"]:visited, #sideNav > ul > li#login > button:visited, #sideNav > ul > li#update > button:visited, #sideNav > ul > li#news > button:visited, #sideNav > ul > li.tabs > li:visited, #sideNav > ul > li > a:active, #sideNav > ul > li#login > input[type="submit"]:active, #sideNav > ul > li#update > input[type="submit"]:active, #sideNav > ul > li#news > input[type="submit"]:active, #sideNav > ul > li#login > button:active, #sideNav > ul > li#update > button:active, #sideNav > ul > li#news > button:active, #sideNav > ul > li.tabs > li:active, #sideNav > ul > li > a:hover, #sideNav > ul > li#login > input[type="submit"]:hover, #sideNav > ul > li#update > input[type="submit"]:hover, #sideNav > ul > li#news > input[type="submit"]:hover, #sideNav > ul > li#login > button:hover, #sideNav > ul > li#update > button:hover, #sideNav > ul > li#news > button:hover, #sideNav > ul > li.tabs > li:hover, #sideNav > ul > li > a, #sideNav > ul > li#login > input[type="submit"], #sideNav > ul > li#update > input[type="submit"], #sideNav > ul > li#news > input[type="submit"], #sideNav > ul > li#login > button, #sideNav > ul > li#update > button, #sideNav > ul > li#news > button, #sideNav > ul > li.tabs > li, #settings > ul > li > a:visited, #settings > ul > li#login > input[type="submit"]:visited, #settings > ul > li#update > input[type="submit"]:visited, #settings > ul > li#news > input[type="submit"]:visited, #settings > ul > li#login > button:visited, #settings > ul > li#update > button:visited, #settings > ul > li#news > button:visited, #settings > ul > li.tabs > li:visited, #settings > ul > li > a:active, #settings > ul > li#login > input[type="submit"]:active, #settings > ul > li#update > input[type="submit"]:active, #settings > ul > li#news > input[type="submit"]:active, #settings > ul > li#login > button:active, #settings > ul > li#update > button:active, #settings > ul > li#news > button:active, #settings > ul > li.tabs > li:active, #settings > ul > li > a:hover, #settings > ul > li#login > input[type="submit"]:hover, #settings > ul > li#update > input[type="submit"]:hover, #settings > ul > li#news > input[type="submit"]:hover, #settings > ul > li#login > button:hover, #settings > ul > li#update > button:hover, #settings > ul > li#news > button:hover, #settings > ul > li.tabs > li:hover, #settings > ul > li > a, #settings > ul > li#login > input[type="submit"], #settings > ul > li#update > input[type="submit"], #settings > ul > li#news > input[type="submit"], #settings > ul > li#login > button, #settings > ul > li#update > button, #settings > ul > li#news > button, #settings > ul > li.tabs > li {
+      #sideNav > ul > li > a:visited, #sideNav > ul > li#login > input[type="submit"]:visited, #sideNav > ul > li#update > input[type="submit"]:visited, #sideNav > ul > li#news > input[type="submit"]:visited, #sideNav > ul > li#error > input[type="submit"]:visited, #sideNav > ul > li#login > button:visited, #sideNav > ul > li#update > button:visited, #sideNav > ul > li#news > button:visited, #sideNav > ul > li#error > button:visited, #sideNav > ul > li.tabs > li:visited, #sideNav > ul > li > a:active, #sideNav > ul > li#login > input[type="submit"]:active, #sideNav > ul > li#update > input[type="submit"]:active, #sideNav > ul > li#news > input[type="submit"]:active, #sideNav > ul > li#error > input[type="submit"]:active, #sideNav > ul > li#login > button:active, #sideNav > ul > li#update > button:active, #sideNav > ul > li#news > button:active, #sideNav > ul > li#error > button:active, #sideNav > ul > li.tabs > li:active, #sideNav > ul > li > a:hover, #sideNav > ul > li#login > input[type="submit"]:hover, #sideNav > ul > li#update > input[type="submit"]:hover, #sideNav > ul > li#news > input[type="submit"]:hover, #sideNav > ul > li#error > input[type="submit"]:hover, #sideNav > ul > li#login > button:hover, #sideNav > ul > li#update > button:hover, #sideNav > ul > li#news > button:hover, #sideNav > ul > li#error > button:hover, #sideNav > ul > li.tabs > li:hover, #sideNav > ul > li > a, #sideNav > ul > li#login > input[type="submit"], #sideNav > ul > li#update > input[type="submit"], #sideNav > ul > li#news > input[type="submit"], #sideNav > ul > li#error > input[type="submit"], #sideNav > ul > li#login > button, #sideNav > ul > li#update > button, #sideNav > ul > li#news > button, #sideNav > ul > li#error > button, #sideNav > ul > li.tabs > li, #settings > ul > li > a:visited, #settings > ul > li#login > input[type="submit"]:visited, #settings > ul > li#update > input[type="submit"]:visited, #settings > ul > li#news > input[type="submit"]:visited, #settings > ul > li#error > input[type="submit"]:visited, #settings > ul > li#login > button:visited, #settings > ul > li#update > button:visited, #settings > ul > li#news > button:visited, #settings > ul > li#error > button:visited, #settings > ul > li.tabs > li:visited, #settings > ul > li > a:active, #settings > ul > li#login > input[type="submit"]:active, #settings > ul > li#update > input[type="submit"]:active, #settings > ul > li#news > input[type="submit"]:active, #settings > ul > li#error > input[type="submit"]:active, #settings > ul > li#login > button:active, #settings > ul > li#update > button:active, #settings > ul > li#news > button:active, #settings > ul > li#error > button:active, #settings > ul > li.tabs > li:active, #settings > ul > li > a:hover, #settings > ul > li#login > input[type="submit"]:hover, #settings > ul > li#update > input[type="submit"]:hover, #settings > ul > li#news > input[type="submit"]:hover, #settings > ul > li#error > input[type="submit"]:hover, #settings > ul > li#login > button:hover, #settings > ul > li#update > button:hover, #settings > ul > li#news > button:hover, #settings > ul > li#error > button:hover, #settings > ul > li.tabs > li:hover, #settings > ul > li > a, #settings > ul > li#login > input[type="submit"], #settings > ul > li#update > input[type="submit"], #settings > ul > li#news > input[type="submit"], #settings > ul > li#error > input[type="submit"], #settings > ul > li#login > button, #settings > ul > li#update > button, #settings > ul > li#news > button, #settings > ul > li#error > button, #settings > ul > li.tabs > li {
         color: inherit; }
     #sideNav > ul > li i, #settings > ul > li i {
       margin-right: 32px;
@@ -2275,7 +2275,7 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   font-size: 28px;
   color: #FFF; }
 
-#sideBackground, #loginBackground, #updateBackground, #newsBackground {
+#sideBackground, #loginBackground, #updateBackground, #newsBackground, #errorBackground {
   left: 0;
   top: 0;
   z-index: 4000; }
@@ -2426,18 +2426,18 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   margin-top: 8px !important;
   color: inherit !important; }
 
-#update, #news {
+#update, #news, #error {
   width: 480px;
   color: rgba(0, 0, 0, 0.54); }
-  #update h1, #news h1, #update h2, #news h2 {
+  #update h1, #news h1, #error h1, #update h2, #news h2, #error h2 {
     color: rgba(0, 0, 0, 0.87); }
-  #update h2, #news h2 {
+  #update h2, #news h2, #error h2 {
     font-size: 16px;
     font-weight: 400;
     margin: 8px 0 4px 0; }
-  #update > button:first-of-type, #news > button:first-of-type {
+  #update > button:first-of-type, #news > button:first-of-type, #error > button:first-of-type {
     right: 129px; }
-  #update.active + #updateBackground, .active#news + #updateBackground {
+  #update.active + #updateBackground, .active#news + #updateBackground, .active#error + #updateBackground {
     opacity: 0.5; }
 
 code {
@@ -2492,14 +2492,14 @@ code {
       min-width: 288px;
       max-width: 568px;
       border-radius: 2px 2px 0 0; } }
-  .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #news.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, #news.snackInner > button, .tabs.snackInner > li {
+  .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #news.snackInner > input[type="submit"], #error.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, #news.snackInner > button, #error.snackInner > button, .tabs.snackInner > li {
     text-transform: uppercase;
     color: #00AF49;
     float: right;
     margin-left: 24px;
     font-weight: 500; }
     @media only screen and (min-width: 601px) {
-      .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #news.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, #news.snackInner > button, .tabs.snackInner > li {
+      .snackInner > a, #login.snackInner > input[type="submit"], #update.snackInner > input[type="submit"], #news.snackInner > input[type="submit"], #error.snackInner > input[type="submit"], #login.snackInner > button, #update.snackInner > button, #news.snackInner > button, #error.snackInner > button, .tabs.snackInner > li {
         margin-left: 48px; } }
 
 body.dark {
@@ -2516,7 +2516,7 @@ body.dark {
     color: #FFF; }
   body.dark .dayTable td, body.dark #dates {
     border-color: #424242; }
-  body.dark #sideNav, body.dark #settings, body.dark #news, body.dark #login, body.dark #update, body.dark #news {
+  body.dark #sideNav, body.dark #settings, body.dark #news, body.dark #login, body.dark #update, body.dark #news, body.dark #error, body.dark #error {
     background-color: #424242; }
   body.dark #sideNav > ul > li i, body.dark #settings > ul > li i {
     color: rgba(255, 255, 255, 0.7); }
@@ -2544,17 +2544,17 @@ body.dark {
     background-color: #163417; }
     body.dark #progress > .determinate, body.dark #progress > .indeterminate {
       background-color: #006329; }
-  body.dark .attachments > a, body.dark #login.attachments > input[type="submit"], body.dark #update.attachments > input[type="submit"], body.dark #news.attachments > input[type="submit"], body.dark #login.attachments > button, body.dark #update.attachments > button, body.dark #news.attachments > button, body.dark .tabs.attachments > li {
+  body.dark .attachments > a, body.dark #login.attachments > input[type="submit"], body.dark #update.attachments > input[type="submit"], body.dark #news.attachments > input[type="submit"], body.dark #error.attachments > input[type="submit"], body.dark #login.attachments > button, body.dark #update.attachments > button, body.dark #news.attachments > button, body.dark #error.attachments > button, body.dark .tabs.attachments > li {
     background-color: #616161; }
-    body.dark .attachments > a:hover, body.dark #login.attachments > input[type="submit"]:hover, body.dark #update.attachments > input[type="submit"]:hover, body.dark #news.attachments > input[type="submit"]:hover, body.dark #login.attachments > button:hover, body.dark #update.attachments > button:hover, body.dark #news.attachments > button:hover, body.dark .tabs.attachments > li:hover {
+    body.dark .attachments > a:hover, body.dark #login.attachments > input[type="submit"]:hover, body.dark #update.attachments > input[type="submit"]:hover, body.dark #news.attachments > input[type="submit"]:hover, body.dark #error.attachments > input[type="submit"]:hover, body.dark #login.attachments > button:hover, body.dark #update.attachments > button:hover, body.dark #news.attachments > button:hover, body.dark #error.attachments > button:hover, body.dark .tabs.attachments > li:hover {
       background-color: #757575; }
-    body.dark .attachments > a::after, body.dark #login.attachments > input[type="submit"]::after, body.dark #update.attachments > input[type="submit"]::after, body.dark #news.attachments > input[type="submit"]::after, body.dark #login.attachments > button::after, body.dark #update.attachments > button::after, body.dark #news.attachments > button::after, body.dark .tabs.attachments > li::after {
+    body.dark .attachments > a::after, body.dark #login.attachments > input[type="submit"]::after, body.dark #update.attachments > input[type="submit"]::after, body.dark #news.attachments > input[type="submit"]::after, body.dark #error.attachments > input[type="submit"]::after, body.dark #login.attachments > button::after, body.dark #update.attachments > button::after, body.dark #news.attachments > button::after, body.dark #error.attachments > button::after, body.dark .tabs.attachments > li::after {
       border-bottom-color: #424242; }
-    body.dark .attachments > a > span, body.dark #login.attachments > input[type="submit"] > span, body.dark #update.attachments > input[type="submit"] > span, body.dark #news.attachments > input[type="submit"] > span, body.dark #login.attachments > button > span, body.dark #update.attachments > button > span, body.dark #news.attachments > button > span, body.dark .tabs.attachments > li > span {
+    body.dark .attachments > a > span, body.dark #login.attachments > input[type="submit"] > span, body.dark #update.attachments > input[type="submit"] > span, body.dark #news.attachments > input[type="submit"] > span, body.dark #error.attachments > input[type="submit"] > span, body.dark #login.attachments > button > span, body.dark #update.attachments > button > span, body.dark #news.attachments > button > span, body.dark #error.attachments > button > span, body.dark .tabs.attachments > li > span {
       color: rgba(255, 255, 255, 0.7); }
-  body.dark #update, body.dark #news, body.dark #news {
+  body.dark #update, body.dark #news, body.dark #error, body.dark #news, body.dark #error {
     color: rgba(255, 255, 255, 0.7); }
-    body.dark #update h1, body.dark #news h1, body.dark #update h2, body.dark #news h2, body.dark #news h1, body.dark #news h2 {
+    body.dark #update h1, body.dark #news h1, body.dark #error h1, body.dark #update h2, body.dark #news h2, body.dark #error h2, body.dark #news h1, body.dark #news h2, body.dark #error h1, body.dark #error h2 {
       color: #FFF; }
   body.dark [type="checkbox"]:not(:checked) + label:before {
     border-color: rgba(255, 255, 255, 0.3); }
@@ -2581,6 +2581,36 @@ body.dark {
 
 #newsContent:empty::before {
   content: "It seems as if GitHub cannot be reached right now. Check your internet connection or try using a different Wifi network"; }
+
+#error {
+  width: 640px;
+  padding-bottom: 8px; }
+  #error.active + #errorBackground {
+    opacity: 0.5; }
+
+#errorContent {
+  font-family: monospace;
+  padding-left: 8px;
+  word-wrap: break-word;
+  overflow: auto; }
+
+#errorNo, #errorGoogle, #errorGitHub {
+  color: #00AF49 !important;
+  background-color: transparent;
+  padding: 0 8px;
+  min-width: 64px;
+  border: none;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  font-size: inherit;
+  height: 36px;
+  border: none;
+  outline: none;
+  float: right;
+  position: static !important;
+  margin-top: 32px;
+  line-height: 36px; }
 
 #activitySelectOverview {
   font-size: 16px;

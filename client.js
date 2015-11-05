@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeNews, closeOpened, color, d, dateString, display, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -159,6 +159,16 @@ snackbar = function(message, action, f) {
   }
 };
 
+displayError = function(e) {
+  var errorHTML;
+  errorHTML = "Messsage: " + e.message + "\nStack: " + (e.stack || e.lineNumber) + "\nBrowser: " + navigator.userAgent + "\nVersion: " + (localStorage["commit"] || "New");
+  document.getElementById("errorContent").innerHTML = errorHTML.replace("\n", "<br>");
+  document.getElementById("errorGoogle").href = "https://docs.google.com/a/students.harker.org/forms/d/1sa2gUtYFPdKT5YENXIEYauyRPucqsQCVaQAPeF3bZ4Q/viewform?entry.120036223=" + (encodeURIComponent(errorHTML));
+  document.getElementById("errorGitHub").href = "https://github.com/19RyanA/CheckPCR/issues/new?body=" + (encodeURIComponent("I've encountered an bug.\n\n```\n" + errorHTML + "\n```"));
+  document.getElementById("errorBackground").style.display = "block";
+  return document.getElementById("error").classList.add("active");
+};
+
 fromDateNum = function(days) {
   var d;
   d = new Date(days * 1000 * 3600 * 24 + tzoff);
@@ -227,7 +237,7 @@ fetch = function() {
         } catch (_error) {
           e = _error;
           console.log(e);
-          alert("Error parsing assignments. Is PCR on list or month view?");
+          displayError(e);
         }
       }
     }, function(error) {
@@ -303,7 +313,7 @@ dologin = function(val, submitEvt) {
         } catch (_error) {
           e = _error;
           console.log(e);
-          alert("Error parsing assignments. Is PCR on list or month view?");
+          displayError(e);
         }
       }
     }, function(error) {
@@ -1924,10 +1934,11 @@ dragTarget.on("tap", function(e) {
 dt = document.getElementById("dragTarget");
 
 hammertime.on("pan", function(e) {
-  if (e.deltaX < -100 || e.deltaX > 100 && e.target !== dt) {
-    if (e.velocityX > 0.3) {
+  var ref11;
+  if (e.pointerType === "touch" && e.deltaX < -100 || e.deltaX > 100 && e.target !== dt && ((-25 < (ref11 = e.deltaY) && ref11 < 25))) {
+    if (e.velocityX > 0.5) {
       el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view") + 2) + ")");
-    } else if (e.velocityX < -0.3) {
+    } else if (e.velocityX < -0.5) {
       el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view")) + ")");
     }
     if (el != null) {
@@ -2085,3 +2096,14 @@ document.getElementById("newsB").addEventListener("click", function() {
     return dispNews();
   }
 });
+
+closeError = function() {
+  document.getElementById("error").classList.remove("active");
+  return setTimeout(function() {
+    return document.getElementById("errorBackground").style.display = "none";
+  }, 350);
+};
+
+document.getElementById("errorNo").addEventListener("click", closeError);
+
+document.getElementById("errorBackground").addEventListener("click", closeError);

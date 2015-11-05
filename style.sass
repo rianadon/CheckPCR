@@ -891,7 +891,7 @@ body[data-view="0"].showInfo
 				@media #{$large-and-up}
 					right: ($i/7)*100%*0.7 + 30% !important
 
-#background, #sideBackground, #loginBackground, #updateBackground, #newsBackground
+#background, #sideBackground, #loginBackground, #updateBackground, #newsBackground, #errorBackground
 	background: #000
 	position: fixed
 	will-change: opacity
@@ -1143,7 +1143,7 @@ $scale: 15
 	font-size: 28px
 	color: #FFF
 
-#sideBackground, #loginBackground, #updateBackground, #newsBackground
+#sideBackground, #loginBackground, #updateBackground, #newsBackground, #errorBackground
 	left: 0
 	top: 0
 	z-index: 4000
@@ -1367,7 +1367,7 @@ body.dark
 	.dayTable td, #dates
 		border-color: #424242
 
-	#sideNav, #settings, #news, #login
+	#sideNav, #settings, #news, #login, #error
 		background-color: #424242
 	#sideNav > ul > li i, #settings > ul > li i
 		color: rgba(255,255,255,0.7)
@@ -1410,7 +1410,7 @@ body.dark
 		&>span
 			color: rgba(255,255,255,0.7)
 
-	#update, #news
+	#update, #news, #error
 		color: rgba(255,255,255,0.7)
 		h1, h2
 			color: #FFF
@@ -1443,6 +1443,35 @@ body.dark
 
 #newsContent:empty::before
 	content: "It seems as if GitHub cannot be reached right now. Check your internet connection or try using a different Wifi network"
+
+#error
+	@extend #update
+	&.active + #errorBackground
+		opacity: 0.5
+	width: 640px
+	padding-bottom: 8px
+
+#errorContent
+	font-family: monospace
+	padding-left: 8px
+	word-wrap: break-word
+	overflow: auto
+
+#errorNo, #errorGoogle, #errorGitHub
+	color: $accent-color !important
+	background-color: transparent
+	padding: 0 8px
+	min-width: 64px
+	border: none
+	+border-radius(2px)
+	font-size: inherit
+	height: 36px
+	border: none
+	outline: none
+	float: right
+	position: static !important
+	margin-top: 76px - 36px - 8px
+	line-height: 36px
 
 #activitySelectOverview
 	font-size: 16px
