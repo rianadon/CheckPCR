@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -210,13 +210,13 @@ fetch = function() {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-      var e, j, len, ref, t, up;
+      var e, error1, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
-        ref = resp.response.getElementsByTagName("input");
-        for (j = 0, len = ref.length; j < len; j++) {
-          e = ref[j];
+        ref1 = resp.response.getElementsByTagName("input");
+        for (j = 0, len = ref1.length; j < len; j++) {
+          e = ref1[j];
           loginHeaders[e.name] = e.value || "";
         }
         console.log("Need to log in");
@@ -234,8 +234,8 @@ fetch = function() {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -294,7 +294,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, t;
+      var e, error1, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -310,8 +310,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -383,10 +383,10 @@ urlify = function(text) {
 };
 
 findId = function(element, tag, id) {
-  var e, j, len, ref;
-  ref = element.getElementsByTagName(tag);
-  for (j = 0, len = ref.length; j < len; j++) {
-    e = ref[j];
+  var e, j, len, ref1;
+  ref1 = element.getElementsByTagName(tag);
+  for (j = 0, len = ref1.length; j < len; j++) {
+    e = ref1[j];
     if (e.id.indexOf(id) !== -1) {
       return e;
     }
@@ -394,7 +394,7 @@ findId = function(element, tag, id) {
 };
 
 parse = function(doc) {
-  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, j, k, l, len, len1, len2, len3, o, pos, q, range, ref, ref1, t, title;
+  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, j, k, l, len, len1, len2, len3, o, pos, q, range, ref1, ref2, t, title;
   console.time("Handling data");
   handledDataShort = [];
   window.data = {
@@ -402,9 +402,9 @@ parse = function(doc) {
     assignments: [],
     monthView: doc.querySelector(".rsHeaderMonth").parentNode.classList.contains("rsSelected")
   };
-  ref = doc.getElementsByTagName("input");
-  for (j = 0, len = ref.length; j < len; j++) {
-    e = ref[j];
+  ref1 = doc.getElementsByTagName("input");
+  for (j = 0, len = ref1.length; j < len; j++) {
+    e = ref1[j];
     viewData[e.name] = e.value || "";
   }
   classes = findId(doc, "table", "cbClasses").getElementsByTagName("label");
@@ -431,9 +431,9 @@ parse = function(doc) {
     assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
     assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
     assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "");
-    ref1 = window.data.classes;
-    for (pos = q = 0, len3 = ref1.length; q < len3; pos = ++q) {
-      c = ref1[pos];
+    ref2 = window.data.classes;
+    for (pos = q = 0, len3 = ref2.length; q < len3; pos = ++q) {
+      c = ref2[pos];
       if (title.indexOf(c) !== -1) {
         assignment["class"] = pos;
         title = title.replace(c, "");
@@ -496,9 +496,12 @@ element = function(tag, cls, html, id) {
 };
 
 dateString = function(date, addThis) {
-  var j, len, r, ref, relative, today;
+  var j, len, r, ref1, relative, today;
   if (addThis == null) {
     addThis = false;
+  }
+  if (date === "Forever") {
+    return date;
   }
   relative = ["Tomorrow", "Today", "Yesterday", "2 days ago"];
   today = new Date();
@@ -511,7 +514,7 @@ dateString = function(date, addThis) {
     today.setDate(today.getDate() - 1);
   }
   today = new Date();
-  if ((0 < (ref = (date.getTime() - today.getTime()) / 1000 / 3600 / 24) && ref <= 6)) {
+  if ((0 < (ref1 = (date.getTime() - today.getTime()) / 1000 / 3600 / 24) && ref1 <= 6)) {
     return (addThis ? "This " : "") + weekdays[date.getDay()];
   }
   return weekdays[date.getDay()] + ", " + fullMonths[date.getMonth()] + " " + (date.getDate());
@@ -550,7 +553,7 @@ smoothScroll = function(to) {
 };
 
 addActivity = function(type, assignment, newActivity) {
-  var date, id, ref, te;
+  var date, id, ref1, te;
   date = newActivity === true ? Date.now() : newActivity;
   if (newActivity === true) {
     activity.push([type, assignment, Date.now()]);
@@ -578,14 +581,14 @@ addActivity = function(type, assignment, newActivity) {
       });
     })(id);
   }
-  if (ref = assignment.id, indexOf.call(done, ref) >= 0) {
+  if (ref1 = assignment.id, indexOf.call(done, ref1) >= 0) {
     te.classList.add("done");
   }
   return document.getElementById("infoActivity").insertBefore(te, document.getElementById("infoActivity").querySelector(".activity"));
 };
 
 display = function() {
-  var aa, ab, added, already, assignment, attachment, attachments, body, close, complete, d, date, day, dayTable, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len2, len3, len4, len5, len6, len7, link, m, main, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref, ref1, ref2, ref3, ref4, ref5, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var aa, ab, added, ae, already, assignment, attachment, attachments, body, close, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len2, len3, len4, len5, len6, len7, len8, link, m, main, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   console.time("Displaying data");
   document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
@@ -593,30 +596,30 @@ display = function() {
   today = Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24);
   if (window.data.monthView) {
     start = Math.min.apply(Math, (function() {
-      var j, len, ref, results;
-      ref = window.data.assignments;
+      var j, len, ref1, results;
+      ref1 = window.data.assignments;
       results = [];
-      for (j = 0, len = ref.length; j < len; j++) {
-        assignment = ref[j];
+      for (j = 0, len = ref1.length; j < len; j++) {
+        assignment = ref1[j];
         results.push(assignment.start);
       }
       return results;
     })());
     end = Math.max.apply(Math, (function() {
-      var j, len, ref, results;
-      ref = window.data.assignments;
+      var j, len, ref1, results;
+      ref1 = window.data.assignments;
       results = [];
-      for (j = 0, len = ref.length; j < len; j++) {
-        assignment = ref[j];
+      for (j = 0, len = ref1.length; j < len; j++) {
+        assignment = ref1[j];
         results.push(assignment.end);
       }
       return results;
     })());
     year = (new Date()).getFullYear();
     month = 0;
-    ref = window.data.assignments;
-    for (j = 0, len = ref.length; j < len; j++) {
-      assignment = ref[j];
+    ref1 = window.data.assignments;
+    for (j = 0, len = ref1.length; j < len; j++) {
+      assignment = ref1[j];
       month += (new Date((assignment.start + assignment.end) * 500 * 3600 * 24)).getMonth();
     }
     month = Math.round(month / window.data.assignments.length);
@@ -663,9 +666,9 @@ display = function() {
     d.setDate(d.getDate() + 1);
   }
   split = [];
-  ref1 = window.data.assignments;
-  for (num = l = 0, len1 = ref1.length; l < len1; num = ++l) {
-    assignment = ref1[num];
+  ref2 = window.data.assignments;
+  for (num = l = 0, len1 = ref2.length; l < len1; num = ++l) {
+    assignment = ref2[num];
     s = Math.max(start.getTime(), fromDateNum(assignment.start));
     e = Math.min(end.getTime(), fromDateNum(assignment.end));
     span = (e - s) / 1000 / 3600 / 24;
@@ -715,38 +718,66 @@ display = function() {
     localStorage["done"] = JSON.stringify(done);
     localStorage["modified"] = JSON.stringify(modified);
   }
+  for (u = 0, len4 = extra.length; u < len4; u++) {
+    custom = extra[u];
+    split.push({
+      start: new Date(fromDateNum(custom.start)),
+      end: new Date(fromDateNum(custom.start)),
+      custom: true,
+      assignment: {
+        title: "Todo item",
+        baseType: "todo",
+        attachments: [],
+        start: custom.start,
+        end: "Forever",
+        body: custom.body,
+        id: "todo" + (custom.body.replace(/[^\w]*/g, "")) + custom.start
+      },
+      reference: custom
+    });
+  }
   tdst = new Date();
   tdst.setDate(tdst.getDate() - tdst.getDay());
   todayWkId = "wk" + (tdst.getMonth()) + "-" + (tdst.getDate());
   weekHeights = {};
   previousAssignments = {};
-  ref2 = document.getElementsByClassName("assignment");
-  for (u = 0, len4 = ref2.length; u < len4; u++) {
-    assignment = ref2[u];
+  ref3 = document.getElementsByClassName("assignment");
+  for (z = 0, len5 = ref3.length; z < len5; z++) {
+    assignment = ref3[z];
     previousAssignments[assignment.getAttribute("id")] = assignment;
   }
-  fn = function(id) {
+  fn = function(id, reference) {
     return complete.addEventListener("mouseup", function(evt) {
-      var aa, added, el, elem, len6, ref3;
+      var ab, added, el, elem, len7, ref4;
       if (evt.which === 1) {
         el = evt.target;
         while (!el.classList.contains("assignment")) {
           el = el.parentNode;
         }
         added = true;
-        if (el.classList.contains("done")) {
-          done.splice(done.indexOf(id), 1);
+        if (reference != null) {
+          if (el.classList.contains("done")) {
+            reference.done = false;
+          } else {
+            added = false;
+            reference.done = true;
+          }
+          localStorage["extra"] = JSON.stringify(extra);
         } else {
-          added = false;
-          done.push(id);
+          if (el.classList.contains("done")) {
+            done.splice(done.indexOf(id), 1);
+          } else {
+            added = false;
+            done.push(id);
+          }
+          localStorage["done"] = JSON.stringify(done);
         }
-        localStorage["done"] = JSON.stringify(done);
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
-            var aa, elem, len6, ref3;
-            ref3 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
-            for (aa = 0, len6 = ref3.length; aa < len6; aa++) {
-              elem = ref3[aa];
+            var ab, elem, len7, ref4;
+            ref4 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
+            for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
+              elem = ref4[ab];
               elem.classList.toggle("done");
             }
             if (added) {
@@ -761,9 +792,9 @@ display = function() {
             return resize();
           }, 100);
         } else {
-          ref3 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
-          for (aa = 0, len6 = ref3.length; aa < len6; aa++) {
-            elem = ref3[aa];
+          ref4 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
+          for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
+            elem = ref4[ab];
             elem.classList.toggle("done");
           }
           if (added) {
@@ -798,30 +829,35 @@ display = function() {
       }
     });
   };
-  fn2 = function(b, ad, di, ed, id) {
+  fn2 = function(b, ad, di, ed, id, ref) {
     return body.addEventListener("input", function(evt) {
-      var aa, additions, deletions, diff, len6;
-      modified[id] = evt.target.innerHTML;
-      localStorage["modified"] = JSON.stringify(modified);
-      d = dmp.diff_main(b, evt.target.innerHTML);
-      dmp.diff_cleanupSemantic(d);
-      additions = 0;
-      deletions = 0;
-      for (aa = 0, len6 = d.length; aa < len6; aa++) {
-        diff = d[aa];
-        if (diff[0] === 1) {
-          additions++;
-        }
-        if (diff[0] === -1) {
-          deletions++;
-        }
-      }
-      ad.innerHTML = additions !== 0 ? "+" + additions : "";
-      di.innerHTML = deletions !== 0 ? "-" + deletions : "";
-      if (additions !== 0 || deletions !== 0) {
-        ed.classList.add("notEmpty");
+      var ab, additions, deletions, diff, len7;
+      if (ref != null) {
+        ref.body = evt.target.innerHTML;
+        localStorage["extra"] = JSON.stringify(extra);
       } else {
-        ed.classList.remove("notEmpty");
+        modified[id] = evt.target.innerHTML;
+        localStorage["modified"] = JSON.stringify(modified);
+        d = dmp.diff_main(b, evt.target.innerHTML);
+        dmp.diff_cleanupSemantic(d);
+        additions = 0;
+        deletions = 0;
+        for (ab = 0, len7 = d.length; ab < len7; ab++) {
+          diff = d[ab];
+          if (diff[0] === 1) {
+            additions++;
+          }
+          if (diff[0] === -1) {
+            deletions++;
+          }
+        }
+        ad.innerHTML = additions !== 0 ? "+" + additions : "";
+        di.innerHTML = deletions !== 0 ? "-" + deletions : "";
+        if (additions !== 0 || deletions !== 0) {
+          ed.classList.add("notEmpty");
+        } else {
+          ed.classList.remove("notEmpty");
+        }
       }
       if (document.body.getAttribute("data-view") === "1") {
         return resize();
@@ -839,10 +875,11 @@ display = function() {
       }
     });
   };
-  for (z = 0, len5 = split.length; z < len5; z++) {
-    s = split[z];
-    assignment = window.data.assignments[s.assignment];
-    separated = separate(window.data.classes[assignment["class"]]);
+  for (aa = 0, len6 = split.length; aa < len6; aa++) {
+    s = split[aa];
+    assignment = s.custom ? s.assignment : window.data.assignments[s.assignment];
+    reference = s.reference;
+    separated = separate(assignment["class"] != null ? window.data.classes[assignment["class"]] : "Todo");
     startSun = new Date(s.start.getTime());
     startSun.setDate(startSun.getDate() - startSun.getDay());
     weekId = "wk" + (startSun.getMonth()) + "-" + (startSun.getDate());
@@ -852,11 +889,11 @@ display = function() {
       link = athenaData[window.data.classes[assignment["class"]]].link;
       smallTag = "a";
     }
-    e = element("div", ["assignment", assignment.baseType, "anim"], "<" + smallTag + (link != null ? " href='" + link + "' class='linked' target='_blank'" : "") + "><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</" + smallTag + "><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + assignment.end + "' />", assignment.id + weekId);
-    if (ref3 = assignment.id, indexOf.call(done, ref3) >= 0) {
+    e = element("div", ["assignment", assignment.baseType, "anim"], "<" + smallTag + (link != null ? " href='" + link + "' class='linked' target='_blank'" : "") + "><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</" + smallTag + "><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + (isNaN(assignment.end) ? 0 : assignment.end) + "' />", assignment.id + weekId);
+    if (((reference != null) && reference.done) || (ref4 = assignment.id, indexOf.call(done, ref4) >= 0)) {
       e.classList.add("done");
     }
-    e.setAttribute("data-class", window.data.classes[assignment["class"]]);
+    e.setAttribute("data-class", isNaN(assignment["class"]) ? "Todo" : window.data.classes[assignment["class"]]);
     close = element("a", ["close", "material-icons"], "close");
     close.addEventListener("click", closeOpened);
     e.appendChild(close);
@@ -875,19 +912,43 @@ display = function() {
     complete = element("a", ["complete", "material-icons", "waves"], "done");
     ripple(complete);
     id = assignment.id;
-    fn(id);
+    fn(id, reference);
     e.appendChild(complete);
+    if (s.custom) {
+      deleteA = element("a", ["material-icons", "deleteAssignment"], "delete");
+      (function(reference, e) {
+        ripple(deleteA);
+        return deleteA.addEventListener("mouseup", function(evt) {
+          var back;
+          if (evt.which === 1) {
+            extra.splice(extra.indexOf(reference), 1);
+            localStorage["extra"] = JSON.stringify(extra);
+            if (document.querySelector(".full") != null) {
+              document.body.style.overflow = "auto";
+              back = document.getElementById("background");
+              back.classList.remove("active");
+              setTimeout(function() {
+                return back.style.display = "none";
+              }, 350);
+            }
+            e.remove();
+            return display();
+          }
+        });
+      })(reference, e);
+      e.appendChild(deleteA);
+    }
     edit = element("a", ["editAssignment", "material-icons", "waves"], "edit");
     fn1(id);
     ripple(edit);
     e.appendChild(edit);
     start = new Date(fromDateNum(assignment.start));
-    end = new Date(fromDateNum(assignment.end));
+    end = isNaN(assignment.end) ? assignment.end : new Date(fromDateNum(assignment.end));
     times = element("div", "range", assignment.start === assignment.end ? dateString(start) : (dateString(start)) + " &ndash; " + (dateString(end)));
     e.appendChild(times);
     if (assignment.attachments.length > 0) {
       attachments = element("div", "attachments");
-      ref4 = assignment.attachments;
+      ref5 = assignment.attachments;
       fn4 = function(attachment) {
         var a, req;
         a = element("a", [], attachment[0]);
@@ -910,8 +971,8 @@ display = function() {
         req.send();
         attachments.appendChild(a);
       };
-      for (aa = 0, len6 = ref4.length; aa < len6; aa++) {
-        attachment = ref4[aa];
+      for (ab = 0, len7 = ref5.length; ab < len7; ab++) {
+        attachment = ref5[ab];
         fn4(attachment);
       }
       e.appendChild(attachments);
@@ -924,8 +985,8 @@ display = function() {
       if (d.length !== 0) {
         added = 0;
         deleted = 0;
-        for (ab = 0, len7 = d.length; ab < len7; ab++) {
-          diff = d[ab];
+        for (ae = 0, len8 = d.length; ae < len8; ae++) {
+          diff = d[ae];
           if (diff[0] === 1) {
             added++;
           }
@@ -939,7 +1000,7 @@ display = function() {
         body.innerHTML = m;
       }
     }
-    fn2(assignment.body, edits.querySelector(".additions"), edits.querySelector(".deletions"), edits, assignment.id);
+    fn2(assignment.body, edits.querySelector(".additions"), edits.querySelector(".deletions"), edits, assignment.id, reference);
     e.appendChild(body);
     restore = element("a", ["material-icons", "restore"], "settings_backup_restore");
     fn3(assignment.body, body, edits, assignment.id);
@@ -952,9 +1013,15 @@ display = function() {
       e.classList.add("overWeekend");
     }
     e.classList.add("s" + (s.start.getDay()));
-    e.classList.add("e" + (6 - s.end.getDay()));
-    if ((Math.floor(s.start / 1000 / 3600 / 24) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
-      e.classList.add("listDisp");
+    e.classList.add(isNaN(s.end) ? "e" + (6 - s.start.getDay()) : "e" + (6 - s.end.getDay()));
+    if (s.assignment.end === "Forever") {
+      if (Math.floor(s.start / 1000 / 3600 / 24) <= today) {
+        e.classList.add("listDisp");
+      }
+    } else {
+      if ((Math.floor(s.start / 1000 / 3600 / 24) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
+        e.classList.add("listDisp");
+      }
     }
     pos = 0;
     while (true) {
@@ -1025,7 +1092,7 @@ display = function() {
           }
         });
       })(id);
-      if (ref5 = assignment.id, indexOf.call(done, ref5) >= 0) {
+      if (ref6 = assignment.id, indexOf.call(done, ref6) >= 0) {
         te.classList.add("done");
       }
       if (document.getElementById("test" + assignment.id) != null) {
@@ -1060,11 +1127,11 @@ display = function() {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var ae, len8, ref6, results, x;
-      ref6 = wkid.substring(2).split("-");
+      var af, len9, ref7, results, x;
+      ref7 = wkid.substring(2).split("-");
       results = [];
-      for (ae = 0, len8 = ref6.length; ae < len8; ae++) {
-        x = ref6[ae];
+      for (af = 0, len9 = ref7.length; af < len9; af++) {
+        x = ref7[af];
         results.push(parseInt(x));
       }
       return results;
@@ -1164,11 +1231,11 @@ ripple = function(el) {
   });
 };
 
-ref = document.querySelectorAll("#navTabs>li");
-for (j = 0, len = ref.length; j < len; j++) {
-  tab = ref[j];
+ref1 = document.querySelectorAll("#navTabs>li");
+for (j = 0, len = ref1.length; j < len; j++) {
+  tab = ref1[j];
   tab.addEventListener("click", function(evt) {
-    var assignment, assignments, columnHeights, columns, index, k, l, len1, len2, ref1, start, step, trans, w, widths;
+    var assignment, assignments, columnHeights, columns, index, k, l, len1, len2, ref2, start, step, trans, w, widths;
     ga('send', 'event', 'navigation', evt.target.textContent, {
       page: '/new.html',
       title: "Version " + (localStorage["commit"] || "New")
@@ -1193,9 +1260,9 @@ for (j = 0, len = ref.length; j < len; j++) {
         }
         assignments = getResizeAssignments();
         columnHeights = (function() {
-          var l, ref1, results;
+          var l, ref2, results;
           results = [];
-          for (l = 0, ref1 = columns; 0 <= ref1 ? l < ref1 : l > ref1; 0 <= ref1 ? l++ : l--) {
+          for (l = 0, ref2 = columns; 0 <= ref2 ? l < ref2 : l > ref2; 0 <= ref2 ? l++ : l--) {
             results.push(0);
           }
           return results;
@@ -1245,9 +1312,9 @@ for (j = 0, len = ref.length; j < len; j++) {
         return document.querySelector("nav").classList.add("headroom--pinned");
       }, 350);
       window.removeEventListener("resize", resize);
-      ref1 = document.getElementsByClassName("assignment");
-      for (l = 0, len2 = ref1.length; l < len2; l++) {
-        assignment = ref1[l];
+      ref2 = document.getElementsByClassName("assignment");
+      for (l = 0, len2 = ref2.length; l < len2; l++) {
+        assignment = ref2[l];
         assignment.style.top = "auto";
       }
     }
@@ -1260,9 +1327,9 @@ for (j = 0, len = ref.length; j < len; j++) {
   });
 }
 
-ref1 = document.querySelectorAll("#infoTabs>li");
-for (k = 0, len1 = ref1.length; k < len1; k++) {
-  tab = ref1[k];
+ref2 = document.querySelectorAll("#infoTabs>li");
+for (k = 0, len1 = ref2.length; k < len1; k++) {
+  tab = ref2[k];
   tab.addEventListener("click", function(evt) {
     return document.getElementById("info").setAttribute("data-view", (Array.prototype.slice.call(document.querySelectorAll("#infoTabs>li"))).indexOf(evt.target));
   });
@@ -1297,9 +1364,9 @@ resize = function() {
     }
   }
   columnHeights = (function() {
-    var o, ref2, results;
+    var o, ref3, results;
     results = [];
-    for (o = 0, ref2 = columns; 0 <= ref2 ? o < ref2 : o > ref2; 0 <= ref2 ? o++ : o--) {
+    for (o = 0, ref3 = columns; 0 <= ref3 ? o < ref3 : o > ref3; 0 <= ref3 ? o++ : o--) {
       results.push(0);
     }
     return results;
@@ -1334,9 +1401,9 @@ if (localStorage["view"] != null) {
   }
 }
 
-ref2 = document.querySelectorAll("input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search]");
-for (l = 0, len2 = ref2.length; l < len2; l++) {
-  input = ref2[l];
+ref3 = document.querySelectorAll("input[type=text]:not(#newText), input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search]");
+for (l = 0, len2 = ref3.length; l < len2; l++) {
+  input = ref3[l];
   input.addEventListener("change", function(evt) {
     return evt.target.parentNode.querySelector("label").classList.add("active");
   });
@@ -1423,9 +1490,9 @@ labrgb = function(_L, _a, _b) {
     }
   };
   dot_product = function(a, b) {
-    var i, o, ref3, ret;
+    var i, o, ref4, ret;
     ret = 0;
-    for (i = o = 0, ref3 = a.length - 1; 0 <= ref3 ? o <= ref3 : o >= ref3; i = 0 <= ref3 ? ++o : --o) {
+    for (i = o = 0, ref4 = a.length - 1; 0 <= ref4 ? o <= ref4 : o >= ref4; i = 0 <= ref4 ? ++o : --o) {
       ret += a[i] * b[i];
     }
     return ret;
@@ -1472,7 +1539,7 @@ updateAvatar();
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
 parseAthenaData = function(dat) {
-  var athenaData2, course, courseDetails, d, e, len3, n, o, ref3;
+  var athenaData2, course, courseDetails, d, e, error1, len3, n, o, ref4;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -1480,9 +1547,9 @@ parseAthenaData = function(dat) {
     try {
       d = JSON.parse(dat);
       athenaData2 = {};
-      ref3 = d.body.courses.courses;
-      for (n = o = 0, len3 = ref3.length; o < len3; n = ++o) {
-        course = ref3[n];
+      ref4 = d.body.courses.courses;
+      for (n = o = 0, len3 = ref4.length; o < len3; n = ++o) {
+        course = ref4[n];
         courseDetails = d.body.courses.sections[n];
         athenaData2[course.course_title] = {
           link: "https://athena.harker.org" + courseDetails.link,
@@ -1494,9 +1561,8 @@ parseAthenaData = function(dat) {
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
       document.getElementById("athenaDataRefresh").style.display = "block";
-      display();
-    } catch (_error) {
-      e = _error;
+    } catch (error1) {
+      e = error1;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataRefresh").style.display = "none";
       document.getElementById("athenaDataError").innerHTML = e.message;
@@ -1542,9 +1608,9 @@ if (localStorage["assignmentColors"] == null) {
 
 if ((localStorage["data"] != null) && (localStorage["classColors"] == null)) {
   a = {};
-  ref3 = JSON.parse(localStorage["data"]).classes;
-  for (o = 0, len3 = ref3.length; o < len3; o++) {
-    c = ref3[o];
+  ref4 = JSON.parse(localStorage["data"]).classes;
+  for (o = 0, len3 = ref4.length; o < len3; o++) {
+    c = ref4[o];
     a[c] = "#616161";
   }
   localStorage["classColors"] = JSON.stringify(a);
@@ -1633,9 +1699,9 @@ palette = {
 };
 
 if (localStorage["data"] != null) {
-  ref4 = JSON.parse(localStorage["data"]).classes;
-  for (q = 0, len4 = ref4.length; q < len4; q++) {
-    c = ref4[q];
+  ref5 = JSON.parse(localStorage["data"]).classes;
+  for (q = 0, len4 = ref5.length; q < len4; q++) {
+    c = ref5[q];
     d = element("div", [], c);
     d.setAttribute("data-control", c);
     d.appendChild(element("span", []));
@@ -1643,10 +1709,10 @@ if (localStorage["data"] != null) {
   }
 }
 
-ref5 = document.getElementsByClassName("colors");
-for (u = 0, len5 = ref5.length; u < len5; u++) {
-  e = ref5[u];
-  ref6 = e.getElementsByTagName("div");
+ref6 = document.getElementsByClassName("colors");
+for (u = 0, len5 = ref6.length; u < len5; u++) {
+  e = ref6[u];
+  ref7 = e.getElementsByTagName("div");
   fn = function(sp, color, list, listName) {
     return sp.addEventListener("click", function(evt) {
       var bg;
@@ -1654,7 +1720,9 @@ for (u = 0, len5 = ref5.length; u < len5; u++) {
         bg = rgb2hex(evt.target.style.backgroundColor);
         list[color.getAttribute("data-control")] = bg;
         sp.style.backgroundColor = bg;
-        sp.querySelector(".selected").classList.remove("selected");
+        if (sp.querySelector(".selected") != null) {
+          sp.querySelector(".selected").classList.remove("selected");
+        }
         evt.target.classList.add("selected");
         localStorage[listName] = JSON.stringify(list);
         updateColors();
@@ -1662,8 +1730,8 @@ for (u = 0, len5 = ref5.length; u < len5; u++) {
       return sp.classList.toggle("choose");
     });
   };
-  for (z = 0, len6 = ref6.length; z < len6; z++) {
-    color = ref6[z];
+  for (z = 0, len6 = ref7.length; z < len6; z++) {
+    color = ref7[z];
     sp = color.querySelector("span");
     listName = e.getAttribute("id") === "classColors" ? "classColors" : "assignmentColors";
     list = e.getAttribute("id") === "classColors" ? cc : ac;
@@ -1681,7 +1749,7 @@ for (u = 0, len5 = ref5.length; u < len5; u++) {
 }
 
 updateColors = function() {
-  var mix, name, ref7, ref8, results, results1, sheet, style;
+  var addColorRule, mix, name, ref8, ref9, sheet, style;
   mix = function(a, b, p) {
     var hex, rgbA, rgbB;
     rgbA = hex2rgb(a);
@@ -1695,38 +1763,38 @@ updateColors = function() {
   style.appendChild(document.createTextNode(""));
   document.head.appendChild(style);
   sheet = style.sheet;
-  if (localStorage["colorType"] === "assignment") {
-    ref7 = JSON.parse(localStorage["assignmentColors"]);
-    results = [];
-    for (name in ref7) {
-      color = ref7[name];
-      sheet.insertRule(".assignment." + name + " { background-color: " + color + "; }", 0);
-      sheet.insertRule(".assignment." + name + ".done { background-color: " + palette[color] + "; }", 0);
-      sheet.insertRule(".assignment." + name + "::before { background-color: " + (mix(color, "#1B5E20", 0.3)) + "; }", 0);
-      sheet.insertRule(".assignmentItem." + name + ">i { background-color: " + color + "; }", 0);
-      results.push(sheet.insertRule(".assignmentItem." + name + ".done>i { background-color: " + palette[color] + "; }", 0));
+  addColorRule = function(selector, light, dark, extra) {
+    if (extra == null) {
+      extra = "";
     }
-    return results;
-  } else {
-    ref8 = JSON.parse(localStorage["classColors"]);
-    results1 = [];
+    sheet.insertRule(extra + ".assignment" + selector + " { background-color: " + light + "; }", 0);
+    sheet.insertRule(extra + ".assignment" + selector + ".done { background-color: " + dark + "; }", 0);
+    sheet.insertRule(extra + ".assignment" + selector + "::before { background-color: " + (mix(light, "#1B5E20", 0.3)) + "; }", 0);
+    sheet.insertRule(extra + ".assignmentItem" + selector + ">i { background-color: " + light + "; }", 0);
+    return sheet.insertRule(extra + ".assignmentItem" + selector + ".done>i { background-color: " + dark + "; }", 0);
+  };
+  if (localStorage["colorType"] === "assignment") {
+    ref8 = JSON.parse(localStorage["assignmentColors"]);
     for (name in ref8) {
       color = ref8[name];
-      sheet.insertRule(".assignment[data-class=\"" + name + "\"] { background-color: " + color + "; }", 0);
-      sheet.insertRule(".assignment[data-class=\"" + name + "\"].done { background-color: " + palette[color] + "; }", 0);
-      sheet.insertRule(".assignment[data-class=\"" + name + "\"]::before { background-color: " + (mix(color, "#1B5E20", 0.3)) + "; }", 0);
-      sheet.insertRule(".assignmentItem[data-class=\"" + name + "\"]>i { background-color: " + color + "; }", 0);
-      results1.push(sheet.insertRule(".assignmentItem[data-class=\"" + name + "\"].done>i { background-color: " + palette[color] + "; }", 0));
+      addColorRule("." + name, color, palette[color]);
     }
-    return results1;
+  } else {
+    ref9 = JSON.parse(localStorage["classColors"]);
+    for (name in ref9) {
+      color = ref9[name];
+      addColorRule("[data-class=\"" + name + "\"]", color, palette[color]);
+    }
   }
+  addColorRule(".todo", "#F5F5F5", "#E0E0E0");
+  addColorRule(".todo", "#424242", "#212121", ".dark ");
 };
 
 updateColors();
 
-ref7 = document.getElementsByClassName("settingsControl");
-for (aa = 0, len7 = ref7.length; aa < len7; aa++) {
-  e = ref7[aa];
+ref8 = document.getElementsByClassName("settingsControl");
+for (aa = 0, len7 = ref8.length; aa < len7; aa++) {
+  e = ref8[aa];
   if (localStorage[e.name] != null) {
     if (e.checked != null) {
       e.checked = JSON.parse(localStorage[e.name]);
@@ -1748,9 +1816,9 @@ for (aa = 0, len7 = ref7.length; aa < len7; aa++) {
 
 document.querySelector("input[name=\"colorType\"][value=\"" + localStorage["colorType"] + "\"]").checked = true;
 
-ref8 = document.getElementsByName("colorType");
-for (ab = 0, len8 = ref8.length; ab < len8; ab++) {
-  c = ref8[ab];
+ref9 = document.getElementsByName("colorType");
+for (ab = 0, len8 = ref9.length; ab < len8; ab++) {
+  c = ref9[ab];
   c.addEventListener("change", function(evt) {
     var v;
     v = document.querySelector('input[name="colorType"]:checked').value;
@@ -1766,9 +1834,9 @@ for (ab = 0, len8 = ref8.length; ab < len8; ab++) {
   });
 }
 
-ref9 = document.getElementsByTagName("textarea");
-for (ae = 0, len9 = ref9.length; ae < len9; ae++) {
-  e = ref9[ae];
+ref10 = document.getElementsByTagName("textarea");
+for (ae = 0, len9 = ref10.length; ae < len9; ae++) {
+  e = ref10[ae];
   if (localStorage[e.name] != null) {
     e.value = localStorage[e.name];
   }
@@ -1790,6 +1858,12 @@ modified = {};
 
 if (localStorage["modified"] != null) {
   modified = JSON.parse(localStorage["modified"]);
+}
+
+extra = [];
+
+if (localStorage["extra"] != null) {
+  extra = JSON.parse(localStorage["extra"]);
 }
 
 document.getElementById("lastUpdate").innerHTML = localStorage["lastUpdate"] != null ? formatUpdate(localStorage["lastUpdate"]) : "Never";
@@ -1816,9 +1890,9 @@ if (location.protocol !== "chrome-extension:") {
   up = document.getElementById("update");
   upc = up.getElementsByClassName("content")[0];
   up.querySelector("h1").innerHTML = "A new update has been applied.";
-  ref10 = upc.childNodes;
-  for (ag = ref10.length - 1; ag >= 0; ag += -1) {
-    el = ref10[ag];
+  ref11 = upc.childNodes;
+  for (ag = ref11.length - 1; ag >= 0; ag += -1) {
+    el = ref11[ag];
     if (el.nodeType === 3 || el.tagName === "BR" || el.tagName === "CODE" || el.tagName === "A") {
       el.remove();
     }
@@ -1934,8 +2008,8 @@ dragTarget.on("tap", function(e) {
 dt = document.getElementById("dragTarget");
 
 hammertime.on("pan", function(e) {
-  var ref11;
-  if (e.pointerType === "touch" && e.deltaX < -100 || e.deltaX > 100 && e.target !== dt && ((-25 < (ref11 = e.deltaY) && ref11 < 25))) {
+  var ref12;
+  if (e.pointerType === "touch" && e.deltaX < -100 || e.deltaX > 100 && e.target !== dt && ((-25 < (ref12 = e.deltaY) && ref12 < 25))) {
     if (e.velocityX > 0.5) {
       el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view") + 2) + ")");
     } else if (e.velocityX < -0.5) {
@@ -2043,11 +2117,11 @@ send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(
   nc = resp.response.history[0].version;
   window.getNews = function(onfail) {
     return send(resp.response.files["updates.htm"].raw_url).then(function(resp) {
-      var ah, len11, news, ref11;
+      var ah, len11, news, ref12;
       localStorage["newsCommit"] = nc;
-      ref11 = resp.responseText.split("<hr>");
-      for (ah = 0, len11 = ref11.length; ah < len11; ah++) {
-        news = ref11[ah];
+      ref12 = resp.responseText.split("<hr>");
+      for (ah = 0, len11 = ref12.length; ah < len11; ah++) {
+        news = ref12[ah];
         document.getElementById("newsContent").appendChild(element("div", "newsItem", news));
       }
       document.getElementById("newsBackground").style.display = "block";
@@ -2107,3 +2181,39 @@ closeError = function() {
 document.getElementById("errorNo").addEventListener("click", closeError);
 
 document.getElementById("errorBackground").addEventListener("click", closeError);
+
+ripple(document.getElementById("new"));
+
+document.getElementById("new").addEventListener("mouseup", function() {
+  document.getElementById("newText").value = "";
+  document.getElementById("newBackground").style.display = "block";
+  document.getElementById("newDialog").classList.add("active");
+  return document.getElementById("newText").focus();
+});
+
+closeNew = function() {
+  document.getElementById("newDialog").classList.remove("active");
+  return setTimeout(function() {
+    return document.getElementById("newBackground").style.display = "none";
+  }, 350);
+};
+
+document.getElementById("newText").addEventListener("keydown", function(evt) {
+  if (evt.which === 27) {
+    return closeNew();
+  }
+});
+
+document.getElementById("newCancel").addEventListener("click", closeNew);
+
+document.getElementById("newDialog").addEventListener("submit", function(evt) {
+  extra.push({
+    body: document.getElementById("newText").value,
+    done: false,
+    start: Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24)
+  });
+  localStorage["extra"] = JSON.stringify(extra);
+  closeNew();
+  display();
+  return evt.preventDefault();
+});

@@ -241,6 +241,9 @@ main
 	color: darken(#FFF, 87%)
 	@media #{$medium-and-down}
 		display: none
+	+transition(transform 0.3s ease)
+	.showInfo>&
+		transform: translateX(-16px)
 #info
 	width: 60%
 	@media #{$medium-and-up}
@@ -814,9 +817,9 @@ body[data-view="1"] .week
 			&>.wave
 				background-color: rgba(#00963E, 0.7)
 		&>.editAssignment
-			bottom: 3px
+			bottom: 6px
 			top: auto
-			right: 3px
+			right: 6px
 			opacity: 1
 		&>.range, &>.attachments
 			margin-left: 0
@@ -835,6 +838,19 @@ body[data-view="1"] .week
 			overflow: visible
 			&>.restore
 				right: 8px+$extraRight
+
+.deleteAssignment
+	@extend .editAssignment
+
+.deleteAssignment + .editAssignment
+	right: 40px+4px
+
+body:not(.dark)
+	.todo>.title, .todo:not(.full)>small
+		color: rgba(0,0,0,0.87)
+
+body[data-view="1"] .deleteAssignment + .editAssignment
+	right: 46px+4px
 
 body[data-view="1"]:not(.showDone) .assignment.done
 	display: none
@@ -891,7 +907,7 @@ body[data-view="0"].showInfo
 				@media #{$large-and-up}
 					right: ($i/7)*100%*0.7 + 30% !important
 
-#background, #sideBackground, #loginBackground, #updateBackground, #newsBackground, #errorBackground
+#background, #sideBackground, #loginBackground, #updateBackground, #newsBackground, #errorBackground, #newBackground
 	background: #000
 	position: fixed
 	will-change: opacity
@@ -1143,7 +1159,7 @@ $scale: 15
 	font-size: 28px
 	color: #FFF
 
-#sideBackground, #loginBackground, #updateBackground, #newsBackground, #errorBackground
+#sideBackground, #loginBackground, #updateBackground, #newsBackground, #errorBackground, #newBackground
 	left: 0
 	top: 0
 	z-index: 4000
@@ -1240,6 +1256,10 @@ $scale: 15
 		color: rgba(0,0,0,0.38)
 		vertical-align: top
 		line-height: 1.5
+		max-width: 288px
+		white-space: nowrap
+		text-overflow: ellipsis
+		overflow: hidden
 		&>span
 			cursor: pointer
 			display: block
@@ -1361,21 +1381,21 @@ body.dark
 		background-color: #424242
 		border-color: #424242
 
-	#infoTabs > li:hover
+	#infoTabs > li:hover, .editAssignment:hover, .restore:hover, #newText
 		color: #FFF
 
 	.dayTable td, #dates
 		border-color: #424242
 
-	#sideNav, #settings, #news, #login, #error
+	#sideNav, #settings, #news, #login, #error, #newDialog
 		background-color: #424242
-	#sideNav > ul > li i, #settings > ul > li i
+	#sideNav > ul > li i, #settings > ul > li i, #settings > ul > li > span
 		color: rgba(255,255,255,0.7)
 
 	#sideNav > ul > li.disabled, #settings > ul > li.disabled
 		color: rgba(255,255,255,0.3)
 
-	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #settings > ul > li.two > span #filterActivity, label, .input-field > label
+	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #settings > ul > li.two > span #filterActivity, label, .input-field > label, .editAssignment, .restore
 		color: rgba(255,255,255,0.7)
 	#info > #extra, .colors > div
 		color: rgba(255,255,255,0.3)
@@ -1410,7 +1430,7 @@ body.dark
 		&>span
 			color: rgba(255,255,255,0.7)
 
-	#update, #news, #error
+	#update, #news, #error, #newDialog
 		color: rgba(255,255,255,0.7)
 		h1, h2
 			color: #FFF
@@ -1473,6 +1493,43 @@ body.dark
 	margin-top: 76px - 36px - 8px
 	line-height: 36px
 
+#newDialog
+	@extend #update
+	padding: 24px
+	top: calc(40vh - 36px)
+	display: flex
+	&>a
+		color: inherit
+	&.active + #newBackground
+		opacity: 0.5
+
+#newDone[id]
+	color: $accent-color
+	margin: 0
+	font-size: 24px
+	padding: 0
+	min-width: auto
+	position: static
+	height: 24px
+	overflow: hidden
+	width: 0
+	+transform(scaleX(0))
+	+transition(width 0.3s ease, margin-left 0.3s ease, transform 0.3s ease)
+
+#newText:valid ~ #newDone
+	width: 24px
+	margin-left: 16px
+	+transform(scaleX(1))
+
+#newText
+	margin: 0
+	border-bottom: none
+	+box-shadow(none)
+	line-height: 1
+	height: auto
+	font-size: 16px
+	color: #000
+
 #activitySelectOverview
 	font-size: 16px
 	position: relative
@@ -1516,3 +1573,48 @@ body.dark
 	color: rgba(0,0,0,0.54)
 	&:hover
 		color: rgba(0,0,0,0.87)
+
+#new
+	display: block
+	color: #FFF
+	overflow: hidden
+	z-index: 1
+	width: 56px
+	height: 56px
+	line-height: 56px
+	padding: 0
+	background-color: $accent-color
+	border-radius: 50%
+	+box-shadow(0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15))
+	+transition(box-shadow 0.3s ease, transform 0.3s ease-in-out)
+	position: fixed
+	bottom: 16px
+	right: 16px
+	text-align: center
+	z-index: 500
+	@media #{$medium-and-up}
+		bottom: 24px
+		right: 24px
+	@media #{$large-and-up}
+		body:not(.showInfo)>&
+			+transform(translateY(-8px))
+	i
+		width: inherit
+		display: inline-block
+		text-align: center
+		color: #FFF
+		font-size: 24px
+		line-height: 56px
+	&:hover
+		+box-shadow(0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19))
+	&:before
+		border-radius: 0
+
+.infoChange
+	+transition(transform 0.3s ease-in-out)
+	body.showInfo>&
+		+transform(translateX(-60vw))
+		@media #{$medium-and-up}
+			+transform(translateX(-40vw))
+		@media #{$large-and-up}
+			+transform(translateX(-30vw))

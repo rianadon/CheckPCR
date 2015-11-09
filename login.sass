@@ -35,7 +35,7 @@ input
 	width: 56px * 5
 	+transform(scale(0,0))
 	+box-shadow(0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21))
-	+transition(transform 0.3s ease)
+	+transition(transform 0.2s ease-out)
 	&>h1
 		margin: 0 0 20px 0
 		font-size: 20px
@@ -43,6 +43,7 @@ input
 		font-weight: 500
 		padding: 0 24px
 	&.active
+		+transition(transform 0.2s ease-in)
 		+transform(scale(1,1))
 		& + #loginBackground
 			opacity: 0.5
@@ -189,7 +190,8 @@ textarea
 // Default textarea
 textarea
 	width: 100%
-	height: 3rem
+	height: 6.2rem
+	color: inherit
 	line-height: 1
 	background-color: transparent
 

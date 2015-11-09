@@ -39,10 +39,11 @@
 		<hr />
 		<ul>
 			<li id="settingsB"><a><i class="material-icons">settings</i>Settings</a></li>
-			<li><a href="http://goo.gl/forms/qvLkxDti7h"><i class="material-icons">feedback</i>Suggest a Feature</a></li>
+			<li><a href="http://goo.gl/forms/qvLkxDti7h"><i class="material-icons">feedback</i>Suggest a feature</a></li>
 			<li><a href="https://github.com/19RyanA/CheckPCR/issues/new"><i class="material-icons">bug_report</i>Report a bug</a></li>
 			<li id="newsB"><a><i class="material-icons">view_headline</i>News</a></li>
-			<li><a href="https://github.com/19RyanA/CheckPCR/blob/master/README.md"><i class="material-icons">help</i>Help</a></li>
+			<li><a href="https://github.com/19RyanA/CheckPCR/wiki"><i class="material-icons">flight_land</i>Upcoming features</a></li>
+			<!--<li><a href="https://github.com/19RyanA/CheckPCR/blob/master/README.md"><i class="material-icons">help</i>Help</a></li>-->
 		</ul>
 	</div>
 	<div id="sideBackground"></div>
@@ -58,6 +59,7 @@
 		</section>
 	</main>
 	<span id="lastUpdate"></span>
+	<a id="new" class="material-icons infoChange">add</a>
 	<div id="info" data-view="0">
 		<div id="extra">
 			<i class="material-icons">keyboard_arrow_up</i>
@@ -158,6 +160,12 @@
 		<button id="errorNo">CLOSE</button>
 	</div>
 	<div id="errorBackground"></div>
+	<form id="newDialog">
+		<input id="newText" type="text" placeholder="Description of new assignment" required />
+		<a id="newCancel" class="material-icons">close</a>
+		<button id="newDone" class="material-icons" type="submit">send</button>
+	</form>
+	<div id="newBackground"></div>
 	<div id="settings">
 		<ul>
 			<li class="two">
