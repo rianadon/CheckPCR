@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -37,6 +37,8 @@ viewData = {};
 activity = [];
 
 dmp = new diff_match_patch();
+
+lastUpdate = 0;
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -207,10 +209,14 @@ formatUpdate = function(date) {
 };
 
 fetch = function() {
+  if (Date.now() - lastUpdate < 60000) {
+    return;
+  }
+  lastUpdate = Date.now();
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-      var e, error1, j, len, ref1, t, up;
+      var e, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -234,8 +240,8 @@ fetch = function() {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (error1) {
-          e = error1;
+        } catch (_error) {
+          e = _error;
           console.log(e);
           displayError(e);
         }
@@ -294,7 +300,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, error1, t;
+      var e, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -310,8 +316,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (error1) {
-          e = error1;
+        } catch (_error) {
+          e = _error;
           console.log(e);
           displayError(e);
         }
@@ -588,7 +594,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function() {
-  var aa, ab, added, ae, already, assignment, attachment, attachments, body, close, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len2, len3, len4, len5, len6, len7, len8, link, m, main, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var aa, ab, added, ae, af, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   console.time("Displaying data");
   document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
@@ -720,6 +726,16 @@ display = function() {
   }
   for (u = 0, len4 = extra.length; u < len4; u++) {
     custom = extra[u];
+    cls = null;
+    if (custom["class"] != null) {
+      ref3 = data.classes;
+      for (n = z = 0, len5 = ref3.length; z < len5; n = ++z) {
+        c = ref3[n];
+        if (c.toLowerCase().indexOf(custom["class"]) !== -1) {
+          cls = n;
+        }
+      }
+    }
     split.push({
       start: new Date(fromDateNum(custom.start)),
       end: new Date(fromDateNum(custom.start)),
@@ -731,7 +747,8 @@ display = function() {
         start: custom.start,
         end: "Forever",
         body: custom.body,
-        id: "todo" + (custom.body.replace(/[^\w]*/g, "")) + custom.start
+        id: "todo" + (custom.body.replace(/[^\w]*/g, "")) + custom.start,
+        "class": cls
       },
       reference: custom
     });
@@ -741,14 +758,14 @@ display = function() {
   todayWkId = "wk" + (tdst.getMonth()) + "-" + (tdst.getDate());
   weekHeights = {};
   previousAssignments = {};
-  ref3 = document.getElementsByClassName("assignment");
-  for (z = 0, len5 = ref3.length; z < len5; z++) {
-    assignment = ref3[z];
+  ref4 = document.getElementsByClassName("assignment");
+  for (aa = 0, len6 = ref4.length; aa < len6; aa++) {
+    assignment = ref4[aa];
     previousAssignments[assignment.getAttribute("id")] = assignment;
   }
   fn = function(id, reference) {
     return complete.addEventListener("mouseup", function(evt) {
-      var ab, added, el, elem, len7, ref4;
+      var added, ae, el, elem, len8, ref5;
       if (evt.which === 1) {
         el = evt.target;
         while (!el.classList.contains("assignment")) {
@@ -774,10 +791,10 @@ display = function() {
         }
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
-            var ab, elem, len7, ref4;
-            ref4 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
-            for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
-              elem = ref4[ab];
+            var ae, elem, len8, ref5;
+            ref5 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
+            for (ae = 0, len8 = ref5.length; ae < len8; ae++) {
+              elem = ref5[ae];
               elem.classList.toggle("done");
             }
             if (added) {
@@ -792,9 +809,9 @@ display = function() {
             return resize();
           }, 100);
         } else {
-          ref4 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
-          for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
-            elem = ref4[ab];
+          ref5 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
+          for (ae = 0, len8 = ref5.length; ae < len8; ae++) {
+            elem = ref5[ae];
             elem.classList.toggle("done");
           }
           if (added) {
@@ -831,7 +848,7 @@ display = function() {
   };
   fn2 = function(b, ad, di, ed, id, ref) {
     return body.addEventListener("input", function(evt) {
-      var ab, additions, deletions, diff, len7;
+      var additions, ae, deletions, diff, len8;
       if (ref != null) {
         ref.body = evt.target.innerHTML;
         localStorage["extra"] = JSON.stringify(extra);
@@ -842,8 +859,8 @@ display = function() {
         dmp.diff_cleanupSemantic(d);
         additions = 0;
         deletions = 0;
-        for (ab = 0, len7 = d.length; ab < len7; ab++) {
-          diff = d[ab];
+        for (ae = 0, len8 = d.length; ae < len8; ae++) {
+          diff = d[ae];
           if (diff[0] === 1) {
             additions++;
           }
@@ -875,8 +892,8 @@ display = function() {
       }
     });
   };
-  for (aa = 0, len6 = split.length; aa < len6; aa++) {
-    s = split[aa];
+  for (ab = 0, len7 = split.length; ab < len7; ab++) {
+    s = split[ab];
     assignment = s.custom ? s.assignment : window.data.assignments[s.assignment];
     reference = s.reference;
     separated = separate(assignment["class"] != null ? window.data.classes[assignment["class"]] : "Todo");
@@ -890,10 +907,10 @@ display = function() {
       smallTag = "a";
     }
     e = element("div", ["assignment", assignment.baseType, "anim"], "<" + smallTag + (link != null ? " href='" + link + "' class='linked' target='_blank'" : "") + "><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</" + smallTag + "><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + (isNaN(assignment.end) ? 0 : assignment.end) + "' />", assignment.id + weekId);
-    if (((reference != null) && reference.done) || (ref4 = assignment.id, indexOf.call(done, ref4) >= 0)) {
+    if (((reference != null) && reference.done) || (ref5 = assignment.id, indexOf.call(done, ref5) >= 0)) {
       e.classList.add("done");
     }
-    e.setAttribute("data-class", isNaN(assignment["class"]) ? "Todo" : window.data.classes[assignment["class"]]);
+    e.setAttribute("data-class", s.custom ? "Todo" : window.data.classes[assignment["class"]]);
     close = element("a", ["close", "material-icons"], "close");
     close.addEventListener("click", closeOpened);
     e.appendChild(close);
@@ -915,7 +932,7 @@ display = function() {
     fn(id, reference);
     e.appendChild(complete);
     if (s.custom) {
-      deleteA = element("a", ["material-icons", "deleteAssignment"], "delete");
+      deleteA = element("a", ["material-icons", "deleteAssignment", "waves"], "delete");
       (function(reference, e) {
         ripple(deleteA);
         return deleteA.addEventListener("mouseup", function(evt) {
@@ -948,7 +965,7 @@ display = function() {
     e.appendChild(times);
     if (assignment.attachments.length > 0) {
       attachments = element("div", "attachments");
-      ref5 = assignment.attachments;
+      ref6 = assignment.attachments;
       fn4 = function(attachment) {
         var a, req;
         a = element("a", [], attachment[0]);
@@ -971,8 +988,8 @@ display = function() {
         req.send();
         attachments.appendChild(a);
       };
-      for (ab = 0, len7 = ref5.length; ab < len7; ab++) {
-        attachment = ref5[ab];
+      for (ae = 0, len8 = ref6.length; ae < len8; ae++) {
+        attachment = ref6[ae];
         fn4(attachment);
       }
       e.appendChild(attachments);
@@ -985,8 +1002,8 @@ display = function() {
       if (d.length !== 0) {
         added = 0;
         deleted = 0;
-        for (ae = 0, len8 = d.length; ae < len8; ae++) {
-          diff = d[ae];
+        for (af = 0, len9 = d.length; af < len9; af++) {
+          diff = d[af];
           if (diff[0] === 1) {
             added++;
           }
@@ -1019,7 +1036,7 @@ display = function() {
         e.classList.add("listDisp");
       }
     } else {
-      if ((Math.floor(s.start / 1000 / 3600 / 24) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
+      if ((Math.floor(s.start / 1000 / 3600 / 24) - (assignment.baseType === "test" ? JSON.parse(localStorage["earlyTest"]) : 0) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
         e.classList.add("listDisp");
       }
     }
@@ -1092,7 +1109,7 @@ display = function() {
           }
         });
       })(id);
-      if (ref6 = assignment.id, indexOf.call(done, ref6) >= 0) {
+      if (ref7 = assignment.id, indexOf.call(done, ref7) >= 0) {
         te.classList.add("done");
       }
       if (document.getElementById("test" + assignment.id) != null) {
@@ -1112,6 +1129,9 @@ display = function() {
         already.getElementsByClassName("body")[0].innerHTML = e.getElementsByClassName("body")[0].innerHTML;
       }
       already.querySelector(".edits").className = e.querySelector(".edits").className;
+      if (already.classList.toggle != null) {
+        already.classList.toggle("listDisp", e.classList.contains("listDisp"));
+      }
     } else {
       wk.appendChild(e);
     }
@@ -1127,11 +1147,11 @@ display = function() {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var af, len9, ref7, results, x;
-      ref7 = wkid.substring(2).split("-");
+      var ag, len10, ref8, results, x;
+      ref8 = wkid.substring(2).split("-");
       results = [];
-      for (af = 0, len9 = ref7.length; af < len9; af++) {
-        x = ref7[af];
+      for (ag = 0, len10 = ref8.length; ag < len10; ag++) {
+        x = ref8[ag];
         results.push(parseInt(x));
       }
       return results;
@@ -1401,7 +1421,7 @@ if (localStorage["view"] != null) {
   }
 }
 
-ref3 = document.querySelectorAll("input[type=text]:not(#newText), input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search]");
+ref3 = document.querySelectorAll("input[type=text]:not(#newText), input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number]:not(.control), input[type=search]");
 for (l = 0, len2 = ref3.length; l < len2; l++) {
   input = ref3[l];
   input.addEventListener("change", function(evt) {
@@ -1539,7 +1559,7 @@ updateAvatar();
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
 parseAthenaData = function(dat) {
-  var athenaData2, course, courseDetails, d, e, error1, len3, n, o, ref4;
+  var athenaData2, course, courseDetails, d, e, len3, n, o, ref4;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -1561,8 +1581,8 @@ parseAthenaData = function(dat) {
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
       document.getElementById("athenaDataRefresh").style.display = "block";
-    } catch (error1) {
-      e = error1;
+    } catch (_error) {
+      e = _error;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataRefresh").style.display = "none";
       document.getElementById("athenaDataError").innerHTML = e.message;
@@ -1587,6 +1607,10 @@ document.getElementById("backButton").addEventListener("click", function() {
 
 if (localStorage["viewTrans"] == null) {
   localStorage["viewTrans"] = JSON.stringify(true);
+}
+
+if (localStorage["earlyTest"] == null) {
+  localStorage["earlyTest"] = JSON.stringify(1);
 }
 
 if (localStorage["googleA"] == null) {
@@ -1796,20 +1820,23 @@ ref8 = document.getElementsByClassName("settingsControl");
 for (aa = 0, len7 = ref8.length; aa < len7; aa++) {
   e = ref8[aa];
   if (localStorage[e.name] != null) {
-    if (e.checked != null) {
+    if (e.type === "checkbox") {
       e.checked = JSON.parse(localStorage[e.name]);
     } else {
       e.value = JSON.parse(localStorage[e.name]);
     }
   }
   e.addEventListener("change", function(evt) {
-    if (evt.target.checked != null) {
+    if (evt.target.type === "checkbox") {
       localStorage[evt.target.name] = JSON.stringify(evt.target.checked);
     } else {
       localStorage[evt.target.name] = JSON.stringify(evt.target.value);
     }
     if (evt.target.name === "refreshRate") {
-      return intervalRefresh();
+      intervalRefresh();
+    }
+    if (evt.target.name === "earlyTest") {
+      return display();
     }
   });
 }
@@ -2207,13 +2234,32 @@ document.getElementById("newText").addEventListener("keydown", function(evt) {
 document.getElementById("newCancel").addEventListener("click", closeNew);
 
 document.getElementById("newDialog").addEventListener("submit", function(evt) {
+  var cls, due, parsed, text;
+  evt.preventDefault();
+  text = document.getElementById("newText").value;
+  while (true) {
+    parsed = text.match(/(.*) (for|by) (.*)/);
+    if (parsed != null) {
+      switch (parsed[2]) {
+        case "for":
+          cls = parsed[3];
+          break;
+        case "by":
+          due = parsed[3];
+      }
+      text = parsed[1];
+    } else {
+      break;
+    }
+  }
   extra.push({
-    body: document.getElementById("newText").value,
+    body: text.charAt(0).toUpperCase() + text.substr(1),
     done: false,
-    start: Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24)
+    start: Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24),
+    "class": cls.toLowerCase(),
+    end: due
   });
   localStorage["extra"] = JSON.stringify(extra);
   closeNew();
-  display();
-  return evt.preventDefault();
+  return display();
 });

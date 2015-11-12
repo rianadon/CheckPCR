@@ -845,8 +845,8 @@ body[data-view="1"] .week
 .deleteAssignment + .editAssignment
 	right: 40px+4px
 
-body:not(.dark)
-	.todo>.title, .todo:not(.full)>small
+body[data-view="0"]:not(.dark) .assignment.todo:not(.full)
+	&>.title, &>small, &>.linked
 		color: rgba(0,0,0,0.87)
 
 body[data-view="1"] .deleteAssignment + .editAssignment
@@ -1207,6 +1207,9 @@ $scale: 15
 			&>select.control
 				width: 125px
 				top: 8px
+			&>input.control
+				width: auto
+				text-align: center
 			&.two
 				padding-top: 20px
 				padding-bottom: 20px
@@ -1497,13 +1500,18 @@ body.dark
 	@extend #update
 	padding: 24px
 	top: calc(40vh - 36px)
-	display: flex
-	&>a
-		color: inherit
 	&.active + #newBackground
 		opacity: 0.5
 
-#newDone[id]
+#newInner
+	display: flex
+	&>a
+		color: inherit
+
+#newTips
+	padding: 16px 8px 0 8px
+
+#newDone
 	color: $accent-color
 	margin: 0
 	font-size: 24px
@@ -1513,6 +1521,9 @@ body.dark
 	height: 24px
 	overflow: hidden
 	width: 0
+	outline: none
+	border: none
+	background: transparent
 	+transform(scaleX(0))
 	+transition(width 0.3s ease, margin-left 0.3s ease, transform 0.3s ease)
 

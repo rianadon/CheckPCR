@@ -161,9 +161,15 @@
 	</div>
 	<div id="errorBackground"></div>
 	<form id="newDialog">
-		<input id="newText" type="text" placeholder="Description of new assignment" required />
-		<a id="newCancel" class="material-icons">close</a>
-		<button id="newDone" class="material-icons" type="submit">send</button>
+		<div id="newInner">
+			<input id="newText" type="text" placeholder="Description of new assignment" required autocomplete="off" />
+			<a id="newCancel" class="material-icons">close</a>
+			<button id="newDone" class="material-icons" type="submit">send</button>
+		</div>
+		<div id="newTips">
+			Use <b>for</b> to assign a class (<i>Write research paper <b>for</b> history</i>).<br>
+			You'll be able to use <b>due</b> soon in a future update.<br>
+		</div>
 	</form>
 	<div id="newBackground"></div>
 	<div id="settings">
@@ -198,6 +204,11 @@
 						<span class="lever"></span>
 					</label>
 				</div>
+			</li>
+			<li class="two">
+				Test preparation (List View)
+				<span>Number of days in advance to show assessments</span>
+				<input type="number" min="0" max="99" class="control settingsControl" name="earlyTest" />
 			</li>
 			<li id="colorSettings">
 				Assignment colors

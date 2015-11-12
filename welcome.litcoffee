@@ -227,6 +227,7 @@ The following code is copied from the main script and slightly modified since th
               #document.getElementById("lastUpdate").innerHTML = formatUpdate t
               try
                 parse resp.response # Parse the data PCR has replied with
+                display() # Added
               catch e
                 console.log e
                 alert "Error parsing assignments. Is PCR on list or month view?"
@@ -248,7 +249,7 @@ The following code is copied from the main script and slightly modified since th
             else
               t = Date.now()
               localStorage["lastUpdate"] = t
-              document.getElementById("lastUpdate").innerHTML = formatUpdate t
+              #document.getElementById("lastUpdate").innerHTML = formatUpdate t
 
               window.data = resp.response.data
               display()

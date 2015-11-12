@@ -1665,7 +1665,7 @@ body[data-view="1"] .week {
 .deleteAssignment + .editAssignment, .deleteAssignment + .deleteAssignment {
   right: 44px; }
 
-body:not(.dark) .todo > .title, body:not(.dark) .todo:not(.full) > small {
+body[data-view="0"]:not(.dark) .assignment.todo:not(.full) > .title, body[data-view="0"]:not(.dark) .assignment.todo:not(.full) > small, body[data-view="0"]:not(.dark) .assignment.todo:not(.full) > .linked {
   color: rgba(0, 0, 0, 0.87); }
 
 body[data-view="1"] .deleteAssignment + .editAssignment, body[data-view="1"] .deleteAssignment + .deleteAssignment {
@@ -2347,6 +2347,9 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
       #settings > ul > li > select.control {
         width: 125px;
         top: 8px; }
+      #settings > ul > li > input.control {
+        width: auto;
+        text-align: center; }
       #settings > ul > li.two {
         padding-top: 20px;
         padding-bottom: 20px;
@@ -2567,7 +2570,7 @@ body.dark {
   body.dark #progress {
     background-color: #163417; }
     body.dark #progress > .determinate, body.dark #progress > .indeterminate {
-      background-color: #006229; }
+      background-color: #006329; }
   body.dark .attachments > a, body.dark #login.attachments > input[type="submit"], body.dark #update.attachments > input[type="submit"], body.dark #news.attachments > input[type="submit"], body.dark #error.attachments > input[type="submit"], body.dark #newDialog.attachments > input[type="submit"], body.dark #login.attachments > button, body.dark #update.attachments > button, body.dark #news.attachments > button, body.dark #error.attachments > button, body.dark #newDialog.attachments > button, body.dark .tabs.attachments > li {
     background-color: #616161; }
     body.dark .attachments > a:hover, body.dark #login.attachments > input[type="submit"]:hover, body.dark #update.attachments > input[type="submit"]:hover, body.dark #news.attachments > input[type="submit"]:hover, body.dark #error.attachments > input[type="submit"]:hover, body.dark #newDialog.attachments > input[type="submit"]:hover, body.dark #login.attachments > button:hover, body.dark #update.attachments > button:hover, body.dark #news.attachments > button:hover, body.dark #error.attachments > button:hover, body.dark #newDialog.attachments > button:hover, body.dark .tabs.attachments > li:hover {
@@ -2638,14 +2641,19 @@ body.dark {
 
 #newDialog {
   padding: 24px;
-  top: calc(40vh - 36px);
-  display: flex; }
-  #newDialog > a, #newDialog > input[type="submit"], #newDialog > button, .tabs#newDialog > li {
-    color: inherit; }
+  top: calc(40vh - 36px); }
   #newDialog.active + #newBackground {
     opacity: 0.5; }
 
-#newDone[id] {
+#newInner {
+  display: flex; }
+  #newInner > a, .tabs#newInner > li {
+    color: inherit; }
+
+#newTips {
+  padding: 16px 8px 0 8px; }
+
+#newDone {
   color: #00AF49;
   margin: 0;
   font-size: 24px;
@@ -2655,6 +2663,9 @@ body.dark {
   height: 24px;
   overflow: hidden;
   width: 0;
+  outline: none;
+  border: none;
+  background: transparent;
   -webkit-transform: scaleX(0);
   -moz-transform: scaleX(0);
   -ms-transform: scaleX(0);
