@@ -418,7 +418,7 @@ body[data-view="1"] .week
 .date, .month
 	line-height: 1
 	font-size: 16px
-	@media #{$medium-and-up}
+	@media #{$large-and-up}
 		font-size: 15px
 	float: left
 	white-space: nowrap
@@ -622,7 +622,7 @@ body[data-view="1"] .week
 		line-height: 1.5
 		display: none
 		font-size: 14px
-		@media #{medium-and-up}
+		@media #{large-and-up}
 			font-size: 13px
 		a
 			max-width: 500px
@@ -804,7 +804,7 @@ body[data-view="1"] .week
 			&, &::after
 				font-size: 16px
 				line-height: 36px
-				@media #{medium-screen-up}
+				@media #{large-screen-up}
 					font-size: 15px
 			&:hover
 				background-color: rgba(0, 0, 0, 0.05)
@@ -827,7 +827,7 @@ body[data-view="1"] .week
 			padding-left: 16px+8px
 			&, &::before
 				font-size: 16px
-				@media #{medium-screen-up}
+				@media #{large-screen-up}
 					font-size: 15px
 		&>.edits.notEmpty
 			display: block
@@ -1498,18 +1498,23 @@ body.dark
 
 #newDialog
 	@extend #update
-	padding: 24px
-	top: calc(40vh - 36px)
+	top: calc(40vh - 152px)
+	color: inherit
+	padding-bottom: 0
+	overflow: hidden
 	&.active + #newBackground
 		opacity: 0.5
 
 #newInner
 	display: flex
+	padding: 0 16px
 	&>a
 		color: inherit
 
 #newTips
-	padding: 16px 8px 0 8px
+	padding-top: 16px
+	height: 256px
+	overflow: auto
 
 #newDone
 	color: $accent-color
@@ -1524,6 +1529,7 @@ body.dark
 	outline: none
 	border: none
 	background: transparent
+	cursor: pointer
 	+transform(scaleX(0))
 	+transition(width 0.3s ease, margin-left 0.3s ease, transform 0.3s ease)
 
@@ -1629,3 +1635,61 @@ body.dark
 			+transform(translateX(-40vw))
 		@media #{$large-and-up}
 			+transform(translateX(-30vw))
+
+.tip
+	height: 48px
+	padding-left: 16px
+	display: none
+	cursor: pointer
+	&.active
+		display: flex
+		background-color: #F5F5F5
+		&>.tipInner
+			background-color: #E0E0E0
+			&::before
+				content: " "
+				width: 0
+				height: 0
+				border-style: solid
+				border-width: 24px 12px 24px 0
+				border-color: transparent #E0E0E0 transparent transparent
+				position: absolute
+				left: -12px
+		&:hover
+			background-color: #EEEEEE
+		& ~ .active
+			background-color: transparent
+			&>.tipInner
+				display: none
+			&:hover
+				background-color: #FAFAFA
+	&>i
+		line-height: 48px
+		margin-right: 72px - 24px - 16px
+		color: $accent-color
+
+.typed
+	line-height: 48px
+	vertical-align: top
+	margin-right: 32px
+
+.tipInner
+	display: inline-block
+	position: relative
+	vertical-align: top
+	height: 48px
+	padding-left: 16px
+	flex-grow: 1
+
+.explanation
+	display: block
+	font-size: 16px
+	margin-top: 4px
+	line-height: 22px
+	@media #{$large-and-up}
+		font-size: 15px
+
+.others
+	display: block
+	line-height: 18px
+	color: rgba(0,0,0,0.54)

@@ -35,7 +35,7 @@ for (k = 0, len1 = ref1.length; k < len1; k++) {
 }
 
 parseAthenaData = function(dat) {
-  var athenaData, athenaData2, course, courseDetails, d, e, l, len2, n, ref2;
+  var athenaData, athenaData2, course, courseDetails, d, e, error1, l, len2, n, ref2;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -56,8 +56,8 @@ parseAthenaData = function(dat) {
       athenaData = athenaData2;
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
-    } catch (_error) {
-      e = _error;
+    } catch (error1) {
+      e = error1;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataError").innerHTML = e.message;
     }
@@ -237,7 +237,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, t;
+      var e, error1, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -251,8 +251,8 @@ dologin = function(val, submitEvt) {
         try {
           parse(resp.response);
           display();
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           alert("Error parsing assignments. Is PCR on list or month view?");
         }
@@ -383,7 +383,7 @@ parse = function(doc) {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document").then(function(resp) {
-      var e, l, len2, ref2, t;
+      var e, error1, l, len2, ref2, t;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -412,8 +412,8 @@ parse = function(doc) {
         localStorage["lastUpdate"] = t;
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           alert("Error parsing assignments. Is PCR on list or month view?");
         }

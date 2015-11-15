@@ -167,8 +167,30 @@
 			<button id="newDone" class="material-icons" type="submit">send</button>
 		</div>
 		<div id="newTips">
-			Use <b>for</b> to assign a class (<i>Write research paper <b>for</b> history</i>).<br>
-			You'll be able to use <b>due</b> soon in a future update.<br>
+			<div id="tipby" class="tip">
+				<i class="material-icons">alarm</i>
+				<span class="typed"></span>
+				<div class="tipInner">
+					<span class="explanation">Set a due date</span>
+					<span class="others"></span>
+				</div>
+			</div>
+			<div id="tipfor" class="tip">
+				<i class="material-icons">class</i>
+				<span class="typed"></span>
+				<div class="tipInner">
+					<span class="explanation">Assign for a class</span>
+					<span class="others"></span>
+				</div>
+			</div>
+			<div id="tipstarting" class="tip">
+				<i class="material-icons">schedule</i>
+				<span class="typed"></span>
+				<div class="tipInner">
+					<span class="explanation">Set a starting date</span>
+					<span class="others"></span>
+				</div>
+			</div>
 		</div>
 	</form>
 	<div id="newBackground"></div>
@@ -250,6 +272,7 @@
 	<script src="/headroom.min.js"></script>
 	<script src="/hammer.min.js"></script>
 	<script src="/diff_match_patch/diff_match_patch.js"></script>
+	<script src="/chrono.min.js"></script>
 	<script src="/client.js"></script>
 </body>
 </html>

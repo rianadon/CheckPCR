@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, type, tzoff, u, up, upc, updateAvatar, updateColors, updateSelectNum, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -216,7 +216,7 @@ fetch = function() {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-      var e, j, len, ref1, t, up;
+      var e, error1, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -240,8 +240,8 @@ fetch = function() {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -300,7 +300,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, t;
+      var e, error1, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -316,8 +316,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -593,8 +593,11 @@ addActivity = function(type, assignment, newActivity) {
   return document.getElementById("infoActivity").insertBefore(te, document.getElementById("infoActivity").querySelector(".activity"));
 };
 
-display = function() {
+display = function(doScroll) {
   var aa, ab, added, ae, af, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  if (doScroll == null) {
+    doScroll = true;
+  }
   console.time("Displaying data");
   document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
@@ -677,7 +680,7 @@ display = function() {
     assignment = ref2[num];
     s = Math.max(start.getTime(), fromDateNum(assignment.start));
     e = Math.min(end.getTime(), fromDateNum(assignment.end));
-    span = (e - s) / 1000 / 3600 / 24;
+    span = (e - s) / 1000 / 3600 / 24 + 1;
     spanRelative = 6 - (new Date(s)).getDay();
     ns = new Date(s);
     ns.setDate(ns.getDate() + spanRelative);
@@ -733,25 +736,40 @@ display = function() {
         c = ref3[n];
         if (c.toLowerCase().indexOf(custom["class"]) !== -1) {
           cls = n;
+          break;
         }
       }
     }
-    split.push({
-      start: new Date(fromDateNum(custom.start)),
-      end: new Date(fromDateNum(custom.start)),
-      custom: true,
-      assignment: {
-        title: "Todo item",
-        baseType: "todo",
-        attachments: [],
-        start: custom.start,
-        end: "Forever",
-        body: custom.body,
-        id: "todo" + (custom.body.replace(/[^\w]*/g, "")) + custom.start,
-        "class": cls
-      },
-      reference: custom
-    });
+    s = Math.max(start.getTime(), fromDateNum(custom.start));
+    e = Math.min(end.getTime(), fromDateNum(custom.end != null ? custom.end : custom.start));
+    span = (e - s) / 1000 / 3600 / 24 + 1;
+    spanRelative = 6 - (new Date(s)).getDay();
+    ns = new Date(s);
+    ns.setDate(ns.getDate() + spanRelative);
+    n = -6;
+    while (n < span - spanRelative) {
+      lastSun = new Date(ns);
+      lastSun.setDate(lastSun.getDate() + n);
+      nextSat = new Date(lastSun);
+      nextSat.setDate(nextSat.getDate() + 6);
+      split.push({
+        start: new Date(Math.max(s, lastSun.getTime())),
+        end: new Date(Math.min(e, nextSat.getTime())),
+        custom: true,
+        assignment: {
+          title: "Todo item",
+          baseType: "todo",
+          attachments: [],
+          start: custom.start,
+          end: custom.end || "Forever",
+          body: custom.body,
+          id: "todo" + (custom.body.replace(/[^\w]*/g, "")) + custom.start,
+          "class": cls
+        },
+        reference: custom
+      });
+      n += 7;
+    }
   }
   tdst = new Date();
   tdst.setDate(tdst.getDate() - tdst.getDay());
@@ -949,7 +967,7 @@ display = function() {
               }, 350);
             }
             e.remove();
-            return display();
+            return display(false);
           }
         });
       })(reference, e);
@@ -1087,6 +1105,9 @@ display = function() {
       }
     });
     wk = document.getElementById(weekId);
+    if (wk == null) {
+      continue;
+    }
     if (assignment.baseType === "test" && assignment.start >= today) {
       te = element("div", ["upcomingTest", "assignmentItem", "test"], "<i class='material-icons'>assessment</i><span class='title'>" + assignment.title + "</span><small>" + separated[2] + "</small><div class='range'>" + (dateString(end, true)) + "</div>", "test" + assignment.id);
       te.setAttribute("data-class", window.data.classes[assignment["class"]]);
@@ -1168,7 +1189,7 @@ display = function() {
     if (scroll < 50) {
       scroll = 0;
     }
-    if (document.body.getAttribute("data-view") === "0") {
+    if (doScroll && document.body.getAttribute("data-view") === "0") {
       window.scrollTo(0, scroll);
     }
   }
@@ -1186,6 +1207,9 @@ closeOpened = function(evt) {
   var back, el;
   evt.stopPropagation();
   el = document.querySelector(".full");
+  if (el == null) {
+    return;
+  }
   el.style.top = el.getAttribute("data-top");
   el.classList.add("anim");
   el.classList.remove("full");
@@ -1559,7 +1583,7 @@ updateAvatar();
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
 parseAthenaData = function(dat) {
-  var athenaData2, course, courseDetails, d, e, len3, n, o, ref4;
+  var athenaData2, course, courseDetails, d, e, error1, len3, n, o, ref4;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -1581,8 +1605,8 @@ parseAthenaData = function(dat) {
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
       document.getElementById("athenaDataRefresh").style.display = "block";
-    } catch (_error) {
-      e = _error;
+    } catch (error1) {
+      e = error1;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataRefresh").style.display = "none";
       document.getElementById("athenaDataError").innerHTML = e.message;
@@ -2212,13 +2236,15 @@ document.getElementById("errorBackground").addEventListener("click", closeError)
 ripple(document.getElementById("new"));
 
 document.getElementById("new").addEventListener("mouseup", function() {
-  document.getElementById("newText").value = "";
+  updateNewTips(document.getElementById("newText").value = "");
+  document.body.style.overflow = "hidden";
   document.getElementById("newBackground").style.display = "block";
   document.getElementById("newDialog").classList.add("active");
   return document.getElementById("newText").focus();
 });
 
 closeNew = function() {
+  document.body.style.overflow = "auto";
   document.getElementById("newDialog").classList.remove("active");
   return setTimeout(function() {
     return document.getElementById("newBackground").style.display = "none";
@@ -2234,32 +2260,155 @@ document.getElementById("newText").addEventListener("keydown", function(evt) {
 document.getElementById("newCancel").addEventListener("click", closeNew);
 
 document.getElementById("newDialog").addEventListener("submit", function(evt) {
-  var cls, due, parsed, text;
+  var cls, due, end, parsed, st, start, text;
   evt.preventDefault();
   text = document.getElementById("newText").value;
   while (true) {
-    parsed = text.match(/(.*) (for|by) (.*)/);
+    parsed = text.match(/(.*) (for|by|due|assigned|starting|ending|beginning) (.*)/);
     if (parsed != null) {
       switch (parsed[2]) {
         case "for":
           cls = parsed[3];
           break;
         case "by":
+        case "due":
+        case "ending":
           due = parsed[3];
+          break;
+        case "assigned":
+        case "starting":
+        case "beginning":
+          st = parsed[3];
       }
       text = parsed[1];
     } else {
       break;
     }
   }
+  start = st != null ? Math.floor((chrono.parseDate(st).getTime() - tzoff) / 1000 / 3600 / 24) : Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24);
+  if (due != null) {
+    end = Math.floor((chrono.parseDate(due).getTime() - tzoff) / 1000 / 3600 / 24);
+    if (end < start) {
+      end += Math.ceil((start - end) / 7) * 7;
+    }
+  }
   extra.push({
     body: text.charAt(0).toUpperCase() + text.substr(1),
     done: false,
-    start: Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24),
-    "class": cls.toLowerCase(),
-    end: due
+    start: start,
+    "class": cls != null ? cls.toLowerCase().trim() : null,
+    end: end
   });
   localStorage["extra"] = JSON.stringify(extra);
   closeNew();
-  return display();
+  return display(false);
 });
+
+tipNames = {
+  "for": ["for"],
+  by: ["by", "due", "ending"],
+  starting: ["starting", "beginning", "assigned"]
+};
+
+updateTip = function(name, typed, uppercase) {
+  var ah, len11, n, newNames, ref12;
+  el = document.getElementById("tip" + name);
+  el.classList.add("active");
+  el.querySelector(".typed").innerHTML = (uppercase ? typed.charAt(0).toUpperCase() + typed.substr(1) : typed) + "...";
+  newNames = [];
+  ref12 = tipNames[name];
+  for (ah = 0, len11 = ref12.length; ah < len11; ah++) {
+    n = ref12[ah];
+    if (n !== typed) {
+      newNames.push("<b>" + n + "</b>");
+    }
+  }
+  return el.querySelector(".others").innerHTML = newNames.length > 0 ? "You can also use " + newNames.join(" or ") : "";
+};
+
+tipComplete = function(evt) {
+  var lastSpace, lastWord, val;
+  val = document.getElementById("newText").value;
+  lastSpace = val.lastIndexOf(" ");
+  lastWord = lastSpace === -1 ? 0 : lastSpace + 1;
+  updateNewTips(document.getElementById("newText").value = val.substring(0, lastWord) + this.querySelector(".typed").innerHTML.replace("...", "") + " ");
+  return document.getElementById("newText").focus();
+};
+
+updateNewTips = function(val) {
+  var ah, ai, aj, before, beforeSpace, cls, container, found, i, id, lastSpace, lastWord, len11, len12, len13, name, possible, ref12, ref13, uppercase;
+  document.getElementById("newTips").scrollTop = 0;
+  if ((i = val.lastIndexOf(" ")) !== -1) {
+    beforeSpace = val.lastIndexOf(" ", i - 1);
+    before = val.substring((beforeSpace === -1 ? 0 : beforeSpace + 1), i);
+    for (name in tipNames) {
+      possible = tipNames[name];
+      if (possible.indexOf(before) !== -1) {
+        if (name === "for") {
+          for (name in tipNames) {
+            document.getElementById("tip" + name).classList.remove("active");
+          }
+          ref12 = data.classes;
+          for (ah = 0, len11 = ref12.length; ah < len11; ah++) {
+            cls = ref12[ah];
+            id = "tipclass" + cls.replace(/\W/, "");
+            if (i === val.length - 1) {
+              if ((e = document.getElementById(id)) != null) {
+                e.classList.add("active");
+              } else {
+                container = element("div", ["classTip", "active", "tip"], "<i class='material-icons'>class</i><span class='typed'>" + cls + "</span>", id);
+                container.addEventListener("click", tipComplete);
+                document.getElementById("newTips").appendChild(container);
+              }
+            } else {
+              document.getElementById(id).classList.toggle("active", cls.toLowerCase().indexOf(val.substr(i + 1)) !== -1);
+            }
+          }
+          return;
+        }
+      }
+    }
+  }
+  ref13 = document.getElementsByClassName("classTip");
+  for (ai = 0, len12 = ref13.length; ai < len12; ai++) {
+    el = ref13[ai];
+    el.classList.remove("active");
+  }
+  if (val === "" || val.charAt(val.length - 1) === " ") {
+    updateTip("for", "for", false);
+    updateTip("by", "by", false);
+    updateTip("starting", "starting", false);
+  } else {
+    lastSpace = val.lastIndexOf(" ");
+    lastWord = lastSpace === -1 ? val : val.substr(lastSpace + 1);
+    uppercase = lastWord.charAt(0) === lastWord.charAt(0).toUpperCase();
+    lastWord = lastWord.toLowerCase();
+    for (name in tipNames) {
+      possible = tipNames[name];
+      found = false;
+      for (aj = 0, len13 = possible.length; aj < len13; aj++) {
+        p = possible[aj];
+        if (p.slice(0, lastWord.length) === lastWord) {
+          found = p;
+        }
+      }
+      if (found) {
+        updateTip(name, found, uppercase);
+      } else {
+        document.getElementById("tip" + name).classList.remove("active");
+      }
+    }
+  }
+};
+
+updateNewTips("");
+
+document.getElementById("newText").addEventListener("input", function() {
+  return updateNewTips(this.value);
+});
+
+ref12 = document.getElementsByClassName("tip");
+for (ah = 0, len11 = ref12.length; ah < len11; ah++) {
+  tip = ref12[ah];
+  tip.addEventListener("click", tipComplete);
+}

@@ -1183,7 +1183,7 @@ body[data-view="1"] .week {
   float: left;
   white-space: nowrap;
   position: relative; }
-  @media only screen and (min-width: 601px) {
+  @media only screen and (min-width: 993px) {
     .date, .month {
       font-size: 15px; } }
 
@@ -1425,7 +1425,7 @@ body[data-view="1"] .week {
     line-height: 1.5;
     display: none;
     font-size: 14px; }
-    @media medium-and-up {
+    @media large-and-up {
       .assignment > .body {
         font-size: 13px; } }
     .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #update > input[type="submit"], .assignment > .body #news > input[type="submit"], .assignment > .body #error > input[type="submit"], .assignment > .body #newDialog > input[type="submit"], .assignment > .body #login > button, .assignment > .body #update > button, .assignment > .body #news > button, .assignment > .body #error > button, .assignment > .body #newDialog > button, .assignment > .body .tabs > li {
@@ -1626,7 +1626,7 @@ body[data-view="1"] .week {
       body[data-view="1"] .assignment > .complete, body[data-view="1"] .assignment > .complete::after {
         font-size: 16px;
         line-height: 36px; }
-        @media medium-screen-up {
+        @media large-screen-up {
           body[data-view="1"] .assignment > .complete, body[data-view="1"] .assignment > .complete::after {
             font-size: 15px; } }
       body[data-view="1"] .assignment > .complete:hover {
@@ -1650,7 +1650,7 @@ body[data-view="1"] .week {
       padding-left: 24px; }
       body[data-view="1"] .assignment > .range, body[data-view="1"] .assignment > .range::before, body[data-view="1"] .assignment > .attachments, body[data-view="1"] .assignment > .attachments::before {
         font-size: 16px; }
-        @media medium-screen-up {
+        @media large-screen-up {
           body[data-view="1"] .assignment > .range, body[data-view="1"] .assignment > .range::before, body[data-view="1"] .assignment > .attachments, body[data-view="1"] .assignment > .attachments::before {
             font-size: 15px; } }
     body[data-view="1"] .assignment > .edits.notEmpty {
@@ -2570,7 +2570,7 @@ body.dark {
   body.dark #progress {
     background-color: #163417; }
     body.dark #progress > .determinate, body.dark #progress > .indeterminate {
-      background-color: #006329; }
+      background-color: #006229; }
   body.dark .attachments > a, body.dark #login.attachments > input[type="submit"], body.dark #update.attachments > input[type="submit"], body.dark #news.attachments > input[type="submit"], body.dark #error.attachments > input[type="submit"], body.dark #newDialog.attachments > input[type="submit"], body.dark #login.attachments > button, body.dark #update.attachments > button, body.dark #news.attachments > button, body.dark #error.attachments > button, body.dark #newDialog.attachments > button, body.dark .tabs.attachments > li {
     background-color: #616161; }
     body.dark .attachments > a:hover, body.dark #login.attachments > input[type="submit"]:hover, body.dark #update.attachments > input[type="submit"]:hover, body.dark #news.attachments > input[type="submit"]:hover, body.dark #error.attachments > input[type="submit"]:hover, body.dark #newDialog.attachments > input[type="submit"]:hover, body.dark #login.attachments > button:hover, body.dark #update.attachments > button:hover, body.dark #news.attachments > button:hover, body.dark #error.attachments > button:hover, body.dark #newDialog.attachments > button:hover, body.dark .tabs.attachments > li:hover {
@@ -2640,18 +2640,23 @@ body.dark {
   line-height: 36px; }
 
 #newDialog {
-  padding: 24px;
-  top: calc(40vh - 36px); }
+  top: calc(40vh - 152px);
+  color: inherit;
+  padding-bottom: 0;
+  overflow: hidden; }
   #newDialog.active + #newBackground {
     opacity: 0.5; }
 
 #newInner {
-  display: flex; }
+  display: flex;
+  padding: 0 16px; }
   #newInner > a, .tabs#newInner > li {
     color: inherit; }
 
 #newTips {
-  padding: 16px 8px 0 8px; }
+  padding-top: 16px;
+  height: 256px;
+  overflow: auto; }
 
 #newDone {
   color: #00AF49;
@@ -2666,6 +2671,7 @@ body.dark {
   outline: none;
   border: none;
   background: transparent;
+  cursor: pointer;
   -webkit-transform: scaleX(0);
   -moz-transform: scaleX(0);
   -ms-transform: scaleX(0);
@@ -2822,3 +2828,62 @@ body.dark {
         -ms-transform: translateX(-30vw);
         -o-transform: translateX(-30vw);
         transform: translateX(-30vw); } }
+
+.tip {
+  height: 48px;
+  padding-left: 16px;
+  display: none;
+  cursor: pointer; }
+  .tip.active {
+    display: flex;
+    background-color: #F5F5F5; }
+    .tip.active > .tipInner {
+      background-color: #E0E0E0; }
+      .tip.active > .tipInner::before {
+        content: " ";
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 24px 12px 24px 0;
+        border-color: transparent #E0E0E0 transparent transparent;
+        position: absolute;
+        left: -12px; }
+    .tip.active:hover {
+      background-color: #EEEEEE; }
+    .tip.active ~ .active {
+      background-color: transparent; }
+      .tip.active ~ .active > .tipInner {
+        display: none; }
+      .tip.active ~ .active:hover {
+        background-color: #FAFAFA; }
+  .tip > i {
+    line-height: 48px;
+    margin-right: 32px;
+    color: #00AF49; }
+
+.typed {
+  line-height: 48px;
+  vertical-align: top;
+  margin-right: 32px; }
+
+.tipInner {
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+  height: 48px;
+  padding-left: 16px;
+  flex-grow: 1; }
+
+.explanation {
+  display: block;
+  font-size: 16px;
+  margin-top: 4px;
+  line-height: 22px; }
+  @media only screen and (min-width: 993px) {
+    .explanation {
+      font-size: 15px; } }
+
+.others {
+  display: block;
+  line-height: 18px;
+  color: rgba(0, 0, 0, 0.54); }
