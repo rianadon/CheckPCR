@@ -847,7 +847,7 @@ display = function(doScroll) {
   };
   fn1 = function(id) {
     return edit.addEventListener("mouseup", function(evt) {
-      var done, el, remove;
+      var dn, el, remove;
       if (evt.which === 1) {
         el = evt.target;
         while (!el.classList.contains("editAssignment")) {
@@ -859,8 +859,8 @@ display = function(doScroll) {
         if (!remove) {
           el.parentNode.querySelector(".body").focus();
         }
-        done = el.parentNode.querySelector(".complete");
-        done.style.display = remove ? "block" : "none";
+        dn = el.parentNode.querySelector(".complete");
+        dn.style.display = remove ? "block" : "none";
       }
     });
   };
@@ -2166,6 +2166,9 @@ send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(
   var last, nc;
   last = localStorage["newsCommit"];
   nc = resp.response.history[0].version;
+  if (last == null) {
+    localStorage["newsCommit"] = nc;
+  }
   window.getNews = function(onfail) {
     return send(resp.response.files["updates.htm"].raw_url).then(function(resp) {
       var ah, len11, news, ref12;
@@ -2183,11 +2186,8 @@ send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(
       }
     });
   };
-  if (last !== nc && !firstTime) {
-    window.getNews();
-  }
-  if (last == null) {
-    return localStorage["newsCommit"] = nc;
+  if (last !== nc) {
+    return window.getNews();
   }
 }, function(err) {
   return console.log("Could not access Github. Here's the error:", err);

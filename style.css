@@ -2549,7 +2549,7 @@ body.dark {
     color: rgba(255, 255, 255, 0.7); }
   body.dark #sideNav > ul > li.disabled, body.dark #settings > ul > li.disabled {
     color: rgba(255, 255, 255, 0.3); }
-  body.dark .upcomingTest > small, body.dark .activity > small, body.dark .activity > small, body.dark .upcomingTest > .range, body.dark .activity > .range, body.dark .activity > .range, body.dark #infoTests::after, body.dark #dates > div, body.dark #infoTabs > li, body.dark #settings > ul > li.two > span #filterActivity, body.dark label, body.dark .input-field > label, body.dark .editAssignment, body.dark .deleteAssignment, body.dark .restore {
+  body.dark .upcomingTest > small, body.dark .activity > small, body.dark .activity > small, body.dark .upcomingTest > .range, body.dark .activity > .range, body.dark .activity > .range, body.dark #infoTests::after, body.dark #dates > div, body.dark #infoTabs > li, body.dark #filterActivity, body.dark label, body.dark .input-field > label, body.dark .editAssignment, body.dark .deleteAssignment, body.dark .restore, body.dark .others {
     color: rgba(255, 255, 255, 0.7); }
   body.dark #info > #extra, body.dark .colors > div {
     color: rgba(255, 255, 255, 0.3); }
@@ -2579,10 +2579,12 @@ body.dark {
       border-bottom-color: #424242; }
     body.dark .attachments > a > span, body.dark #login.attachments > input[type="submit"] > span, body.dark #update.attachments > input[type="submit"] > span, body.dark #news.attachments > input[type="submit"] > span, body.dark #error.attachments > input[type="submit"] > span, body.dark #newDialog.attachments > input[type="submit"] > span, body.dark #login.attachments > button > span, body.dark #update.attachments > button > span, body.dark #news.attachments > button > span, body.dark #error.attachments > button > span, body.dark #newDialog.attachments > button > span, body.dark .tabs.attachments > li > span {
       color: rgba(255, 255, 255, 0.7); }
-  body.dark #update, body.dark #news, body.dark #error, body.dark #newDialog, body.dark #news, body.dark #error, body.dark #newDialog {
+  body.dark #update, body.dark #news, body.dark #error, body.dark #newDialog, body.dark #news, body.dark #error {
     color: rgba(255, 255, 255, 0.7); }
-    body.dark #update h1, body.dark #news h1, body.dark #error h1, body.dark #newDialog h1, body.dark #update h2, body.dark #news h2, body.dark #error h2, body.dark #newDialog h2, body.dark #news h1, body.dark #news h2, body.dark #error h1, body.dark #error h2, body.dark #newDialog h1, body.dark #newDialog h2 {
+    body.dark #update h1, body.dark #news h1, body.dark #error h1, body.dark #newDialog h1, body.dark #update h2, body.dark #news h2, body.dark #error h2, body.dark #newDialog h2, body.dark #news h1, body.dark #news h2, body.dark #error h1, body.dark #error h2 {
       color: #FFF; }
+  body.dark #newDialog {
+    color: #FFF; }
   body.dark [type="checkbox"]:not(:checked) + label:before {
     border-color: rgba(255, 255, 255, 0.3); }
   body.dark input[type=text], body.dark input[type=password], body.dark input[type=email], body.dark input[type=url], body.dark input[type=time], body.dark input[type=date], body.dark input[type=datetime-local], body.dark input[type=tel], body.dark input[type=number], body.dark input[type=search] {
@@ -2591,6 +2593,16 @@ body.dark {
     color: rgba(255, 255, 255, 0.7); }
     body.dark #filterActivity:hover {
       color: #FFF; }
+  body.dark .tip.active {
+    background-color: #616161; }
+    body.dark .tip.active:hover {
+      background-color: #515151 !important; }
+    body.dark .tip.active > .tipInner {
+      background-color: #757575; }
+      body.dark .tip.active > .tipInner::before {
+        border-right-color: #757575; }
+    body.dark .tip.active ~ .active {
+      background-color: transparent; }
 
 #news {
   width: 640px;

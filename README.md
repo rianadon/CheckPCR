@@ -12,7 +12,7 @@ If you are feeling bored and have nothing else to do or are suspicious of what t
 The app also uses several other scripts created by other people which are:
 - headroom.js, downloaded from [here](http://wicky.nillia.ms/headroom.js/), which toggles the navbar visibility
 - hammer.js, downloaded from [here](http://hammerjs.github.io/dist/hammer.min.js), which enables touch interactions events such as panning and swiping
-- Chrono, downloaded from[here](https://github.com/wanasit/chrono), which parses dates given in natural language
+- Chrono, downloaded from [here](https://github.com/wanasit/chrono), which parses dates given in natural language
 - Google's Diff, Match, and Patch library from [here](http://code.google.com/p/google-diff-match-patch/), which does diffing as the name states
 
 Installing
@@ -49,9 +49,7 @@ You can either
 If you really must, you can go with the first option. However, I cannot stress just how much I recommend the second option, especially if you don't want to be plagued with merge conflicts.
 
 To compile the CoffeeScript and Sass files, you again have two options.
-1. The first is to download (if you haven't already) [Node.js](https://nodejs.org) from its website, [CoffeeScript](http://coffeescript.org/) by running `npm install -g coffee-script`, and [Sass](http://sass-lang.com/) by following the instructions [here](http://sass-lang.com/install).
-
-	Once you've done that, you can use `coffee -b -c client.litcoffee` to compile the main JavaScript file and `sass style.sass style.css` to compile the main stylesheet.
+1. The first is to download (if you haven't already) [Node.js](https://nodejs.org) from its website, [CoffeeScript](http://coffeescript.org/) by running `npm install -g coffee-script`, and [Sass](http://sass-lang.com/) by following the instructions [here](http://sass-lang.com/install). Once you've done that, you can use `coffee -b -c client.litcoffee` to compile the main JavaScript file and `sass style.sass style.css` to compile the main stylesheet.
 
 2. The other is to use gulp. As in option 1, you'll need to have Node.js installed. Open a terminal and run `npm install -g gulp`, then navigate to the folder that you cloned into and run `npm install gulp gulp-coffee gulp-sass gulp-util`.
 

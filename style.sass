@@ -1398,7 +1398,7 @@ body.dark
 	#sideNav > ul > li.disabled, #settings > ul > li.disabled
 		color: rgba(255,255,255,0.3)
 
-	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #settings > ul > li.two > span #filterActivity, label, .input-field > label, .editAssignment, .restore
+	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #filterActivity, label, .input-field > label, .editAssignment, .restore, .others
 		color: rgba(255,255,255,0.7)
 	#info > #extra, .colors > div
 		color: rgba(255,255,255,0.3)
@@ -1433,10 +1433,13 @@ body.dark
 		&>span
 			color: rgba(255,255,255,0.7)
 
-	#update, #news, #error, #newDialog
+	#update, #news, #error
 		color: rgba(255,255,255,0.7)
 		h1, h2
 			color: #FFF
+
+	#newDialog
+		color: #FFF
 
 	[type="checkbox"]:not(:checked) + label:before
 		border-color: rgba(255,255,255,0.3)
@@ -1448,6 +1451,17 @@ body.dark
 		color: rgba(255,255,255,0.7)
 		&:hover
 			color: #FFF
+
+	.tip.active
+		background-color: #616161
+		&:hover
+			background-color: mix(#616161, #424242) !important
+		&>.tipInner
+			background-color: #757575
+			&::before
+				border-right-color: #757575
+		& ~ .active
+			background-color: transparent
 
 #news
 	@extend #update
