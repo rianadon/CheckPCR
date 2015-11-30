@@ -356,6 +356,44 @@ main
 		#infoActivity.#{$type}>&.#{$type}
 			display: block
 
+.innerActivity
+	@extend .upcomingTest
+	padding: 18px 18px 22px 72px
+	height: 56px
+	display: flex
+	flex-wrap: wrap
+	&>.title
+		font-weight: normal
+		width: auto
+		flex-grow: 1
+	&>i
+		top: 8px
+	&:hover
+		background-color: transparent
+		&>.additions
+			text-shadow: 2px 2px 2px transparentize(#4CAF50, 0.3)
+		&>.deletions
+			text-shadow: 2px 2px 2px transparentize(#F44336, 0.3)
+	&>.additions, &>.deletions
+		line-height: 1
+		font-size: 16px
+		+transition(text-shadow 0.3s)
+	&.active
+		height: auto
+		&>.iaDiff
+			display: block
+
+.iaDiff
+	display: none
+	white-space: normal
+
+.edits.notEmpty + .mods:not(:empty)
+	margin-top: 8px
+
+body[data-view="0"] .mods:not(:empty)
+	margin-bottom: 16px
+	margin-left: 6px
+
 body[data-view="1"] .week
 	height: 0 !important
 #dates, .week
@@ -834,7 +872,6 @@ body[data-view="1"] .week
 			margin: 8px 0 0 0
 			$extraRight: 32px
 			padding-right: 8px+32px+$extraRight
-			height: 8px
 			overflow: visible
 			&>.restore
 				right: 8px+$extraRight
@@ -942,6 +979,13 @@ body[data-view="0"].showInfo
 	-ms-user-select: none
 	user-select: none
 
+body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone)
+	$scale: 5
+	background-image: url("images/snow.svg")
+	background-size: 75px*$scale 100px*$scale
+	&.dark
+		background-image: url("images/snowDark.svg")
+
 $scale: 15
 #empty
 	position: absolute
@@ -957,6 +1001,8 @@ $scale: 15
 		@media #{$large-and-up}
 			right: 30%
 	background: url(images/hills.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
+	body.winter &
+		background: url(images/hills2.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
 	opacity: 0
 	+transition(opacity 0.3s ease, right 0.3s ease)
 	will-change: opacity, right
@@ -989,6 +1035,9 @@ $scale: 15
 		width: 20vmin
 		height: 20vmin
 		background: url(images/sun.svg) center center / 20vmin 20vmin no-repeat
+		body.winter &
+			background-image: url(images/moon.svg)
+			background-size: 15vmin 15vmin
 
 // Progress bars adapted from Materialize
 
@@ -1591,9 +1640,9 @@ body.dark
 	#infoActivity.filter &
 		max-height: 100px
 
-.additions
+.additions, ins
 	color: #4CAF50
-.deletions
+.deletions, del
 	color: #F44336
 .additions, .deletions
 	margin: 0 4px

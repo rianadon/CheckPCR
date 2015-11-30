@@ -594,7 +594,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function(doScroll) {
-  var aa, ab, added, ae, af, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var a, aa, ab, added, ae, af, ag, ah, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   if (doScroll == null) {
     doScroll = true;
   }
@@ -704,7 +704,7 @@ display = function(doScroll) {
         if (oldAssignment.id === assignment.id) {
           found = true;
           if (oldAssignment.body !== assignment.body) {
-            addActivity("edit", assignment, true);
+            addActivity("edit", oldAssignment, true);
             delete modified[assignment.id];
           }
           lastAssignments.splice(num, 1);
@@ -810,7 +810,7 @@ display = function(doScroll) {
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
             var ae, elem, len8, ref5;
-            ref5 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
+            ref5 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
             for (ae = 0, len8 = ref5.length; ae < len8; ae++) {
               elem = ref5[ae];
               elem.classList.toggle("done");
@@ -1041,6 +1041,33 @@ display = function(doScroll) {
     fn3(assignment.body, body, edits, assignment.id);
     edits.appendChild(restore);
     e.appendChild(edits);
+    mods = element("div", ["mods"]);
+    for (ag = 0, len10 = activity.length; ag < len10; ag++) {
+      a = activity[ag];
+      if (a[0] === "edit" && a[1].id === assignment.id) {
+        d = dmp.diff_main(assignment.body, a[1].body);
+        dmp.diff_cleanupSemantic(d);
+        added = 0;
+        deleted = 0;
+        for (ah = 0, len11 = d.length; ah < len11; ah++) {
+          diff = d[ah];
+          if (diff[0] === 1) {
+            added++;
+          }
+          if (diff[0] === -1) {
+            deleted++;
+          }
+        }
+        te = element("div", ["innerActivity", "assignmentItem", assignment.baseType], "<i class='material-icons'>edit</i><span class='title'>" + (dateString(new Date(a[2]))) + "</span><span class='additions'>" + (added !== 0 ? "+" + added : "") + "</span><span class='deletions'>" + (deleted !== 0 ? "+" + deleted : "") + "</span>", "ia" + assignment.id);
+        te.setAttribute("data-class", window.data.classes[assignment["class"]]);
+        te.appendChild(element("div", "iaDiff", dmp.diff_prettyHtml(d)));
+        te.addEventListener("click", function() {
+          return this.classList.toggle("active");
+        });
+        mods.appendChild(te);
+      }
+    }
+    e.appendChild(mods);
     if (start < s.start) {
       e.classList.add("fromWeekend");
     }
@@ -1168,11 +1195,11 @@ display = function(doScroll) {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var ag, len10, ref8, results, x;
+      var ai, len12, ref8, results, x;
       ref8 = wkid.substring(2).split("-");
       results = [];
-      for (ag = 0, len10 = ref8.length; ag < len10; ag++) {
-        x = ref8[ag];
+      for (ai = 0, len12 = ref8.length; ai < len12; ai++) {
+        x = ref8[ai];
         results.push(parseInt(x));
       }
       return results;
@@ -1189,7 +1216,7 @@ display = function(doScroll) {
     if (scroll < 50) {
       scroll = 0;
     }
-    if (doScroll && document.body.getAttribute("data-view") === "0") {
+    if (doScroll && document.body.getAttribute("data-view") === "0" && !document.body.querySelector(".full")) {
       window.scrollTo(0, scroll);
     }
   }
@@ -1469,6 +1496,14 @@ window.addEventListener("keydown", function(evt) {
   }
 });
 
+(function() {
+  var today;
+  today = new Date();
+  if ((new Date(today.getFullYear(), 10, 27) <= today && today <= new Date(today.getFullYear(), 11, 32))) {
+    return document.body.classList.add("winter");
+  }
+})();
+
 navToggle = function(element, ls, f) {
   ripple(document.getElementById(element));
   document.getElementById(element).addEventListener("mouseup", function() {
@@ -1639,6 +1674,14 @@ if (localStorage["earlyTest"] == null) {
 
 if (localStorage["googleA"] == null) {
   localStorage["googleA"] = JSON.stringify(true);
+}
+
+if (localStorage["holidayThemes"] == null) {
+  localStorage["holidayThemes"] = JSON.stringify(false);
+}
+
+if (JSON.parse(localStorage["holidayThemes"])) {
+  document.body.classList.add("holidayThemes");
 }
 
 if (localStorage["colorType"] == null) {
@@ -1856,11 +1899,13 @@ for (aa = 0, len7 = ref8.length; aa < len7; aa++) {
     } else {
       localStorage[evt.target.name] = JSON.stringify(evt.target.value);
     }
-    if (evt.target.name === "refreshRate") {
-      intervalRefresh();
-    }
-    if (evt.target.name === "earlyTest") {
-      return display();
+    switch (evt.target.name) {
+      case "refreshRate":
+        return intervalRefresh();
+      case "earlyTest":
+        return display();
+      case "holidayThemes":
+        return document.body.classList.toggle("holidayThemes", evt.target.checked);
     }
   });
 }

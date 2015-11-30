@@ -1045,7 +1045,7 @@ main {
 #infoActivity:empty::before {
   content: "No activity has been generated yet. After using Check PCR for a while, this pane should populate itself."; }
 
-.upcomingTest, .activity {
+.upcomingTest, .activity, .innerActivity {
   height: 88px;
   width: 100%;
   padding: 16px 16px 20px 72px;
@@ -1058,9 +1058,9 @@ main {
   cursor: pointer;
   border-radius: 2px;
   overflow: hidden; }
-  .upcomingTest:hover, .activity:hover {
+  .upcomingTest:hover, .activity:hover, .innerActivity:hover {
     background-color: rgba(0, 0, 0, 0.05); }
-  .upcomingTest > .title, .activity > .title {
+  .upcomingTest > .title, .activity > .title, .innerActivity > .title {
     font-size: 16px;
     width: 100%;
     overflow: hidden;
@@ -1069,17 +1069,17 @@ main {
     white-space: nowrap;
     text-overflow: ellipsis;
     display: block; }
-  .upcomingTest > small, .activity > small {
+  .upcomingTest > small, .activity > small, .innerActivity > small {
     font-size: 14px;
     line-height: 16px;
     color: rgba(0, 0, 0, 0.54);
     display: block; }
-  .upcomingTest > .range, .activity > .range {
+  .upcomingTest > .range, .activity > .range, .innerActivity > .range {
     font-size: 14px;
     line-height: 16px;
     color: rgba(0, 0, 0, 0.54);
     display: block; }
-  .upcomingTest > i, .activity > i {
+  .upcomingTest > i, .activity > i, .innerActivity > i {
     position: absolute;
     left: 16px;
     top: 20px;
@@ -1100,6 +1100,46 @@ main {
     display: block; }
   #infoActivity.delete > .activity.delete {
     display: block; }
+
+.innerActivity {
+  padding: 18px 18px 22px 72px;
+  height: 56px;
+  display: flex;
+  flex-wrap: wrap; }
+  .innerActivity > .title {
+    font-weight: normal;
+    width: auto;
+    flex-grow: 1; }
+  .innerActivity > i {
+    top: 8px; }
+  .innerActivity:hover {
+    background-color: transparent; }
+    .innerActivity:hover > .additions {
+      text-shadow: 2px 2px 2px rgba(76, 175, 80, 0.7); }
+    .innerActivity:hover > .deletions {
+      text-shadow: 2px 2px 2px rgba(244, 67, 54, 0.7); }
+  .innerActivity > .additions, .innerActivity > .deletions {
+    line-height: 1;
+    font-size: 16px;
+    -webkit-transition: text-shadow 0.3s;
+    -moz-transition: text-shadow 0.3s;
+    -o-transition: text-shadow 0.3s;
+    transition: text-shadow 0.3s; }
+  .innerActivity.active {
+    height: auto; }
+    .innerActivity.active > .iaDiff {
+      display: block; }
+
+.iaDiff {
+  display: none;
+  white-space: normal; }
+
+.edits.notEmpty + .mods:not(:empty) {
+  margin-top: 8px; }
+
+body[data-view="0"] .mods:not(:empty) {
+  margin-bottom: 16px;
+  margin-left: 6px; }
 
 body[data-view="1"] .week {
   height: 0 !important; }
@@ -1657,7 +1697,6 @@ body[data-view="1"] .week {
       display: block;
       margin: 8px 0 0 0;
       padding-right: 72px;
-      height: 8px;
       overflow: visible; }
       body[data-view="1"] .assignment > .edits.notEmpty > .restore {
         right: 40px; }
@@ -2011,6 +2050,12 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   -ms-user-select: none;
   user-select: none; }
 
+body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone) {
+  background-image: url("images/snow.svg");
+  background-size: 375px 500px; }
+  body.holidayThemes.winter.dark, body.noList[data-view="1"]:not(.showDone).dark {
+    background-image: url("images/snowDark.svg"); }
+
 #empty {
   position: absolute;
   top: 112px;
@@ -2040,6 +2085,8 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
     @media only screen and (min-width: 993px) {
       body.showInfo > #empty {
         right: 30%; } }
+  body.winter #empty {
+    background: url(images/hills2.svg) center bottom / 75vmin 22.5vmin repeat-x; }
   #empty > span {
     z-index: 1; }
   body[data-view="1"].noList:not(.showDone) #empty {
@@ -2060,6 +2107,9 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
     width: 20vmin;
     height: 20vmin;
     background: url(images/sun.svg) center center/20vmin 20vmin no-repeat; }
+    body.winter #empty::before {
+      background-image: url(images/moon.svg);
+      background-size: 15vmin 15vmin; }
 
 #progress {
   height: 6px;
@@ -2549,7 +2599,7 @@ body.dark {
     color: rgba(255, 255, 255, 0.7); }
   body.dark #sideNav > ul > li.disabled, body.dark #settings > ul > li.disabled {
     color: rgba(255, 255, 255, 0.3); }
-  body.dark .upcomingTest > small, body.dark .activity > small, body.dark .activity > small, body.dark .upcomingTest > .range, body.dark .activity > .range, body.dark .activity > .range, body.dark #infoTests::after, body.dark #dates > div, body.dark #infoTabs > li, body.dark #filterActivity, body.dark label, body.dark .input-field > label, body.dark .editAssignment, body.dark .deleteAssignment, body.dark .restore, body.dark .others {
+  body.dark .upcomingTest > small, body.dark .activity > small, body.dark .innerActivity > small, body.dark .activity > small, body.dark .upcomingTest > .range, body.dark .activity > .range, body.dark .innerActivity > .range, body.dark .activity > .range, body.dark #infoTests::after, body.dark #dates > div, body.dark #infoTabs > li, body.dark #filterActivity, body.dark label, body.dark .input-field > label, body.dark .editAssignment, body.dark .deleteAssignment, body.dark .restore, body.dark .others {
     color: rgba(255, 255, 255, 0.7); }
   body.dark #info > #extra, body.dark .colors > div {
     color: rgba(255, 255, 255, 0.3); }
@@ -2750,10 +2800,10 @@ body.dark {
   #infoActivity.filter #activitySelectControl {
     max-height: 100px; }
 
-.additions {
+.additions, ins {
   color: #4CAF50; }
 
-.deletions {
+.deletions, del {
   color: #F44336; }
 
 .additions, .deletions {
