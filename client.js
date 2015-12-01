@@ -216,7 +216,7 @@ fetch = function() {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-      var e, error1, j, len, ref1, t, up;
+      var e, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -240,8 +240,8 @@ fetch = function() {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (error1) {
-          e = error1;
+        } catch (_error) {
+          e = _error;
           console.log(e);
           displayError(e);
         }
@@ -300,7 +300,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, error1, t;
+      var e, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -316,8 +316,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (error1) {
-          e = error1;
+        } catch (_error) {
+          e = _error;
           console.log(e);
           displayError(e);
         }
@@ -436,7 +436,7 @@ parse = function(doc) {
     assignment.attachments = ap;
     assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
     assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
-    assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "");
+    assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "").replace(/\s/g, "");
     ref2 = window.data.classes;
     for (pos = q = 0, len3 = ref2.length; q < len3; pos = ++q) {
       c = ref2[pos];
@@ -720,7 +720,9 @@ display = function(doScroll) {
     for (q = 0, len3 = lastAssignments.length; q < len3; q++) {
       assignment = lastAssignments[q];
       addActivity("delete", assignment, true);
-      done.splice(done.indexOf(assignment.id, 1));
+      if (done.indexOf(assignment.id) >= 0) {
+        done.splice(done.indexOf(assignment.id), 1);
+      }
       delete modified[assignment.id];
     }
     localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
@@ -1618,7 +1620,7 @@ updateAvatar();
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
 parseAthenaData = function(dat) {
-  var athenaData2, course, courseDetails, d, e, error1, len3, n, o, ref4;
+  var athenaData2, course, courseDetails, d, e, len3, n, o, ref4;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -1640,8 +1642,8 @@ parseAthenaData = function(dat) {
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
       document.getElementById("athenaDataRefresh").style.display = "block";
-    } catch (error1) {
-      e = error1;
+    } catch (_error) {
+      e = _error;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataRefresh").style.display = "none";
       document.getElementById("athenaDataError").innerHTML = e.message;
@@ -1693,7 +1695,7 @@ if (localStorage["assignmentColors"] == null) {
     homework: "#2196f3",
     classwork: "#689f38",
     test: "#f44336",
-    projects: "#f57c00"
+    longterm: "#f57c00"
   });
 }
 
@@ -1705,15 +1707,6 @@ if ((localStorage["data"] != null) && (localStorage["classColors"] == null)) {
     a[c] = "#616161";
   }
   localStorage["classColors"] = JSON.stringify(a);
-}
-
-if (localStorage["assignmentColors"] == null) {
-  localStorage["assignmentColors"] = JSON.stringify({
-    homework: "#2196f3",
-    classwork: "#689f38",
-    test: "#f44336",
-    projects: "#f57c00"
-  });
 }
 
 document.getElementById(localStorage["colorType"] + "Colors").style.display = "block";
