@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -208,14 +208,17 @@ formatUpdate = function(date) {
   }
 };
 
-fetch = function() {
-  if (Date.now() - lastUpdate < 60000) {
+fetch = function(override) {
+  if (override == null) {
+    override = false;
+  }
+  if (!override && Date.now() - lastUpdate < 60000) {
     return;
   }
   lastUpdate = Date.now();
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
-    send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
+    send("https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
       var e, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
@@ -248,7 +251,9 @@ fetch = function() {
       }
     }, function(error) {
       console.log("Could not fetch assignments; You are probably offline. Here's the error:", error);
-      snackbar("Could not fetch your assignments", "Retry", fetch);
+      snackbar("Could not fetch your assignments", "Retry", function() {
+        return fetch(true);
+      });
     });
   } else {
     send("/api/start", "json", null, null, true).then(function(resp) {
@@ -269,7 +274,9 @@ fetch = function() {
       }
     }, function(error) {
       console.log("Could not fetch assignments; You are probably offline. Here's the error:", error);
-      return snackbar("Could not fetch your assignments", "Retry", fetch);
+      return snackbar("Could not fetch your assignments", "Retry", function() {
+        return fetch(true);
+      });
     });
   }
 };
@@ -469,7 +476,7 @@ parse = function(doc) {
     postArray = [] # Array of data to post
     for h,v of viewData
       postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(v)
-    send "https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
+    send "https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
       .then (resp) ->
         try
           parse resp.response # Parse the data PCR has replied with
@@ -594,7 +601,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function(doScroll) {
-  var a, aa, ab, added, ae, af, ag, ah, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var a, aa, ab, added, ae, af, ag, ah, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   if (doScroll == null) {
     doScroll = true;
   }
@@ -725,7 +732,7 @@ display = function(doScroll) {
       }
       delete modified[assignment.id];
     }
-    localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 32, activity.length));
+    localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 128, activity.length));
     localStorage["done"] = JSON.stringify(done);
     localStorage["modified"] = JSON.stringify(modified);
   }
@@ -1044,8 +1051,9 @@ display = function(doScroll) {
     edits.appendChild(restore);
     e.appendChild(edits);
     mods = element("div", ["mods"]);
-    for (ag = 0, len10 = activity.length; ag < len10; ag++) {
-      a = activity[ag];
+    ref7 = activity.slice(activity.length - 32, activity.length);
+    for (ag = 0, len10 = ref7.length; ag < len10; ag++) {
+      a = ref7[ag];
       if (a[0] === "edit" && a[1].id === assignment.id) {
         d = dmp.diff_main(assignment.body, a[1].body);
         dmp.diff_cleanupSemantic(d);
@@ -1159,7 +1167,7 @@ display = function(doScroll) {
           }
         });
       })(id);
-      if (ref7 = assignment.id, indexOf.call(done, ref7) >= 0) {
+      if (ref8 = assignment.id, indexOf.call(done, ref8) >= 0) {
         te.classList.add("done");
       }
       if (document.getElementById("test" + assignment.id) != null) {
@@ -1197,11 +1205,11 @@ display = function(doScroll) {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var ai, len12, ref8, results, x;
-      ref8 = wkid.substring(2).split("-");
+      var ai, len12, ref9, results, x;
+      ref9 = wkid.substring(2).split("-");
       results = [];
-      for (ai = 0, len12 = ref8.length; ai < len12; ai++) {
-        x = ref8[ai];
+      for (ai = 0, len12 = ref9.length; ai < len12; ai++) {
+        x = ref9[ai];
         results.push(parseInt(x));
       }
       return results;
@@ -1961,8 +1969,9 @@ if (localStorage["data"] != null) {
   window.data = JSON.parse(localStorage["data"]);
   if (localStorage["activity"] != null) {
     activity = JSON.parse(localStorage["activity"]);
-    for (af = 0, len10 = activity.length; af < len10; af++) {
-      act = activity[af];
+    ref11 = activity.slice(activity.length - 32, activity.length);
+    for (af = 0, len10 = ref11.length; af < len10; af++) {
+      act = ref11[af];
       addActivity(act[0], act[1], act[2]);
     }
   }
@@ -1979,9 +1988,9 @@ if (location.protocol !== "chrome-extension:") {
   up = document.getElementById("update");
   upc = up.getElementsByClassName("content")[0];
   up.querySelector("h1").innerHTML = "A new update has been applied.";
-  ref11 = upc.childNodes;
-  for (ag = ref11.length - 1; ag >= 0; ag += -1) {
-    el = ref11[ag];
+  ref12 = upc.childNodes;
+  for (ag = ref12.length - 1; ag >= 0; ag += -1) {
+    el = ref12[ag];
     if (el.nodeType === 3 || el.tagName === "BR" || el.tagName === "CODE" || el.tagName === "A") {
       el.remove();
     }
@@ -2097,8 +2106,8 @@ dragTarget.on("tap", function(e) {
 dt = document.getElementById("dragTarget");
 
 hammertime.on("pan", function(e) {
-  var ref12;
-  if (e.pointerType === "touch" && e.deltaX < -100 || e.deltaX > 100 && e.target !== dt && ((-25 < (ref12 = e.deltaY) && ref12 < 25))) {
+  var ref13;
+  if (e.pointerType === "touch" && e.deltaX < -100 || e.deltaX > 100 && e.target !== dt && ((-25 < (ref13 = e.deltaY) && ref13 < 25))) {
     if (e.velocityX > 0.5) {
       el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view") + 2) + ")");
     } else if (e.velocityX < -0.5) {
@@ -2209,11 +2218,11 @@ send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(
   }
   window.getNews = function(onfail) {
     return send(resp.response.files["updates.htm"].raw_url).then(function(resp) {
-      var ah, len11, news, ref12;
+      var ah, len11, news, ref13;
       localStorage["newsCommit"] = nc;
-      ref12 = resp.responseText.split("<hr>");
-      for (ah = 0, len11 = ref12.length; ah < len11; ah++) {
-        news = ref12[ah];
+      ref13 = resp.responseText.split("<hr>");
+      for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
+        news = ref13[ah];
         document.getElementById("newsContent").appendChild(element("div", "newsItem", news));
       }
       document.getElementById("newsBackground").style.display = "block";
@@ -2349,14 +2358,14 @@ tipNames = {
 };
 
 updateTip = function(name, typed, uppercase) {
-  var ah, len11, n, newNames, ref12;
+  var ah, len11, n, newNames, ref13;
   el = document.getElementById("tip" + name);
   el.classList.add("active");
   el.querySelector(".typed").innerHTML = (uppercase ? typed.charAt(0).toUpperCase() + typed.substr(1) : typed) + "...";
   newNames = [];
-  ref12 = tipNames[name];
-  for (ah = 0, len11 = ref12.length; ah < len11; ah++) {
-    n = ref12[ah];
+  ref13 = tipNames[name];
+  for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
+    n = ref13[ah];
     if (n !== typed) {
       newNames.push("<b>" + n + "</b>");
     }
@@ -2374,7 +2383,7 @@ tipComplete = function(evt) {
 };
 
 updateNewTips = function(val) {
-  var ah, ai, aj, before, beforeSpace, cls, container, found, i, id, lastSpace, lastWord, len11, len12, len13, name, possible, ref12, ref13, uppercase;
+  var ah, ai, aj, before, beforeSpace, cls, container, found, i, id, lastSpace, lastWord, len11, len12, len13, name, possible, ref13, ref14, uppercase;
   document.getElementById("newTips").scrollTop = 0;
   if ((i = val.lastIndexOf(" ")) !== -1) {
     beforeSpace = val.lastIndexOf(" ", i - 1);
@@ -2386,9 +2395,9 @@ updateNewTips = function(val) {
           for (name in tipNames) {
             document.getElementById("tip" + name).classList.remove("active");
           }
-          ref12 = data.classes;
-          for (ah = 0, len11 = ref12.length; ah < len11; ah++) {
-            cls = ref12[ah];
+          ref13 = data.classes;
+          for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
+            cls = ref13[ah];
             id = "tipclass" + cls.replace(/\W/, "");
             if (i === val.length - 1) {
               if ((e = document.getElementById(id)) != null) {
@@ -2399,7 +2408,7 @@ updateNewTips = function(val) {
                 document.getElementById("newTips").appendChild(container);
               }
             } else {
-              document.getElementById(id).classList.toggle("active", cls.toLowerCase().indexOf(val.substr(i + 1)) !== -1);
+              document.getElementById(id).classList.toggle("active", cls.toLowerCase().indexOf(val.toLowerCase().substr(i + 1)) !== -1);
             }
           }
           return;
@@ -2407,9 +2416,9 @@ updateNewTips = function(val) {
       }
     }
   }
-  ref13 = document.getElementsByClassName("classTip");
-  for (ai = 0, len12 = ref13.length; ai < len12; ai++) {
-    el = ref13[ai];
+  ref14 = document.getElementsByClassName("classTip");
+  for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
+    el = ref14[ai];
     el.classList.remove("active");
   }
   if (val === "" || val.charAt(val.length - 1) === " ") {
@@ -2445,8 +2454,8 @@ document.getElementById("newText").addEventListener("input", function() {
   return updateNewTips(this.value);
 });
 
-ref12 = document.getElementsByClassName("tip");
-for (ah = 0, len11 = ref12.length; ah < len11; ah++) {
-  tip = ref12[ah];
+ref13 = document.getElementsByClassName("tip");
+for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
+  tip = ref13[ah];
   tip.addEventListener("click", tipComplete);
 }
