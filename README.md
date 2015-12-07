@@ -15,6 +15,7 @@ The app also uses several other scripts created by other people which are:
 - Chrono, downloaded from [here](https://github.com/wanasit/chrono), which parses dates given in natural language
 - Google's Diff, Match, and Patch library from [here](http://code.google.com/p/google-diff-match-patch/), which does diffing as the name states
 	- Modified (deleted `,j=j.replace(c,"&amp;").replace(d,"&lt;").replace(e,"&gt;").replace(f,"&para;<br>")`) to preserve HTML tags
+- TinyColor, downlaoded from [here](https://github.com/bgrins/TinyColor), which does color arithmetic
 
 Installing
 ----------

@@ -2465,7 +2465,7 @@ body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone) {
       transition: background-color 0.3s ease, height 0.3s ease, width 0.3s ease; }
       .colors > div > span.choose {
         background-color: white !important;
-        height: 144px;
+        height: 168px;
         width: 288px; }
         .colors > div > span.choose > span {
           width: 48px;
@@ -2489,6 +2489,52 @@ body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone) {
         .colors > div > span > span:hover {
           border-width: 3px;
           border-color: rgba(255, 255, 255, 0.87); }
+
+.customColor {
+  background-color: #FFF; }
+  .customColor.customColor.customColor {
+    width: 100%;
+    height: 168px;
+    text-align: center;
+    border-width: 0;
+    -webkit-transition: -webkit-transform 0.3s ease;
+    -moz-transition: -moz-transform 0.3s ease;
+    -o-transition: -o-transform 0.3s ease;
+    transition: transform 0.3s ease;
+    cursor: auto;
+    white-space: normal; }
+  .customColor > a:first-child, #login.customColor > input[type="submit"]:first-child, #update.customColor > input[type="submit"]:first-child, #news.customColor > input[type="submit"]:first-child, #error.customColor > input[type="submit"]:first-child, #newDialog.customColor > input[type="submit"]:first-child, #login.customColor > button:first-child, #update.customColor > button:first-child, #news.customColor > button:first-child, #error.customColor > button:first-child, #newDialog.customColor > button:first-child, .tabs.customColor > li:first-child {
+    -webkit-transition: background-color 0.3s ease;
+    -moz-transition: background-color 0.3s ease;
+    -o-transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease;
+    line-height: 24px;
+    display: block; }
+    .customColor > a:first-child:hover, #login.customColor > input[type="submit"]:first-child:hover, #update.customColor > input[type="submit"]:first-child:hover, #news.customColor > input[type="submit"]:first-child:hover, #error.customColor > input[type="submit"]:first-child:hover, #newDialog.customColor > input[type="submit"]:first-child:hover, #login.customColor > button:first-child:hover, #update.customColor > button:first-child:hover, #news.customColor > button:first-child:hover, #error.customColor > button:first-child:hover, #newDialog.customColor > button:first-child:hover, .tabs.customColor > li:first-child:hover {
+      background-color: rgba(0, 0, 0, 0.1); }
+  .customColor > input {
+    width: 144px;
+    color: rgba(0, 0, 0, 0.87);
+    margin-top: 8px;
+    margin-bottom: 8px; }
+  .onCustom > .customColor {
+    -webkit-transform: translateY(-144px);
+    -moz-transform: translateY(-144px);
+    -ms-transform: translateY(-144px);
+    -o-transform: translateY(-144px);
+    transform: translateY(-144px); }
+
+.customOk {
+  color: #00AF49;
+  display: block;
+  margin-top: 16px; }
+  .customOk:hover {
+    color: #00AF49; }
+
+.customInfo {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+  display: block; }
 
 #athenaData {
   word-break: break-all; }
@@ -2589,17 +2635,17 @@ body.dark {
   body.dark #info {
     background-color: #424242;
     border-color: #424242; }
-  body.dark #infoTabs > li:hover, body.dark .editAssignment:hover, body.dark .deleteAssignment:hover, body.dark .restore:hover, body.dark #newText {
+  body.dark #infoTabs > li:hover, body.dark .editAssignment:hover, body.dark .deleteAssignment:hover, body.dark .restore:hover, body.dark #newText, body.dark .customColor > input {
     color: #FFF; }
   body.dark .dayTable td, body.dark #dates {
     border-color: #424242; }
-  body.dark #sideNav, body.dark #settings, body.dark #news, body.dark #login, body.dark #update, body.dark #news, body.dark #error, body.dark #newDialog, body.dark #error, body.dark #newDialog {
+  body.dark #sideNav, body.dark #settings, body.dark #news, body.dark #login, body.dark #update, body.dark #news, body.dark #error, body.dark #newDialog, body.dark #error, body.dark #newDialog, body.dark .customColor {
     background-color: #424242; }
   body.dark #sideNav > ul > li i, body.dark #settings > ul > li i, body.dark #settings > ul > li > span {
     color: rgba(255, 255, 255, 0.7); }
   body.dark #sideNav > ul > li.disabled, body.dark #settings > ul > li.disabled {
     color: rgba(255, 255, 255, 0.3); }
-  body.dark .upcomingTest > small, body.dark .activity > small, body.dark .innerActivity > small, body.dark .activity > small, body.dark .upcomingTest > .range, body.dark .activity > .range, body.dark .innerActivity > .range, body.dark .activity > .range, body.dark #infoTests::after, body.dark #dates > div, body.dark #infoTabs > li, body.dark #filterActivity, body.dark label, body.dark .input-field > label, body.dark .editAssignment, body.dark .deleteAssignment, body.dark .restore, body.dark .others {
+  body.dark .upcomingTest > small, body.dark .activity > small, body.dark .innerActivity > small, body.dark .activity > small, body.dark .upcomingTest > .range, body.dark .activity > .range, body.dark .innerActivity > .range, body.dark .activity > .range, body.dark #infoTests::after, body.dark #dates > div, body.dark #infoTabs > li, body.dark #filterActivity, body.dark label, body.dark .input-field > label, body.dark .editAssignment, body.dark .deleteAssignment, body.dark .restore, body.dark .others, body.dark .customInfo {
     color: rgba(255, 255, 255, 0.7); }
   body.dark #info > #extra, body.dark .colors > div {
     color: rgba(255, 255, 255, 0.3); }
@@ -2620,7 +2666,7 @@ body.dark {
   body.dark #progress {
     background-color: #163417; }
     body.dark #progress > .determinate, body.dark #progress > .indeterminate {
-      background-color: #006229; }
+      background-color: #006329; }
   body.dark .attachments > a, body.dark #login.attachments > input[type="submit"], body.dark #update.attachments > input[type="submit"], body.dark #news.attachments > input[type="submit"], body.dark #error.attachments > input[type="submit"], body.dark #newDialog.attachments > input[type="submit"], body.dark #login.attachments > button, body.dark #update.attachments > button, body.dark #news.attachments > button, body.dark #error.attachments > button, body.dark #newDialog.attachments > button, body.dark .tabs.attachments > li {
     background-color: #616161; }
     body.dark .attachments > a:hover, body.dark #login.attachments > input[type="submit"]:hover, body.dark #update.attachments > input[type="submit"]:hover, body.dark #news.attachments > input[type="submit"]:hover, body.dark #error.attachments > input[type="submit"]:hover, body.dark #newDialog.attachments > input[type="submit"]:hover, body.dark #login.attachments > button:hover, body.dark #update.attachments > button:hover, body.dark #news.attachments > button:hover, body.dark #error.attachments > button:hover, body.dark #newDialog.attachments > button:hover, body.dark .tabs.attachments > li:hover {
@@ -2646,7 +2692,7 @@ body.dark {
   body.dark .tip.active {
     background-color: #616161; }
     body.dark .tip.active:hover {
-      background-color: #515151 !important; }
+      background-color: #525252 !important; }
     body.dark .tip.active > .tipInner {
       background-color: #757575; }
       body.dark .tip.active > .tipInner::before {

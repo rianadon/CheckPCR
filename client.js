@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, hex2rgb, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, rgb2hex, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -601,7 +601,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function(doScroll) {
-  var a, aa, ab, added, ae, af, ag, ah, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   if (doScroll == null) {
     doScroll = true;
   }
@@ -632,13 +632,7 @@ display = function(doScroll) {
       return results;
     })());
     year = (new Date()).getFullYear();
-    month = 0;
-    ref1 = window.data.assignments;
-    for (j = 0, len = ref1.length; j < len; j++) {
-      assignment = ref1[j];
-      month += (new Date((assignment.start + assignment.end) * 500 * 3600 * 24)).getMonth();
-    }
-    month = Math.round(month / window.data.assignments.length);
+    month = (new Date()).getMonth();
     start = new Date(Math.max(fromDateNum(start), (new Date(year, month)).getTime()));
     end = new Date(Math.min(fromDateNum(end), (new Date(year, month + 1, 0)).getTime()));
   } else {
@@ -658,7 +652,7 @@ display = function(doScroll) {
         wk = element("section", "week", null, "wk" + (d.getMonth()) + "-" + (d.getDate()));
         dayTable = element("table", "dayTable");
         tr = dayTable.insertRow();
-        for (day = k = 0; k < 7; day = ++k) {
+        for (day = j = 0; j < 7; day = ++j) {
           tr.insertCell();
         }
         wk.appendChild(dayTable);
@@ -682,9 +676,9 @@ display = function(doScroll) {
     d.setDate(d.getDate() + 1);
   }
   split = [];
-  ref2 = window.data.assignments;
-  for (num = l = 0, len1 = ref2.length; l < len1; num = ++l) {
-    assignment = ref2[num];
+  ref1 = window.data.assignments;
+  for (num = k = 0, len = ref1.length; k < len; num = ++k) {
+    assignment = ref1[num];
     s = Math.max(start.getTime(), fromDateNum(assignment.start));
     e = Math.min(end.getTime(), fromDateNum(assignment.end));
     span = (e - s) / 1000 / 3600 / 24 + 1;
@@ -706,7 +700,7 @@ display = function(doScroll) {
     }
     if (lastAssignments != null) {
       found = false;
-      for (num = o = 0, len2 = lastAssignments.length; o < len2; num = ++o) {
+      for (num = l = 0, len1 = lastAssignments.length; l < len1; num = ++l) {
         oldAssignment = lastAssignments[num];
         if (oldAssignment.id === assignment.id) {
           found = true;
@@ -724,8 +718,8 @@ display = function(doScroll) {
     }
   }
   if (lastAssignments != null) {
-    for (q = 0, len3 = lastAssignments.length; q < len3; q++) {
-      assignment = lastAssignments[q];
+    for (o = 0, len2 = lastAssignments.length; o < len2; o++) {
+      assignment = lastAssignments[o];
       addActivity("delete", assignment, true);
       if (done.indexOf(assignment.id) >= 0) {
         done.splice(done.indexOf(assignment.id), 1);
@@ -736,13 +730,13 @@ display = function(doScroll) {
     localStorage["done"] = JSON.stringify(done);
     localStorage["modified"] = JSON.stringify(modified);
   }
-  for (u = 0, len4 = extra.length; u < len4; u++) {
-    custom = extra[u];
+  for (q = 0, len3 = extra.length; q < len3; q++) {
+    custom = extra[q];
     cls = null;
     if (custom["class"] != null) {
-      ref3 = data.classes;
-      for (n = z = 0, len5 = ref3.length; z < len5; n = ++z) {
-        c = ref3[n];
+      ref2 = data.classes;
+      for (n = u = 0, len4 = ref2.length; u < len4; n = ++u) {
+        c = ref2[n];
         if (c.toLowerCase().indexOf(custom["class"]) !== -1) {
           cls = n;
           break;
@@ -785,14 +779,14 @@ display = function(doScroll) {
   todayWkId = "wk" + (tdst.getMonth()) + "-" + (tdst.getDate());
   weekHeights = {};
   previousAssignments = {};
-  ref4 = document.getElementsByClassName("assignment");
-  for (aa = 0, len6 = ref4.length; aa < len6; aa++) {
-    assignment = ref4[aa];
+  ref3 = document.getElementsByClassName("assignment");
+  for (z = 0, len5 = ref3.length; z < len5; z++) {
+    assignment = ref3[z];
     previousAssignments[assignment.getAttribute("id")] = assignment;
   }
   fn = function(id, reference) {
     return complete.addEventListener("mouseup", function(evt) {
-      var added, ae, el, elem, len8, ref5;
+      var ab, added, el, elem, len7, ref4;
       if (evt.which === 1) {
         el = evt.target;
         while (!el.classList.contains("assignment")) {
@@ -818,10 +812,10 @@ display = function(doScroll) {
         }
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
-            var ae, elem, len8, ref5;
-            ref5 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
-            for (ae = 0, len8 = ref5.length; ae < len8; ae++) {
-              elem = ref5[ae];
+            var ab, elem, len7, ref4;
+            ref4 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
+            for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
+              elem = ref4[ab];
               elem.classList.toggle("done");
             }
             if (added) {
@@ -836,9 +830,9 @@ display = function(doScroll) {
             return resize();
           }, 100);
         } else {
-          ref5 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
-          for (ae = 0, len8 = ref5.length; ae < len8; ae++) {
-            elem = ref5[ae];
+          ref4 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
+          for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
+            elem = ref4[ab];
             elem.classList.toggle("done");
           }
           if (added) {
@@ -875,7 +869,7 @@ display = function(doScroll) {
   };
   fn2 = function(b, ad, di, ed, id, ref) {
     return body.addEventListener("input", function(evt) {
-      var additions, ae, deletions, diff, len8;
+      var ab, additions, deletions, diff, len7;
       if (ref != null) {
         ref.body = evt.target.innerHTML;
         localStorage["extra"] = JSON.stringify(extra);
@@ -886,8 +880,8 @@ display = function(doScroll) {
         dmp.diff_cleanupSemantic(d);
         additions = 0;
         deletions = 0;
-        for (ae = 0, len8 = d.length; ae < len8; ae++) {
-          diff = d[ae];
+        for (ab = 0, len7 = d.length; ab < len7; ab++) {
+          diff = d[ab];
           if (diff[0] === 1) {
             additions++;
           }
@@ -919,8 +913,8 @@ display = function(doScroll) {
       }
     });
   };
-  for (ab = 0, len7 = split.length; ab < len7; ab++) {
-    s = split[ab];
+  for (aa = 0, len6 = split.length; aa < len6; aa++) {
+    s = split[aa];
     assignment = s.custom ? s.assignment : window.data.assignments[s.assignment];
     reference = s.reference;
     separated = separate(assignment["class"] != null ? window.data.classes[assignment["class"]] : "Todo");
@@ -934,7 +928,7 @@ display = function(doScroll) {
       smallTag = "a";
     }
     e = element("div", ["assignment", assignment.baseType, "anim"], "<" + smallTag + (link != null ? " href='" + link + "' class='linked' target='_blank'" : "") + "><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</" + smallTag + "><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + (isNaN(assignment.end) ? 0 : assignment.end) + "' />", assignment.id + weekId);
-    if (((reference != null) && reference.done) || (ref5 = assignment.id, indexOf.call(done, ref5) >= 0)) {
+    if (((reference != null) && reference.done) || (ref4 = assignment.id, indexOf.call(done, ref4) >= 0)) {
       e.classList.add("done");
     }
     e.setAttribute("data-class", s.custom ? "Todo" : window.data.classes[assignment["class"]]);
@@ -992,7 +986,7 @@ display = function(doScroll) {
     e.appendChild(times);
     if (assignment.attachments.length > 0) {
       attachments = element("div", "attachments");
-      ref6 = assignment.attachments;
+      ref5 = assignment.attachments;
       fn4 = function(attachment) {
         var a, req;
         a = element("a", [], attachment[0]);
@@ -1015,8 +1009,8 @@ display = function(doScroll) {
         req.send();
         attachments.appendChild(a);
       };
-      for (ae = 0, len8 = ref6.length; ae < len8; ae++) {
-        attachment = ref6[ae];
+      for (ab = 0, len7 = ref5.length; ab < len7; ab++) {
+        attachment = ref5[ab];
         fn4(attachment);
       }
       e.appendChild(attachments);
@@ -1029,8 +1023,8 @@ display = function(doScroll) {
       if (d.length !== 0) {
         added = 0;
         deleted = 0;
-        for (af = 0, len9 = d.length; af < len9; af++) {
-          diff = d[af];
+        for (ae = 0, len8 = d.length; ae < len8; ae++) {
+          diff = d[ae];
           if (diff[0] === 1) {
             added++;
           }
@@ -1051,16 +1045,16 @@ display = function(doScroll) {
     edits.appendChild(restore);
     e.appendChild(edits);
     mods = element("div", ["mods"]);
-    ref7 = activity.slice(activity.length - 32, activity.length);
-    for (ag = 0, len10 = ref7.length; ag < len10; ag++) {
-      a = ref7[ag];
+    ref6 = activity.slice(activity.length - 32, activity.length);
+    for (af = 0, len9 = ref6.length; af < len9; af++) {
+      a = ref6[af];
       if (a[0] === "edit" && a[1].id === assignment.id) {
         d = dmp.diff_main(assignment.body, a[1].body);
         dmp.diff_cleanupSemantic(d);
         added = 0;
         deleted = 0;
-        for (ah = 0, len11 = d.length; ah < len11; ah++) {
-          diff = d[ah];
+        for (ag = 0, len10 = d.length; ag < len10; ag++) {
+          diff = d[ag];
           if (diff[0] === 1) {
             added++;
           }
@@ -1091,7 +1085,7 @@ display = function(doScroll) {
         e.classList.add("listDisp");
       }
     } else {
-      if ((Math.floor(s.start / 1000 / 3600 / 24) - (assignment.baseType === "test" ? JSON.parse(localStorage["earlyTest"]) : 0) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
+      if ((Math.floor(s.start / 1000 / 3600 / 24) - (assignment.baseType === "test" && start === s.start ? JSON.parse(localStorage["earlyTest"]) : 0) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
         e.classList.add("listDisp");
       }
     }
@@ -1167,7 +1161,7 @@ display = function(doScroll) {
           }
         });
       })(id);
-      if (ref8 = assignment.id, indexOf.call(done, ref8) >= 0) {
+      if (ref7 = assignment.id, indexOf.call(done, ref7) >= 0) {
         te.classList.add("done");
       }
       if (document.getElementById("test" + assignment.id) != null) {
@@ -1205,11 +1199,11 @@ display = function(doScroll) {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var ai, len12, ref9, results, x;
-      ref9 = wkid.substring(2).split("-");
+      var ah, len11, ref8, results, x;
+      ref8 = wkid.substring(2).split("-");
       results = [];
-      for (ai = 0, len12 = ref9.length; ai < len12; ai++) {
-        x = ref9[ai];
+      for (ah = 0, len11 = ref8.length; ah < len11; ah++) {
+        x = ref8[ah];
         results.push(parseInt(x));
       }
       return results;
@@ -1751,24 +1745,6 @@ ac = JSON.parse(localStorage["assignmentColors"]);
 
 cc = localStorage["classColors"] != null ? JSON.parse(localStorage["classColors"]) : {};
 
-rgb2hex = function(rgb) {
-  var hex;
-  if (/^#[0-9A-F]{6}$/i.test(rgb)) {
-    return rgb;
-  }
-  rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-  hex = function(x) {
-    return ("0" + parseInt(x).toString(16)).slice(-2);
-  };
-  return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-};
-
-hex2rgb = function(hex) {
-  var result;
-  result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
-};
-
 palette = {
   "#f44336": "#B71C1C",
   "#e91e63": "#880E4F",
@@ -1806,10 +1782,10 @@ for (u = 0, len5 = ref6.length; u < len5; u++) {
   e = ref6[u];
   ref7 = e.getElementsByTagName("div");
   fn = function(sp, color, list, listName) {
-    return sp.addEventListener("click", function(evt) {
+    sp.addEventListener("click", function(evt) {
       var bg;
       if (sp.classList.contains("choose")) {
-        bg = rgb2hex(evt.target.style.backgroundColor);
+        bg = tinycolor(evt.target.style.backgroundColor).toHexString();
         list[color.getAttribute("data-control")] = bg;
         sp.style.backgroundColor = bg;
         if (sp.querySelector(".selected") != null) {
@@ -1820,6 +1796,17 @@ for (u = 0, len5 = ref6.length; u < len5; u++) {
         updateColors();
       }
       return sp.classList.toggle("choose");
+    });
+    return custom.querySelector(".customOk").addEventListener("click", function(evt) {
+      this.parentNode.parentNode.classList.remove("onCustom");
+      this.parentNode.parentNode.classList.toggle("choose");
+      if (sp.querySelector(".selected") != null) {
+        sp.querySelector(".selected").classList.remove("selected");
+      }
+      sp.style.backgroundColor = list[color.getAttribute("data-control")] = this.parentNode.querySelector("input").value;
+      localStorage[listName] = JSON.stringify(list);
+      updateColors();
+      return evt.stopPropagation();
     });
   };
   for (z = 0, len6 = ref7.length; z < len6; z++) {
@@ -1836,21 +1823,21 @@ for (u = 0, len5 = ref6.length; u < len5; u++) {
       }
       sp.appendChild(pe);
     }
+    custom = element("span", ["customColor"], "<a>Custom</a> <input type='text' placeholder='Was " + list[color.getAttribute("data-control")] + "' /> <span class='customInfo'>Use any CSS valid color name, such as <code>#F44336</code> or <code>rgb(64, 43, 2)</code> or <code>cyan</code></span> <a class='customOk'>Set</a>");
+    custom.addEventListener("click", function(evt) {
+      return evt.stopPropagation();
+    });
+    custom.querySelector("a").addEventListener("click", function(evt) {
+      this.parentNode.parentNode.classList.toggle("onCustom");
+      return evt.stopPropagation();
+    });
+    sp.appendChild(custom);
     fn(sp, color, list, listName);
   }
 }
 
 updateColors = function() {
-  var addColorRule, mix, name, ref8, ref9, sheet, style;
-  mix = function(a, b, p) {
-    var hex, rgbA, rgbB;
-    rgbA = hex2rgb(a);
-    rgbB = hex2rgb(b);
-    hex = function(x) {
-      return ("0" + parseInt(x).toString(16)).slice(-2);
-    };
-    return "#" + hex(rgbA[0] * p + rgbB[0] * (1 - p)) + hex(rgbA[1] * p + rgbB[1] * (1 - p)) + hex(rgbA[2] * p + rgbB[2] * (1 - p));
-  };
+  var addColorRule, createPalette, name, ref8, ref9, sheet, style;
   style = document.createElement("style");
   style.appendChild(document.createTextNode(""));
   document.head.appendChild(style);
@@ -1861,21 +1848,24 @@ updateColors = function() {
     }
     sheet.insertRule(extra + ".assignment" + selector + " { background-color: " + light + "; }", 0);
     sheet.insertRule(extra + ".assignment" + selector + ".done { background-color: " + dark + "; }", 0);
-    sheet.insertRule(extra + ".assignment" + selector + "::before { background-color: " + (mix(light, "#1B5E20", 0.3)) + "; }", 0);
+    sheet.insertRule(extra + ".assignment" + selector + "::before { background-color: " + (tinycolor.mix(light, "#1B5E20", 70).toHexString()) + "; }", 0);
     sheet.insertRule(extra + ".assignmentItem" + selector + ">i { background-color: " + light + "; }", 0);
     return sheet.insertRule(extra + ".assignmentItem" + selector + ".done>i { background-color: " + dark + "; }", 0);
+  };
+  createPalette = function(color) {
+    return tinycolor(color).darken(24).toHexString();
   };
   if (localStorage["colorType"] === "assignment") {
     ref8 = JSON.parse(localStorage["assignmentColors"]);
     for (name in ref8) {
       color = ref8[name];
-      addColorRule("." + name, color, palette[color]);
+      addColorRule("." + name, color, palette[color] || createPalette(color));
     }
   } else {
     ref9 = JSON.parse(localStorage["classColors"]);
     for (name in ref9) {
       color = ref9[name];
-      addColorRule("[data-class=\"" + name + "\"]", color, palette[color]);
+      addColorRule("[data-class=\"" + name + "\"]", color, palette[color] || createPalette(color));
     }
   }
   addColorRule(".todo", "#F5F5F5", "#E0E0E0");

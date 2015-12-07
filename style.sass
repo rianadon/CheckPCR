@@ -1322,7 +1322,7 @@ $scale: 15
 			+transition(background-color 0.3s ease, height 0.3s ease, width 0.3s ease)
 			&.choose
 				background-color: white !important
-				height: 48px*3
+				height: 48px*3.5
 				width: 48px*6
 				&>span
 					width: 48px
@@ -1343,6 +1343,41 @@ $scale: 15
 				&:hover
 					border-width: 3px
 					border-color: rgba(255,255,255,0.87)
+
+.customColor
+	background-color: #FFF
+	&.customColor.customColor
+		width: 100%
+		height: 48px*3.5
+		text-align: center
+		border-width: 0
+		+transition(transform 0.3s ease)
+		cursor: auto
+		white-space: normal
+	&>a:first-child
+		+transition(background-color 0.3s ease)
+		line-height: 24px
+		display: block
+		&:hover
+			background-color: rgba(0, 0, 0, 0.1)
+	&>input
+		width: 48px*3
+		color: rgba(0,0,0,0.87)
+		margin-top: 8px
+		margin-bottom: 8px
+	.onCustom>&
+		+transform(translateY(-144px))
+
+.customOk
+	color: $accent-color
+	display: block
+	&:hover
+		color: $accent-color
+	margin-top: 16px
+.customInfo
+	color: rgba(0,0,0,0.54)
+	font-size: 14px
+	display: block
 
 #athenaData
 	word-break: break-all
@@ -1433,13 +1468,13 @@ body.dark
 		background-color: #424242
 		border-color: #424242
 
-	#infoTabs > li:hover, .editAssignment:hover, .restore:hover, #newText
+	#infoTabs > li:hover, .editAssignment:hover, .restore:hover, #newText, .customColor>input
 		color: #FFF
 
 	.dayTable td, #dates
 		border-color: #424242
 
-	#sideNav, #settings, #news, #login, #error, #newDialog
+	#sideNav, #settings, #news, #login, #error, #newDialog, .customColor
 		background-color: #424242
 	#sideNav > ul > li i, #settings > ul > li i, #settings > ul > li > span
 		color: rgba(255,255,255,0.7)
@@ -1447,7 +1482,7 @@ body.dark
 	#sideNav > ul > li.disabled, #settings > ul > li.disabled
 		color: rgba(255,255,255,0.3)
 
-	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #filterActivity, label, .input-field > label, .editAssignment, .restore, .others
+	.upcomingTest > small, .activity > small, .upcomingTest > .range, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #filterActivity, label, .input-field > label, .editAssignment, .restore, .others, .customInfo
 		color: rgba(255,255,255,0.7)
 	#info > #extra, .colors > div
 		color: rgba(255,255,255,0.3)
