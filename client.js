@@ -1049,7 +1049,7 @@ display = function(doScroll) {
     for (af = 0, len9 = ref6.length; af < len9; af++) {
       a = ref6[af];
       if (a[0] === "edit" && a[1].id === assignment.id) {
-        d = dmp.diff_main(assignment.body, a[1].body);
+        d = dmp.diff_main(a[1].body, assignment.body);
         dmp.diff_cleanupSemantic(d);
         added = 0;
         deleted = 0;
@@ -1062,11 +1062,12 @@ display = function(doScroll) {
             deleted++;
           }
         }
-        te = element("div", ["innerActivity", "assignmentItem", assignment.baseType], "<i class='material-icons'>edit</i><span class='title'>" + (dateString(new Date(a[2]))) + "</span><span class='additions'>" + (added !== 0 ? "+" + added : "") + "</span><span class='deletions'>" + (deleted !== 0 ? "+" + deleted : "") + "</span>", "ia" + assignment.id);
+        te = element("div", ["innerActivity", "assignmentItem", assignment.baseType], "<i class='material-icons'>edit</i><span class='title'>" + (dateString(new Date(a[2]))) + "</span><span class='additions'>" + (added !== 0 ? "+" + added : "") + "</span><span class='deletions'>" + (deleted !== 0 ? "-" + deleted : "") + "</span>", "ia" + assignment.id);
         te.setAttribute("data-class", window.data.classes[assignment["class"]]);
         te.appendChild(element("div", "iaDiff", dmp.diff_prettyHtml(d)));
         te.addEventListener("click", function() {
-          return this.classList.toggle("active");
+          this.classList.toggle("active");
+          return resize();
         });
         mods.appendChild(te);
       }

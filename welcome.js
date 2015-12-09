@@ -382,7 +382,7 @@ parse = function(doc) {
 (function() {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
-    send("https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document").then(function(resp) {
+    send("https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document").then(function(resp) {
       var e, l, len2, ref2, t;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {

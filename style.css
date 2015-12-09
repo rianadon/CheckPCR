@@ -1132,7 +1132,9 @@ main {
 
 .iaDiff {
   display: none;
-  white-space: normal; }
+  white-space: normal;
+  font-weight: normal;
+  font-size: 13px; }
 
 .edits.notEmpty + .mods:not(:empty) {
   margin-top: 8px; }

@@ -360,7 +360,7 @@ A slightly modified fetch function is then called
     do ->
       if location.protocol is "chrome-extension:"
         console.time "Fetching assignments"
-        send "https://webappsca.pcrsoft.com/Clue/Student-Assignments-End-Date-Range/7536", "document"
+        send "https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document"
           .then (resp) ->
             console.timeEnd "Fetching assignments"
             if resp.responseURL.indexOf("Login") isnt -1
