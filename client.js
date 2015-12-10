@@ -442,7 +442,7 @@ parse = function(doc) {
     ap = attachmentify(b);
     assignment.attachments = ap;
     assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
-    assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
+    assignment.type = title.match(/\(([^)]*\)*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
     assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "").replace(/\s/g, "");
     ref2 = window.data.classes;
     for (pos = q = 0, len3 = ref2.length; q < len3; pos = ++q) {
@@ -601,7 +601,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function(doScroll) {
-  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   if (doScroll == null) {
     doScroll = true;
   }
@@ -1081,12 +1081,13 @@ display = function(doScroll) {
     }
     e.classList.add("s" + (s.start.getDay()));
     e.classList.add(isNaN(s.end) ? "e" + (6 - s.start.getDay()) : "e" + (6 - s.end.getDay()));
+    st = Math.floor(s.start / 1000 / 3600 / 24);
     if (s.assignment.end === "Forever") {
-      if (Math.floor(s.start / 1000 / 3600 / 24) <= today) {
+      if (st <= today) {
         e.classList.add("listDisp");
       }
     } else {
-      if ((Math.floor(s.start / 1000 / 3600 / 24) - (assignment.baseType === "test" && start === s.start ? JSON.parse(localStorage["earlyTest"]) : 0) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
+      if ((st - (assignment.baseType === "test" && assignment.start === st ? JSON.parse(localStorage["earlyTest"]) : 0) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
         e.classList.add("listDisp");
       }
     }
