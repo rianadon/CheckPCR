@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
+var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, onNewTask, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -219,7 +219,7 @@ fetch = function(override) {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-      var e, j, len, ref1, t, up;
+      var e, error1, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -243,8 +243,8 @@ fetch = function(override) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -307,7 +307,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, t;
+      var e, error1, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -323,8 +323,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -760,13 +760,13 @@ display = function(doScroll) {
         end: new Date(Math.min(e, nextSat.getTime())),
         custom: true,
         assignment: {
-          title: "Todo item",
-          baseType: "todo",
+          title: "Task",
+          baseType: "task",
           attachments: [],
           start: custom.start,
           end: custom.end || "Forever",
           body: custom.body,
-          id: "todo" + (custom.body.replace(/[^\w]*/g, "")) + custom.start,
+          id: "task" + (custom.body.replace(/[^\w]*/g, "")) + custom.start + custom.end + custom["class"],
           "class": cls
         },
         reference: custom
@@ -788,10 +788,7 @@ display = function(doScroll) {
     return complete.addEventListener("mouseup", function(evt) {
       var ab, added, el, elem, len7, ref4;
       if (evt.which === 1) {
-        el = evt.target;
-        while (!el.classList.contains("assignment")) {
-          el = el.parentNode;
-        }
+        el = this.parentNode;
         added = true;
         if (reference != null) {
           if (el.classList.contains("done")) {
@@ -830,7 +827,7 @@ display = function(doScroll) {
             return resize();
           }, 100);
         } else {
-          ref4 = document.querySelectorAll(".assignment[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
+          ref4 = document.querySelectorAll("*[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
           for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
             elem = ref4[ab];
             elem.classList.toggle("done");
@@ -917,7 +914,7 @@ display = function(doScroll) {
     s = split[aa];
     assignment = s.custom ? s.assignment : window.data.assignments[s.assignment];
     reference = s.reference;
-    separated = separate(assignment["class"] != null ? window.data.classes[assignment["class"]] : "Todo");
+    separated = separate(assignment["class"] != null ? window.data.classes[assignment["class"]] : "Task");
     startSun = new Date(s.start.getTime());
     startSun.setDate(startSun.getDate() - startSun.getDay());
     weekId = "wk" + (startSun.getMonth()) + "-" + (startSun.getDate());
@@ -931,7 +928,7 @@ display = function(doScroll) {
     if (((reference != null) && reference.done) || (ref4 = assignment.id, indexOf.call(done, ref4) >= 0)) {
       e.classList.add("done");
     }
-    e.setAttribute("data-class", s.custom ? "Todo" : window.data.classes[assignment["class"]]);
+    e.setAttribute("data-class", s.custom ? "Task" : window.data.classes[assignment["class"]]);
     close = element("a", ["close", "material-icons"], "close");
     close.addEventListener("click", closeOpened);
     e.appendChild(close);
@@ -1067,7 +1064,9 @@ display = function(doScroll) {
         te.appendChild(element("div", "iaDiff", dmp.diff_prettyHtml(d)));
         te.addEventListener("click", function() {
           this.classList.toggle("active");
-          return resize();
+          if (document.body.getAttribute("data-view") === "1") {
+            return resize();
+          }
         });
         mods.appendChild(te);
       }
@@ -1091,52 +1090,56 @@ display = function(doScroll) {
         e.classList.add("listDisp");
       }
     }
-    pos = 0;
-    while (true) {
-      found = true;
+    if (!s.custom || !JSON.parse(localStorage["sepTasks"])) {
+      pos = 0;
+      while (true) {
+        found = true;
+        d = new Date(s.start);
+        while (d <= s.end) {
+          if (taken[d].indexOf(pos) !== -1) {
+            found = false;
+          }
+          d.setDate(d.getDate() + 1);
+        }
+        if (found) {
+          break;
+        }
+        pos++;
+      }
       d = new Date(s.start);
       while (d <= s.end) {
-        if (taken[d].indexOf(pos) !== -1) {
-          found = false;
-        }
+        taken[d].push(pos);
         d.setDate(d.getDate() + 1);
       }
-      if (found) {
-        break;
-      }
-      pos++;
+      e.style.marginTop = pos * 30 + "px";
     }
-    d = new Date(s.start);
-    while (d <= s.end) {
-      taken[d].push(pos);
-      d.setDate(d.getDate() + 1);
+    if (!s.custom || !JSON.parse(localStorage["sepTasks"])) {
+      e.addEventListener("click", function(evt) {
+        var back, el;
+        el = evt.target;
+        while (!el.classList.contains("assignment")) {
+          el = el.parentNode;
+        }
+        if (document.getElementsByClassName("full").length === 0 && document.body.getAttribute("data-view") === "0") {
+          el.classList.remove("anim");
+          el.classList.add("modify");
+          el.style.top = el.getBoundingClientRect().top - document.body.scrollTop - parseInt(el.style.marginTop) + 44 + "px";
+          el.setAttribute("data-top", el.style.top);
+          document.body.style.overflow = "hidden";
+          back = document.getElementById("background");
+          back.classList.add("active");
+          back.style.display = "block";
+          el.classList.add("anim");
+          setTimeout(function() {
+            el.classList.add("full");
+            el.style.top = 75 - parseInt(el.style.marginTop) + "px";
+            return setTimeout(function() {
+              return el.classList.remove("anim");
+            }, 350);
+          }, 0);
+        }
+      });
     }
-    e.style.marginTop = pos * 30 + "px";
-    e.addEventListener("click", function(evt) {
-      var back, el;
-      el = evt.target;
-      while (!el.classList.contains("assignment")) {
-        el = el.parentNode;
-      }
-      if (document.getElementsByClassName("full").length === 0 && document.body.getAttribute("data-view") === "0") {
-        el.classList.remove("anim");
-        el.classList.add("modify");
-        el.style.top = el.getBoundingClientRect().top - document.body.scrollTop - parseInt(el.style.marginTop) + 44 + "px";
-        el.setAttribute("data-top", el.style.top);
-        document.body.style.overflow = "hidden";
-        back = document.getElementById("background");
-        back.classList.add("active");
-        back.style.display = "block";
-        el.classList.add("anim");
-        setTimeout(function() {
-          el.classList.add("full");
-          el.style.top = 75 - parseInt(el.style.marginTop) + "px";
-          return setTimeout(function() {
-            return el.classList.remove("anim");
-          }, 350);
-        }, 0);
-      }
-    });
     wk = document.getElementById(weekId);
     if (wk == null) {
       continue;
@@ -1187,7 +1190,20 @@ display = function(doScroll) {
         already.classList.toggle("listDisp", e.classList.contains("listDisp"));
       }
     } else {
-      wk.appendChild(e);
+      if (s.custom && JSON.parse(localStorage["sepTasks"])) {
+        if (assignment.start === st && assignment.end >= today) {
+          e.classList.remove("assignment");
+          e.classList.add("taskPaneItem");
+          e.style.order = assignment.end;
+          if ((link = e.querySelector(".linked")) != null) {
+            e.insertBefore(element("small", [], link.innerHTML), link);
+            link.remove();
+          }
+          document.getElementById("infoTasksInner").appendChild(e);
+        }
+      } else {
+        wk.appendChild(e);
+      }
     }
     delete previousAssignments[assignment.id + weekId];
   }
@@ -1624,7 +1640,7 @@ updateAvatar();
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
 parseAthenaData = function(dat) {
-  var athenaData2, course, courseDetails, d, e, len3, n, o, ref4;
+  var athenaData2, course, courseDetails, d, e, error1, len3, n, o, ref4;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -1646,8 +1662,8 @@ parseAthenaData = function(dat) {
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
       document.getElementById("athenaDataRefresh").style.display = "block";
-    } catch (_error) {
-      e = _error;
+    } catch (error1) {
+      e = error1;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataRefresh").style.display = "none";
       document.getElementById("athenaDataError").innerHTML = e.message;
@@ -1680,6 +1696,15 @@ if (localStorage["earlyTest"] == null) {
 
 if (localStorage["googleA"] == null) {
   localStorage["googleA"] = JSON.stringify(true);
+}
+
+if (localStorage["sepTasks"] == null) {
+  localStorage["sepTasks"] = JSON.stringify(false);
+}
+
+if (JSON.parse(localStorage["sepTasks"])) {
+  document.getElementById("info").classList.add("isTasks");
+  document.getElementById("new").style.display = "none";
 }
 
 if (localStorage["holidayThemes"] == null) {
@@ -1870,8 +1895,8 @@ updateColors = function() {
       addColorRule("[data-class=\"" + name + "\"]", color, palette[color] || createPalette(color));
     }
   }
-  addColorRule(".todo", "#F5F5F5", "#E0E0E0");
-  addColorRule(".todo", "#424242", "#212121", ".dark ");
+  addColorRule(".task", "#F5F5F5", "#E0E0E0");
+  addColorRule(".task", "#424242", "#212121", ".dark ");
 };
 
 updateColors();
@@ -1899,6 +1924,8 @@ for (aa = 0, len7 = ref8.length; aa < len7; aa++) {
         return display();
       case "holidayThemes":
         return document.body.classList.toggle("holidayThemes", evt.target.checked);
+      case "sepTasks":
+        return document.getElementById("sepTasksRefresh").style.display = "block";
     }
   });
 }
@@ -2000,20 +2027,16 @@ gp = {
 
 if (!JSON.parse(localStorage["googleA"])) {
   window['ga-disable-UA-66932824-1'] = true;
+} else {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');;
+  ga('create', 'UA-66932824-1', 'auto');
+  ga('set', 'checkProtocolTask', (function() {}));
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview', gp);
 }
-
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');;
-
-ga('create', 'UA-66932824-1', 'auto');
-
-ga('set', 'checkProtocolTask', (function() {}));
-
-ga('require', 'displayfeatures');
-
-ga('send', 'pageview', gp);
 
 if (localStorage["askGoogleAnalytics"] == null) {
   snackbar("This page uses Google Analytics. You can opt out vai Settings.", "Settings", function() {
@@ -2153,6 +2176,16 @@ for (type in activityTypes) {
   fn1(type);
 }
 
+if (localStorage["showDoneTasks"] && JSON.parse(localStorage["showDoneTasks"])) {
+  document.getElementById("showDoneTasks").checked = true;
+  document.getElementById("infoTasksInner").classList.add("showDoneTasks");
+}
+
+document.getElementById("showDoneTasks").addEventListener("change", function() {
+  localStorage["showDoneTasks"] = JSON.stringify(this.checked);
+  return document.getElementById("infoTasksInner").classList.toggle("showDoneTasks", this.checked);
+});
+
 checkCommit = function() {
   return send((location.protocol === "chrome-extension:" ? "https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master" : "/api/commit"), "json").then(function(resp) {
     var last;
@@ -2274,13 +2307,19 @@ document.getElementById("errorBackground").addEventListener("click", closeError)
 
 ripple(document.getElementById("new"));
 
-document.getElementById("new").addEventListener("mouseup", function() {
+ripple(document.getElementById("newTask"));
+
+onNewTask = function() {
   updateNewTips(document.getElementById("newText").value = "");
   document.body.style.overflow = "hidden";
   document.getElementById("newBackground").style.display = "block";
   document.getElementById("newDialog").classList.add("active");
   return document.getElementById("newText").focus();
-});
+};
+
+document.getElementById("new").addEventListener("mouseup", onNewTask);
+
+document.getElementById("newTask").addEventListener("mouseup", onNewTask);
 
 closeNew = function() {
   document.body.style.overflow = "auto";

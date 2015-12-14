@@ -68,6 +68,7 @@
 		<ul class="tabs" id="infoTabs">
 			<li>Tests</li>
 			<li>Activity</li>
+			<li class="ifTasks">Tasks</li>
 		</ul>
 		<div id="infoContent">
 			<div id="infoTests"></div><div id="infoActivity">
@@ -83,6 +84,11 @@
 					<input type="checkbox" id="deleteSelect">
 					<label for="deleteSelect">Deletions</label>
 				</div>
+			</div><div id="infoTasks" class="ifTasks">
+				<input id="showDoneTasks" type="checkbox" />
+				<label for="showDoneTasks">Show completed tasks</label>
+				<div id="infoTasksInner"></div>
+				<button id="newTask" class="waves">New task</button>
 			</div>
 		</div>
 	</div>
@@ -231,6 +237,17 @@
 				Test preparation (List View)
 				<span>Number of days in advance to show assessments</span>
 				<input type="number" min="0" max="99" class="control settingsControl" name="earlyTest" />
+			</li>
+			<li class="two expand">
+				Separate Tasks
+				<span>Show tasks in a pane alongside Activity</span>
+				<span id="sepTasksRefresh" style="display: none">Please refresh the page to see these changes.</span>
+				<div class="switch control">
+					<label>
+						<input type="checkbox" name="sepTasks" class="settingsControl" checked>
+						<span class="lever"></span>
+					</label>
+				</div>
 			</li>
 			<li id="colorSettings">
 				Assignment colors
