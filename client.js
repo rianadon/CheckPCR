@@ -2225,8 +2225,6 @@ if (location.protocol === "chrome-extension:" || firstTime) {
   checkCommit();
 }
 
-window.applicationCache.addEventListener("updateready", checkCommit);
-
 document.getElementById("updateDelay").addEventListener("click", function() {
   document.getElementById("update").classList.remove("active");
   return setTimeout(function() {
@@ -2490,3 +2488,18 @@ for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
   tip = ref13[ah];
   tip.addEventListener("click", tipComplete);
 }
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register("/service-worker.js").then(function(registration) {
+    return console.log("ServiceWorker registration successful with scope", registration.scope);
+  })["catch"](function(err) {
+    return console.log("ServiceWorker registration failed: ", err);
+  });
+}
+
+navigator.serviceWorker.addEventListener('message', function(event) {
+  console.log("Getting commit because of serviceworker");
+  if (event.data.getCommit) {
+    return checkCommit();
+  }
+});

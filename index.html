@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html manifest="app.cache">
+<html>
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1, width=device-width"/>
 		<title>Check PCR</title>
 		<link rel="stylesheet" type="text/css" href="/style.css" />
+		<link rel="manifest" href="/androidmanifest.json">
+		<!-- Set the navbar color -->
+		<meta name="theme-color" content="#43A047">
+		<meta name="msapplication-navbutton-color" content="#43A047">
+		<meta name="apple-mobile-web-app-status-bar-style" content="#43A047">
 		<!-- The wonderful long list of favicons -->
 		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 		<link rel="icon" href="/icon_16.png" sizes="16x16">
 		<link rel="icon" href="/icon_32.png" sizes="32x32">
+		<link rel="icon" href="/icon_192.png" sizes="192x192">
 		<link rel="apple-touch-icon-precomposed" href="/favicon-152.png">
 		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/favicon-120.png">
 		<meta name="msapplication-TileColor" content="#FFFFFF">
@@ -253,13 +259,13 @@
 				Assignment colors
 				<div class="settingsContent">
 					<p>
-				    <input class="with-gap" name="colorType" type="radio" id="assignmentType" value="assignment" checked />
-				    <label for="assignmentType">By assignment type</label>
-				  </p>
+						<input class="with-gap" name="colorType" type="radio" id="assignmentType" value="assignment" checked />
+						<label for="assignmentType">By assignment type</label>
+					</p>
 					<p>
-				    <input class="with-gap" name="colorType" type="radio" id="classType" value="class" checked />
-				    <label for="classType">By class</label>
-				  </p>
+						<input class="with-gap" name="colorType" type="radio" id="classType" value="class" checked />
+						<label for="classType">By class</label>
+					</p>
 					<div id="assignmentColors" class="colors">
 						<div data-control="homework">Homework<span></span></div><div data-control="classwork">Classwork<span></span></div><div data-control="longterm">Projects<span></span></div><div data-control="test">Tests<span></span></div>
 					</div>

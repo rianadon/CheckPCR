@@ -92,6 +92,7 @@ input {
   background: #FFF;
   padding: 24px 0 76px 0;
   width: 280px;
+  max-width: 100%;
   -webkit-transform: scale(0, 0);
   -moz-transform: scale(0, 0);
   -ms-transform: scale(0, 0);
@@ -2405,7 +2406,7 @@ body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone) {
     right: -8%; } }
 #dragTarget {
   position: fixed;
-  width: 10px;
+  width: 24px;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -2869,8 +2870,7 @@ body.dark {
       background-color: transparent; }
 
 #news {
-  width: 640px;
-  max-width: 100%; }
+  width: 640px; }
   #news.active + #newsBackground {
     opacity: 0.5; }
   #news #newsOk {
@@ -2922,6 +2922,9 @@ body.dark {
   overflow: hidden; }
   #newDialog.active + #newBackground {
     opacity: 0.5; }
+  @media only screen and (max-width: 380px) {
+    #newDialog {
+      top: 0; } }
 
 #newInner {
   display: flex;
@@ -3154,7 +3157,8 @@ body.dark {
   display: block;
   font-size: 16px;
   margin-top: 4px;
-  line-height: 22px; }
+  line-height: 22px;
+  white-space: nowrap; }
   @media only screen and (min-width: 993px) {
     .explanation {
       font-size: 15px; } }
@@ -3162,4 +3166,5 @@ body.dark {
 .others {
   display: block;
   line-height: 18px;
-  color: rgba(0, 0, 0, 0.54); }
+  color: rgba(0, 0, 0, 0.54);
+  white-space: nowrap; }

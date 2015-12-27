@@ -14,11 +14,12 @@ First off, the buttons big, green, welcoming buttons on the bottom of the welcom
         container = document.body
         # show the next page
         view = +container.getAttribute("data-view")
+        window.scrollTo(0,0) # Scoll to top of the page
+        history.pushState {page: view+1}, "", "?page=#{view}" # Make the broswer register a page shift
         (npage = document.querySelector("section:nth-child(#{view+2})")).style.display = "inline-block"
         npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(#{view*100}%)"
         # increase the data-view attribute by 1. The rest is handled by the css.
         container.setAttribute "data-view", view+1
-        window.scrollTo(0,0) # Scoll to top of the page
         setTimeout ->
           #After animating is done, don't display the first page
           npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(#{view+1}00%)"
@@ -36,6 +37,24 @@ Additionally, the active class needs to be added when text fields are selected (
       input.addEventListener "blur", (evt) ->
         if evt.target.value.length is 0
           evt.target.parentNode.querySelector("label").classList.remove "active"
+
+An event listener is attached to the window so that when the back button is pressed, a more welcoming page is displayed.
+Most of the code is the same from next button event listener, except that the page is switched the previous one, not the next one.
+
+    window.onpopstate = (event) ->
+      container = document.body
+      view = if event.state? then event.state.page else 0
+      window.scrollTo(0,0) # Scoll to top of the page
+      (npage = document.querySelector("section:nth-child(#{view+1})")).style.display = "inline-block"
+      npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(#{view*100}%)"
+      # increase the data-view attribute by 1. The rest is handled by the css.
+      container.setAttribute "data-view", view
+      setTimeout ->
+        #After animating is done, don't display the first page
+        npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(#{view}00%)"
+        document.querySelector("section:nth-child(#{view+2})").style.display = "none"
+      , 50
+      return
 
 When there is an error with parsing the data for Athena, a welcoming warning needs to be displayed (and the data needs to be saved too).
 

@@ -1257,7 +1257,7 @@ $scale: 15
 
 #dragTarget
 	position: fixed
-	width: 10px
+	width: 24px
 	position: fixed
 	top: 0
 	bottom: 0
@@ -1697,7 +1697,6 @@ body.dark
 	#newsOk
 		right: 8px
 	width: 640px
-	max-width: 100%
 	h2
 		margin-top: 16px
 .newsItem
@@ -1745,6 +1744,9 @@ body.dark
 	overflow: hidden
 	&.active + #newBackground
 		opacity: 0.5
+	@media only screen and (max-width: 380px)
+		top: 0
+
 
 #newInner
 	display: flex
@@ -1927,6 +1929,7 @@ body.dark
 	font-size: 16px
 	margin-top: 4px
 	line-height: 22px
+	white-space: nowrap
 	@media #{$large-and-up}
 		font-size: 15px
 
@@ -1934,3 +1937,4 @@ body.dark
 	display: block
 	line-height: 18px
 	color: rgba(0,0,0,0.54)
+	white-space: nowrap

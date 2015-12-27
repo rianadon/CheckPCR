@@ -52,7 +52,7 @@ gulp.task('sass', function () {
 	}
 });
 gulp.task('icon', function () {
-	var sizes = [16, 32, 64, 128, 120, 144, 152];
+	var sizes = [16, 32, 36, 64, 72, 96, 128, 120, 144, 152, 192];
 	var favsizes = [16, 32, 64];
 	done = 0;
 	function callback() {

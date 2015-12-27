@@ -16,6 +16,7 @@ It is written in [Literate CoffeeScript](http://coffeescript.org/#literate), a v
 * [Events](#events)
 * [Updates and News](#updates)
 * [Adding new assignments](#new)
+* [Other](#other)
 
 ##### So, here is the annotated code:
 
@@ -1930,10 +1931,6 @@ For updating, a request will be send to Github to get the current commit id and 
     firstTime = not localStorage["commit"] # It's the user's first time if the commit hasn't been saved yet
     if location.protocol is "chrome-extension:" or firstTime then checkCommit()
 
-If the application cache is updated, this should trigger the checkCommit function.
-
-    window.applicationCache.addEventListener "updateready", checkCommit
-
 This update dialog also needs to be closed when the butons are clicked.
 
     document.getElementById("updateDelay").addEventListener "click", ->
@@ -2147,3 +2144,24 @@ The event listener is then added to the preexisting tips.
 
     for tip in document.getElementsByClassName "tip"
       tip.addEventListener "click", tipComplete
+
+<a name="other"/>
+Other
+-----
+
+The code below registers a service worker that caches the page so it can be viewed offline.
+
+    if `'serviceWorker' in navigator`
+      navigator.serviceWorker.register "/service-worker.js"
+        .then (registration) ->
+          # Registration was successful
+          console.log "ServiceWorker registration successful with scope", registration.scope
+        .catch (err) ->
+          # registration failed :(
+          console.log "ServiceWorker registration failed: ", err
+
+If the serviceworker detects that the web app has been updated, the commit is fetched from GitHub.
+
+    navigator.serviceWorker.addEventListener 'message', (event) ->
+      console.log "Getting commit because of serviceworker"
+      if event.data.getCommit then checkCommit()

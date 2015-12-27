@@ -7,10 +7,13 @@ for (j = 0, len = ref.length; j < len; j++) {
     var container, npage, view;
     container = document.body;
     view = +container.getAttribute("data-view");
+    window.scrollTo(0, 0);
+    history.pushState({
+      page: view + 1
+    }, "", "?page=" + view);
     (npage = document.querySelector("section:nth-child(" + (view + 2) + ")")).style.display = "inline-block";
     npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(" + (view * 100) + "%)";
     container.setAttribute("data-view", view + 1);
-    window.scrollTo(0, 0);
     setTimeout(function() {
       npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(" + (view + 1) + "00%)";
       return document.querySelector("section:nth-child(" + (view + 1) + ")").style.display = "none";
@@ -33,6 +36,20 @@ for (k = 0, len1 = ref1.length; k < len1; k++) {
     }
   });
 }
+
+window.onpopstate = function(event) {
+  var container, npage, view;
+  container = document.body;
+  view = event.state != null ? event.state.page : 0;
+  window.scrollTo(0, 0);
+  (npage = document.querySelector("section:nth-child(" + (view + 1) + ")")).style.display = "inline-block";
+  npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(" + (view * 100) + "%)";
+  container.setAttribute("data-view", view);
+  setTimeout(function() {
+    npage.style.transform = npage.style.webkitTransform = npage.style.MozTransform = "translateX(" + view + "00%)";
+    return document.querySelector("section:nth-child(" + (view + 2) + ")").style.display = "none";
+  }, 50);
+};
 
 parseAthenaData = function(dat) {
   var athenaData, athenaData2, course, courseDetails, d, e, error1, l, len2, n, ref2;

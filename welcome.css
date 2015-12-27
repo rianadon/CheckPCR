@@ -91,6 +91,7 @@ input {
   background: #FFF;
   padding: 24px 0 76px 0;
   width: 280px;
+  max-width: 100%;
   -webkit-transform: scale(0, 0);
   -moz-transform: scale(0, 0);
   -ms-transform: scale(0, 0);
@@ -660,7 +661,6 @@ body {
   background-color: #FFF;
   padding: 0;
   font-size: 14px;
-  width: 100%;
   overflow-x: hidden;
   overflow-y: auto; }
 
