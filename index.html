@@ -289,6 +289,38 @@
 					</label>
 				</div>
 			</li>
+			<li class="infin">
+				Parse
+				<span>To sync your completed and editted assignments between devices, you can use the Check PCR's database hosted on Parse, which stores encrypted versions of your completed and edited assignments.</span>
+				<div id="parsebuttons" style="display: none">
+					<p>
+						<span>To do so, you need to either create an account for Check PCR or log in using one you already created. The account is just so everyone has a unique, private identifier for storing data. Since everything sent to Parse gets encrypted using AES, you'll also need to enter an encoding passphrase to encode your data with. Unlike your username and password, this can be as random as you want as it will be displayed on this page once you log in.</span>
+					</p>
+					<p>
+						<span>You'll need to reenter your username and password if you have multiple devices, so try to remember them :)</span>
+					</p>
+					<div class="input-field">
+						<input id="parseusername" type="text" autocomplete="off">
+						<label for="parseusername">Username</label>
+					</div>
+					<div class="input-field">
+						<input id="parsepassword" type="password" autocomplete="off">
+						<label for="parsepassword">Password</label>
+					</div>
+					<div class="input-field">
+						<input id="parsekey" type="text" autocomplete="off">
+						<label for="parsekey">Encoding passphrase</label>
+					</div>
+					<button id="parsenew">New account</button>
+					<button id="parselogin">Log in</button>
+				</div>
+				<div id="parsemanage" style="display: none">
+					<span>If you ever need to, you override everything stored in Parse with the data stored locally on your device by clicking the button below.</span>
+					<button id="parseover">Replace data</button>
+					<span>All your data is encrypted in the cloud using the passphrase below. You'll need to copy this across your devices so that they can decrypt the data.</span>
+					<input type="text" id="parseenc" readonly />
+				</div>
+			</li>
 			<li class="two">
 				Use Google Analytics
 				<span>Feel free to opt out, but it helps me improve the app</span>
@@ -307,6 +339,8 @@
 	<script src="/diff_match_patch/diff_match_patch.js"></script>
 	<script src="/chrono.min.js"></script>
 	<script src="/tinycolor-min.js"></script>
+	<script src="/parse-1.6.12.min.js"></script>
+	<script src="/sjcl.js"></script>
 	<script src="/client.js"></script>
 </body>
 </html>

@@ -1119,7 +1119,7 @@ body[data-view="0"].showInfo
 	-ms-user-select: none
 	user-select: none
 
-body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone)
+body.holidayThemes.winter, body.winter.noList[data-view="1"]:not(.showDone)
 	$scale: 5
 	background-image: url("images/snow.svg")
 	background-size: 75px*$scale 100px*$scale
@@ -1384,6 +1384,12 @@ $scale: 15
 	@media #{$medium-and-up}
 		padding-top: 64px+8px
 	padding-bottom: 48px
+	span
+		display: block
+		font-size: 14px
+		line-height: 14px
+		margin-top: 2px
+		color: rgba(0,0,0,0.54)
 	&>ul
 		font-size: 16px
 		margin: 0 auto
@@ -1411,23 +1417,10 @@ $scale: 15
 					top: 24px
 				&>select.control
 					top: 12px
-				&>span
-					display: block
-					font-size: 14px
-					line-height: 14px
-					margin-top: 2px
-					color: rgba(0,0,0,0.54)
 			&.infin
 				padding-top: 20px
 				padding-bottom: 20px
 				line-height: 16px
-				&>span
-					display: block
-					font-size: 14px
-					line-height: 1.25
-					margin-top: 2px
-					color: rgba(0,0,0,0.54)
-
 
 .settingsContent
 	line-height: 1
@@ -1619,7 +1612,7 @@ body.dark
 
 	#sideNav, #settings, #news, #login, #error, #newDialog, .customColor
 		background-color: #424242
-	#sideNav > ul > li i, #settings > ul > li i, #settings > ul > li > span
+	#sideNav > ul > li i, #settings > ul > li i, #settings span
 		color: rgba(255,255,255,0.7)
 
 	#sideNav > ul > li.disabled, #settings > ul > li.disabled
@@ -1938,3 +1931,35 @@ body.dark
 	line-height: 18px
 	color: rgba(0,0,0,0.54)
 	white-space: nowrap
+
+#parsebuttons, #parsemanage
+	padding-top: 8px
+	&>button
+		margin: 8px 4px
+		border: none
+		border-radius: 2px
+		display: inline-block
+		height: 36px
+		line-height: 36px
+		min-width: 88px
+		outline: 0
+		padding: 0 8px
+		text-transform: uppercase
+		vertical-align: middle
+		font-size: 14px
+		// Gets rid of tap active state
+		-webkit-tap-highlight-color: transparent
+
+		text-decoration: none
+		color: #FFF !important
+		background-color: $accent-color
+		text-align: center
+		letter-spacing: .5px
+		+box-shadow(0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12))
+		+transition(all 0.3s ease-out)
+		cursor: pointer
+
+		&:hover
+			background-color: lighten($accent-color, 5%)
+			color: #FFF
+			+box-shadow(0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15))

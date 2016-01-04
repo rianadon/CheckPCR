@@ -5,6 +5,7 @@
 
 importScripts('serviceworker-cache-polyfill.js');
 
+var CACHE_VERSION = 2;
 var CACHE_NAME = 'checkpcr-cache-v1';
 
 var urlsToCache = [
@@ -55,6 +56,8 @@ var urlsToCache = [
 	"diff_match_patch/diff_match_patch.js",
 	"chrono.min.js",
 	"tinycolor-min.js",
+	"parse-1.6.12.min.js",
+	"sjcl.js",
 	"index.html",
 	"style.css"
 ];

@@ -1,4 +1,4 @@
-var a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, onNewTask, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, ripple, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
+var ParseArray, UserData, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getParseData, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, newParseData, o, onNewTask, onParseOnline, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, ripple, scroll, send, sendToParse, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
@@ -184,6 +184,21 @@ fromDateNum = function(days) {
   }
   return d.getTime();
 };
+
+if (window.requestIdleCallback == null) {
+  window.requestIdleCallback = function(cb) {
+    var start;
+    start = Date.now();
+    return setTimeout(function() {
+      return cb({
+        didTimeout: false,
+        timeRemaining: function() {
+          return Math.max(0, 50 - (Date.now() - start));
+        }
+      });
+    }, 1);
+  };
+}
 
 formatUpdate = function(date) {
   var ampm, daysPast, hr, min, now, update;
@@ -594,7 +609,7 @@ addActivity = function(type, assignment, newActivity) {
       });
     })(id);
   }
-  if (ref1 = assignment.id, indexOf.call(done, ref1) >= 0) {
+  if (ref1 = assignment.id, indexOf.call(done.array, ref1) >= 0) {
     te.classList.add("done");
   }
   return document.getElementById("infoActivity").insertBefore(te, document.getElementById("infoActivity").querySelector(".activity"));
@@ -727,7 +742,7 @@ display = function(doScroll) {
       delete modified[assignment.id];
     }
     localStorage["activity"] = JSON.stringify(activity.slice(activity.length - 128, activity.length));
-    localStorage["done"] = JSON.stringify(done);
+    done.save();
     localStorage["modified"] = JSON.stringify(modified);
   }
   for (q = 0, len3 = extra.length; q < len3; q++) {
@@ -805,7 +820,7 @@ display = function(doScroll) {
             added = false;
             done.push(id);
           }
-          localStorage["done"] = JSON.stringify(done);
+          done.save();
         }
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
@@ -827,7 +842,7 @@ display = function(doScroll) {
             return resize();
           }, 100);
         } else {
-          ref4 = document.querySelectorAll("*[id*=\"" + id + "\"], .upcomingTest[id*=\"test" + id + "\"], .activity[id*=\"activity" + id + "\"]");
+          ref4 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
           for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
             elem = ref4[ab];
             elem.classList.toggle("done");
@@ -925,7 +940,7 @@ display = function(doScroll) {
       smallTag = "a";
     }
     e = element("div", ["assignment", assignment.baseType, "anim"], "<" + smallTag + (link != null ? " href='" + link + "' class='linked' target='_blank'" : "") + "><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</" + smallTag + "><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + (isNaN(assignment.end) ? 0 : assignment.end) + "' />", assignment.id + weekId);
-    if (((reference != null) && reference.done) || (ref4 = assignment.id, indexOf.call(done, ref4) >= 0)) {
+    if (((reference != null) && reference.done) || (ref4 = assignment.id, indexOf.call(done.array, ref4) >= 0)) {
       e.classList.add("done");
     }
     e.setAttribute("data-class", s.custom ? "Task" : window.data.classes[assignment["class"]]);
@@ -1166,7 +1181,7 @@ display = function(doScroll) {
           }
         });
       })(id);
-      if (ref7 = assignment.id, indexOf.call(done, ref7) >= 0) {
+      if (ref7 = assignment.id, indexOf.call(done.array, ref7) >= 0) {
         te.classList.add("done");
       }
       if (document.getElementById("test" + assignment.id) != null) {
@@ -1329,10 +1344,12 @@ for (j = 0, len = ref1.length; j < len; j++) {
   tab = ref1[j];
   tab.addEventListener("click", function(evt) {
     var assignment, assignments, columnHeights, columns, index, k, l, len1, len2, ref2, start, step, trans, w, widths;
-    ga('send', 'event', 'navigation', evt.target.textContent, {
-      page: '/new.html',
-      title: "Version " + (localStorage["commit"] || "New")
-    });
+    if (typeof ga !== "undefined" && ga !== null) {
+      ga('send', 'event', 'navigation', evt.target.textContent, {
+        page: '/new.html',
+        title: "Version " + (localStorage["commit"] || "New")
+      });
+    }
     trans = JSON.parse(localStorage["viewTrans"]);
     if (!trans) {
       document.body.classList.add("noTrans");
@@ -1494,7 +1511,7 @@ if (localStorage["view"] != null) {
   }
 }
 
-ref3 = document.querySelectorAll("input[type=text]:not(#newText), input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number]:not(.control), input[type=search]");
+ref3 = document.querySelectorAll("input[type=text]:not(#newText):not([readonly]), input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number]:not(.control), input[type=search]");
 for (l = 0, len2 = ref3.length; l < len2; l++) {
   input = ref3[l];
   input.addEventListener("change", function(evt) {
@@ -1964,11 +1981,143 @@ for (ae = 0, len9 = ref10.length; ae < len9; ae++) {
   });
 }
 
-done = [];
+sendToParse = function(name, func, value, update) {
+  var onerror;
+  if (update == null) {
+    update = true;
+  }
+  onerror = function() {
+    var parseFailed, pf;
+    console.debug("Adding failed request to localStorage for later reattempts");
+    parseFailed = (pf = localStorage["parseFailed"]) != null ? JSON.parse(pf) : [];
+    parseFailed.push([name, func, value]);
+    return localStorage["parseFailed"] = JSON.stringify(parseFailed);
+  };
+  if (window.userData) {
+    console.log("executing " + func + " with argument " + value + " into " + name);
+    return Parse.CoreManager.getInstallationController().currentInstallationId().then(function(iid) {
+      var obj;
+      return send("https://api.parse.com/1/classes/UserData/" + window.userData.id, "json", null, JSON.stringify((
+        obj = {
+          _ApplicationId: Parse.CoreManager.get("APPLICATION_ID"),
+          _ClientVersion: Parse.CoreManager.get("VERSION"),
+          _InstallationId: iid,
+          _JavaScriptKey: Parse.CoreManager.get("JAVASCRIPT_KEY"),
+          _SessionToken: Parse.User.current().getSessionToken(),
+          _method: "PUT"
+        },
+        obj["" + name] = {
+          __op: func,
+          objects: [sjcl.encrypt(value, localStorage["cryptoPhrase"])]
+        },
+        obj
+      ))).then(function(resp) {
+        console.log("Successfully synced change to Parse", resp.response);
+        if (update) {
+          return window[name][{
+            Remove: "onremove",
+            AddUnique: "onadd"
+          }[func]](value);
+        }
+      }, onerror);
+    });
+  } else {
+    return onerror();
+  }
+};
 
-if (localStorage["done"] != null) {
-  done = JSON.parse(localStorage["done"]);
-}
+ParseArray = (function() {
+  ParseArray.onadd = function() {};
+
+  ParseArray.onremove = function() {};
+
+  function ParseArray(name1, windowname) {
+    var local;
+    this.name = name1;
+    this.windowname = windowname;
+    local = localStorage[this.name];
+    this.array = local != null ? JSON.parse(local) : [];
+  }
+
+  ParseArray.prototype.push = function(item) {
+    sendToParse(this.name, "AddUnique", item, false);
+    return this.array.push(item);
+  };
+
+  ParseArray.prototype.indexOf = function(item) {
+    return this.array.indexOf(item);
+  };
+
+  ParseArray.prototype.splice = function(index, number) {
+    var af, n, ref11, ref12;
+    for (n = af = ref11 = index, ref12 = index + number; ref11 <= ref12 ? af < ref12 : af > ref12; n = ref11 <= ref12 ? ++af : --af) {
+      sendToParse(this.name, "Remove", this.array[n], false);
+    }
+    return this.array.splice(index, number);
+  };
+
+  ParseArray.prototype.save = function() {
+    return localStorage[this.name] = JSON.stringify(this.array);
+  };
+
+  ParseArray.prototype.update = function(updatedData) {
+    var af, item, len10, n, newitem, results, updated;
+    updated = updatedData.slice(0);
+    n = 0;
+    while (n < this.array.length) {
+      item = this.array[n];
+      if (updated.indexOf(item) === -1) {
+        this.onremove(item);
+        this.array.splice(n, 1);
+      } else {
+        n++;
+      }
+      updated.splice(0, 1);
+    }
+    results = [];
+    for (af = 0, len10 = updated.length; af < len10; af++) {
+      newitem = updated[af];
+      this.onadd(newitem);
+      results.push(this.array.push(newitem));
+    }
+    return results;
+  };
+
+  return ParseArray;
+
+})();
+
+done = new ParseArray("done");
+
+done.onadd = function(id) {
+  var af, elem, len10, ref11;
+  ref11 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
+  for (af = 0, len10 = ref11.length; af < len10; af++) {
+    elem = ref11[af];
+    elem.classList.add("done");
+  }
+  if (document.querySelectorAll(".assignment.listDisp:not(.done)").length !== 0) {
+    document.body.classList.remove("noList");
+  }
+  if (document.body.getAttribute("data-view") === "1") {
+    return resize();
+  }
+};
+
+done.onremove = function(id) {
+  var af, elem, len10, ref11;
+  ref11 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
+  for (af = 0, len10 = ref11.length; af < len10; af++) {
+    elem = ref11[af];
+    elem.classList.remove("done");
+  }
+  if (document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0) {
+    document.body.classList.add("noList");
+  }
+  if (document.body.getAttribute("data-view") === "1") {
+    return resize();
+  }
+};
 
 modified = {};
 
@@ -2488,6 +2637,124 @@ for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
   tip = ref13[ah];
   tip.addEventListener("click", tipComplete);
 }
+
+Parse.initialize("y0LK2CGd1Th6yHtOmmgN7CjplpFiDslTEwmtz7q2", "WQxQSzup108DdG4Ey0dJJJ9yw0KNWK2Ss2JBQPkb");
+
+UserData = Parse.Object.extend("UserData");
+
+newParseData = function() {
+  var passphrase, userData, x;
+  userData = new UserData();
+  passphrase = localStorage["cryptoPhrase"];
+  userData.set("done", (function() {
+    var ai, len12, ref14, results;
+    ref14 = done.array;
+    results = [];
+    for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
+      x = ref14[ai];
+      results.push(sjcl.encrypt(passphrase, x));
+    }
+    return results;
+  })());
+  userData.set("user", Parse.User.current());
+  userData.setACL(new Parse.ACL(Parse.User.current()));
+  return userData.save().then(function(userData) {
+    window.userData = userData;
+    return console.debug("Successfully saved userData", userData);
+  }, function(err) {
+    return alert("Unable to save your current data to Parse because of this error: " + err.code + " " + err.message);
+  });
+};
+
+onParseOnline = function() {
+  var ai, failed, len12, pf, ref14, results;
+  if ((pf = localStorage["parseFailed"]) != null) {
+    delete localStorage["parseFailed"];
+    ref14 = JSON.parse(pf);
+    results = [];
+    for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
+      failed = ref14[ai];
+      results.push(sendToParse.apply(sendToParse, failed));
+    }
+    return results;
+  }
+};
+
+window.addEventListener("online", onParseOnline);
+
+getParseData = function() {
+  var query;
+  query = new Parse.Query(UserData);
+  query.equalTo("user", Parse.User.current());
+  return query.first().then(function(result) {
+    var passphrase, x;
+    console.log(result);
+    window.userData = result;
+    passphrase = localStorage["cryptoPhrase"];
+    done.update((function() {
+      var ai, len12, ref14, results;
+      ref14 = result.get("done");
+      results = [];
+      for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
+        x = ref14[ai];
+        results.push(sjcl.decrypt(passphrase, x));
+      }
+      return results;
+    })());
+    return onParseOnline();
+  }, function(err) {
+    return console.log("Could not get data from Parse because of error", err.code, err.message);
+  });
+};
+
+requestIdleCallback(function() {
+  var currentUser, getParseUP;
+  currentUser = Parse.User.current();
+  if (currentUser) {
+    console.log("Logged into parse with", currentUser);
+    document.getElementById("parseenc").value = localStorage["cryptoPhrase"];
+    document.getElementById("parsemanage").style.display = "block";
+    return getParseData().then(function() {
+      return document.getElementById("parseover").addEventListener("click", function() {
+        return window.userData.destroy().then(newParseData);
+      });
+    });
+  } else {
+    getParseUP = function() {
+      return [document.getElementById("parseusername").value, document.getElementById("parsepassword").value, document.getElementById("parsekey").value];
+    };
+    document.getElementById("parsenew").addEventListener("click", function() {
+      var key, pass, ref14, user, username;
+      ref14 = getParseUP(), username = ref14[0], pass = ref14[1], key = ref14[2];
+      document.getElementById("parseenc").value = localStorage["cryptoPhrase"] = key;
+      user = new Parse.User();
+      user.set("username", username);
+      user.set("password", pass);
+      return user.signUp().then(function() {
+        user.setACL(new Parse.ACL(Parse.User.current()));
+        newParseData();
+        document.getElementById("parsebuttons").style.display = "none";
+        return document.getElementById("parsemanage").style.display = "block";
+      }, function(err) {
+        return alert("Error creating a new account: " + err.code + " " + err.message);
+      });
+    });
+    document.getElementById("parselogin").addEventListener("click", function() {
+      var key, pass, ref14, username;
+      ref14 = getParseUP(), username = ref14[0], pass = ref14[1], key = ref14[2];
+      document.getElementById("parseenc").value = localStorage["cryptoPhrase"] = key;
+      return Parse.User.logIn(username, pass).then(function() {
+        document.getElementById("parsebuttons").style.display = "none";
+        return document.getElementById("parsemanage").style.display = "block";
+      }, function(err) {
+        return alert("Error logging in: " + err.code + " " + err.message);
+      });
+    });
+    return document.getElementById("parsebuttons").style.display = "block";
+  }
+}, {
+  timeout: 2000
+});
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register("/service-worker.js").then(function(registration) {

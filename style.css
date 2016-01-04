@@ -2216,10 +2216,10 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   -ms-user-select: none;
   user-select: none; }
 
-body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone) {
+body.holidayThemes.winter, body.winter.noList[data-view="1"]:not(.showDone) {
   background-image: url("images/snow.svg");
   background-size: 375px 500px; }
-  body.holidayThemes.winter.dark, body.noList[data-view="1"]:not(.showDone).dark {
+  body.holidayThemes.winter.dark, body.winter.noList[data-view="1"]:not(.showDone).dark {
     background-image: url("images/snowDark.svg"); }
 
 #empty {
@@ -2551,6 +2551,12 @@ body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone) {
   @media only screen and (min-width: 601px) {
     #settings {
       padding-top: 72px; } }
+  #settings span {
+    display: block;
+    font-size: 14px;
+    line-height: 14px;
+    margin-top: 2px;
+    color: rgba(0, 0, 0, 0.54); }
   #settings > ul {
     font-size: 16px;
     margin: 0 auto;
@@ -2578,22 +2584,10 @@ body.holidayThemes.winter, body.noList[data-view="1"]:not(.showDone) {
           top: 24px; }
         #settings > ul > li.two > select.control {
           top: 12px; }
-        #settings > ul > li.two > span {
-          display: block;
-          font-size: 14px;
-          line-height: 14px;
-          margin-top: 2px;
-          color: rgba(0, 0, 0, 0.54); }
       #settings > ul > li.infin {
         padding-top: 20px;
         padding-bottom: 20px;
         line-height: 16px; }
-        #settings > ul > li.infin > span {
-          display: block;
-          font-size: 14px;
-          line-height: 1.25;
-          margin-top: 2px;
-          color: rgba(0, 0, 0, 0.54); }
 
 .settingsContent {
   line-height: 1;
@@ -2810,7 +2804,7 @@ body.dark {
     border-color: #424242; }
   body.dark #sideNav, body.dark #settings, body.dark #news, body.dark #login, body.dark #update, body.dark #news, body.dark #error, body.dark #newDialog, body.dark #error, body.dark #newDialog, body.dark .customColor {
     background-color: #424242; }
-  body.dark #sideNav > ul > li i, body.dark #settings > ul > li i, body.dark #settings > ul > li > span {
+  body.dark #sideNav > ul > li i, body.dark #settings > ul > li i, body.dark #settings span {
     color: rgba(255, 255, 255, 0.7); }
   body.dark #sideNav > ul > li.disabled, body.dark #settings > ul > li.disabled {
     color: rgba(255, 255, 255, 0.3); }
@@ -3168,3 +3162,39 @@ body.dark {
   line-height: 18px;
   color: rgba(0, 0, 0, 0.54);
   white-space: nowrap; }
+
+#parsebuttons, #parsemanage {
+  padding-top: 8px; }
+  #parsebuttons > button, #parsemanage > button {
+    margin: 8px 4px;
+    border: none;
+    border-radius: 2px;
+    display: inline-block;
+    height: 36px;
+    line-height: 36px;
+    min-width: 88px;
+    outline: 0;
+    padding: 0 8px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    font-size: 14px;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    color: #FFF !important;
+    background-color: #00AF49;
+    text-align: center;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    cursor: pointer; }
+    #parsebuttons > button:hover, #parsemanage > button:hover {
+      background-color: #00c954;
+      color: #FFF;
+      box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+      -webkit-box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+      -moz-box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15); }

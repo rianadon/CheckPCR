@@ -16,6 +16,8 @@ The app also uses several other scripts created by other people which are:
 - Google's Diff, Match, and Patch library from [here](http://code.google.com/p/google-diff-match-patch/), which does diffing as the name states
 	- Modified (deleted `,j=j.replace(c,"&amp;").replace(d,"&lt;").replace(e,"&gt;").replace(f,"&para;<br>")`) to preserve HTML tags
 - TinyColor, downlaoded from [here](https://github.com/bgrins/TinyColor), which does color arithmetic
+- The Parse Javascript SDK, downloaded from [here](https://parse.com/downloads/javascript/parse-1.6.12.min.js), which, well, communicates with Parse
+- Stanford Javascript Crypto Library, downloaded from [here](https://raw.githubusercontent.com/bitwiseshiftleft/sjcl/version-0.8/sjcl.js), which is used to encrypt the data stored in Parse
 
 Installing
 ----------
