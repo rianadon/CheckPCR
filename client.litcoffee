@@ -2284,9 +2284,14 @@ In order to call this function when the browswer regains a network connection, a
           console.log result
           window.userData = result
           passphrase = localStorage["cryptoPhrase"]
-          done.update (sjcl.decrypt(passphrase, x) for x in result.get "done")
-          # Attempt to sync when internet connection is reestablished
-          onParseOnline()
+          try
+            done.update (sjcl.decrypt(passphrase, x) for x in result.get "done")
+            # Attempt to sync when internet connection is reestablished
+            onParseOnline()
+          catch
+            if confirm "Your data on Parse couldn't be decrypted (probably because the passphrase used to encode it and the passphrase on this device don't match). Do you want to overwrite the data on Parse with encrypted data using your passphrase?"
+              result.destroy()
+              newParseData()
         , (err) ->
           console.log "Could not get data from Parse because of error", err.code, err.message
 

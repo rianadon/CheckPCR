@@ -2687,21 +2687,28 @@ getParseData = function() {
   query = new Parse.Query(UserData);
   query.equalTo("user", Parse.User.current());
   return query.first().then(function(result) {
-    var passphrase, x;
+    var error1, passphrase, x;
     console.log(result);
     window.userData = result;
     passphrase = localStorage["cryptoPhrase"];
-    done.update((function() {
-      var ai, len12, ref14, results;
-      ref14 = result.get("done");
-      results = [];
-      for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
-        x = ref14[ai];
-        results.push(sjcl.decrypt(passphrase, x));
+    try {
+      done.update((function() {
+        var ai, len12, ref14, results;
+        ref14 = result.get("done");
+        results = [];
+        for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
+          x = ref14[ai];
+          results.push(sjcl.decrypt(passphrase, x));
+        }
+        return results;
+      })());
+      return onParseOnline();
+    } catch (error1) {
+      if (confirm("Your data on Parse couldn't be decrypted (probably because the passphrase used to encode it and the passphrase on this device don't match). Do you want to overwrite the data on Parse with encrypted data using your passphrase?")) {
+        result.destroy();
+        return newParseData();
       }
-      return results;
-    })());
-    return onParseOnline();
+    }
   }, function(err) {
     return console.log("Could not get data from Parse because of error", err.code, err.message);
   });
