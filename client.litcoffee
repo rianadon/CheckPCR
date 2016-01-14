@@ -1731,7 +1731,7 @@ The *sendToParse* function puts / removes data on Parse since the completed and 
               _method: "PUT"
               "#{name}":
                 __op: func
-                objects: [sjcl.encrypt value, localStorage["cryptoPhrase"]]
+                objects: [sjcl.encrypt localStorage["cryptoPhrase"], value]
           ).then (resp) ->
             console.log "Successfully synced change to Parse", resp.response
             if update
@@ -2288,8 +2288,10 @@ In order to call this function when the browswer regains a network connection, a
             done.update (sjcl.decrypt(passphrase, x) for x in result.get "done")
             # Attempt to sync when internet connection is reestablished
             onParseOnline()
-          catch
+          catch e
+            console.log e
             if confirm "Your data on Parse couldn't be decrypted (probably because the passphrase used to encode it and the passphrase on this device don't match). Do you want to overwrite the data on Parse with encrypted data using your passphrase?"
+              console.log "Replacing data"
               result.destroy()
               newParseData()
         , (err) ->

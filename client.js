@@ -234,7 +234,7 @@ fetch = function(override) {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-      var e, error1, j, len, ref1, t, up;
+      var e, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -258,8 +258,8 @@ fetch = function(override) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (error1) {
-          e = error1;
+        } catch (_error) {
+          e = _error;
           console.log(e);
           displayError(e);
         }
@@ -322,7 +322,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, error1, t;
+      var e, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -338,8 +338,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (error1) {
-          e = error1;
+        } catch (_error) {
+          e = _error;
           console.log(e);
           displayError(e);
         }
@@ -1657,7 +1657,7 @@ updateAvatar();
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
 parseAthenaData = function(dat) {
-  var athenaData2, course, courseDetails, d, e, error1, len3, n, o, ref4;
+  var athenaData2, course, courseDetails, d, e, len3, n, o, ref4;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -1679,8 +1679,8 @@ parseAthenaData = function(dat) {
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
       document.getElementById("athenaDataRefresh").style.display = "block";
-    } catch (error1) {
-      e = error1;
+    } catch (_error) {
+      e = _error;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataRefresh").style.display = "none";
       document.getElementById("athenaDataError").innerHTML = e.message;
@@ -2008,7 +2008,7 @@ sendToParse = function(name, func, value, update) {
         },
         obj["" + name] = {
           __op: func,
-          objects: [sjcl.encrypt(value, localStorage["cryptoPhrase"])]
+          objects: [sjcl.encrypt(localStorage["cryptoPhrase"], value)]
         },
         obj
       ))).then(function(resp) {
@@ -2687,7 +2687,7 @@ getParseData = function() {
   query = new Parse.Query(UserData);
   query.equalTo("user", Parse.User.current());
   return query.first().then(function(result) {
-    var error1, passphrase, x;
+    var passphrase, x;
     console.log(result);
     window.userData = result;
     passphrase = localStorage["cryptoPhrase"];
@@ -2703,8 +2703,11 @@ getParseData = function() {
         return results;
       })());
       return onParseOnline();
-    } catch (error1) {
+    } catch (_error) {
+      e = _error;
+      console.log(e);
       if (confirm("Your data on Parse couldn't be decrypted (probably because the passphrase used to encode it and the passphrase on this device don't match). Do you want to overwrite the data on Parse with encrypted data using your passphrase?")) {
+        console.log("Replacing data");
         result.destroy();
         return newParseData();
       }
