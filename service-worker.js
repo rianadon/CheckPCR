@@ -5,7 +5,7 @@
 
 importScripts('serviceworker-cache-polyfill.js');
 
-var CACHE_VERSION = 3;
+var CACHE_VERSION = 4;
 var CACHE_NAME = 'checkpcr-cache-v1';
 
 var urlsToCache = [
@@ -30,7 +30,7 @@ var urlsToCache = [
 	"font/roboto/Roboto-Thin.ttf",
 	"font/roboto/Roboto-Thin.woff",
 	"font/roboto/Roboto-Thin.woff2",
-	"images/bkg.png",
+	"images/bkg.svg",
 	"images/clouds.svg",
 	"images/hills.svg",
 	"images/hills2.svg",
@@ -38,6 +38,7 @@ var urlsToCache = [
 	"images/snow.svg",
 	"images/snowDark.svg",
 	"images/sun.svg",
+	"images/github.svg",
 	"client.js",
 	"favicon.ico",
 	"icon_16.png",
@@ -56,6 +57,7 @@ var urlsToCache = [
 	"diff_match_patch/diff_match_patch.js",
 	"chrono.min.js",
 	"tinycolor-min.js",
+	"web-animations.min.js",
 	"parse-1.6.12.min.js",
 	"sjcl.js",
 	"index.html",

@@ -1,5 +1,6 @@
-var ParseArray, UserData, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getParseData, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, newParseData, o, onNewTask, onParseOnline, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, ripple, scroll, send, sendToParse, separate, setCookie, smoothScroll, snackbar, sp, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+var ParseArray, UserData, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getParseData, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, newParseData, o, onNewTask, onParseOnline, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, ripple, schedules, scroll, send, sendToParse, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+  slice = [].slice;
 
 if (window.location.protocol === "http:" && location.hostname !== "localhost") {
   window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
@@ -39,6 +40,8 @@ activity = [];
 dmp = new diff_match_patch();
 
 lastUpdate = 0;
+
+listDateOffset = 0;
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -234,7 +237,7 @@ fetch = function(override) {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
-      var e, j, len, ref1, t, up;
+      var e, error1, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -258,8 +261,8 @@ fetch = function(override) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -322,7 +325,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, t;
+      var e, error1, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -338,8 +341,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -616,7 +619,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function(doScroll) {
-  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, reference, restore, s, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, tdst, te, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, midDate, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, reference, restore, s, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, tdst, te, timeafter, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   if (doScroll == null) {
     doScroll = true;
   }
@@ -624,6 +627,11 @@ display = function(doScroll) {
   document.body.setAttribute("data-pcrview", window.data.monthView ? "month" : "other");
   main = document.querySelector("main");
   taken = {};
+  timeafter = {
+    day: 24 * 3600 * 1000,
+    ms: [24, 15 + 35 / 60, 15 + 35 / 60, 15 + 15 / 60, 15 + 15 / 60, 15 + 15 / 60, 24][(new Date()).getDay()],
+    us: 15 * 3600 * 1000
+  }[localStorage["hideassignments"]] || 24 * 3600 * 1000;
   today = Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24);
   if (window.data.monthView) {
     start = Math.min.apply(Math, (function() {
@@ -678,6 +686,7 @@ display = function(doScroll) {
     }
     if (wk.getElementsByClassName("day").length <= d.getDay()) {
       day = element("div", "day", null, "day");
+      day.setAttribute("data-date", d.getTime());
       if (Math.floor((d.getTime() - d.getTimezoneOffset()) / 1000 / 3600 / 24) === today) {
         day.classList.add("today");
       }
@@ -1097,11 +1106,13 @@ display = function(doScroll) {
     e.classList.add(isNaN(s.end) ? "e" + (6 - s.start.getDay()) : "e" + (6 - s.end.getDay()));
     st = Math.floor(s.start / 1000 / 3600 / 24);
     if (s.assignment.end === "Forever") {
-      if (st <= today) {
+      if (st <= today + listDateOffset) {
         e.classList.add("listDisp");
       }
     } else {
-      if ((st - (assignment.baseType === "test" && assignment.start === st ? JSON.parse(localStorage["earlyTest"]) : 0) <= today && today <= Math.floor(s.end / 1000 / 3600 / 24))) {
+      midDate = new Date();
+      midDate.setDate(midDate.getDate() + listDateOffset);
+      if (((st - (assignment.baseType === "test" && assignment.start === st ? JSON.parse(localStorage["earlyTest"]) : 0)) * 1000 * 3600 * 24 <= (ref7 = midDate.getTime()) && ref7 <= s.end.getTime() + (listDateOffset === 0 ? timeafter : 24 * 3600 * 1000))) {
         e.classList.add("listDisp");
       }
     }
@@ -1181,7 +1192,7 @@ display = function(doScroll) {
           }
         });
       })(id);
-      if (ref7 = assignment.id, indexOf.call(done.array, ref7) >= 0) {
+      if (ref8 = assignment.id, indexOf.call(done.array, ref8) >= 0) {
         te.classList.add("done");
       }
       if (document.getElementById("test" + assignment.id) != null) {
@@ -1232,11 +1243,11 @@ display = function(doScroll) {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var ah, len11, ref8, results, x;
-      ref8 = wkid.substring(2).split("-");
+      var ah, len11, ref9, results, x;
+      ref9 = wkid.substring(2).split("-");
       results = [];
-      for (ah = 0, len11 = ref8.length; ah < len11; ah++) {
-        x = ref8[ah];
+      for (ah = 0, len11 = ref9.length; ah < len11; ah++) {
+        x = ref9[ah];
         results.push(parseInt(x));
       }
       return results;
@@ -1257,9 +1268,7 @@ display = function(doScroll) {
       window.scrollTo(0, scroll);
     }
   }
-  if (document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0) {
-    document.body.classList.add("noList");
-  }
+  document.body.classList.toggle("noList", document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0);
   if (document.body.getAttribute("data-view") === "1") {
     resize();
     setTimeout(resize, 1000);
@@ -1419,7 +1428,14 @@ for (j = 0, len = ref1.length; j < len; j++) {
       setTimeout(function() {
         document.querySelector("nav").classList.remove("headroom--unpinned");
         document.querySelector("nav").classList.remove("headroom--locked");
-        return document.querySelector("nav").classList.add("headroom--pinned");
+        document.querySelector("nav").classList.add("headroom--pinned");
+        return requestIdleCallback(function() {
+          listDateOffset = 0;
+          updateListNav();
+          return display();
+        }, {
+          timeout: 2000
+        });
       }, 350);
       window.removeEventListener("resize", resize);
       ref2 = document.getElementsByClassName("assignment");
@@ -1570,6 +1586,153 @@ navToggle("infoButton", "showInfo");
 
 navToggle("lightButton", "dark");
 
+animateEl = function() {
+  var args, el;
+  el = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+  return new Promise(function(resolve, reject) {
+    var player;
+    player = el.animate.apply(el, args);
+    return player.onfinish = function(e) {
+      return resolve(e);
+    };
+  });
+};
+
+document.getElementById("listnext").addEventListener("click", function() {
+  var nd, pd, td;
+  pd = document.getElementById("listprevdate");
+  td = document.getElementById("listnowdate");
+  nd = document.getElementById("listnextdate");
+  listDateOffset += 1;
+  display();
+  nd.style.display = "inline-block";
+  return Promise.race([
+    animateEl(td, [
+      {
+        transform: 'translateX(0%)',
+        opacity: 1
+      }, {
+        opacity: 0
+      }, {
+        transform: 'translateX(-100%)',
+        opacity: 0
+      }
+    ], {
+      duration: 300,
+      easing: "ease-out"
+    }), animateEl(nd, [
+      {
+        transform: 'translateX(0%)',
+        opacity: 0
+      }, {
+        opacity: 0
+      }, {
+        transform: 'translateX(-100%)',
+        opacity: 1
+      }
+    ], {
+      duration: 300,
+      easing: "ease-out"
+    })
+  ]).then(function() {
+    var listDate2;
+    pd.innerHTML = td.innerHTML;
+    td.innerHTML = nd.innerHTML;
+    listDate2 = new Date();
+    listDate2.setDate(listDate2.getDate() + 1 + listDateOffset);
+    nd.innerHTML = dateString(listDate2).replace("Today", "Now");
+    return nd.style.display = "none";
+  });
+});
+
+document.getElementById("listbefore").addEventListener("click", function() {
+  var nd, pd, td;
+  pd = document.getElementById("listprevdate");
+  td = document.getElementById("listnowdate");
+  nd = document.getElementById("listnextdate");
+  listDateOffset -= 1;
+  display();
+  pd.style.display = "inline-block";
+  return Promise.race([
+    animateEl(td, [
+      {
+        transform: 'translateX(-100%)',
+        opacity: 1
+      }, {
+        opacity: 0
+      }, {
+        transform: 'translateX(0%)',
+        opacity: 0
+      }
+    ], {
+      duration: 300,
+      easing: "ease-out"
+    }), animateEl(pd, [
+      {
+        transform: 'translateX(-100%)',
+        opacity: 0
+      }, {
+        opacity: 0
+      }, {
+        transform: 'translateX(0%)',
+        opacity: 1
+      }
+    ], {
+      duration: 300,
+      easing: "ease-out"
+    })
+  ]).then(function() {
+    var listDate2;
+    nd.innerHTML = td.innerHTML;
+    td.innerHTML = pd.innerHTML;
+    listDate2 = new Date();
+    listDate2.setDate(listDate2.getDate() + listDateOffset - 1);
+    pd.innerHTML = dateString(listDate2).replace("Today", "Now");
+    return pd.style.display = "none";
+  });
+});
+
+updateListNav = function() {
+  var d, up;
+  d = new Date();
+  d.setDate(d.getDate() + listDateOffset - 1);
+  up = function(id) {
+    document.getElementById(id).innerHTML = dateString(d).replace("Today", "Now");
+    return d.setDate(d.getDate() + 1);
+  };
+  up("listprevdate");
+  up("listnowdate");
+  return up("listnextdate");
+};
+
+switchToList = function(evt) {
+  var today;
+  if (evt.target.classList.contains("month") || evt.target.classList.contains("date")) {
+    today = Math.floor((Date.now() - tzoff) / 1000 / 3600 / 24);
+    listDateOffset = (evt.target.parentNode.getAttribute("data-date") - tzoff) / 1000 / 3600 / 24 - today;
+    updateListNav();
+    document.body.setAttribute("data-view", "1");
+    return display();
+  }
+};
+
+document.body.addEventListener("dblclick", switchToList);
+
+document.body.addEventListener("webkitmouseforceup", switchToList);
+
+(function() {
+  var taptimer;
+  taptimer = null;
+  document.body.addEventListener("touchstart", function(evt) {
+    return taptimer = setTimeout((function() {
+      return switchToList(evt);
+    }), 1000);
+  });
+  return document.body.addEventListener("touchend", function(evt) {
+    return taptimer = clearTimeout(taptimer);
+  });
+})();
+
 headroom = new Headroom(document.querySelector("nav"), {
   tolerance: 10,
   offset: 66
@@ -1657,7 +1820,7 @@ updateAvatar();
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
 parseAthenaData = function(dat) {
-  var athenaData2, course, courseDetails, d, e, len3, n, o, ref4;
+  var allCourseDetails, athenaData2, course, courseDetails, d, e, error1, len3, o, q, ref4, ref5, section;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -1665,10 +1828,16 @@ parseAthenaData = function(dat) {
     try {
       d = JSON.parse(dat);
       athenaData2 = {};
-      ref4 = d.body.courses.courses;
-      for (n = o = 0, len3 = ref4.length; o < len3; n = ++o) {
-        course = ref4[n];
-        courseDetails = d.body.courses.sections[n];
+      allCourseDetails = {};
+      ref4 = d.body.courses.sections;
+      for (o = 0, len3 = ref4.length; o < len3; o++) {
+        section = ref4[o];
+        allCourseDetails[section.course_nid] = section;
+      }
+      ref5 = d.body.courses.courses;
+      for (q = ref5.length - 1; q >= 0; q += -1) {
+        course = ref5[q];
+        courseDetails = allCourseDetails[course.nid];
         athenaData2[course.course_title] = {
           link: "https://athena.harker.org" + courseDetails.link,
           logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg"),
@@ -1679,8 +1848,8 @@ parseAthenaData = function(dat) {
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
       document.getElementById("athenaDataRefresh").style.display = "block";
-    } catch (_error) {
-      e = _error;
+    } catch (error1) {
+      e = error1;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataRefresh").style.display = "none";
       document.getElementById("athenaDataError").innerHTML = e.message;
@@ -1717,6 +1886,10 @@ if (localStorage["googleA"] == null) {
 
 if (localStorage["sepTasks"] == null) {
   localStorage["sepTasks"] = JSON.stringify(false);
+}
+
+if (localStorage["hideassignments"] == null) {
+  localStorage["hideassignments"] = JSON.stringify("day");
 }
 
 if (JSON.parse(localStorage["sepTasks"])) {
@@ -1939,6 +2112,8 @@ for (aa = 0, len7 = ref8.length; aa < len7; aa++) {
         return intervalRefresh();
       case "earlyTest":
         return display();
+      case "hideassignments":
+        return display();
       case "holidayThemes":
         return document.body.classList.toggle("holidayThemes", evt.target.checked);
       case "sepTasks":
@@ -2131,6 +2306,15 @@ if (localStorage["extra"] != null) {
   extra = JSON.parse(localStorage["extra"]);
 }
 
+schedules = (function() {
+  var s;
+  if ((s = localStorage["schedules"])) {
+    return JSON.parse(s);
+  } else {
+    return null;
+  }
+})();
+
 document.getElementById("lastUpdate").innerHTML = localStorage["lastUpdate"] != null ? formatUpdate(localStorage["lastUpdate"]) : "Never";
 
 if (localStorage["data"] != null) {
@@ -2269,19 +2453,17 @@ dragTarget.on("tap", function(e) {
 
 dt = document.getElementById("dragTarget");
 
-hammertime.on("pan", function(e) {
-  var ref13;
-  if (e.pointerType === "touch" && e.deltaX < -100 || e.deltaX > 100 && e.target !== dt && ((-25 < (ref13 = e.deltaY) && ref13 < 25))) {
-    if (e.velocityX > 0.5) {
-      el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view") + 2) + ")");
-    } else if (e.velocityX < -0.5) {
-      el = document.querySelector("#navTabs>li:nth-child(" + (document.body.getAttribute("data-view")) + ")");
-    }
-    if (el != null) {
-      el.click();
-    }
-  }
-});
+
+/*hammertime.on "pan", (e) ->
+  if e.pointerType is "touch" and e.deltaX < -100 or e.deltaX > 100 and e.target isnt dt and (-25 < e.deltaY < 25)
+    if e.velocityX > 0.5
+      el = document.querySelector("#navTabs>li:nth-child(#{document.body.getAttribute("data-view")+2})")
+    else if e.velocityX < -0.5
+      el = document.querySelector("#navTabs>li:nth-child(#{document.body.getAttribute("data-view")})")
+    if el?
+      el.click()
+  return
+ */
 
 ripple(document.getElementById("filterActivity"));
 
@@ -2687,7 +2869,7 @@ getParseData = function() {
   query = new Parse.Query(UserData);
   query.equalTo("user", Parse.User.current());
   return query.first().then(function(result) {
-    var passphrase, x;
+    var error1, passphrase, x;
     console.log(result);
     window.userData = result;
     passphrase = localStorage["cryptoPhrase"];
@@ -2703,8 +2885,8 @@ getParseData = function() {
         return results;
       })());
       return onParseOnline();
-    } catch (_error) {
-      e = _error;
+    } catch (error1) {
+      e = error1;
       console.log(e);
       if (confirm("Your data on Parse couldn't be decrypted (probably because the passphrase used to encode it and the passphrase on this device don't match). Do you want to overwrite the data on Parse with encrypted data using your passphrase?")) {
         console.log("Replacing data");
@@ -2765,6 +2947,29 @@ requestIdleCallback(function() {
 }, {
   timeout: 2000
 });
+
+
+/* To be implemented later when the pilot ends
+requestIdleCallback ->
+  send "https://raw.githubusercontent.com/harkerdev/schedules/master/index.html", "text"
+    .then (resp) ->
+      requestIdleCallback ->
+        schedules = {index: [], schedules: []}
+        days = resp.response.replace(/<.?div.*?>/g, "").split("\n\n")
+        for line in days.shift().split("\n") # Loop through the days
+          [day, label] = line.split("\t")
+          console.log line, day, label
+          spday = day.split("|")
+          if spday.length is 1
+            schedules.index.push [Date.parse(spday[0]), label]
+          else
+            day = new Date spday[0]
+            while day < new Date(spday[1])
+              schedules.index.push [day.getTime(), label]
+              day.setDate day.getDate()+1
+      , {timeout: 2000}
+, {timeout: 2000}
+ */
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register("/service-worker.js").then(function(registration) {

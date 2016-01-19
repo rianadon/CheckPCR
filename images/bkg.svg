@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 240 135" width="240" height="135">
+<defs>
+<filter id="f" x="0" y="0" width="1" height="1">
+<feImage xlink:href="#a" result="a"/>
+<feImage xlink:href="#b" result="b"/>
+<feBlend mode="multiply" in="a" in2="b" />
+</filter>
+<g id="a" stroke-miterlimit="0">
+<path d="m226.7 0l-25.7 83 39-2.83v-80.17h-13.3z" stroke="#5aa861" fill="#5aa861"/>
+<path d="m138 0l20 37 43.1-37h-63.1z" stroke="#87cb7c" fill="#87cb7c"/>
+<path d="m201.1 0l-43.1 37 43 46 25.7-83h-25.6z" stroke="#6cbe70" fill="#6cbe70"/>
+<path d="m158 37l-61.67 98h18.47l86.2-52-43-46z" stroke="#68bd6f" fill="#68bd6f"/>
+<path d="m158 37l-158 32 66.79 66h29.54l61.67-98z" stroke="#80c97a" fill="#80c97a"/>
+<path d="m55.73 0l-55.73 69 158-32-20-37h-82.27z" stroke="#95d384" fill="#95d384"/>
+<path d="m0 0v69l55.73-69h-55.73z" stroke="#b2e090" fill="#b2e090"/>
+<path d="m0 69v66h13.62l-13.62-66z" stroke="#87c478" fill="#87c478"/>
+<path d="m0 69l13.62 66h53.17l-66.79-66z" stroke="#7bc475" fill="#7bc475"/>
+<path d="m201 83l-86.2 52h125.2v-12.1l-39-39.9z" stroke="#48ae60" fill="#48ae60"/>
+<path d="m240 80.17l-39 2.83 39 39.9v-42.73z" stroke="#3f9b55" fill="#3f9b55"/>
+</g>
+<rect id="b" width="240" height="135" fill="#00AF49" />
+</defs>
+<rect width="100%" height="100%" filter="url(#f)"/>
+</svg>

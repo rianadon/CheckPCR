@@ -44,12 +44,19 @@
 		</ul>
 		<hr />
 		<ul>
-			<li id="settingsB"><a><i class="material-icons">settings</i>Settings</a></li>
-			<li><a href="http://goo.gl/forms/qvLkxDti7h"><i class="material-icons">feedback</i>Suggest a feature</a></li>
-			<li><a href="https://github.com/19RyanA/CheckPCR/issues/new"><i class="material-icons">bug_report</i>Report a bug</a></li>
 			<li id="newsB"><a><i class="material-icons">view_headline</i>News</a></li>
 			<li><a href="https://github.com/19RyanA/CheckPCR/wiki"><i class="material-icons">flight_land</i>Upcoming features</a></li>
 			<!--<li><a href="https://github.com/19RyanA/CheckPCR/blob/master/README.md"><i class="material-icons">help</i>Help</a></li>-->
+		</ul>
+		<hr />
+		<ul>
+			<li><a href="http://goo.gl/forms/qvLkxDti7h"><i class="material-icons">feedback</i>Suggest a feature</a></li>
+			<li><a href="http://goo.gl/forms/qSMXsxC8Xi" target="_blank"><i class="material-icons">bug_report</i>Report a bug</a></li>
+			<li><a href="https://github.com/19RyanA/CheckPCR/issues/new"><i class="svg-icons" style="background-image: url(images/github.svg); background-size: 22px 22px"></i>Create an issue</a></li>
+		</ul>
+		<hr />
+		<ul>
+			<li id="settingsB"><a><i class="material-icons">settings</i>Settings</a></li>
 		</ul>
 	</div>
 	<div id="sideBackground"></div>
@@ -62,6 +69,15 @@
 			<div>Thu</div>
 			<div>Fri</div>
 			<div>Sat</div>
+		</section>
+		<section id="listnav">
+			<a class="material-icons" id="listbefore">navigate_before</a>
+			<div id="listdates">
+				<span id="listprevdate">Yesterday</span>
+				<span id="listnowdate">Now</span>
+				<span id="listnextdate">Tomorrow</span>
+			</div>
+			<a class="material-icons" id="listnext">navigate_next</a>
 		</section>
 	</main>
 	<span id="lastUpdate"></span>
@@ -255,6 +271,15 @@
 					</label>
 				</div>
 			</li>
+			<li class="two">
+				Hide assignments
+				<span>When assignments disappear from List View</span>
+				<select class="control browser-default settingsControl" name="hideassignments">
+					<option value="ms">After MS ends</option>
+					<option value="us">After US ends</option>
+					<option value="day">After 12:00 AM</option>
+				</select>
+			</li>
 			<li id="colorSettings">
 				Assignment colors
 				<div class="settingsContent">
@@ -294,7 +319,9 @@
 				<span>To sync your completed and editted assignments between devices, you can use the Check PCR's database hosted on Parse, which stores encrypted versions of your completed and edited assignments.</span>
 				<div id="parsebuttons" style="display: none">
 					<p>
-						<span>To do so, you need to either create an account for Check PCR or log in using one you already created. The account is just so everyone has a unique, private identifier for storing data. Since everything sent to Parse gets encrypted using AES, you'll also need to enter an encoding passphrase to encode your data with. Unlike your username and password, this can be as random as you want as it will be displayed on this page once you log in.</span>
+						<span>To do so, you need to either create an account for Check PCR or log in using one you already created.
+							The account is just so everyone has a unique, private identifier for storing data. Since everything sent to Parse gets encrypted using AES, you'll also need to enter an encoding passphrase to encode your data with.
+							Unlike your username and password, this can be as random as you want as it will be displayed on this page once you log in.</span>
 					</p>
 					<p>
 						<span>You'll need to reenter your username and password if you have multiple devices, so try to remember them :)</span>
@@ -339,6 +366,7 @@
 	<script src="/diff_match_patch/diff_match_patch.js"></script>
 	<script src="/chrono.min.js"></script>
 	<script src="/tinycolor-min.js"></script>
+	<script src="/web-animations.min.js"></script>
 	<script src="/parse-1.6.12.min.js"></script>
 	<script src="/sjcl.js"></script>
 	<script src="/client.js"></script>
