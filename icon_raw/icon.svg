@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="192px" height="192px" viewBox="-64 -64 192 192" enable-background="new -64 -64 192 192" xml:space="preserve">
+<rect x="-42.249" y="-42.248" fill="#FAFAFA" stroke="#DDDDDD" stroke-width="4" stroke-miterlimit="10" width="148.495" height="148.495"/>
+<g>
+	<defs>
+		<rect id="SVGID_1_" x="-44.001" y="-44" width="152" height="152"/>
+	</defs>
+	<clipPath id="SVGID_2_">
+		<use xlink:href="#SVGID_1_"  overflow="visible"/>
+	</clipPath>
+	<g clip-path="url(#SVGID_2_)">
+		
+			<image overflow="visible" opacity="0.2" width="265" height="265" xlink:href="DC4EF6CC.png"  transform="matrix(1 0 0 1 -100.5 -84.5)">
+		</image>
+		<g>
+			
+				<rect x="-42.247" y="-42.247" transform="matrix(0.9897 0.1435 -0.1435 0.9897 4.9229 -4.2605)" fill="#005941" width="148.495" height="148.496"/>
+		</g>
+	</g>
+</g>
+<path fill="#005941" d="M116.134-30.826L-30.824-52.132l-21.31,146.959l146.959,21.308L116.134-30.826z"/>
+<g>
+	
+		<image overflow="visible" opacity="0.2" width="216" height="174" xlink:href="DC4EF6CD.png"  transform="matrix(1 0 0 1 -73.5 -38.5)">
+	</image>
+	<g>
+		<polygon fill="#FFFFFF" points="9.679,70.535 -25.425,23.948 -12.239,14.009 12.933,47.417 83.605,-5.839 93.537,7.344 		"/>
+	</g>
+</g>
+<line opacity="0.2" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-miterlimit="10" x1="-31.029" y1="-50.409" x2="115.93" y2="-29.103"/>
+<line opacity="0.2" fill="none" stroke="#263238" stroke-width="4" stroke-miterlimit="10" x1="-51.864" y1="93.095" x2="95.096" y2="114.402"/>
+<g>
+	<defs>
+		<path id="SVGID_3_" d="M116.134-30.808L-30.824-52.115l-21.31,146.959l146.959,21.309L116.134-30.808z"/>
+	</defs>
+	<clipPath id="SVGID_4_">
+		<use xlink:href="#SVGID_3_"  overflow="visible"/>
+	</clipPath>
+	<linearGradient id="SVGID_5_" gradientUnits="userSpaceOnUse" x1="-52.1338" y1="31.6719" x2="116.1338" y2="31.6719">
+		<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0.1"/>
+		<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+	</linearGradient>
+	<rect x="-52.134" y="-52.462" clip-path="url(#SVGID_4_)" fill="url(#SVGID_5_)" width="168.268" height="168.268"/>
+</g>
+</svg>

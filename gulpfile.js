@@ -52,12 +52,13 @@ gulp.task('sass', function () {
 	}
 });
 gulp.task('icon', function () {
-	var sizes = [16, 32, 36, 64, 72, 96, 128, 120, 144, 152, 192];
+	var sizes = [72, 96, 128, 120, 144, 152, 192];
+	var smallsizes = [16, 32, 36, 64]
 	var favsizes = [16, 32, 64];
 	done = 0;
 	function callback() {
 		done++;
-		if(done == sizes.length) {
+		if(done == sizes.length+smallsizes.length) {
 			names = [];
 			for(var f=0; f<favsizes.length; f++) {
 				names.push("icon_"+favsizes[f]+".png");
@@ -66,8 +67,11 @@ gulp.task('icon', function () {
 			exec("convert", names, false);
 		}
 	}
-	for(var s=0; s<sizes.length; s++) {
-		exec("inkscape", ["-z", "-e", "icon_"+sizes[s]+".png", "-w", sizes[s], "-h", sizes[s], "icon.svg", ], false, callback);
+	for(var s=0; s<smallsizes.length; s++) {
+		exec("inkscape", ["-z", "-e", "icon_"+smallsizes[s]+".png", "-w", smallsizes[s], "-h", smallsizes[s], "icon_raw/icon_small.svg", ], false, callback);
+	}
+	for(s=0; s<sizes.length; s++) {
+		exec("inkscape", ["-z", "-e", "icon_"+sizes[s]+".png", "-w", sizes[s], "-h", sizes[s], "icon_raw/icon.svg", ], false, callback);
 	}
 });
 
@@ -78,7 +82,7 @@ gulp.task('coffee:watch', function() {
 	gulp.watch('*.litcoffee', ['coffee']);
 });
 gulp.task('icon:watch', function() {
-	gulp.watch('icon.svg', ['icon']);
+	gulp.watch('icon_raw/icon.svg', ['icon']);
 });
 
 gulp.task('watch', ['sass:watch', 'coffee:watch', 'icon:watch']);
