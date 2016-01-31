@@ -226,7 +226,8 @@ formatUpdate = function(date) {
   }
 };
 
-fetch = function(override) {
+fetch = function(override, data) {
+  var headers;
   if (override == null) {
     override = false;
   }
@@ -234,9 +235,12 @@ fetch = function(override) {
     return;
   }
   lastUpdate = Date.now();
+  headers = data != null ? {
+    "Content-type": "application/x-www-form-urlencoded"
+  } : null;
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
-    send("https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", null, null, true).then(function(resp) {
+    send("https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", headers, data, true).then(function(resp) {
       var e, error1, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
@@ -274,7 +278,7 @@ fetch = function(override) {
       });
     });
   } else {
-    send("/api/start", "json", null, null, true).then(function(resp) {
+    send("/api/start", "json", headers, data, true).then(function(resp) {
       var t;
       console.debug("Fetching assignments:", resp.response.time);
       if (resp.response.login) {
@@ -287,6 +291,7 @@ fetch = function(override) {
         localStorage["lastUpdate"] = t;
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         window.data = resp.response.data;
+        viewData = resp.response.viewData;
         display();
         localStorage["data"] = JSON.stringify(data);
       }
@@ -433,7 +438,7 @@ parse = function(doc) {
     assignments: [],
     monthView: doc.querySelector(".rsHeaderMonth").parentNode.classList.contains("rsSelected")
   };
-  ref1 = doc.getElementsByTagName("input");
+  ref1 = doc.querySelectorAll("input:not([type=\"submit\"])");
   for (j = 0, len = ref1.length; j < len; j++) {
     e = ref1[j];
     viewData[e.name] = e.value || "";
@@ -484,27 +489,28 @@ parse = function(doc) {
   localStorage["data"] = JSON.stringify(data);
 };
 
-
-/*document.getElementById("switchViews").addEventListener "click", ->
-  if Object.keys(viewData).length > 0
-    viewData["__EVENTTARGET"] = "ctl00$ctl00$baseContent$baseContent$flashTop$ctl00$RadScheduler1"
-    viewData["__EVENTARGUMENT"] = JSON.stringify {Command: "SwitchTo#{if document.body.getAttribute("data-pcrview") is "month" then "Week" else "Month"}View"}
-    viewData["ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState"] = JSON.stringify {scrollTop:0,scrollLeft:0,isDirty:false}
-    viewData["ctl00_ctl00_RadScriptManager1_TSM"] = ";;AjaxControlToolkit, Version=4.1.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:en-US:acfc7575-cdee-46af-964f-5d85d9cdcf92:ea597d4b:b25378d2"
-    postArray = [] # Array of data to post
-    for h,v of viewData
-      postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(v)
-    send "https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
-      .then (resp) ->
-        try
-          parse resp.response # Parse the data PCR has replied with
-        catch e
-          console.log e
-          alert "Error parsing assignments. Is PCR on list or month view?"
-        return
-      , (error) ->
-        console.log "Could not switch views. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error
- */
+document.getElementById("switchViews").addEventListener("click", function() {
+  var h, postArray, v;
+  if (Object.keys(viewData).length > 0) {
+    document.getElementById("sideBackground").click();
+    viewData["__EVENTTARGET"] = "ctl00$ctl00$baseContent$baseContent$flashTop$ctl00$RadScheduler1";
+    viewData["__EVENTARGUMENT"] = JSON.stringify({
+      Command: "SwitchTo" + (document.body.getAttribute("data-pcrview") === "month" ? "Week" : "Month") + "View"
+    });
+    viewData["ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState"] = JSON.stringify({
+      scrollTop: 0,
+      scrollLeft: 0,
+      isDirty: false
+    });
+    viewData["ctl00_ctl00_RadScriptManager1_TSM"] = ";;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35:en-US:d28568d3-e53e-4706-928f-3765912b66ca:ea597d4b:b25378d2";
+    postArray = [];
+    for (h in viewData) {
+      v = viewData[h];
+      postArray.push(encodeURIComponent(h) + "=" + encodeURIComponent(v));
+    }
+    return fetch(true, postArray.join("&"));
+  }
+});
 
 element = function(tag, cls, html, id) {
   var c, e, j, len;

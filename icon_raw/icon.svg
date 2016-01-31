@@ -3,7 +3,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="192px" height="192px" viewBox="-64 -64 192 192" enable-background="new -64 -64 192 192" xml:space="preserve">
-<rect x="-42.249" y="-42.248" fill="#FAFAFA" stroke="#DDDDDD" stroke-width="4" stroke-miterlimit="10" width="148.495" height="148.495"/>
+<rect x="-42.249" y="-42.248" opacity="0.5" fill="#FAFAFA" stroke="#CCCCCC" stroke-width="4" stroke-miterlimit="10" width="148.495" height="148.495"/>
 <g>
 	<defs>
 		<rect id="SVGID_1_" x="-44.001" y="-44" width="152" height="152"/>
@@ -13,7 +13,7 @@
 	</clipPath>
 	<g clip-path="url(#SVGID_2_)">
 		
-			<image overflow="visible" opacity="0.2" width="265" height="265" xlink:href="DC4EF6CC.png"  transform="matrix(1 0 0 1 -100.5 -84.5)">
+			<image overflow="visible" opacity="0.2" width="265" height="265" xlink:href="DC4EF6CF.png"  transform="matrix(1 0 0 1 -100.5 -84.5)">
 		</image>
 		<g>
 			
@@ -24,7 +24,7 @@
 <path fill="#005941" d="M116.134-30.826L-30.824-52.132l-21.31,146.959l146.959,21.308L116.134-30.826z"/>
 <g>
 	
-		<image overflow="visible" opacity="0.2" width="216" height="174" xlink:href="DC4EF6CD.png"  transform="matrix(1 0 0 1 -73.5 -38.5)">
+		<image overflow="visible" opacity="0.2" width="216" height="174" xlink:href="DC4EF6CA.png"  transform="matrix(1 0 0 1 -73.5 -38.5)">
 	</image>
 	<g>
 		<polygon fill="#FFFFFF" points="9.679,70.535 -25.425,23.948 -12.239,14.009 12.933,47.417 83.605,-5.839 93.537,7.344 		"/>

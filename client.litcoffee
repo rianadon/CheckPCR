@@ -238,13 +238,14 @@ First, a request is sent to PCR to load the page you would normally see when acc
 
 Because this is run as a chrome extension, this page can be accessed. Otherwise, the browser would throw an error for security reasons (you don't want a random website being able to access confidential data from a website you have logged into).
 
-    fetch = (override=false) ->
+    fetch = (override=false, data) ->
       if not override and Date.now()-lastUpdate < 60000 # Less than a minute ago
         return
       lastUpdate = Date.now()
+      headers = if data? then { "Content-type": "application/x-www-form-urlencoded" } else null
       if location.protocol is "chrome-extension:"
         console.time "Fetching assignments"
-        send "https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", null, null, true
+        send "https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", headers, data, true
           .then (resp) ->
             console.timeEnd "Fetching assignments"
             if resp.responseURL.indexOf("Login") isnt -1
@@ -276,7 +277,7 @@ Because this is run as a chrome extension, this page can be accessed. Otherwise,
             snackbar "Could not fetch your assignments", "Retry", -> fetch(true)
             return
       else
-        send "/api/start", "json", null, null, true
+        send "/api/start", "json", headers, data, true
           .then (resp) ->
             console.debug "Fetching assignments:",resp.response.time
             if resp.response.login
@@ -290,6 +291,7 @@ Because this is run as a chrome extension, this page can be accessed. Otherwise,
               document.getElementById("lastUpdate").innerHTML = formatUpdate t
 
               window.data = resp.response.data
+              viewData = resp.response.viewData
               display()
               localStorage["data"] = JSON.stringify(data)
             return
@@ -436,7 +438,7 @@ If you open up the developer console on CheckPCR and type in `data`, you can see
       handledDataShort = [] # Array used to make sure we don"t parse the same assignment twice.
       window.data = {classes: [], assignments: [], monthView: doc.querySelector(".rsHeaderMonth").parentNode.classList.contains("rsSelected")} # Reset the array in which all of your assignments are stored in.
 
-      for e in doc.getElementsByTagName("input")
+      for e in doc.querySelectorAll("input:not([type=\"submit\"])")
         viewData[e.name] = e.value or ""
 
       # Now, the classes you take are parsed (these are the checkboxes you see up top when looking at PCR).
@@ -497,25 +499,17 @@ If you open up the developer console on CheckPCR and type in `data`, you can see
 
 The view switching button needs an event handler.
 
-    ###document.getElementById("switchViews").addEventListener "click", ->
+    document.getElementById("switchViews").addEventListener "click", ->
       if Object.keys(viewData).length > 0
+        document.getElementById("sideBackground").click()
         viewData["__EVENTTARGET"] = "ctl00$ctl00$baseContent$baseContent$flashTop$ctl00$RadScheduler1"
         viewData["__EVENTARGUMENT"] = JSON.stringify {Command: "SwitchTo#{if document.body.getAttribute("data-pcrview") is "month" then "Week" else "Month"}View"}
         viewData["ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState"] = JSON.stringify {scrollTop:0,scrollLeft:0,isDirty:false}
-        viewData["ctl00_ctl00_RadScriptManager1_TSM"] = ";;AjaxControlToolkit, Version=4.1.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:en-US:acfc7575-cdee-46af-964f-5d85d9cdcf92:ea597d4b:b25378d2"
+        viewData["ctl00_ctl00_RadScriptManager1_TSM"] = ";;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35:en-US:d28568d3-e53e-4706-928f-3765912b66ca:ea597d4b:b25378d2"
         postArray = [] # Array of data to post
         for h,v of viewData
           postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(v)
-        send "https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
-          .then (resp) ->
-            try
-              parse resp.response # Parse the data PCR has replied with
-            catch e
-              console.log e
-              alert "Error parsing assignments. Is PCR on list or month view?"
-            return
-          , (error) ->
-            console.log "Could not switch views. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error###
+        fetch true, postArray.join("&")
 
 <a name="displaying"/>
 Displaying the assignments
