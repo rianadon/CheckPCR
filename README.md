@@ -3,21 +3,18 @@ Check PCR
 
 A client for the homework system currently used by the Harker School, PCR.
 
-********************************************************************************************************************************************************************
-**<center>If you want to see the whole month in calendar view, leave PCR in month view. Otherwise, if you only want to see one week, put it on list view.</center>**
-********************************************************************************************************************************************************************
+Getting Started
+---------------
 
-If you are feeling bored and have nothing else to do or are suspicious of what the program does with your password, **feel free to take a look at the [main Literate CoffeeScript code](client.litcoffee) and [the code that runs on the welcome page](start.litcoffee)**.
+First of all, to use Check PCR, you have two options:
+1. The online version at https://checkpcr-harker.rhcloud.com, which will always be the latest version.
+2. The chrome extension, which does not automatically update (sorry :disappointed:), but possibly has some advantages (below)
 
-The app also uses several other scripts created by other people which are:
-- headroom.js, downloaded from [here](http://wicky.nillia.ms/headroom.js/), which toggles the navbar visibility
-- hammer.js, downloaded from [here](http://hammerjs.github.io/dist/hammer.min.js), which enables touch interactions events such as panning and swiping
-- Chrono, downloaded from [here](https://github.com/wanasit/chrono), which parses dates given in natural language
-- Google's Diff, Match, and Patch library from [here](http://code.google.com/p/google-diff-match-patch/), which does diffing as the name states
-	- Modified (deleted `,j=j.replace(c,"&amp;").replace(d,"&lt;").replace(e,"&gt;").replace(f,"&para;<br>")`) to preserve HTML tags
-- TinyColor, downlaoded from [here](https://github.com/bgrins/TinyColor), which does color arithmetic
-- The Parse Javascript SDK, downloaded from [here](https://parse.com/downloads/javascript/parse-1.6.12.min.js), which, well, communicates with Parse
-- Stanford Javascript Crypto Library, downloaded from [here](https://raw.githubusercontent.com/bitwiseshiftleft/sjcl/version-0.8/sjcl.js), which is used to encrypt the data stored in Parse
+The only advantages of the chrome extension is that it communicates directly with PCR rather than through the program I created on the server hosting the website (see more [here](https://github.com/19RyanA/CheckPCR/wiki/Security)), and its code is editable.
+
+To use the online version, navigate to https://checkpcr-harker.rhcloud.com. Otherwise, follow the steps below.
+
+I also recommend you put PCR in month view before using Check PCR so you can see more assignments (it doesn't yet support switching weeks).
 
 Installing
 ----------
@@ -67,7 +64,7 @@ Features
 Each time data is successfully fetched from PCR, it will be saved to localStorage (JavaScript's caching system).
 Then, when you visit Check PCR again, whatever was saved last to localStorage will be loaded, regardless of internet connectivity.
 
-### List View and a Simpler Calendar view
+### List View and a Simpler Calendar View
 <img src="https://raw.githubusercontent.com/19RyanA/CheckPCR/master/images/calendar.png" width="50%"><img src="https://raw.githubusercontent.com/19RyanA/CheckPCR/master/images/list.png" width="50%">
 
 With list view, you can easily see all of the assignments due and assigned for the day, like in HHMS.
@@ -78,6 +75,11 @@ You can mark when you have completed assignments. Completed assignments will the
 
 ### Automatic Login
 If you click the "Remember me" checkbox when signing in, your password will be stored for 2 weeks, more than PCR will normally do. However, even though it is base64 encrypted then stored in a cookie, someone could easily open up the cookies for the site and use JavaScript to quickly decode it. Despite that, the probability of someone being able to do all of that on *your* computer is pretty unlikely.
+
+### Upcoming Tests and activity
+<img src="https://raw.githubusercontent.com/19RyanA/CheckPCR/master/images/assignments.png" height="300px">
+
+See upcoming tests shown in calendar view and recently added/deleted/modified assignments in a separate section on the side.
 
 ### Automatic Link Detection
 Check PCR will automatically make all links clickable in assignments.
