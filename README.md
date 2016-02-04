@@ -7,6 +7,7 @@ Getting Started
 ---------------
 
 First of all, to use Check PCR, you have two options:
+
 1. The online version at https://checkpcr-harker.rhcloud.com, which will always be the latest version.
 2. The chrome extension, which does not automatically update (sorry :disappointed:), but possibly has some advantages (below)
 
@@ -44,6 +45,7 @@ First of all, if you want to change anything and have that change preserved when
 
 Now, if you want to change anything in the extension, you have two choices.
 You can either
+
 1. Directly modify the JavaScript and CSS files
 2. Modify the CoffeeScript and Sass files (better)
 
