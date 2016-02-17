@@ -418,7 +418,9 @@ This function replaces text that represents a hyperlink with a functional hyperl
         [-A-Z0-9+&@#\/%?=~_|!:,.;]*  # Any number of url-OK characters
         [-A-Z0-9+&@#\/%=~_|]+        # At least one url-OK character except ?, !, :, ,, ., and ;
       )///ig, (str, str2, offset) -> # Function to replace matches
-        if /href\s*=\s*./.test(text.substring(offset - 10, offset)) then str else '<a href="' + str + '">' + str + '</a>'
+        if /href\s*=\s*./.test(text.substring(offset - 10, offset)) or
+          /originalpath\s*=\s*./.test(text.substring(offset - 20, offset))
+          then str else '<a href="' + str + '">' + str + '</a>'
 
 Also, PCR"s interface uses a system of IDs to identify different elements. For example, the ID of one of the boxes showing the name of an assignment could be `ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_95_0`.
 The function below will return the first HTML element whose ID contains a specified String (*id*) and containing a specified tag (*tag*).

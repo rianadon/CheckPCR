@@ -410,7 +410,7 @@ attachmentify = function(element) {
 
 urlify = function(text) {
   return text.replace(/(https?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]+)/ig, function(str, str2, offset) {
-    if (/href\s*=\s*./.test(text.substring(offset - 10, offset))) {
+    if (/href\s*=\s*./.test(text.substring(offset - 10, offset)) || /originalpath\s*=\s*./.test(text.substring(offset - 20, offset))) {
       return str;
     } else {
       return '<a href="' + str + '">' + str + '</a>';
