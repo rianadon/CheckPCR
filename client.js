@@ -241,7 +241,7 @@ fetch = function(override, data) {
   if (location.protocol === "chrome-extension:") {
     console.time("Fetching assignments");
     send("https://webappsca.pcrsoft.com/Clue/SC-Assignments-End-Date-Range/7536", "document", headers, data, true).then(function(resp) {
-      var e, j, len, ref1, t, up;
+      var e, error1, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
@@ -265,8 +265,8 @@ fetch = function(override, data) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -330,7 +330,7 @@ dologin = function(val, submitEvt) {
     send(loginURL, "document", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
-      var e, t;
+      var e, error1, t;
       console.timeEnd("Logging in");
       if (resp.responseURL.indexOf("Login") !== -1) {
         document.getElementById("loginIncorrect").style.display = "block";
@@ -346,8 +346,8 @@ dologin = function(val, submitEvt) {
         document.getElementById("lastUpdate").innerHTML = formatUpdate(t);
         try {
           parse(resp.response);
-        } catch (_error) {
-          e = _error;
+        } catch (error1) {
+          e = error1;
           console.log(e);
           displayError(e);
         }
@@ -625,7 +625,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function(doScroll) {
-  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, midDate, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, reference, restore, s, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, tdst, te, timeafter, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, midDate, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, reference, restore, s, separateTaskClass, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, tdst, te, timeafter, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   if (doScroll == null) {
     doScroll = true;
   }
@@ -814,6 +814,7 @@ display = function(doScroll) {
     assignment = ref3[z];
     previousAssignments[assignment.getAttribute("id")] = assignment;
   }
+  separateTaskClass = JSON.parse(localStorage["sepTaskClass"]);
   fn = function(id, reference) {
     return complete.addEventListener("mouseup", function(evt) {
       var ab, added, el, elem, len7, ref4;
@@ -958,7 +959,7 @@ display = function(doScroll) {
     if (((reference != null) && reference.done) || (ref4 = assignment.id, indexOf.call(done.array, ref4) >= 0)) {
       e.classList.add("done");
     }
-    e.setAttribute("data-class", s.custom ? "Task" : window.data.classes[assignment["class"]]);
+    e.setAttribute("data-class", s.custom && separateTaskClass ? "Task" : window.data.classes[assignment["class"]]);
     close = element("a", ["close", "material-icons"], "close");
     close.addEventListener("click", closeOpened);
     e.appendChild(close);
@@ -1214,6 +1215,8 @@ display = function(doScroll) {
     already = document.getElementById(assignment.id + weekId);
     if (already != null) {
       already.style.marginTop = e.style.marginTop;
+      console.log(separateTaskClass, s.custom && separateTaskClass ? "Task" : window.data.classes[assignment["class"]]);
+      already.setAttribute("data-class", s.custom && separateTaskClass ? "Task" : window.data.classes[assignment["class"]]);
       if (modified[assignment.id] == null) {
         already.getElementsByClassName("body")[0].innerHTML = e.getElementsByClassName("body")[0].innerHTML;
       }
@@ -1826,7 +1829,7 @@ updateAvatar();
 athenaData = localStorage["athenaData"] != null ? JSON.parse(localStorage["athenaData"]) : null;
 
 parseAthenaData = function(dat) {
-  var allCourseDetails, athenaData2, course, courseDetails, d, e, len3, o, q, ref4, ref5, section;
+  var allCourseDetails, athenaData2, course, courseDetails, d, e, error1, len3, o, q, ref4, ref5, section;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -1854,8 +1857,8 @@ parseAthenaData = function(dat) {
       localStorage["athenaData"] = JSON.stringify(athenaData);
       document.getElementById("athenaDataError").style.display = "none";
       document.getElementById("athenaDataRefresh").style.display = "block";
-    } catch (_error) {
-      e = _error;
+    } catch (error1) {
+      e = error1;
       document.getElementById("athenaDataError").style.display = "block";
       document.getElementById("athenaDataRefresh").style.display = "none";
       document.getElementById("athenaDataError").innerHTML = e.message;
@@ -1894,6 +1897,10 @@ if (localStorage["sepTasks"] == null) {
   localStorage["sepTasks"] = JSON.stringify(false);
 }
 
+if (localStorage["sepTaskClass"] == null) {
+  localStorage["sepTaskClass"] = JSON.stringify(true);
+}
+
 if (localStorage["hideassignments"] == null) {
   localStorage["hideassignments"] = JSON.stringify("day");
 }
@@ -1909,6 +1916,10 @@ if (localStorage["holidayThemes"] == null) {
 
 if (JSON.parse(localStorage["holidayThemes"])) {
   document.body.classList.add("holidayThemes");
+}
+
+if (JSON.parse(localStorage["sepTaskClass"])) {
+  document.body.classList.add("sepTaskClass");
 }
 
 if (localStorage["colorType"] == null) {
@@ -2122,6 +2133,9 @@ for (aa = 0, len7 = ref8.length; aa < len7; aa++) {
         return display();
       case "holidayThemes":
         return document.body.classList.toggle("holidayThemes", evt.target.checked);
+      case "sepTaskClass":
+        document.body.classList.toggle("sepTaskClass", evt.target.checked);
+        return display();
       case "sepTasks":
         return document.getElementById("sepTasksRefresh").style.display = "block";
     }
@@ -2875,7 +2889,7 @@ getParseData = function() {
   query = new Parse.Query(UserData);
   query.equalTo("user", Parse.User.current());
   return query.first().then(function(result) {
-    var passphrase, x;
+    var error1, passphrase, x;
     console.log(result);
     window.userData = result;
     passphrase = localStorage["cryptoPhrase"];
@@ -2891,8 +2905,8 @@ getParseData = function() {
         return results;
       })());
       return onParseOnline();
-    } catch (_error) {
-      e = _error;
+    } catch (error1) {
+      e = error1;
       console.log(e);
       if (confirm("Your data on Parse couldn't be decrypted (probably because the passphrase used to encode it and the passphrase on this device don't match). Do you want to overwrite the data on Parse with encrypted data using your passphrase?")) {
         console.log("Replacing data");

@@ -1887,7 +1887,7 @@ body[data-view="1"] .week {
 .deleteAssignment + .editAssignment, .deleteAssignment + .deleteAssignment {
   right: 44px; }
 
-body[data-view="0"]:not(.dark) .assignment.task:not(.full) > .title, body[data-view="0"]:not(.dark) .assignment.task:not(.full) > small, body[data-view="0"]:not(.dark) .assignment.task:not(.full) > .linked {
+body[data-view="0"].sepTaskClass:not(.dark) .assignment.task:not(.full) > .title, body[data-view="0"].sepTaskClass:not(.dark) .assignment.task:not(.full) > small, body[data-view="0"].sepTaskClass:not(.dark) .assignment.task:not(.full) > .linked {
   color: rgba(0, 0, 0, 0.87); }
 
 body[data-view="1"] .deleteAssignment + .editAssignment, body[data-view="1"] .deleteAssignment + .deleteAssignment {
@@ -2665,7 +2665,8 @@ body.holidayThemes.winter, body.winter.noList[data-view="1"]:not(.showDone) {
         -o-transition: opacity 0.3s ease, border-color 0.3s ease, height 0.3s ease, width 0.3s ease;
         transition: opacity 0.3s ease, border-color 0.3s ease, height 0.3s ease, width 0.3s ease;
         position: relative;
-        border: 3px solid transparent; }
+        border: 3px solid transparent;
+        margin: 0 !important; }
         .colors > div > span > span.selected {
           border-color: rgba(255, 255, 255, 0.7);
           border-width: 2px; }
