@@ -180,7 +180,7 @@ fromDateNum = function(days) {
   if (d.getHours() === 1) {
     d.setHours(0);
   }
-  if (d.getHours() === 22) {
+  if (d.getHours() === 22 || d.getHours() === 23) {
     d.setHours(24);
     d.setMinutes(0);
     d.setSeconds(0);

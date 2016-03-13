@@ -193,7 +193,7 @@ This function displays a snackbar to tell the user something
     fromDateNum = (days) ->
       d = new Date days*1000*3600*24+tzoff
       if d.getHours() is 1 then d.setHours 0
-      if d.getHours() is 22
+      if d.getHours() is 22 or d.getHours() is 23
         d.setHours 24
         d.setMinutes 0
         d.setSeconds 0
