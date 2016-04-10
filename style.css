@@ -2609,6 +2609,10 @@ body.holidayThemes.winter, body.winter.noList[data-view="1"]:not(.showDone) {
         padding-bottom: 20px;
         line-height: 16px; }
 
+#versionText {
+  color: rgba(0, 0, 0, 0.38);
+  padding-left: 15% !important; }
+
 .settingsContent {
   line-height: 1;
   padding-bottom: 20px; }
@@ -2746,6 +2750,12 @@ body.holidayThemes.winter, body.winter.noList[data-view="1"]:not(.showDone) {
     right: 129px; }
   #update.active + #updateBackground, .active#news + #updateBackground, .active#error + #updateBackground, .active#newDialog + #updateBackground {
     opacity: 0.5; }
+
+#updateVersions {
+  padding: 0 24px;
+  text-align: center;
+  margin-bottom: 8px;
+  margin-top: -8px; }
 
 code {
   background-color: rgba(0, 0, 0, 0.04);

@@ -140,7 +140,8 @@
 	</form>
 	<div id="loginBackground"></div>
 	<div id="update">
-		<h1>A new update has been detected/installed.</h1>
+		<h1>A new update has been detected.</h1>
+		<div id="updateVersions"><code id="pastUpdateVersion">??.??.??</code> &rarr; <code id="newUpdateVersion">??.??.??</code></div>
 		<div class="content">
 			If you have already installed it, please ignore this message.<br>
 			Otherwise, navigate to where you installed CheckPCR in a terminal and type <code>git pull</code> if you installed it using git.
@@ -224,6 +225,9 @@
 	<div id="newBackground"></div>
 	<div id="settings">
 		<ul>
+			<li id="versionText" class="nohover">
+				Version <code id="version">??.??.??</code> (newest is <code id="newversion">??.??.??</code>)
+			</li>
 			<li class="two">
 				Refresh on window focus
 				<span>Refresh when switching from another window</span>

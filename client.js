@@ -1,4 +1,4 @@
-var ParseArray, UserData, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, firstTime, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getParseData, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, newParseData, o, onNewTask, onParseOnline, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, ripple, schedules, scroll, send, sendToParse, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, viewData, weekdays, z,
+var ParseArray, UserData, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getParseData, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, newParseData, o, onNewTask, onParseOnline, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, sendToParse, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
   slice = [].slice;
 
@@ -6,7 +6,7 @@ if (window.location.protocol === "http:" && location.hostname !== "localhost") {
   window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
 }
 
-if ((localStorage["noWelcome"] == null) && (localStorage["commit"] == null)) {
+if (localStorage["noWelcome"] == null) {
   localStorage["noWelcome"] = "true";
   window.location = "welcome.html";
 }
@@ -42,6 +42,8 @@ dmp = new diff_match_patch();
 lastUpdate = 0;
 
 listDateOffset = 0;
+
+version = "2.20.1";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -166,7 +168,7 @@ snackbar = function(message, action, f) {
 
 displayError = function(e) {
   var errorHTML;
-  errorHTML = "Messsage: " + e.message + "\nStack: " + (e.stack || e.lineNumber) + "\nBrowser: " + navigator.userAgent + "\nVersion: " + (localStorage["commit"] || "New");
+  errorHTML = "Messsage: " + e.message + "\nStack: " + (e.stack || e.lineNumber) + "\nBrowser: " + navigator.userAgent + "\nVersion: " + version;
   document.getElementById("errorContent").innerHTML = errorHTML.replace("\n", "<br>");
   document.getElementById("errorGoogle").href = "https://docs.google.com/a/students.harker.org/forms/d/1sa2gUtYFPdKT5YENXIEYauyRPucqsQCVaQAPeF3bZ4Q/viewform?entry.120036223=" + (encodeURIComponent(errorHTML));
   document.getElementById("errorGitHub").href = "https://github.com/19RyanA/CheckPCR/issues/new?body=" + (encodeURIComponent("I've encountered an bug.\n\n```\n" + errorHTML + "\n```"));
@@ -590,7 +592,8 @@ smoothScroll = function(to) {
 };
 
 addActivity = function(type, assignment, newActivity) {
-  var date, id, ref1, te;
+  var date, id, insertTo, ref1, te;
+  insertTo = document.getElementById("infoActivity");
   date = newActivity === true ? Date.now() : newActivity;
   if (newActivity === true) {
     activity.push([type, assignment, Date.now()]);
@@ -621,7 +624,7 @@ addActivity = function(type, assignment, newActivity) {
   if (ref1 = assignment.id, indexOf.call(done.array, ref1) >= 0) {
     te.classList.add("done");
   }
-  return document.getElementById("infoActivity").insertBefore(te, document.getElementById("infoActivity").querySelector(".activity"));
+  return insertTo.insertBefore(te, insertTo.querySelector(".activity"));
 };
 
 display = function(doScroll) {
@@ -1215,7 +1218,6 @@ display = function(doScroll) {
     already = document.getElementById(assignment.id + weekId);
     if (already != null) {
       already.style.marginTop = e.style.marginTop;
-      console.log(separateTaskClass, s.custom && separateTaskClass ? "Task" : window.data.classes[assignment["class"]]);
       already.setAttribute("data-class", s.custom && separateTaskClass ? "Task" : window.data.classes[assignment["class"]]);
       if (modified[assignment.id] == null) {
         already.getElementsByClassName("body")[0].innerHTML = e.getElementsByClassName("body")[0].innerHTML;
@@ -1280,7 +1282,6 @@ display = function(doScroll) {
   document.body.classList.toggle("noList", document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0);
   if (document.body.getAttribute("data-view") === "1") {
     resize();
-    setTimeout(resize, 1000);
   }
   return console.timeEnd("Displaying data");
 };
@@ -1365,7 +1366,7 @@ for (j = 0, len = ref1.length; j < len; j++) {
     if (typeof ga !== "undefined" && ga !== null) {
       ga('send', 'event', 'navigation', evt.target.textContent, {
         page: '/new.html',
-        title: "Version " + (localStorage["commit"] || "New")
+        title: "Version " + version
       });
     }
     trans = JSON.parse(localStorage["viewTrans"]);
@@ -1375,7 +1376,7 @@ for (j = 0, len = ref1.length; j < len; j++) {
     }
     document.body.setAttribute("data-view", localStorage["view"] = (Array.prototype.slice.call(document.querySelectorAll("#navTabs>li"))).indexOf(evt.target));
     if (document.body.getAttribute("data-view") === "1") {
-      window.addEventListener("resize", resize);
+      window.addEventListener("resize", resizeCaller);
       if (trans) {
         start = null;
         widths = document.body.classList.contains("showInfo") ? [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800];
@@ -1446,7 +1447,7 @@ for (j = 0, len = ref1.length; j < len; j++) {
           timeout: 2000
         });
       }, 350);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", resizeCaller);
       ref2 = document.getElementsByClassName("assignment");
       for (l = 0, len2 = ref2.length; l < len2; l++) {
         assignment = ref2[l];
@@ -1470,6 +1471,10 @@ for (k = 0, len1 = ref2.length; k < len1; k++) {
   });
 }
 
+ticking = false;
+
+timeoutId = null;
+
 getResizeAssignments = function() {
   var assignments;
   assignments = Array.prototype.slice.call(document.querySelectorAll(document.body.classList.contains("showDone") ? ".assignment.listDisp" : ".assignment.listDisp:not(.done)"));
@@ -1488,8 +1493,16 @@ getResizeAssignments = function() {
   return assignments;
 };
 
+resizeCaller = function() {
+  if (!ticking) {
+    requestAnimationFrame(resize);
+    return ticking = true;
+  }
+};
+
 resize = function() {
-  var assignment, assignments, col, columnHeights, columns, index, l, len2, len3, n, o, w, widths;
+  var assignment, assignments, cch, col, columnHeights, columns, index, l, len2, len3, len4, n, o, q, w, widths;
+  ticking = true;
   widths = document.body.classList.contains("showInfo") ? [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800];
   columns = 1;
   for (index = l = 0, len2 = widths.length; l < len2; index = ++l) {
@@ -1506,33 +1519,46 @@ resize = function() {
     }
     return results;
   })();
+  cch = [];
   assignments = getResizeAssignments();
   for (n = o = 0, len3 = assignments.length; o < len3; n = ++o) {
     assignment = assignments[n];
     col = n % columns;
-    assignment.style.top = columnHeights[col] + "px";
-    assignment.style.left = 100 / columns * col + "%";
-    assignment.style.right = 100 / columns * (columns - col - 1) + "%";
+    cch.push(columnHeights[col]);
     columnHeights[col] += assignment.offsetHeight + 24;
   }
-  setTimeout(function() {
-    var len4, q;
-    for (n = q = 0, len4 = assignments.length; q < len4; n = ++q) {
+  for (n = q = 0, len4 = assignments.length; q < len4; n = ++q) {
+    assignment = assignments[n];
+    col = n % columns;
+    assignment.style.top = cch[n] + "px";
+    assignment.style.left = 100 / columns * col + "%";
+    assignment.style.right = 100 / columns * (columns - col - 1) + "%";
+  }
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function() {
+    var len5, len6, u, z;
+    cch.length = 0;
+    for (n = u = 0, len5 = assignments.length; u < len5; n = ++u) {
       assignment = assignments[n];
       col = n % columns;
       if (n < columns) {
         columnHeights[col] = 0;
       }
-      assignment.style.top = columnHeights[col] + "px";
+      cch.push(columnHeights[col]);
       columnHeights[col] += assignment.offsetHeight + 24;
     }
-  }, 700);
+    for (n = z = 0, len6 = assignments.length; z < len6; n = ++z) {
+      assignment = assignments[n];
+      assignment.style.top = cch[n] + "px";
+    }
+  }, 500);
+  ticking = false;
 };
 
 if (localStorage["view"] != null) {
   document.body.setAttribute("data-view", localStorage["view"]);
   if (localStorage["view"] === "1") {
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", resizeCaller);
   }
 }
 
@@ -1866,6 +1892,8 @@ parseAthenaData = function(dat) {
   }
 };
 
+document.getElementById("version").innerHTML = version;
+
 document.getElementById("settingsB").addEventListener("click", function() {
   document.getElementById("sideBackground").click();
   document.body.classList.add("settingsShown");
@@ -2165,7 +2193,7 @@ for (ab = 0, len8 = ref9.length; ab < len8; ab++) {
 ref10 = document.getElementsByTagName("textarea");
 for (ae = 0, len9 = ref10.length; ae < len9; ae++) {
   e = ref10[ae];
-  if (localStorage[e.name] != null) {
+  if (e.name !== "athenaDataRaw" && (localStorage[e.name] != null)) {
     e.value = localStorage[e.name];
   }
   e.addEventListener("input", function(evt) {
@@ -2375,7 +2403,7 @@ if (location.protocol !== "chrome-extension:") {
 
 gp = {
   page: '/new.html',
-  title: location.protocol === "chrome-extension:" ? "Version " + (localStorage["commit"] || "New") : "Online"
+  title: location.protocol === "chrome-extension:" ? "Version " + version : "Online"
 };
 
 if (!JSON.parse(localStorage["googleA"])) {
@@ -2538,16 +2566,12 @@ document.getElementById("showDoneTasks").addEventListener("change", function() {
 });
 
 checkCommit = function() {
-  return send((location.protocol === "chrome-extension:" ? "https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master" : "/api/commit"), "json").then(function(resp) {
-    var last;
-    last = localStorage["commit"];
-    c = resp.response.object.sha;
-    console.debug(last, c);
-    if (last == null) {
-      return localStorage["commit"] = c;
-    } else if (last !== c) {
+  return send("https://raw.githubusercontent.com/19RyanA/CheckPCR/master/version.txt", "text").then(function(resp) {
+    c = resp.responseText.trim();
+    console.debug(version, c);
+    document.getElementById("newversion").innerHTML = c;
+    if (version !== c) {
       document.getElementById("updateIgnore").addEventListener("click", function() {
-        localStorage["commit"] = c;
         if (location.protocol === "chrome-extension:") {
           document.getElementById("update").classList.remove("active");
           return setTimeout(function() {
@@ -2557,12 +2581,18 @@ checkCommit = function() {
           return window.location.reload();
         }
       });
-      return send((location.protocol === "chrome-extension:" ? resp.response.object.url : "/api/commit/" + c), "json").then(function(resp) {
-        document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n") + 2).replace(/\* (.*?)(?=$|\n)/g, function(a, b) {
-          return "<li>" + b + "</li>";
-        }).replace(/>\n</g, "><").replace(/\n/g, "<br>");
-        document.getElementById("updateBackground").style.display = "block";
-        return document.getElementById("update").classList.add("active");
+      return send((location.protocol === "chrome-extension:" ? "https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master" : "/api/commit"), "json").then(function(resp) {
+        var sha;
+        sha = resp.response.object.sha;
+        return send((location.protocol === "chrome-extension:" ? resp.response.object.url : "/api/commit/" + sha), "json").then(function(resp) {
+          document.getElementById("pastUpdateVersion").innerHTML = version;
+          document.getElementById("newUpdateVersion").innerHTML = c;
+          document.getElementById("updateFeatures").innerHTML = resp.response.message.substr(resp.response.message.indexOf("\n\n") + 2).replace(/\* (.*?)(?=$|\n)/g, function(a, b) {
+            return "<li>" + b + "</li>";
+          }).replace(/>\n</g, "><").replace(/\n/g, "<br>");
+          document.getElementById("updateBackground").style.display = "block";
+          return document.getElementById("update").classList.add("active");
+        });
       });
     }
   }, function(err) {
@@ -2570,9 +2600,7 @@ checkCommit = function() {
   });
 };
 
-firstTime = !localStorage["commit"];
-
-if (location.protocol === "chrome-extension:" || firstTime) {
+if (location.protocol === "chrome-extension:") {
   checkCommit();
 }
 
@@ -2762,9 +2790,14 @@ tipComplete = function(evt) {
   return document.getElementById("newText").focus();
 };
 
-updateNewTips = function(val) {
+updateNewTips = function(val, scroll) {
   var ah, ai, aj, before, beforeSpace, cls, container, found, i, id, lastSpace, lastWord, len11, len12, len13, name, possible, ref13, ref14, uppercase;
-  document.getElementById("newTips").scrollTop = 0;
+  if (scroll == null) {
+    scroll = true;
+  }
+  if (scroll) {
+    document.getElementById("newTips").scrollTop = 0;
+  }
   if ((i = val.lastIndexOf(" ")) !== -1) {
     beforeSpace = val.lastIndexOf(" ", i - 1);
     before = val.substring((beforeSpace === -1 ? 0 : beforeSpace + 1), i);
@@ -2828,7 +2861,7 @@ updateNewTips = function(val) {
   }
 };
 
-updateNewTips("");
+updateNewTips("", false);
 
 document.getElementById("newText").addEventListener("input", function() {
   return updateNewTips(this.value);
