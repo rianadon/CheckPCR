@@ -2565,7 +2565,7 @@ body.holidayThemes.winter, body.winter.noList[data-view="1"]:not(.showDone) {
   transition: transform 0.3s ease;
   will-change: transform;
   padding-top: 64px;
-  padding-bottom: 48px; }
+  padding-bottom: 24px; }
   .settingsShown #settings {
     transform: scale(1); }
   @media only screen and (min-width: 601px) {
@@ -3269,3 +3269,12 @@ body.dark {
   color: rgba(0, 0, 0, 0.54); }
   #listbefore:hover, #listnext:hover {
     color: rgba(0, 0, 0, 0.87); }
+
+#credits.nohover {
+  color: rgba(0, 0, 0, 0.38);
+  text-align: center;
+  padding-top: 32px; }
+
+#credits.nohover > i {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.26); }

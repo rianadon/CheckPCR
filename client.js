@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.20.1";
+version = "2.21.0";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -591,15 +591,18 @@ smoothScroll = function(to) {
   });
 };
 
-addActivity = function(type, assignment, newActivity) {
+addActivity = function(type, assignment, newActivity, className) {
   var date, id, insertTo, ref1, te;
+  if (className == null) {
+    className = window.data.classes[assignment["class"]];
+  }
   insertTo = document.getElementById("infoActivity");
   date = newActivity === true ? Date.now() : newActivity;
   if (newActivity === true) {
-    activity.push([type, assignment, Date.now()]);
+    activity.push([type, assignment, Date.now(), className]);
   }
-  te = element("div", ["activity", "assignmentItem", assignment.baseType, type], "<i class='material-icons'>" + type + "</i><span class='title'>" + assignment.title + "</span><small>" + (separate(window.data.classes[assignment["class"]])[2]) + "</small><div class='range'>" + (dateString(new Date(date))) + "</div>", "activity" + assignment.id);
-  te.setAttribute("data-class", window.data.classes[assignment["class"]]);
+  te = element("div", ["activity", "assignmentItem", assignment.baseType, type], "<i class='material-icons'>" + type + "</i><span class='title'>" + assignment.title + "</span><small>" + (separate(className)[2]) + "</small><div class='range'>" + (dateString(new Date(date))) + "</div>", "activity" + assignment.id);
+  te.setAttribute("data-class", className);
   id = assignment.id;
   if (type !== "delete") {
     (function(id) {
@@ -628,7 +631,7 @@ addActivity = function(type, assignment, newActivity) {
 };
 
 display = function(doScroll) {
-  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastAssignments, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, midDate, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, reference, restore, s, separateTaskClass, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, tdst, te, timeafter, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastData, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, midDate, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, reference, restore, s, separateTaskClass, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, tdst, te, timeafter, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   if (doScroll == null) {
     doScroll = true;
   }
@@ -676,7 +679,7 @@ display = function(doScroll) {
   end.setDate(end.getDate() + (6 - end.getDay()));
   d = new Date(start);
   wk = null;
-  lastAssignments = localStorage["data"] ? JSON.parse(localStorage["data"]).assignments : null;
+  lastData = localStorage["data"] ? JSON.parse(localStorage["data"]) : null;
   while (d <= end) {
     if (d.getDay() === 0) {
       id = "wk" + (d.getMonth()) + "-" + (d.getDate());
@@ -731,17 +734,18 @@ display = function(doScroll) {
       });
       n += 7;
     }
-    if (lastAssignments != null) {
+    if (lastData != null) {
       found = false;
-      for (num = l = 0, len1 = lastAssignments.length; l < len1; num = ++l) {
-        oldAssignment = lastAssignments[num];
+      ref2 = lastData.assignments;
+      for (num = l = 0, len1 = ref2.length; l < len1; num = ++l) {
+        oldAssignment = ref2[num];
         if (oldAssignment.id === assignment.id) {
           found = true;
           if (oldAssignment.body !== assignment.body) {
-            addActivity("edit", oldAssignment, true);
+            addActivity("edit", oldAssignment, true, lastData.classes[oldAssignment["class"]]);
             delete modified[assignment.id];
           }
-          lastAssignments.splice(num, 1);
+          lastData.assignments.splice(num, 1);
           break;
         }
       }
@@ -750,10 +754,11 @@ display = function(doScroll) {
       }
     }
   }
-  if (lastAssignments != null) {
-    for (o = 0, len2 = lastAssignments.length; o < len2; o++) {
-      assignment = lastAssignments[o];
-      addActivity("delete", assignment, true);
+  if (lastData != null) {
+    ref3 = lastData.assignments;
+    for (o = 0, len2 = ref3.length; o < len2; o++) {
+      assignment = ref3[o];
+      addActivity("delete", assignment, true, lastData.classes[assignment["class"]]);
       if (done.indexOf(assignment.id) >= 0) {
         done.splice(done.indexOf(assignment.id), 1);
       }
@@ -767,9 +772,9 @@ display = function(doScroll) {
     custom = extra[q];
     cls = null;
     if (custom["class"] != null) {
-      ref2 = data.classes;
-      for (n = u = 0, len4 = ref2.length; u < len4; n = ++u) {
-        c = ref2[n];
+      ref4 = data.classes;
+      for (n = u = 0, len4 = ref4.length; u < len4; n = ++u) {
+        c = ref4[n];
         if (c.toLowerCase().indexOf(custom["class"]) !== -1) {
           cls = n;
           break;
@@ -812,15 +817,15 @@ display = function(doScroll) {
   todayWkId = "wk" + (tdst.getMonth()) + "-" + (tdst.getDate());
   weekHeights = {};
   previousAssignments = {};
-  ref3 = document.getElementsByClassName("assignment");
-  for (z = 0, len5 = ref3.length; z < len5; z++) {
-    assignment = ref3[z];
+  ref5 = document.getElementsByClassName("assignment");
+  for (z = 0, len5 = ref5.length; z < len5; z++) {
+    assignment = ref5[z];
     previousAssignments[assignment.getAttribute("id")] = assignment;
   }
   separateTaskClass = JSON.parse(localStorage["sepTaskClass"]);
   fn = function(id, reference) {
     return complete.addEventListener("mouseup", function(evt) {
-      var ab, added, el, elem, len7, ref4;
+      var ab, added, el, elem, len7, ref6;
       if (evt.which === 1) {
         el = this.parentNode;
         added = true;
@@ -843,10 +848,10 @@ display = function(doScroll) {
         }
         if (document.body.getAttribute("data-view") === "1") {
           setTimeout(function() {
-            var ab, elem, len7, ref4;
-            ref4 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
-            for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
-              elem = ref4[ab];
+            var ab, elem, len7, ref6;
+            ref6 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
+            for (ab = 0, len7 = ref6.length; ab < len7; ab++) {
+              elem = ref6[ab];
               elem.classList.toggle("done");
             }
             if (added) {
@@ -861,9 +866,9 @@ display = function(doScroll) {
             return resize();
           }, 100);
         } else {
-          ref4 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
-          for (ab = 0, len7 = ref4.length; ab < len7; ab++) {
-            elem = ref4[ab];
+          ref6 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
+          for (ab = 0, len7 = ref6.length; ab < len7; ab++) {
+            elem = ref6[ab];
             elem.classList.toggle("done");
           }
           if (added) {
@@ -959,7 +964,7 @@ display = function(doScroll) {
       smallTag = "a";
     }
     e = element("div", ["assignment", assignment.baseType, "anim"], "<" + smallTag + (link != null ? " href='" + link + "' class='linked' target='_blank'" : "") + "><span class='extra'>" + separated[1] + "</span>" + separated[2] + "</" + smallTag + "><span class='title'>" + assignment.title + "</span><input type='hidden' class='due' value='" + (isNaN(assignment.end) ? 0 : assignment.end) + "' />", assignment.id + weekId);
-    if (((reference != null) && reference.done) || (ref4 = assignment.id, indexOf.call(done.array, ref4) >= 0)) {
+    if (((reference != null) && reference.done) || (ref6 = assignment.id, indexOf.call(done.array, ref6) >= 0)) {
       e.classList.add("done");
     }
     e.setAttribute("data-class", s.custom && separateTaskClass ? "Task" : window.data.classes[assignment["class"]]);
@@ -1017,7 +1022,7 @@ display = function(doScroll) {
     e.appendChild(times);
     if (assignment.attachments.length > 0) {
       attachments = element("div", "attachments");
-      ref5 = assignment.attachments;
+      ref7 = assignment.attachments;
       fn4 = function(attachment) {
         var a, req;
         a = element("a", [], attachment[0]);
@@ -1040,8 +1045,8 @@ display = function(doScroll) {
         req.send();
         attachments.appendChild(a);
       };
-      for (ab = 0, len7 = ref5.length; ab < len7; ab++) {
-        attachment = ref5[ab];
+      for (ab = 0, len7 = ref7.length; ab < len7; ab++) {
+        attachment = ref7[ab];
         fn4(attachment);
       }
       e.appendChild(attachments);
@@ -1076,9 +1081,9 @@ display = function(doScroll) {
     edits.appendChild(restore);
     e.appendChild(edits);
     mods = element("div", ["mods"]);
-    ref6 = activity.slice(activity.length - 32, activity.length);
-    for (af = 0, len9 = ref6.length; af < len9; af++) {
-      a = ref6[af];
+    ref8 = activity.slice(activity.length - 32, activity.length);
+    for (af = 0, len9 = ref8.length; af < len9; af++) {
+      a = ref8[af];
       if (a[0] === "edit" && a[1].id === assignment.id) {
         d = dmp.diff_main(a[1].body, assignment.body);
         dmp.diff_cleanupSemantic(d);
@@ -1122,7 +1127,7 @@ display = function(doScroll) {
     } else {
       midDate = new Date();
       midDate.setDate(midDate.getDate() + listDateOffset);
-      if (((st - (assignment.baseType === "test" && assignment.start === st ? JSON.parse(localStorage["earlyTest"]) : 0)) * 1000 * 3600 * 24 + tzoff <= (ref7 = midDate.getTime()) && ref7 <= s.end.getTime() + (listDateOffset === 0 ? timeafter : 24 * 3600 * 1000))) {
+      if (((st - (assignment.baseType === "test" && assignment.start === st ? JSON.parse(localStorage["earlyTest"]) : 0)) * 1000 * 3600 * 24 + tzoff <= (ref9 = midDate.getTime()) && ref9 <= s.end.getTime() + (listDateOffset === 0 ? timeafter : 24 * 3600 * 1000))) {
         e.classList.add("listDisp");
       }
     }
@@ -1202,7 +1207,7 @@ display = function(doScroll) {
           }
         });
       })(id);
-      if (ref8 = assignment.id, indexOf.call(done.array, ref8) >= 0) {
+      if (ref10 = assignment.id, indexOf.call(done.array, ref10) >= 0) {
         te.classList.add("done");
       }
       if (document.getElementById("test" + assignment.id) != null) {
@@ -1254,11 +1259,11 @@ display = function(doScroll) {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var ah, len11, ref9, results, x;
-      ref9 = wkid.substring(2).split("-");
+      var ah, len11, ref11, results, x;
+      ref11 = wkid.substring(2).split("-");
       results = [];
-      for (ah = 0, len11 = ref9.length; ah < len11; ah++) {
-        x = ref9[ah];
+      for (ah = 0, len11 = ref11.length; ah < len11; ah++) {
+        x = ref11[ah];
         results.push(parseInt(x));
       }
       return results;
@@ -2372,7 +2377,7 @@ if (localStorage["data"] != null) {
     ref11 = activity.slice(activity.length - 32, activity.length);
     for (af = 0, len10 = ref11.length; af < len10; af++) {
       act = ref11[af];
-      addActivity(act[0], act[1], act[2]);
+      addActivity.apply(null, act);
     }
   }
   display();
