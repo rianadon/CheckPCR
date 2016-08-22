@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.21.0";
+version = "2.21.1";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -595,6 +595,9 @@ addActivity = function(type, assignment, newActivity, className) {
   var date, id, insertTo, ref1, te;
   if (className == null) {
     className = window.data.classes[assignment["class"]];
+  }
+  if (className == null) {
+    className = "Unknown class";
   }
   insertTo = document.getElementById("infoActivity");
   date = newActivity === true ? Date.now() : newActivity;
@@ -2616,7 +2619,7 @@ document.getElementById("updateDelay").addEventListener("click", function() {
   }, 350);
 });
 
-send("https://api.github.com/gists/b42a5a3c491be081e9c9", "json").then(function(resp) {
+send("https://api.github.com/gists/21bf11a429da257539a68520f513a38b", "json").then(function(resp) {
   var last, nc;
   last = localStorage["newsCommit"];
   nc = resp.response.history[0].version;

@@ -57,7 +57,7 @@ Then we have most of the global variables.
     lastUpdate = 0 # The last time verything was updated
     listDateOffset = 0
 
-    version = "2.21.0"
+    version = "2.21.1"
 
 #### Send function
 
@@ -586,6 +586,7 @@ The one below scrolls smoothly to a y position.
 Now the functions that actually display something are defined. First up is one to add an activity line to the activity panel.
 
     addActivity = (type, assignment, newActivity, className=window.data.classes[assignment.class]) ->
+      className ?= "Unknown class"
       insertTo=document.getElementById("infoActivity")
       date = if newActivity is true then Date.now() else newActivity
       if newActivity is true then activity.push [type, assignment, Date.now(), className]
@@ -2170,7 +2171,7 @@ This update dialog also needs to be closed when the butons are clicked.
 
 For news, the latest news is fetched from a GitHub gist.
 
-    send "https://api.github.com/gists/b42a5a3c491be081e9c9", "json"
+    send "https://api.github.com/gists/21bf11a429da257539a68520f513a38b", "json"
       .then (resp) ->
         last = localStorage["newsCommit"]
         nc = resp.response.history[0].version
