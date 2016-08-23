@@ -1,4 +1,4 @@
-var ParseArray, UserData, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getParseData, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, newParseData, o, onNewTask, onParseOnline, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, sendToParse, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
+var ParseArray, UserData, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getParseData, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, localStorageRead, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, newParseData, o, onNewTask, onParseOnline, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, sendToParse, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
   slice = [].slice;
 
@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.21.1";
+version = "2.21.2";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -204,6 +204,16 @@ if (window.requestIdleCallback == null) {
     }, 1);
   };
 }
+
+localStorageRead = function(name) {
+  var e, error1;
+  try {
+    return JSON.parse(localStorage[name]);
+  } catch (error1) {
+    e = error1;
+    return void 0;
+  }
+};
 
 formatUpdate = function(date) {
   var ampm, daysPast, hr, min, now, update;
@@ -682,7 +692,7 @@ display = function(doScroll) {
   end.setDate(end.getDate() + (6 - end.getDay()));
   d = new Date(start);
   wk = null;
-  lastData = localStorage["data"] ? JSON.parse(localStorage["data"]) : null;
+  lastData = localStorageRead("data");
   while (d <= end) {
     if (d.getDay() === 0) {
       id = "wk" + (d.getMonth()) + "-" + (d.getDate());
@@ -1852,9 +1862,11 @@ updateAvatar = function() {
   if (localStorage["username"] != null) {
     document.getElementById("user").innerHTML = localStorage["username"];
     initials = localStorage["username"].match(/\d*(.).*?(.$)/);
-    bg = labrgb(50, (initials[1].charCodeAt(0) - 65) / 26 * 256 - 128, (initials[2].charCodeAt(0) - 65) / 26 * 256 - 128);
-    document.getElementById("initials").style.backgroundColor = bg;
-    return document.getElementById("initials").innerHTML = initials[1] + initials[2];
+    if (initials != null) {
+      bg = labrgb(50, (initials[1].charCodeAt(0) - 65) / 26 * 256 - 128, (initials[2].charCodeAt(0) - 65) / 26 * 256 - 128);
+      document.getElementById("initials").style.backgroundColor = bg;
+      return document.getElementById("initials").innerHTML = initials[1] + initials[2];
+    }
   }
 };
 
@@ -1971,9 +1983,9 @@ if (localStorage["assignmentColors"] == null) {
   });
 }
 
-if ((localStorage["data"] != null) && (localStorage["classColors"] == null)) {
+if ((localStorageRead("data") != null) && (localStorage["classColors"] == null)) {
   a = {};
-  ref4 = JSON.parse(localStorage["data"]).classes;
+  ref4 = localStorageRead("data").classes;
   for (o = 0, len3 = ref4.length; o < len3; o++) {
     c = ref4[o];
     a[c] = "#616161";
@@ -2036,8 +2048,8 @@ palette = {
   "#616161": "#212121"
 };
 
-if (localStorage["data"] != null) {
-  ref5 = JSON.parse(localStorage["data"]).classes;
+if (localStorageRead("data") != null) {
+  ref5 = localStorageRead("data").classes;
   for (q = 0, len4 = ref5.length; q < len4; q++) {
     c = ref5[q];
     d = element("div", [], c);
@@ -2373,8 +2385,8 @@ schedules = (function() {
 
 document.getElementById("lastUpdate").innerHTML = localStorage["lastUpdate"] != null ? formatUpdate(localStorage["lastUpdate"]) : "Never";
 
-if (localStorage["data"] != null) {
-  window.data = JSON.parse(localStorage["data"]);
+if (localStorageRead("data") != null) {
+  window.data = localStorageRead("data");
   if (localStorage["activity"] != null) {
     activity = JSON.parse(localStorage["activity"]);
     ref11 = activity.slice(activity.length - 32, activity.length);
