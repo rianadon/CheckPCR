@@ -57,7 +57,7 @@ Then we have most of the global variables.
     lastUpdate = 0 # The last time verything was updated
     listDateOffset = 0
 
-    version = "2.21.2"
+    version = "2.21.3"
 
 #### Send function
 
@@ -1854,8 +1854,12 @@ Starting everything
 -------------------
 
 Finally! We are (almost) done!
+
+*Note: Because the hosted Parse server is no longer going to be available, the below code is commented out*
+
 The *sendToParse* function puts / removes data on Parse since the completed and modified assignments are loaded and saved to / from Parse.
 
+    ###
     sendToParse = (name, func, value, update=true) ->
       # onerror will be called if there is an error sending the info to Parse or there is no connection to it
       onerror = ->
@@ -1885,6 +1889,7 @@ The *sendToParse* function puts / removes data on Parse since the completed and 
           , onerror
       else
         onerror() # Parse not initialized yet
+    ###
 
 Then, a class similar to an array that interacts with Parse is defined.
 
@@ -1895,13 +1900,13 @@ Then, a class similar to an array that interacts with Parse is defined.
         local = localStorage[@name]
         @array = if local? then JSON.parse(local) else []
       push: (item) ->
-        sendToParse @name, "AddUnique", item, false
+        # sendToParse @name, "AddUnique", item, false
         @array.push item
       indexOf: (item) ->
         @array.indexOf item
       splice: (index, number) ->
-        for n in [index...index+number]
-          sendToParse @name, "Remove", @array[n], false
+        # for n in [index...index+number]
+        #   sendToParse @name, "Remove", @array[n], false
         @array.splice index, number
       save: ->
         localStorage[@name] = JSON.stringify @array
@@ -2391,14 +2396,15 @@ Parse
 
 First of all, to interact with Parse, the SDK must be initialized.
 
-    Parse.initialize "y0LK2CGd1Th6yHtOmmgN7CjplpFiDslTEwmtz7q2", "WQxQSzup108DdG4Ey0dJJJ9yw0KNWK2Ss2JBQPkb"
+    # Parse.initialize "y0LK2CGd1Th6yHtOmmgN7CjplpFiDslTEwmtz7q2", "WQxQSzup108DdG4Ey0dJJJ9yw0KNWK2Ss2JBQPkb"
 
 To be able to query for the data stored in parse, the *UserData* class is defined.
 
-    UserData = Parse.Object.extend "UserData"
+    # UserData = Parse.Object.extend "UserData"
 
 The function *newParseData* creates an object in parse that will store the data.
 
+    ###
     newParseData = ->
       userData = new UserData()
       passphrase = localStorage["cryptoPhrase"]
@@ -2410,21 +2416,25 @@ The function *newParseData* creates an object in parse that will store the data.
         console.debug "Successfully saved userData", userData
       , (err) ->
         alert "Unable to save your current data to Parse because of this error: #{err.code} #{err.message}"
+    ###
 
 The function *onParseOnline* is called when a network connection to parse is made (again) and attempts to sync data that was created when offline
 
+    ###
     onParseOnline = ->
       if (pf = localStorage["parseFailed"])?
         delete localStorage["parseFailed"] # CLear the failed requests
         for failed in JSON.parse pf
           sendToParse.apply sendToParse, failed
+    ###
 
 In order to call this function when the browswer regains a network connection, an event listener is attached to the window.
 
-    window.addEventListener "online", onParseOnline
+    # window.addEventListener "online", onParseOnline
 
 *getParseData* retrieves the object from Parse.
 
+    ###
     getParseData = ->
       query = new Parse.Query UserData
       query.equalTo("user", Parse.User.current())
@@ -2445,9 +2455,11 @@ In order to call this function when the browswer regains a network connection, a
               newParseData()
         , (err) ->
           console.log "Could not get data from Parse because of error", err.code, err.message
+    ###
 
 If the user is logged into the Parse database, then the login buttons are removed.
 
+    ###
     requestIdleCallback ->
       # Try to get the current user logged in
       currentUser = Parse.User.current()
@@ -2494,6 +2506,7 @@ If the user is logged into the Parse database, then the login buttons are remove
 
         document.getElementById("parsebuttons").style.display = "block"
     , { timeout: 2000 }
+    ###
 
 <a name="other"/>
 Other

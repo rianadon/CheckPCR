@@ -1,4 +1,4 @@
-var ParseArray, UserData, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getParseData, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, localStorageRead, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, newParseData, o, onNewTask, onParseOnline, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, sendToParse, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
+var ParseArray, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, localStorageRead, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, onNewTask, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
   slice = [].slice;
 
@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.21.2";
+version = "2.21.3";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -2224,50 +2224,38 @@ for (ae = 0, len9 = ref10.length; ae < len9; ae++) {
   });
 }
 
-sendToParse = function(name, func, value, update) {
-  var onerror;
-  if (update == null) {
-    update = true;
-  }
-  onerror = function() {
-    var parseFailed, pf;
-    console.debug("Adding failed request to localStorage for later reattempts");
-    parseFailed = (pf = localStorage["parseFailed"]) != null ? JSON.parse(pf) : [];
-    parseFailed.push([name, func, value]);
-    return localStorage["parseFailed"] = JSON.stringify(parseFailed);
-  };
-  if (window.userData) {
-    console.log("executing " + func + " with argument " + value + " into " + name);
-    return Parse.CoreManager.getInstallationController().currentInstallationId().then(function(iid) {
-      var obj;
-      return send("https://api.parse.com/1/classes/UserData/" + window.userData.id, "json", null, JSON.stringify((
-        obj = {
-          _ApplicationId: Parse.CoreManager.get("APPLICATION_ID"),
-          _ClientVersion: Parse.CoreManager.get("VERSION"),
-          _InstallationId: iid,
-          _JavaScriptKey: Parse.CoreManager.get("JAVASCRIPT_KEY"),
-          _SessionToken: Parse.User.current().getSessionToken(),
+
+/*
+sendToParse = (name, func, value, update=true) ->
+   * onerror will be called if there is an error sending the info to Parse or there is no connection to it
+  onerror = ->
+    console.debug "Adding failed request to localStorage for later reattempts"
+    parseFailed = if (pf = localStorage["parseFailed"])? then JSON.parse(pf) else []
+    parseFailed.push [name, func, value]
+    localStorage["parseFailed"] = JSON.stringify parseFailed
+  if window.userData # Check if parse has been initialized yet
+    console.log "executing #{func} with argument #{value} into #{name}"
+    Parse.CoreManager.getInstallationController().currentInstallationId().then (iid) ->
+      send("https://api.parse.com/1/classes/UserData/#{window.userData.id}", "json",
+        null, # No special headers to send
+        JSON.stringify
+          _ApplicationId: Parse.CoreManager.get "APPLICATION_ID"
+          _ClientVersion: Parse.CoreManager.get "VERSION"
+          _InstallationId: iid
+          _JavaScriptKey: Parse.CoreManager.get "JAVASCRIPT_KEY"
+          _SessionToken: Parse.User.current().getSessionToken()
           _method: "PUT"
-        },
-        obj["" + name] = {
-          __op: func,
-          objects: [sjcl.encrypt(localStorage["cryptoPhrase"], value)]
-        },
-        obj
-      ))).then(function(resp) {
-        console.log("Successfully synced change to Parse", resp.response);
-        if (update) {
-          return window[name][{
-            Remove: "onremove",
-            AddUnique: "onadd"
-          }[func]](value);
-        }
-      }, onerror);
-    });
-  } else {
-    return onerror();
-  }
-};
+          "#{name}":
+            __op: func
+            objects: [sjcl.encrypt localStorage["cryptoPhrase"], value]
+      ).then (resp) ->
+        console.log "Successfully synced change to Parse", resp.response
+        if update
+          window[name][{Remove: "onremove", AddUnique: "onadd"}[func]](value)
+      , onerror
+  else
+    onerror() # Parse not initialized yet
+ */
 
 ParseArray = (function() {
   ParseArray.onadd = function() {};
@@ -2283,7 +2271,6 @@ ParseArray = (function() {
   }
 
   ParseArray.prototype.push = function(item) {
-    sendToParse(this.name, "AddUnique", item, false);
     return this.array.push(item);
   };
 
@@ -2292,10 +2279,6 @@ ParseArray = (function() {
   };
 
   ParseArray.prototype.splice = function(index, number) {
-    var af, n, ref11, ref12;
-    for (n = af = ref11 = index, ref12 = index + number; ref11 <= ref12 ? af < ref12 : af > ref12; n = ref11 <= ref12 ? ++af : --af) {
-      sendToParse(this.name, "Remove", this.array[n], false);
-    }
     return this.array.splice(index, number);
   };
 
@@ -2893,133 +2876,103 @@ for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
   tip.addEventListener("click", tipComplete);
 }
 
-Parse.initialize("y0LK2CGd1Th6yHtOmmgN7CjplpFiDslTEwmtz7q2", "WQxQSzup108DdG4Ey0dJJJ9yw0KNWK2Ss2JBQPkb");
 
-UserData = Parse.Object.extend("UserData");
+/*
+newParseData = ->
+  userData = new UserData()
+  passphrase = localStorage["cryptoPhrase"]
+  userData.set "done", (sjcl.encrypt(passphrase, x) for x in done.array)
+  userData.set "user", Parse.User.current()
+  userData.setACL new Parse.ACL Parse.User.current() # Only
+  userData.save().then (userData) ->
+    window.userData = userData
+    console.debug "Successfully saved userData", userData
+  , (err) ->
+    alert "Unable to save your current data to Parse because of this error: #{err.code} #{err.message}"
+ */
 
-newParseData = function() {
-  var passphrase, userData, x;
-  userData = new UserData();
-  passphrase = localStorage["cryptoPhrase"];
-  userData.set("done", (function() {
-    var ai, len12, ref14, results;
-    ref14 = done.array;
-    results = [];
-    for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
-      x = ref14[ai];
-      results.push(sjcl.encrypt(passphrase, x));
-    }
-    return results;
-  })());
-  userData.set("user", Parse.User.current());
-  userData.setACL(new Parse.ACL(Parse.User.current()));
-  return userData.save().then(function(userData) {
-    window.userData = userData;
-    return console.debug("Successfully saved userData", userData);
-  }, function(err) {
-    return alert("Unable to save your current data to Parse because of this error: " + err.code + " " + err.message);
-  });
-};
 
-onParseOnline = function() {
-  var ai, failed, len12, pf, ref14, results;
-  if ((pf = localStorage["parseFailed"]) != null) {
-    delete localStorage["parseFailed"];
-    ref14 = JSON.parse(pf);
-    results = [];
-    for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
-      failed = ref14[ai];
-      results.push(sendToParse.apply(sendToParse, failed));
-    }
-    return results;
-  }
-};
+/*
+onParseOnline = ->
+  if (pf = localStorage["parseFailed"])?
+    delete localStorage["parseFailed"] # CLear the failed requests
+    for failed in JSON.parse pf
+      sendToParse.apply sendToParse, failed
+ */
 
-window.addEventListener("online", onParseOnline);
 
-getParseData = function() {
-  var query;
-  query = new Parse.Query(UserData);
-  query.equalTo("user", Parse.User.current());
-  return query.first().then(function(result) {
-    var error1, passphrase, x;
-    console.log(result);
-    window.userData = result;
-    passphrase = localStorage["cryptoPhrase"];
-    try {
-      done.update((function() {
-        var ai, len12, ref14, results;
-        ref14 = result.get("done");
-        results = [];
-        for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
-          x = ref14[ai];
-          results.push(sjcl.decrypt(passphrase, x));
-        }
-        return results;
-      })());
-      return onParseOnline();
-    } catch (error1) {
-      e = error1;
-      console.log(e);
-      if (confirm("Your data on Parse couldn't be decrypted (probably because the passphrase used to encode it and the passphrase on this device don't match). Do you want to overwrite the data on Parse with encrypted data using your passphrase?")) {
-        console.log("Replacing data");
-        result.destroy();
-        return newParseData();
-      }
-    }
-  }, function(err) {
-    return console.log("Could not get data from Parse because of error", err.code, err.message);
-  });
-};
+/*
+getParseData = ->
+  query = new Parse.Query UserData
+  query.equalTo("user", Parse.User.current())
+  query.first()
+    .then (result) ->
+      console.log result
+      window.userData = result
+      passphrase = localStorage["cryptoPhrase"]
+      try
+        done.update (sjcl.decrypt(passphrase, x) for x in result.get "done")
+         * Attempt to sync when internet connection is reestablished
+        onParseOnline()
+      catch e
+        console.log e
+        if confirm "Your data on Parse couldn't be decrypted (probably because the passphrase used to encode it and the passphrase on this device don't match). Do you want to overwrite the data on Parse with encrypted data using your passphrase?"
+          console.log "Replacing data"
+          result.destroy()
+          newParseData()
+    , (err) ->
+      console.log "Could not get data from Parse because of error", err.code, err.message
+ */
 
-requestIdleCallback(function() {
-  var currentUser, getParseUP;
-  currentUser = Parse.User.current();
-  if (currentUser) {
-    console.log("Logged into parse with", currentUser);
-    document.getElementById("parseenc").value = localStorage["cryptoPhrase"];
-    document.getElementById("parsemanage").style.display = "block";
-    return getParseData().then(function() {
-      return document.getElementById("parseover").addEventListener("click", function() {
-        return window.userData.destroy().then(newParseData);
-      });
-    });
-  } else {
-    getParseUP = function() {
-      return [document.getElementById("parseusername").value, document.getElementById("parsepassword").value, document.getElementById("parsekey").value];
-    };
-    document.getElementById("parsenew").addEventListener("click", function() {
-      var key, pass, ref14, user, username;
-      ref14 = getParseUP(), username = ref14[0], pass = ref14[1], key = ref14[2];
-      document.getElementById("parseenc").value = localStorage["cryptoPhrase"] = key;
-      user = new Parse.User();
-      user.set("username", username);
-      user.set("password", pass);
-      return user.signUp().then(function() {
-        user.setACL(new Parse.ACL(Parse.User.current()));
-        newParseData();
-        document.getElementById("parsebuttons").style.display = "none";
-        return document.getElementById("parsemanage").style.display = "block";
-      }, function(err) {
-        return alert("Error creating a new account: " + err.code + " " + err.message);
-      });
-    });
-    document.getElementById("parselogin").addEventListener("click", function() {
-      var key, pass, ref14, username;
-      ref14 = getParseUP(), username = ref14[0], pass = ref14[1], key = ref14[2];
-      document.getElementById("parseenc").value = localStorage["cryptoPhrase"] = key;
-      return Parse.User.logIn(username, pass).then(function() {
-        document.getElementById("parsebuttons").style.display = "none";
-        return document.getElementById("parsemanage").style.display = "block";
-      }, function(err) {
-        return alert("Error logging in: " + err.code + " " + err.message);
-      });
-    });
-    return document.getElementById("parsebuttons").style.display = "block";
-  }
-}, {
-  timeout: 2000
-});
+
+/*
+requestIdleCallback ->
+   * Try to get the current user logged in
+  currentUser = Parse.User.current()
+  if currentUser
+    console.log "Logged into parse with", currentUser
+     * Logged in
+    document.getElementById("parseenc").value = localStorage["cryptoPhrase"]
+    document.getElementById("parsemanage").style.display = "block"
+    getParseData()
+      .then ->
+         * Make it so that all data in the cloud can be replaced
+        document.getElementById("parseover").addEventListener "click", ->
+          window.userData.destroy().then newParseData
+
+  else
+    getParseUP = ->
+      [document.getElementById("parseusername").value,
+      document.getElementById("parsepassword").value,
+      document.getElementById("parsekey").value]
+     * Not logged in
+    document.getElementById("parsenew").addEventListener "click", ->
+      [username, pass, key] = getParseUP()
+      document.getElementById("parseenc").value = localStorage["cryptoPhrase"] = key
+      user = new Parse.User()
+      user.set "username", username
+      user.set "password", pass
+      user.signUp().then ->
+        user.setACL new Parse.ACL Parse.User.current() # User's information only visiible to the user
+        newParseData()
+        document.getElementById("parsebuttons").style.display = "none"
+        document.getElementById("parsemanage").style.display = "block"
+      , (err) ->
+        alert "Error creating a new account: #{err.code} #{err.message}"
+
+    document.getElementById("parselogin").addEventListener "click", ->
+      [username, pass, key] = getParseUP()
+      document.getElementById("parseenc").value = localStorage["cryptoPhrase"] = key
+      Parse.User.logIn username, pass
+        .then ->
+          document.getElementById("parsebuttons").style.display = "none"
+          document.getElementById("parsemanage").style.display = "block"
+        , (err) ->
+          alert "Error logging in: #{err.code} #{err.message}"
+
+    document.getElementById("parsebuttons").style.display = "block"
+, { timeout: 2000 }
+ */
 
 
 /* To be implemented later when the pilot ends

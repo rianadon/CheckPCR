@@ -1819,7 +1819,9 @@ body[data-view="1"] .week {
       display: block; }
     body[data-view="1"] .assignment > .body {
       padding: 4px 0 0 0;
-      margin: 0; }
+      margin: 0;
+      max-height: 445px;
+      overflow: auto; }
     body[data-view="1"] .assignment > .attachments {
       margin-top: 8px; }
     body[data-view="1"] .assignment > .range {
@@ -2835,7 +2837,7 @@ body.dark {
     border-color: #424242; }
   body.dark #sideNav, body.dark #settings, body.dark #news, body.dark #login, body.dark #update, body.dark #news, body.dark #error, body.dark #newDialog, body.dark #error, body.dark #newDialog, body.dark .customColor {
     background-color: #424242; }
-  body.dark #sideNav > ul > li i, body.dark #settings > ul > li i, body.dark #settings span {
+  body.dark #sideNav > ul > li i, body.dark #settings > ul > li i, body.dark #settings span, body.dark #versionText, body.dark #credits {
     color: rgba(255, 255, 255, 0.7); }
   body.dark #sideNav .svg-icons {
     -webkit-filter: invert(100%);
