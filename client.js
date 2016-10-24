@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.21.3";
+version = "2.22.0";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -1064,7 +1064,7 @@ display = function(doScroll) {
       }
       e.appendChild(attachments);
     }
-    body = element("div", "body", assignment.body);
+    body = element("div", "body", assignment.body.replace(/font-family:[^;]*?(?:Times New Roman|serif)[^;]*/g, ""));
     edits = element("div", "edits", "<span class='additions'></span><span class='deletions'></span>");
     if ((m = modified[assignment.id]) != null) {
       d = dmp.diff_main(assignment.body, m);
@@ -1198,8 +1198,8 @@ display = function(doScroll) {
     if (wk == null) {
       continue;
     }
-    if (assignment.baseType === "test" && assignment.start >= today) {
-      te = element("div", ["upcomingTest", "assignmentItem", "test"], "<i class='material-icons'>assessment</i><span class='title'>" + assignment.title + "</span><small>" + separated[2] + "</small><div class='range'>" + (dateString(end, true)) + "</div>", "test" + assignment.id);
+    if ((assignment.baseType === "test" || (localStorageRead("projectsInTestPane") && assignment.baseType === "longterm")) && assignment.end >= today) {
+      te = element("div", ["upcomingTest", "assignmentItem", assignment.baseType], "<i class='material-icons'>" + (assignment.baseType === "longterm" ? "assignment" : "assessment") + "</i><span class='title'>" + assignment.title + "</span><small>" + separated[2] + "</small><div class='range'>" + (dateString(end, true)) + "</div>", "test" + assignment.id);
       te.setAttribute("data-class", window.data.classes[assignment["class"]]);
       id = assignment.id;
       (function(id) {
@@ -1949,6 +1949,10 @@ if (localStorage["sepTaskClass"] == null) {
   localStorage["sepTaskClass"] = JSON.stringify(true);
 }
 
+if (localStorage["projectsInTestPane"] == null) {
+  localStorage["projectsInTestPane"] = JSON.stringify(false);
+}
+
 if (localStorage["hideassignments"] == null) {
   localStorage["hideassignments"] = JSON.stringify("day");
 }
@@ -2176,6 +2180,8 @@ for (aa = 0, len7 = ref8.length; aa < len7; aa++) {
       case "refreshRate":
         return intervalRefresh();
       case "earlyTest":
+        return display();
+      case "projectsInTestPane":
         return display();
       case "hideassignments":
         return display();

@@ -26,9 +26,9 @@
 			<a id="collapseButton" class="material-icons">menu</a>
 			<a id="backButton" class="material-icons">arrow_back</a>
 			<span id="brand">Check PCR</span>
-			<a id="lightButton" class="material-icons waves"></a>
-			<a id="infoButton" class="material-icons waves"></a>
-			<a id="cvButton" class="material-icons waves"></a>
+			<a id="lightButton" class="material-icons waves" title="Toggle dark theme"></a>
+			<a id="infoButton" class="material-icons waves" title="Show info pane"></a>
+			<a id="cvButton" class="material-icons waves" title="Show Completed Assignments"></a>
 		</div>
 		<ul class="tabs" id="navTabs">
 			<li>Calendar</li>
@@ -71,13 +71,13 @@
 			<div>Sat</div>
 		</section>
 		<section id="listnav">
-			<a class="material-icons" id="listbefore">navigate_before</a>
+			<a class="material-icons" id="listbefore" title="Show assignments for the previous day">navigate_before</a>
 			<div id="listdates">
 				<span id="listprevdate">Yesterday</span>
 				<span id="listnowdate">Now</span>
 				<span id="listnextdate">Tomorrow</span>
 			</div>
-			<a class="material-icons" id="listnext">navigate_next</a>
+			<a class="material-icons" id="listnext" title="Show assignments for the following day">navigate_next</a>
 		</section>
 	</main>
 	<span id="lastUpdate"></span>
@@ -281,6 +281,16 @@
 				<div class="switch control">
 					<label>
 						<input type="checkbox" name="sepTaskClass" class="settingsControl" checked />
+						<span class="lever"></span>
+					</label>
+				</div>
+			</li>
+			<li class="two">
+				Projects in Test Pane
+				<span>Show Projects the upcoming tests pane</span>
+				<div class="switch control">
+					<label>
+						<input type="checkbox" name="projectsInTestPane" class="settingsControl" checked />
 						<span class="lever"></span>
 					</label>
 				</div>

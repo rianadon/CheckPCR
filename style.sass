@@ -328,9 +328,9 @@ main
 	margin-top: 8px
 	color: rgba(0,0,0,0.54)
 	body[data-pcrview="month"] &
-		content: "This pane will only show the tests that are visible in Check PCR's calendar view, so next month's tests will not show up here"
+		content: "This pane will only show the tests and quizzes that are visible in Check PCR's calendar view, so next month's assessments will not show up here"
 	body[data-pcrview="other"] &
-		content: "This pane will only show the tests that are visible in Check PCR's calendar view. To view more upcoming tests, PCR needs to be on month view. Go to PCR and click the month button at the top."
+		content: "This pane will only show the tests and quizzes that are visible in Check PCR's calendar view. To view more upcoming assessments, PCR needs to be on month view. Go to PCR and click the month button at the top."
 #infoActivity:empty::before
 	content: "No activity has been generated yet. After using Check PCR for a while, this pane should populate itself."
 .upcomingTest
@@ -970,7 +970,13 @@ body[data-view="1"] .week
 		&>.range
 			margin-top: 24px + 8px
 		&::before
-			display: none
+			display: block
+			height: 4px
+			width: calc(32px + 15%)
+			opacity: 0.5
+			left: auto
+			right: 0
+			border-bottom-left-radius: 6px
 		&.done
 			opacity: 0.3
 		&.done>.complete
@@ -1707,6 +1713,15 @@ body.dark
 				border-right-color: #757575
 		& ~ .active
 			background-color: transparent
+
+	&[data-view="1"] .assignment::before
+		opacity: 1
+
+	ins
+		background: #425242 !important
+
+	del
+		background: #524242 !important
 
 #news
 	@extend #update

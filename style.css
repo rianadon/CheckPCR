@@ -1095,9 +1095,9 @@ main {
   margin-top: 8px;
   color: rgba(0, 0, 0, 0.54); }
   body[data-pcrview="month"] #infoTests::after, body[data-pcrview="month"] #infoTasksInner:empty::after {
-    content: "This pane will only show the tests that are visible in Check PCR's calendar view, so next month's tests will not show up here"; }
+    content: "This pane will only show the tests and quizzes that are visible in Check PCR's calendar view, so next month's assessments will not show up here"; }
   body[data-pcrview="other"] #infoTests::after, body[data-pcrview="other"] #infoTasksInner:empty::after {
-    content: "This pane will only show the tests that are visible in Check PCR's calendar view. To view more upcoming tests, PCR needs to be on month view. Go to PCR and click the month button at the top."; }
+    content: "This pane will only show the tests and quizzes that are visible in Check PCR's calendar view. To view more upcoming assessments, PCR needs to be on month view. Go to PCR and click the month button at the top."; }
 
 #infoActivity:empty::before {
   content: "No activity has been generated yet. After using Check PCR for a while, this pane should populate itself."; }
@@ -1827,7 +1827,13 @@ body[data-view="1"] .week {
     body[data-view="1"] .assignment > .range {
       margin-top: 32px; }
     body[data-view="1"] .assignment::before {
-      display: none; }
+      display: block;
+      height: 4px;
+      width: calc(32px + 15%);
+      opacity: 0.5;
+      left: auto;
+      right: 0;
+      border-bottom-left-radius: 6px; }
     body[data-view="1"] .assignment.done {
       opacity: 0.3; }
     body[data-view="1"] .assignment.done > .complete {
@@ -2899,6 +2905,12 @@ body.dark {
         border-right-color: #757575; }
     body.dark .tip.active ~ .active {
       background-color: transparent; }
+  body.dark[data-view="1"] .assignment::before {
+    opacity: 1; }
+  body.dark ins {
+    background: #425242 !important; }
+  body.dark del {
+    background: #524242 !important; }
 
 #news {
   width: 640px;
