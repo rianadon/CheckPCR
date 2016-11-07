@@ -1,4 +1,4 @@
-var ParseArray, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, localStorageRead, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, onNewTask, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
+var ParseArray, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, deleteCookie, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, i, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, localStorageRead, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, onNewTask, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref14, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
   slice = [].slice;
 
@@ -11,7 +11,7 @@ if (localStorage["noWelcome"] == null) {
   window.location = "welcome.html";
 }
 
-loginURL = "";
+loginURL = "https://webappsca.pcrsoft.com/Clue/Student-Portal-Login-LDAP/8464?returnUrl=https%3a%2f%2fwebappsca.pcrsoft.com%2fClue%2fSC-Assignments-End-Date-Range%2f7536";
 
 loginHeaders = {};
 
@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.22.0";
+version = "2.23.0";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -131,6 +131,10 @@ setCookie = function(cname, cvalue, exdays) {
   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
   expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + "; " + expires;
+};
+
+deleteCookie = function(cname) {
+  document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 };
 
 snackbar = function(message, action, f) {
@@ -256,7 +260,6 @@ fetch = function(override, data) {
       var e, error1, j, len, ref1, t, up;
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
-        loginURL = resp.responseURL;
         ref1 = resp.response.getElementsByTagName("input");
         for (j = 0, len = ref1.length; j < len; j++) {
           e = ref1[j];
@@ -337,6 +340,8 @@ dologin = function(val, submitEvt) {
     }
     postArray.push(encodeURIComponent(h) + "=" + encodeURIComponent(loginHeaders[h]));
   }
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
   if (location.protocol === "chrome-extension:") {
     console.time("Logging in");
     send(loginURL, "document", {
@@ -368,7 +373,6 @@ dologin = function(val, submitEvt) {
       return console.log("Could not log in to PCR. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error);
     });
   } else {
-    console.log(postArray);
     send("/api/login?remember=" + (document.getElementById("remember").checked), "json", {
       "Content-type": "application/x-www-form-urlencoded"
     }, postArray.join("&"), true).then(function(resp) {
@@ -515,6 +519,27 @@ document.getElementById("switchViews").addEventListener("click", function() {
       isDirty: false
     });
     viewData["ctl00_ctl00_RadScriptManager1_TSM"] = ";;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35:en-US:d28568d3-e53e-4706-928f-3765912b66ca:ea597d4b:b25378d2";
+    postArray = [];
+    for (h in viewData) {
+      v = viewData[h];
+      postArray.push(encodeURIComponent(h) + "=" + encodeURIComponent(v));
+    }
+    return fetch(true, postArray.join("&"));
+  }
+});
+
+document.getElementById("logout").addEventListener("click", function() {
+  var h, postArray, v;
+  if (Object.keys(viewData).length > 0) {
+    deleteCookie("userPass");
+    document.getElementById("sideBackground").click();
+    viewData["__EVENTTARGET"] = "ctl00$ctl00$baseContent$LogoutControl1$LoginStatus1$ctl00";
+    viewData["__EVENTARGUMENT"] = "";
+    viewData["ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState"] = JSON.stringify({
+      scrollTop: 0,
+      scrollLeft: 0,
+      isDirty: false
+    });
     postArray = [];
     for (h in viewData) {
       v = viewData[h];
@@ -2230,6 +2255,21 @@ for (ae = 0, len9 = ref10.length; ae < len9; ae++) {
   });
 }
 
+console.log("%cCheck PCR", "color: #004000; font-size: 3em");
+
+console.log("%cVersion " + version + " (Check below for current version)", "font-size: 1.1em");
+
+console.log.apply(console, ["Welcome to the developer console for your browser! Besides looking at the source code, you can also play around with Check PCR by executing the lines below:\n%c\tfetch(true)               %c// Reloads all of your assignments (the true is for forcing a reload if one has already been triggered in the last minute)\n%c\tdata                      %c// Displays the object that contains the data parsed from PCR's interface\n%c\tactivity                  %c// The data for the assignments that show up in the activity pane\n%c\textra                     %c// All of the tasks you've created by clicking the + button\n%c\tathenaData                %c// The data fetched from Athena (if you've pasted the raw data into settings)\n%c\tsnackbar(\"Hello World!\")  %c// Creates a snackbar showing the message \"Hello World!\"\n%c\tdisplayError(new Error()) %c// Displays the stack trace for a random error (Just don't submit it!)\n%c\tcloseError()              %c// Closes that dialog"].concat(slice.call((ref11 = []).concat.apply(ref11, (function() {
+  var af, results;
+  results = [];
+  for (i = af = 0; af < 8; i = ++af) {
+    results.push(["color: initial", "color: grey"]);
+  }
+  return results;
+})()))));
+
+console.log("");
+
 
 /*
 sendToParse = (name, func, value, update=true) ->
@@ -2322,10 +2362,10 @@ ParseArray = (function() {
 done = new ParseArray("done");
 
 done.onadd = function(id) {
-  var af, elem, len10, ref11;
-  ref11 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
-  for (af = 0, len10 = ref11.length; af < len10; af++) {
-    elem = ref11[af];
+  var af, elem, len10, ref12;
+  ref12 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
+  for (af = 0, len10 = ref12.length; af < len10; af++) {
+    elem = ref12[af];
     elem.classList.add("done");
   }
   if (document.querySelectorAll(".assignment.listDisp:not(.done)").length !== 0) {
@@ -2337,10 +2377,10 @@ done.onadd = function(id) {
 };
 
 done.onremove = function(id) {
-  var af, elem, len10, ref11;
-  ref11 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
-  for (af = 0, len10 = ref11.length; af < len10; af++) {
-    elem = ref11[af];
+  var af, elem, len10, ref12;
+  ref12 = document.querySelectorAll(".assignment[id^=\"" + id + "\"], #test" + id + ", #activity" + id + ", #ia" + id);
+  for (af = 0, len10 = ref12.length; af < len10; af++) {
+    elem = ref12[af];
     elem.classList.remove("done");
   }
   if (document.querySelectorAll(".assignment.listDisp:not(.done)").length === 0) {
@@ -2378,9 +2418,9 @@ if (localStorageRead("data") != null) {
   window.data = localStorageRead("data");
   if (localStorage["activity"] != null) {
     activity = JSON.parse(localStorage["activity"]);
-    ref11 = activity.slice(activity.length - 32, activity.length);
-    for (af = 0, len10 = ref11.length; af < len10; af++) {
-      act = ref11[af];
+    ref12 = activity.slice(activity.length - 32, activity.length);
+    for (af = 0, len10 = ref12.length; af < len10; af++) {
+      act = ref12[af];
       addActivity.apply(null, act);
     }
   }
@@ -2393,13 +2433,13 @@ if (location.protocol !== "chrome-extension:") {
   lc = document.querySelector("#login .content");
   document.getElementById("login").classList.add("large");
   lc.appendChild(element("div", [], "While this feature is very useful, it will store your credentials on the server's database. If you are uncomfortable with this, then unckeck the box to only have the servery proxy your credentials to PCR.", "storeAbout"));
-  lc.appendChild(element("span", [], "The online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.\nIf you do not trust me to avoid stealing your credentials, you can use\n<a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.", "loginExtra"));
+  lc.appendChild(element("span", [], "The online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.\nIf you do not trust me to avoid stealing your credentials, you can use\n<a href='https://github.com/19RyanA/CheckPCR'>the Check PCR unofficial chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.", "loginExtra"));
   up = document.getElementById("update");
   upc = up.getElementsByClassName("content")[0];
   up.querySelector("h1").innerHTML = "A new update has been applied.";
-  ref12 = upc.childNodes;
-  for (ag = ref12.length - 1; ag >= 0; ag += -1) {
-    el = ref12[ag];
+  ref13 = upc.childNodes;
+  for (ag = ref13.length - 1; ag >= 0; ag += -1) {
+    el = ref13[ag];
     if (el.nodeType === 3 || el.tagName === "BR" || el.tagName === "CODE" || el.tagName === "A") {
       el.remove();
     }
@@ -2577,7 +2617,7 @@ document.getElementById("showDoneTasks").addEventListener("change", function() {
 checkCommit = function() {
   return send("https://raw.githubusercontent.com/19RyanA/CheckPCR/master/version.txt", "text").then(function(resp) {
     c = resp.responseText.trim();
-    console.debug(version, c);
+    console.log("Current version: " + c + " " + (version === c ? "(no update available)" : "(update available)"));
     document.getElementById("newversion").innerHTML = c;
     if (version !== c) {
       document.getElementById("updateIgnore").addEventListener("click", function() {
@@ -2629,11 +2669,11 @@ send("https://api.github.com/gists/21bf11a429da257539a68520f513a38b", "json").th
   }
   window.getNews = function(onfail) {
     return send(resp.response.files["updates.htm"].raw_url).then(function(resp) {
-      var ah, len11, news, ref13;
+      var ah, len11, news, ref14;
       localStorage["newsCommit"] = nc;
-      ref13 = resp.responseText.split("<hr>");
-      for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
-        news = ref13[ah];
+      ref14 = resp.responseText.split("<hr>");
+      for (ah = 0, len11 = ref14.length; ah < len11; ah++) {
+        news = ref14[ah];
         document.getElementById("newsContent").appendChild(element("div", "newsItem", news));
       }
       document.getElementById("newsBackground").style.display = "block";
@@ -2775,14 +2815,14 @@ tipNames = {
 };
 
 updateTip = function(name, typed, uppercase) {
-  var ah, len11, n, newNames, ref13;
+  var ah, len11, n, newNames, ref14;
   el = document.getElementById("tip" + name);
   el.classList.add("active");
   el.querySelector(".typed").innerHTML = (uppercase ? typed.charAt(0).toUpperCase() + typed.substr(1) : typed) + "...";
   newNames = [];
-  ref13 = tipNames[name];
-  for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
-    n = ref13[ah];
+  ref14 = tipNames[name];
+  for (ah = 0, len11 = ref14.length; ah < len11; ah++) {
+    n = ref14[ah];
     if (n !== typed) {
       newNames.push("<b>" + n + "</b>");
     }
@@ -2800,7 +2840,7 @@ tipComplete = function(evt) {
 };
 
 updateNewTips = function(val, scroll) {
-  var ah, ai, aj, before, beforeSpace, cls, container, found, i, id, lastSpace, lastWord, len11, len12, len13, name, possible, ref13, ref14, uppercase;
+  var ah, ai, aj, before, beforeSpace, cls, container, found, id, lastSpace, lastWord, len11, len12, len13, name, possible, ref14, ref15, uppercase;
   if (scroll == null) {
     scroll = true;
   }
@@ -2817,9 +2857,9 @@ updateNewTips = function(val, scroll) {
           for (name in tipNames) {
             document.getElementById("tip" + name).classList.remove("active");
           }
-          ref13 = data.classes;
-          for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
-            cls = ref13[ah];
+          ref14 = data.classes;
+          for (ah = 0, len11 = ref14.length; ah < len11; ah++) {
+            cls = ref14[ah];
             id = "tipclass" + cls.replace(/\W/, "");
             if (i === val.length - 1) {
               if ((e = document.getElementById(id)) != null) {
@@ -2838,9 +2878,9 @@ updateNewTips = function(val, scroll) {
       }
     }
   }
-  ref14 = document.getElementsByClassName("classTip");
-  for (ai = 0, len12 = ref14.length; ai < len12; ai++) {
-    el = ref14[ai];
+  ref15 = document.getElementsByClassName("classTip");
+  for (ai = 0, len12 = ref15.length; ai < len12; ai++) {
+    el = ref15[ai];
     el.classList.remove("active");
   }
   if (val === "" || val.charAt(val.length - 1) === " ") {
@@ -2876,9 +2916,9 @@ document.getElementById("newText").addEventListener("input", function() {
   return updateNewTips(this.value);
 });
 
-ref13 = document.getElementsByClassName("tip");
-for (ah = 0, len11 = ref13.length; ah < len11; ah++) {
-  tip = ref13[ah];
+ref14 = document.getElementsByClassName("tip");
+for (ah = 0, len11 = ref14.length; ah < len11; ah++) {
+  tip = ref14[ah];
   tip.addEventListener("click", tipComplete);
 }
 

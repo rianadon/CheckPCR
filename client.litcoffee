@@ -38,7 +38,7 @@ Additionally, if it's the user's first time, the page is set to the welcome page
 
 Then we have most of the global variables.
 
-    loginURL = ""
+    loginURL = "https://webappsca.pcrsoft.com/Clue/Student-Portal-Login-LDAP/8464?returnUrl=https%3a%2f%2fwebappsca.pcrsoft.com%2fClue%2fSC-Assignments-End-Date-Range%2f7536"
     loginHeaders = {}
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -57,7 +57,7 @@ Then we have most of the global variables.
     lastUpdate = 0 # The last time verything was updated
     listDateOffset = 0
 
-    version = "2.22.0"
+    version = "2.23.0"
 
 #### Send function
 
@@ -146,6 +146,12 @@ To set a cookie, this function is called.
       d.setTime d.getTime() + exdays * 24 * 60 * 60 * 1000
       expires = "expires=" + d.toUTCString()
       document.cookie = cname + "=" + cvalue + "; " + expires
+      return
+
+The delete cookie function is like *setCookie*, but sets the expiry date to something in the past so the cookie is deleted.
+
+    deleteCookie = (cname) ->
+      document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;"
       return
 
 This function displays a snackbar to tell the user something
@@ -260,7 +266,6 @@ Because this is run as a chrome extension, this page can be accessed. Otherwise,
             console.timeEnd "Fetching assignments"
             if resp.responseURL.indexOf("Login") isnt -1
               # We have to log in now
-              loginURL = resp.responseURL
               for e in resp.response.getElementsByTagName("input")
                 loginHeaders[e.name] = e.value or ""
               console.log "Need to log in"
@@ -328,6 +333,10 @@ Now, we have the function that will log us into PCR.
           loginHeaders[h] = if val? and not submitEvt then val[1] else document.getElementById("password").value
         postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(loginHeaders[h])
 
+      # Clear the form
+      document.getElementById("username").value = ""
+      document.getElementById("password").value = ""
+
       # Now send the login request to PCR
       if location.protocol is "chrome-extension:"
         console.time "Logging in"
@@ -358,7 +367,6 @@ Now, we have the function that will log us into PCR.
           , (error) ->
             console.log "Could not log in to PCR. Either your network connection was lost during your visit or PCR is just not working. Here's the error:", error
       else
-        console.log postArray
         send "/api/login?remember=#{document.getElementById("remember").checked}", "json", { "Content-type": "application/x-www-form-urlencoded" }, postArray.join("&"), true
           .then (resp) ->
             console.debug "Logging in:",resp.response.time
@@ -518,6 +526,20 @@ The view switching button needs an event handler.
         viewData["__EVENTARGUMENT"] = JSON.stringify {Command: "SwitchTo#{if document.body.getAttribute("data-pcrview") is "month" then "Week" else "Month"}View"}
         viewData["ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState"] = JSON.stringify {scrollTop:0,scrollLeft:0,isDirty:false}
         viewData["ctl00_ctl00_RadScriptManager1_TSM"] = ";;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35:en-US:d28568d3-e53e-4706-928f-3765912b66ca:ea597d4b:b25378d2"
+        postArray = [] # Array of data to post
+        for h,v of viewData
+          postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(v)
+        fetch true, postArray.join("&")
+
+The same goes for the log out button.
+
+    document.getElementById("logout").addEventListener "click", ->
+      if Object.keys(viewData).length > 0
+        deleteCookie "userPass"
+        document.getElementById("sideBackground").click()
+        viewData["__EVENTTARGET"] = "ctl00$ctl00$baseContent$LogoutControl1$LoginStatus1$ctl00"
+        viewData["__EVENTARGUMENT"] = ""
+        viewData["ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState"] = JSON.stringify {scrollTop:0,scrollLeft:0,isDirty:false}
         postArray = [] # Array of data to post
         for h,v of viewData
           postArray.push encodeURIComponent(h) + "=" + encodeURIComponent(v)
@@ -1857,6 +1879,22 @@ Starting everything
 
 Finally! We are (almost) done!
 
+Before getting to anything, let's print out a welcoming message to the console!
+
+    console.log "%cCheck PCR", "color: #004000; font-size: 3em"
+    console.log "%cVersion #{version} (Check below for current version)", "font-size: 1.1em"
+    console.log """Welcome to the developer console for your browser! Besides looking at the source code, you can also play around with Check PCR by executing the lines below:
+                   %c\tfetch(true)               %c// Reloads all of your assignments (the true is for forcing a reload if one has already been triggered in the last minute)
+                   %c\tdata                      %c// Displays the object that contains the data parsed from PCR's interface
+                   %c\tactivity                  %c// The data for the assignments that show up in the activity pane
+                   %c\textra                     %c// All of the tasks you've created by clicking the + button
+                   %c\tathenaData                %c// The data fetched from Athena (if you've pasted the raw data into settings)
+                   %c\tsnackbar("Hello World!")  %c// Creates a snackbar showing the message "Hello World!"
+                   %c\tdisplayError(new Error()) %c// Displays the stack trace for a random error (Just don't submit it!)
+                   %c\tcloseError()              %c// Closes that dialog""",
+                   [].concat((["color: initial", "color: grey"] for i in [0...8])...)...
+    console.log ""
+
 *Note: Because the hosted Parse server is no longer going to be available, the below code is commented out*
 
 The *sendToParse* function puts / removes data on Parse since the completed and modified assignments are loaded and saved to / from Parse.
@@ -1980,7 +2018,7 @@ If the page is being viewed from the website, a couple changes need to be made.
       lc.appendChild element "span", [],
         """The online version of Check PCR will send your login credentials through the server hosting this website so that it can fetch your assignments from PCR.
         If you do not trust me to avoid stealing your credentials, you can use
-        <a href='https://github.com/19RyanA/CheckPCR'>the unofficial Check PCR chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.""", "loginExtra"
+        <a href='https://github.com/19RyanA/CheckPCR'>the Check PCR unofficial chrome extension</a>, which will communicate directly with PCR and thus not send any data through this server.""", "loginExtra"
       up = document.getElementById("update")
       upc = up.getElementsByClassName("content")[0]
       up.querySelector("h1").innerHTML = "A new update has been applied."
@@ -2151,7 +2189,7 @@ For updating, a request will be send to Github to get the current commit id and 
       send "https://raw.githubusercontent.com/19RyanA/CheckPCR/master/version.txt", "text"
         .then (resp) ->
           c = resp.responseText.trim()
-          console.debug version, c
+          console.log "Current version: #{c} #{if version is c then "(no update available)" else "(update available)"}"
           document.getElementById("newversion").innerHTML = c
           if version isnt c
             document.getElementById("updateIgnore").addEventListener "click", ->

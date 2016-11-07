@@ -2,7 +2,7 @@
 @import font
 @import login
 
-$borderColor: #F3F3F3
+$borderColor: #EEEEEE
 
 =z-depth-1()
 	+box-shadow(0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12))
@@ -549,7 +549,7 @@ body[data-view="1"] .week
 #dates
 	height: 48px
 	overflow: hidden
-	border-bottom: 1px solid $borderColor
+	border-bottom: 2px solid $borderColor
 	body:not(.noTrans) &
 		+transition(height 0.3s ease, border-bottom-color 0.3s ease)
 	will-change: height, border-bottom-color
@@ -592,9 +592,12 @@ body[data-view="1"] .week
 	body[data-view="1"] &
 		opacity: 0
 	td
-		border-left: 1px solid $borderColor
-		border-right: 1px solid $borderColor
-		border-bottom: 1px solid $borderColor
+		width: (1/7)*100%
+		border-left: 2px solid $borderColor
+		border-right: 2px solid $borderColor
+		border-bottom: 2px solid $borderColor
+		body.showInfo &:last-child
+			border-right: none
 .date, .month
 	line-height: 1
 	font-size: 16px
@@ -1370,10 +1373,12 @@ $scale: 15
 	top: 0
 	z-index: 4000
 
-#switchViews
+#logout, #switchViews
 	display: none !important
 	body.loaded &
 		display: block !important
+
+#switchViews
 	body[data-pcrview="month"] &>a::after
 		content: "Switch to week view"
 	body[data-pcrview="other"] &>a::after

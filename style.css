@@ -995,7 +995,7 @@ main {
   top: 0;
   bottom: 0;
   overflow: hidden;
-  border-left: 1px solid #F3F3F3;
+  border-left: 1px solid #EEEEEE;
   background-color: #FFF;
   padding-top: 112px;
   -webkit-transform: translateX(100%);
@@ -1334,7 +1334,7 @@ body[data-view="1"] .week {
 #dates {
   height: 48px;
   overflow: hidden;
-  border-bottom: 1px solid #F3F3F3;
+  border-bottom: 2px solid #EEEEEE;
   will-change: height, border-bottom-color; }
   body:not(.noTrans) #dates {
     -webkit-transition: height 0.3s ease, border-bottom-color 0.3s ease;
@@ -1390,9 +1390,12 @@ body[data-view="1"] .week {
   body[data-view="1"] .dayTable {
     opacity: 0; }
   .dayTable td {
-    border-left: 1px solid #F3F3F3;
-    border-right: 1px solid #F3F3F3;
-    border-bottom: 1px solid #F3F3F3; }
+    width: 14.28571%;
+    border-left: 2px solid #EEEEEE;
+    border-right: 2px solid #EEEEEE;
+    border-bottom: 2px solid #EEEEEE; }
+    body.showInfo .dayTable td:last-child {
+      border-right: none; }
 
 .date, .month {
   line-height: 1;
@@ -2544,14 +2547,15 @@ body.holidayThemes.winter, body.winter.noList[data-view="1"]:not(.showDone) {
   top: 0;
   z-index: 4000; }
 
-#switchViews {
+#logout, #switchViews {
   display: none !important; }
-  body.loaded #switchViews {
+  body.loaded #logout, body.loaded #switchViews {
     display: block !important; }
-  body[data-pcrview="month"] #switchViews > a::after, body[data-pcrview="month"] .tabs#switchViews > li::after {
-    content: "Switch to week view"; }
-  body[data-pcrview="other"] #switchViews > a::after, body[data-pcrview="other"] .tabs#switchViews > li::after {
-    content: "Switch to month view"; }
+
+body[data-pcrview="month"] #switchViews > a::after, body[data-pcrview="month"] .tabs#switchViews > li::after {
+  content: "Switch to week view"; }
+body[data-pcrview="other"] #switchViews > a::after, body[data-pcrview="other"] .tabs#switchViews > li::after {
+  content: "Switch to month view"; }
 
 .expand {
   height: auto !important; }
