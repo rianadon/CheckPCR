@@ -52,7 +52,7 @@ window.onpopstate = function(event) {
 };
 
 parseAthenaData = function(dat) {
-  var athenaData, athenaData2, course, courseDetails, d, e, error1, l, len2, n, ref2;
+  var allCourseDetails, athenaData, athenaData2, course, courseDetails, d, e, error1, l, len2, m, ref2, ref3, section;
   if (dat === "") {
     athenaData = null;
     localStorage.removeItem("athenaData");
@@ -60,10 +60,16 @@ parseAthenaData = function(dat) {
     try {
       d = JSON.parse(dat);
       athenaData2 = {};
-      ref2 = d.body.courses.courses;
-      for (n = l = 0, len2 = ref2.length; l < len2; n = ++l) {
-        course = ref2[n];
-        courseDetails = d.body.courses.sections[n];
+      allCourseDetails = {};
+      ref2 = d.body.courses.sections;
+      for (l = 0, len2 = ref2.length; l < len2; l++) {
+        section = ref2[l];
+        allCourseDetails[section.course_nid] = section;
+      }
+      ref3 = d.body.courses.courses;
+      for (m = ref3.length - 1; m >= 0; m += -1) {
+        course = ref3[m];
+        courseDetails = allCourseDetails[course.nid];
         athenaData2[course.course_title] = {
           link: "https://athena.harker.org" + courseDetails.link,
           logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg"),
@@ -338,7 +344,7 @@ findId = function(element, tag, id) {
 };
 
 parse = function(doc) {
-  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, l, len2, len3, len4, len5, m, o, p, pos, q, range, ref2, ref3, t, title;
+  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, l, len2, len3, len4, len5, m, n, o, p, pos, range, ref2, ref3, t, title;
   console.time("Handling data");
   handledDataShort = [];
   window.data = {
@@ -357,8 +363,8 @@ parse = function(doc) {
     window.data.classes.push(c.innerHTML);
   }
   assignments = doc.getElementsByClassName("rsApt rsAptSimple");
-  for (o = 0, len4 = assignments.length; o < len4; o++) {
-    ca = assignments[o];
+  for (n = 0, len4 = assignments.length; n < len4; n++) {
+    ca = assignments[n];
     assignment = {};
     range = findId(ca, "span", "StartingOn").innerHTML.split(" - ");
     assignment.start = Math.floor((Date.parse(range[0])) / 1000 / 3600 / 24);
@@ -367,16 +373,16 @@ parse = function(doc) {
     title = t.innerHTML;
     b = t.parentNode.parentNode;
     divs = b.getElementsByTagName("div");
-    for (d = p = 0; p < 2; d = ++p) {
+    for (d = o = 0; o < 2; d = ++o) {
       divs[0].remove();
     }
     ap = attachmentify(b);
     assignment.attachments = ap;
     assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
     assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
-    assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "");
+    assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "").replace(/\s/g, "");
     ref3 = window.data.classes;
-    for (pos = q = 0, len5 = ref3.length; q < len5; pos = ++q) {
+    for (pos = p = 0, len5 = ref3.length; p < len5; pos = ++p) {
       c = ref3[pos];
       if (title.indexOf(c) !== -1) {
         assignment["class"] = pos;

@@ -1153,6 +1153,9 @@ main {
   color: rgba(255, 255, 255, 0.95);
   background-size: cover; }
 
+.upcomingTest.done, .done.activity, .done.innerActivity {
+  opacity: 0.3; }
+
 .activity {
   display: none; }
   #infoActivity.add > .activity.add {
@@ -1353,6 +1356,9 @@ body[data-view="1"] .week {
   body[data-view="1"] #dates {
     height: 0;
     border-bottom-color: transparent; }
+
+.week {
+  height: 39px; }
 
 .week > .day {
   padding: 8px 16px;

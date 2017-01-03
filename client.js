@@ -1,4 +1,4 @@
-var ParseArray, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, deleteCookie, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getResizeAssignments, gp, hammertime, headroom, i, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, localStorageRead, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, onNewTask, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref14, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
+var ParseArray, a, aa, ab, ac, act, activity, activityTypes, addActivity, ae, af, ag, ah, animateEl, athenaData, attachmentify, c, cc, checkCommit, closeError, closeNew, closeNews, closeOpened, color, custom, d, dateString, deleteCookie, display, displayError, dmp, dologin, done, dragTarget, dt, e, el, element, enabled, extra, fetch, findId, fn, fn1, formatUpdate, fromDateNum, fullMonths, getCookie, getES, getResizeAssignments, gp, hammertime, headroom, i, input, intervalRefresh, j, k, l, labrgb, lastUpdate, lc, len, len1, len10, len11, len2, len3, len4, len5, len6, len7, len8, len9, list, listDateOffset, listName, localStorageRead, loginHeaders, loginURL, menuOut, mimeTypes, modified, months, navToggle, o, onNewTask, p, palette, parse, parseAthenaData, parseDateHash, pe, q, ref1, ref10, ref11, ref12, ref13, ref14, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, resize, resizeCaller, ripple, schedules, scroll, send, separate, setCookie, smoothScroll, snackbar, sp, switchToList, tab, ticking, timeoutId, tip, tipComplete, tipNames, type, tzoff, u, up, upc, updateAvatar, updateColors, updateListNav, updateNewTips, updateSelectNum, updateTip, urlify, version, viewData, weekdays, z,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
   slice = [].slice;
 
@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.23.0";
+version = "2.24.0";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
@@ -340,8 +340,6 @@ dologin = function(val, submitEvt) {
     }
     postArray.push(encodeURIComponent(h) + "=" + encodeURIComponent(loginHeaders[h]));
   }
-  document.getElementById("username").value = "";
-  document.getElementById("password").value = "";
   if (location.protocol === "chrome-extension:") {
     console.time("Logging in");
     send(loginURL, "document", {
@@ -626,6 +624,21 @@ smoothScroll = function(to) {
   });
 };
 
+getES = function(element) {
+  var e, j, s, x;
+  e = 0;
+  s = 0;
+  for (x = j = 0; j < 7; x = ++j) {
+    if (element.classList.contains("e" + x)) {
+      e = x;
+    }
+    if (element.classList.contains("s" + x)) {
+      s = x;
+    }
+  }
+  return ["e" + e, "s" + s];
+};
+
 addActivity = function(type, assignment, newActivity, className) {
   var date, id, insertTo, ref1, te;
   if (className == null) {
@@ -669,7 +682,7 @@ addActivity = function(type, assignment, newActivity, className) {
 };
 
 display = function(doScroll) {
-  var a, aa, ab, added, ae, af, ag, already, assignment, attachment, attachments, body, c, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastData, lastSun, len, len1, len10, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, midDate, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, reference, restore, s, separateTaskClass, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, tdst, te, timeafter, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
+  var a, aa, ab, added, ae, af, ag, ah, ai, aj, already, assignment, attachment, attachments, body, c, cl, close, cls, complete, custom, d, date, day, dayTable, deleteA, deleted, diff, e, edit, edits, end, fn, fn1, fn2, fn3, fn4, found, h, id, j, k, l, lastData, lastSun, len, len1, len10, len11, len12, len13, len2, len3, len4, len5, len6, len7, len8, len9, link, m, main, midDate, mods, month, n, name, nextSat, ns, num, o, oldAssignment, pos, previousAssignments, q, ref1, ref10, ref11, ref12, ref13, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9, reference, restore, s, separateTaskClass, separated, smallTag, span, spanRelative, split, st, start, startSun, sw, taken, taskAssignment, tdst, te, timeafter, times, today, todaySE, todayWk, todayWkId, tr, u, val, weekHeights, weekId, wk, wkId, year, z;
   if (doScroll == null) {
     doScroll = true;
   }
@@ -753,24 +766,44 @@ display = function(doScroll) {
   ref1 = window.data.assignments;
   for (num = k = 0, len = ref1.length; k < len; num = ++k) {
     assignment = ref1[num];
-    s = Math.max(start.getTime(), fromDateNum(assignment.start));
-    e = Math.min(end.getTime(), fromDateNum(assignment.end));
-    span = (e - s) / 1000 / 3600 / 24 + 1;
-    spanRelative = 6 - (new Date(s)).getDay();
-    ns = new Date(s);
-    ns.setDate(ns.getDate() + spanRelative);
-    n = -6;
-    while (n < span - spanRelative) {
-      lastSun = new Date(ns);
-      lastSun.setDate(lastSun.getDate() + n);
-      nextSat = new Date(lastSun);
-      nextSat.setDate(nextSat.getDate() + 6);
-      split.push({
-        assignment: num,
-        start: new Date(Math.max(s, lastSun.getTime())),
-        end: new Date(Math.min(e, nextSat.getTime()))
-      });
-      n += 7;
+    if (localStorageRead("assignmentSpan") === "multiple") {
+      s = Math.max(start.getTime(), fromDateNum(assignment.start));
+      e = Math.min(end.getTime(), fromDateNum(assignment.end));
+      span = (e - s) / 1000 / 3600 / 24 + 1;
+      spanRelative = 6 - (new Date(s)).getDay();
+      ns = new Date(s);
+      ns.setDate(ns.getDate() + spanRelative);
+      n = -6;
+      while (n < span - spanRelative) {
+        lastSun = new Date(ns);
+        lastSun.setDate(lastSun.getDate() + n);
+        nextSat = new Date(lastSun);
+        nextSat.setDate(nextSat.getDate() + 6);
+        split.push({
+          assignment: num,
+          start: new Date(Math.max(s, lastSun.getTime())),
+          end: new Date(Math.min(e, nextSat.getTime()))
+        });
+        n += 7;
+      }
+    } else if (localStorageRead("assignmentSpan") === "start") {
+      s = fromDateNum(assignment.start);
+      if (s >= start.getTime()) {
+        split.push({
+          assignment: num,
+          start: new Date(s),
+          end: new Date(s)
+        });
+      }
+    } else if (localStorageRead("assignmentSpan") === "end") {
+      e = fromDateNum(assignment.end);
+      if (e <= end.getTime()) {
+        split.push({
+          assignment: num,
+          start: new Date(e),
+          end: new Date(e)
+        });
+      }
     }
     if (lastData != null) {
       found = false;
@@ -819,35 +852,60 @@ display = function(doScroll) {
         }
       }
     }
-    s = Math.max(start.getTime(), fromDateNum(custom.start));
-    e = Math.min(end.getTime(), fromDateNum(custom.end != null ? custom.end : custom.start));
-    span = (e - s) / 1000 / 3600 / 24 + 1;
-    spanRelative = 6 - (new Date(s)).getDay();
-    ns = new Date(s);
-    ns.setDate(ns.getDate() + spanRelative);
-    n = -6;
-    while (n < span - spanRelative) {
-      lastSun = new Date(ns);
-      lastSun.setDate(lastSun.getDate() + n);
-      nextSat = new Date(lastSun);
-      nextSat.setDate(nextSat.getDate() + 6);
-      split.push({
-        start: new Date(Math.max(s, lastSun.getTime())),
-        end: new Date(Math.min(e, nextSat.getTime())),
-        custom: true,
-        assignment: {
-          title: "Task",
-          baseType: "task",
-          attachments: [],
-          start: custom.start,
-          end: custom.end || "Forever",
-          body: custom.body,
-          id: "task" + (custom.body.replace(/[^\w]*/g, "")) + custom.start + custom.end + custom["class"],
-          "class": cls
-        },
-        reference: custom
-      });
-      n += 7;
+    taskAssignment = {
+      title: "Task",
+      baseType: "task",
+      attachments: [],
+      start: custom.start,
+      end: custom.end || "Forever",
+      body: custom.body,
+      id: "task" + (custom.body.replace(/[^\w]*/g, "")) + custom.start + custom.end + custom["class"],
+      "class": cls
+    };
+    if (localStorageRead("assignmentSpan") === "multiple") {
+      s = Math.max(start.getTime(), fromDateNum(custom.start));
+      e = Math.min(end.getTime(), fromDateNum(custom.end != null ? custom.end : custom.start));
+      span = (e - s) / 1000 / 3600 / 24 + 1;
+      spanRelative = 6 - (new Date(s)).getDay();
+      ns = new Date(s);
+      ns.setDate(ns.getDate() + spanRelative);
+      n = -6;
+      while (n < span - spanRelative) {
+        lastSun = new Date(ns);
+        lastSun.setDate(lastSun.getDate() + n);
+        nextSat = new Date(lastSun);
+        nextSat.setDate(nextSat.getDate() + 6);
+        split.push({
+          start: new Date(Math.max(s, lastSun.getTime())),
+          end: new Date(Math.min(e, nextSat.getTime())),
+          custom: true,
+          assignment: taskAssignment,
+          reference: custom
+        });
+        n += 7;
+      }
+    } else if (localStorageRead("assignmentSpan") === "start") {
+      s = fromDateNum(custom.start);
+      if (s >= start.getTime()) {
+        split.push({
+          start: new Date(s),
+          end: new Date(s),
+          custom: true,
+          assignment: taskAssignment,
+          reference: custom
+        });
+      }
+    } else if (localStorageRead("assignmentSpan") === "end") {
+      e = fromDateNum(custom.end);
+      if (e <= end.getTime()) {
+        split.push({
+          start: new Date(e),
+          end: new Date(e),
+          custom: true,
+          assignment: taskAssignment,
+          reference: custom
+        });
+      }
     }
   }
   tdst = new Date();
@@ -1149,10 +1207,10 @@ display = function(doScroll) {
       }
     }
     e.appendChild(mods);
-    if (start < s.start) {
+    if (localStorageRead("assignmentSpan") === "multiple" && start < s.start) {
       e.classList.add("fromWeekend");
     }
-    if (end > s.end) {
+    if (localStorageRead("assignmentSpan") === "multiple" && end > s.end) {
       e.classList.add("overWeekend");
     }
     e.classList.add("s" + (s.start.getDay()));
@@ -1269,6 +1327,24 @@ display = function(doScroll) {
       if (already.classList.toggle != null) {
         already.classList.toggle("listDisp", e.classList.contains("listDisp"));
       }
+      ref11 = getES(already);
+      for (ah = 0, len11 = ref11.length; ah < len11; ah++) {
+        cl = ref11[ah];
+        already.classList.remove(cl);
+      }
+      ref12 = getES(e);
+      for (ai = 0, len12 = ref12.length; ai < len12; ai++) {
+        cl = ref12[ai];
+        already.classList.add(cl);
+      }
+      ref13 = ["fromWeekend", "overWeekend"];
+      for (aj = 0, len13 = ref13.length; aj < len13; aj++) {
+        cl = ref13[aj];
+        already.classList.remove(cl);
+        if (e.classList.contains(cl)) {
+          already.classList.add(cl);
+        }
+      }
     } else {
       if (s.custom && JSON.parse(localStorage["sepTasks"])) {
         if (assignment.start === st && assignment.end >= today) {
@@ -1297,11 +1373,11 @@ display = function(doScroll) {
   if (weekHeights[todayWkId] != null) {
     h = 0;
     sw = function(wkid) {
-      var ah, len11, ref11, results, x;
-      ref11 = wkid.substring(2).split("-");
+      var ak, len14, ref14, results, x;
+      ref14 = wkid.substring(2).split("-");
       results = [];
-      for (ah = 0, len11 = ref11.length; ah < len11; ah++) {
-        x = ref11[ah];
+      for (ak = 0, len14 = ref14.length; ak < len14; ak++) {
+        x = ref14[ak];
         results.push(parseInt(x));
       }
       return results;
@@ -1978,6 +2054,10 @@ if (localStorage["projectsInTestPane"] == null) {
   localStorage["projectsInTestPane"] = JSON.stringify(false);
 }
 
+if (localStorage["assignmentSpan"] == null) {
+  localStorage["assignmentSpan"] = JSON.stringify("multiple");
+}
+
 if (localStorage["hideassignments"] == null) {
   localStorage["hideassignments"] = JSON.stringify("day");
 }
@@ -2205,6 +2285,8 @@ for (aa = 0, len7 = ref8.length; aa < len7; aa++) {
       case "refreshRate":
         return intervalRefresh();
       case "earlyTest":
+        return display();
+      case "assignmentSpan":
         return display();
       case "projectsInTestPane":
         return display();

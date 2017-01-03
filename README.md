@@ -3,27 +3,17 @@ Check PCR
 
 A client for the homework system currently used by the Harker School, PCR.
 
-Getting Started
----------------
-
-First of all, to use Check PCR, you have two options:
-
-1. The online version at https://checkpcr-harker.rhcloud.com, which will always be the latest version.
-2. The chrome extension, which does not automatically update (sorry :disappointed:), but possibly has some advantages (below)
-
-The only advantages of the chrome extension is that it communicates directly with PCR rather than through the program I created on the server hosting the website (see more [here](https://github.com/19RyanA/CheckPCR/wiki/Security)), and its code is editable.
-
-To use the online version, navigate to https://checkpcr-harker.rhcloud.com. Otherwise, follow the steps below.
-
-I also recommend you put PCR in month view before using Check PCR so you can see more assignments (it doesn't yet support switching weeks).
-
 Installing
 ----------
 Because I chose not to publish Check PCR on the Chrome Webstore, you'll have to install it in developer mode by following the directions below.
 
-1. Download the repository either through clicking the "Download zip" button and unzipping the zip file or, if you've installed git, running this in a terminal:
+*Note: Yes, installing extensions in developer mode is not as secure as installing chrome extensions from the webstore as extensions installed in developer mode are not controlled by Google. However, this extension is open source, so if you desire you can look through the source code or trust me.*
 
-		git clone https://github.com/19RyanA/CheckPCR
+1. Download the repository either through clicking the "Download zip" button and unzipping the zip file or, if you've installed git, running this in a terminal (after navigating to wherever you want the cloned repository to be placed):
+
+		git clone https://github.com/rianadon/CheckPCR
+
+	You could also install the GitHub desktop app and use it to clone the repository.
 
 2. Navigate to `chrome://extensions` in Google Chrome.
 
@@ -49,16 +39,16 @@ You can either
 1. Directly modify the JavaScript and CSS files
 2. Modify the CoffeeScript and Sass files (better)
 
-If you really must, you can go with the first option. However, I cannot stress just how much I recommend the second option, especially if you don't want to be plagued with merge conflicts.
+If you really must, you can go with the first option. However, I recommend the second option, especially if you don't want to be plagued with merge conflicts.
 
 To compile the CoffeeScript and Sass files, you again have two options.
 1. The first is to download (if you haven't already) [Node.js](https://nodejs.org) from its website, [CoffeeScript](http://coffeescript.org/) by running `npm install -g coffee-script`, and [Sass](http://sass-lang.com/) by following the instructions [here](http://sass-lang.com/install). Once you've done that, you can use `coffee -b -c client.litcoffee` to compile the main JavaScript file and `sass style.sass style.css` to compile the main stylesheet.
 
 2. The other is to use gulp. As in option 1, you'll need to have Node.js installed. Open a terminal and run `npm install -g gulp`, then navigate to the folder that you cloned into and run `npm install gulp gulp-coffee gulp-sass gulp-util`.
 
-	You can also use `gulp-ruby-sass` instead of `gulp-sass`, which I use (making your version less different than mine), but it requires the Sass Ruby gem to be installed (see the link above on how to download the Sass gem).
+	You can also use `gulp-ruby-sass` instead of `gulp-sass`, but it requires the Sass Ruby gem to be installed (see the link above on how to download the Sass gem).
 
-If you have fixed any bugs or added any useful features, I would be ecstatic if you sent a pull request.
+If you have fixed any bugs or added any useful features, I would be overjoyed if you sent a pull request.
 
 Features
 --------

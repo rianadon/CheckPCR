@@ -68,8 +68,11 @@ This code below is copied from the main script with two unwelcome lines commente
         try
           d = JSON.parse dat
           athenaData2 = {}
-          for course,n in d.body.courses.courses
-            courseDetails = d.body.courses.sections[n]
+          allCourseDetails = {}
+          for section in d.body.courses.sections
+            allCourseDetails[section.course_nid] = section
+          for course in d.body.courses.courses by -1
+            courseDetails = allCourseDetails[course.nid]
             athenaData2[course.course_title] =
               link: "https://athena.harker.org"+courseDetails.link
               logo: courseDetails.logo.substr(0, courseDetails.logo.indexOf("\" alt=\"")).replace("<div class=\"profile-picture\"><img src=\"", "").replace("tiny", "reg")
@@ -78,7 +81,6 @@ This code below is copied from the main script with two unwelcome lines commente
           localStorage["athenaData"] = JSON.stringify athenaData
           document.getElementById("athenaDataError").style.display = "none"
           #document.getElementById("athenaDataRefresh").style.display = "block"
-          #display()
         catch e
           document.getElementById("athenaDataError").style.display = "block"
           #document.getElementById("athenaDataRefresh").style.display = "none"
@@ -351,7 +353,7 @@ The following code is copied from the main script and slightly modified since th
 
         # Finally, we separate the class name and type (homework, classwork, or projects) from the title of the assignment
         assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test")
-        assignment.baseType = (ca.title.substring 0, ca.title.indexOf "\n").toLowerCase().replace("& quizzes", "")
+        assignment.baseType = (ca.title.substring 0, ca.title.indexOf "\n").toLowerCase().replace("& quizzes", "").replace(/\s/g, "")
         for c, pos in window.data.classes
           if title.indexOf(c) isnt -1
             assignment.class = pos
