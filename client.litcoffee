@@ -38,7 +38,7 @@ Additionally, if it's the user's first time, the page is set to the welcome page
 
 Then we have most of the global variables.
 
-    loginURL = "https://webappsca.pcrsoft.com/Clue/Student-Portal-Login-LDAP/8464?returnUrl=https%3a%2f%2fwebappsca.pcrsoft.com%2fClue%2fSC-Assignments-End-Date-Range%2f7536"
+    loginURL = "https://webappsca.pcrsoft.com/Clue/SC-Student-Portal-Login-LDAP/8464?returnUrl=https%3a%2f%2fwebappsca.pcrsoft.com%2fClue%2fSC-Assignments-End-Date-Range%2f7536"
     loginHeaders = {}
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -57,7 +57,7 @@ Then we have most of the global variables.
     lastUpdate = 0 # The last time verything was updated
     listDateOffset = 0
 
-    version = "2.24.0"
+    version = "2.24.1"
 
 #### Send function
 

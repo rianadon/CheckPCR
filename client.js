@@ -11,7 +11,7 @@ if (localStorage["noWelcome"] == null) {
   window.location = "welcome.html";
 }
 
-loginURL = "https://webappsca.pcrsoft.com/Clue/Student-Portal-Login-LDAP/8464?returnUrl=https%3a%2f%2fwebappsca.pcrsoft.com%2fClue%2fSC-Assignments-End-Date-Range%2f7536";
+loginURL = "https://webappsca.pcrsoft.com/Clue/SC-Student-Portal-Login-LDAP/8464?returnUrl=https%3a%2f%2fwebappsca.pcrsoft.com%2fClue%2fSC-Assignments-End-Date-Range%2f7536";
 
 loginHeaders = {};
 
@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.24.0";
+version = "2.24.1";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {
