@@ -324,7 +324,7 @@ attachmentify = function(element) {
 
 urlify = function(text) {
   return text.replace(/(https?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]+)/ig, function(str, str2, offset) {
-    if (/href\s*=\s*./.test(text.substring(offset - 10, offset))) {
+    if (/href\s*=\s*./.test(text.substring(offset - 10, offset)) || /originalpath\s*=\s*./.test(text.substring(offset - 20, offset))) {
       return str;
     } else {
       return '<a href="' + str + '">' + str + '</a>';
@@ -379,7 +379,7 @@ parse = function(doc) {
     ap = attachmentify(b);
     assignment.attachments = ap;
     assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
-    assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
+    assignment.type = title.match(/\(([^)]*\)*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
     assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "").replace(/\s/g, "");
     ref3 = window.data.classes;
     for (pos = p = 0, len5 = ref3.length; p < len5; pos = ++p) {
@@ -410,7 +410,7 @@ parse = function(doc) {
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
-        ref2 = resp.response.getElementsByTagName("input");
+        ref2 = doc.querySelectorAll("input:not([type=\"submit\"])");
         for (l = 0, len2 = ref2.length; l < len2; l++) {
           e = ref2[l];
           loginHeaders[e.name] = e.value || "";

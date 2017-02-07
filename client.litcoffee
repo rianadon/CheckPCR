@@ -57,7 +57,7 @@ Then we have most of the global variables.
     lastUpdate = 0 # The last time verything was updated
     listDateOffset = 0
 
-    version = "2.24.1"
+    version = "2.24.2"
 
 #### Send function
 

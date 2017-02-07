@@ -304,7 +304,9 @@ The following code is copied from the main script and slightly modified since th
         [-A-Z0-9+&@#\/%?=~_|!:,.;]*  # Any number of url-OK characters
         [-A-Z0-9+&@#\/%=~_|]+        # At least one url-OK character except ?, !, :, ,, ., and ;
       )///ig, (str, str2, offset) -> # Function to replace matches
-        if /href\s*=\s*./.test(text.substring(offset - 10, offset)) then str else '<a href="' + str + '">' + str + '</a>'
+        if /href\s*=\s*./.test(text.substring(offset - 10, offset)) or
+          /originalpath\s*=\s*./.test(text.substring(offset - 20, offset))
+          then str else '<a href="' + str + '">' + str + '</a>'
 
     findId = (element, tag, id) ->
       for e in element.getElementsByTagName(tag)
@@ -352,7 +354,7 @@ The following code is copied from the main script and slightly modified since th
         assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim() # The replaces remove leading and trailing newlines
 
         # Finally, we separate the class name and type (homework, classwork, or projects) from the title of the assignment
-        assignment.type = title.match(/\(([^\(\)]*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test")
+        assignment.type = title.match(/\(([^)]*\)*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test")
         assignment.baseType = (ca.title.substring 0, ca.title.indexOf "\n").toLowerCase().replace("& quizzes", "").replace(/\s/g, "")
         for c, pos in window.data.classes
           if title.indexOf(c) isnt -1
@@ -387,7 +389,7 @@ A slightly modified fetch function is then called
             if resp.responseURL.indexOf("Login") isnt -1
               # We have to log in now
               loginURL = resp.responseURL
-              for e in resp.response.getElementsByTagName("input")
+              for e in doc.querySelectorAll("input:not([type=\"submit\"])")
                 loginHeaders[e.name] = e.value or ""
               console.log "Need to log in"
               ### up = getCookie("userPass") # Attempts to get the cookie *userPass*, which is set if the "Remember me" checkbox is checked when logging in through CheckPCR
