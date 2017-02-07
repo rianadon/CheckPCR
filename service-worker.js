@@ -5,7 +5,7 @@
 
 importScripts('serviceworker-cache-polyfill.js');
 
-var CACHE_VERSION = '2.24.2';
+var CACHE_VERSION = '2.24.3';
 var CACHE_NAME = 'checkpcr-cache-v1';
 
 var urlsToCache = [

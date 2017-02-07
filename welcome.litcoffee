@@ -389,7 +389,7 @@ A slightly modified fetch function is then called
             if resp.responseURL.indexOf("Login") isnt -1
               # We have to log in now
               loginURL = resp.responseURL
-              for e in doc.querySelectorAll("input:not([type=\"submit\"])")
+              for e in resp.response.getElementsByTagName("input")
                 loginHeaders[e.name] = e.value or ""
               console.log "Need to log in"
               ### up = getCookie("userPass") # Attempts to get the cookie *userPass*, which is set if the "Remember me" checkbox is checked when logging in through CheckPCR

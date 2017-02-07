@@ -43,7 +43,7 @@ lastUpdate = 0;
 
 listDateOffset = 0;
 
-version = "2.24.2";
+version = "2.24.3";
 
 send = function(url, respType, headers, data, progress) {
   if (progress == null) {

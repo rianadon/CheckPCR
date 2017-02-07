@@ -410,7 +410,7 @@ parse = function(doc) {
       console.timeEnd("Fetching assignments");
       if (resp.responseURL.indexOf("Login") !== -1) {
         loginURL = resp.responseURL;
-        ref2 = doc.querySelectorAll("input:not([type=\"submit\"])");
+        ref2 = resp.response.getElementsByTagName("input");
         for (l = 0, len2 = ref2.length; l < len2; l++) {
           e = ref2[l];
           loginHeaders[e.name] = e.value || "";
