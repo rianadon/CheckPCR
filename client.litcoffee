@@ -489,7 +489,10 @@ If you open up the developer console on CheckPCR and type in `data`, you can see
         assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim() # The replaces remove leading and trailing newlines
 
         # Finally, we separate the class name and type (homework, classwork, or projects) from the title of the assignment
-        assignment.type = title.match(/\(([^)]*\)*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test")
+        matchedTitle = title.match(/\(([^)]*\)*)\)$/)
+        if not matchedTitle?
+          throw new Error("Could not parse assignment title \"#{title}\"")
+        assignment.type = matchedTitle[1].toLowerCase().replace("& quizzes", "").replace("tests", "test")
         assignment.baseType = (ca.title.substring 0, ca.title.indexOf "\n").toLowerCase().replace("& quizzes", "").replace(/\s/g, "")
         for c, pos in window.data.classes
           if title.indexOf(c) isnt -1

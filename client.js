@@ -444,7 +444,7 @@ findId = function(element, tag, id) {
 };
 
 parse = function(doc) {
-  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, j, k, l, len, len1, len2, len3, o, pos, q, range, ref1, ref2, t, title;
+  var ap, assignment, assignments, b, c, ca, classes, d, divs, e, handledDataShort, j, k, l, len, len1, len2, len3, matchedTitle, o, pos, q, range, ref1, ref2, t, title;
   console.time("Handling data");
   handledDataShort = [];
   window.data = {
@@ -479,7 +479,11 @@ parse = function(doc) {
     ap = attachmentify(b);
     assignment.attachments = ap;
     assignment.body = urlify(b.innerHTML).replace(/^(?:\s*<br\s*\/?>)*/, "").replace(/(?:\s*<br\s*\/?>)*\s*$/, "").trim();
-    assignment.type = title.match(/\(([^)]*\)*)\)$/)[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
+    matchedTitle = title.match(/\(([^)]*\)*)\)$/);
+    if (matchedTitle == null) {
+      throw new Error("Could not parse assignment title \"" + title + "\"");
+    }
+    assignment.type = matchedTitle[1].toLowerCase().replace("& quizzes", "").replace("tests", "test");
     assignment.baseType = (ca.title.substring(0, ca.title.indexOf("\n"))).toLowerCase().replace("& quizzes", "").replace(/\s/g, "");
     ref2 = window.data.classes;
     for (pos = q = 0, len3 = ref2.length; q < len3; pos = ++q) {
