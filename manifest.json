@@ -3,10 +3,10 @@
   "name": "Check PCR",
   "version": "2.0.0",
   "icons": {
-  "16": "icon_16.png",
-  "32": "icon_32.png",
-  "64": "icon_64.png",
-  "128": "icon_128.png"
+  "16": "icon/icon_16.png",
+  "32": "icon/icon_32.png",
+  "64": "icon/icon_64.png",
+  "128": "icon/icon_128.png"
   },
   "permissions": [
      "https://webappsca.pcrsoft.com/"

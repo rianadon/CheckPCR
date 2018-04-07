@@ -7,7 +7,7 @@ try {
 } catch(e) {
 	sass = require('gulp-ruby-sass'); //alternate
 }
-var coffee = require('gulp-coffee');
+// var coffee = require('gulp-coffee');
 var gutil = require('gulp-util');
 var spawn = require('child_process').spawn;
 
@@ -39,16 +39,16 @@ gulp.task('coffee', function() {
 });
 gulp.task('sass', function () {
 	if(libSass) {
-		gulp.src(['style.sass', 'welcome.sass'])
+		gulp.src(['style.sass', 'welcome.sass'], { cwd: 'src'})
 			.pipe(sass().on('error', sass.logError))
 			.pipe(gulp.dest('./'));
 	} else {
-		sass('style.sass')
+		sass('src/style.sass')
 			.on('error', sass.logError)
-			.pipe(gulp.dest('./'));
-		sass('welcome.sass')
+			.pipe(gulp.dest('./build/'));
+		sass('src/welcome.sass')
 			.on('error', sass.logError)
-			.pipe(gulp.dest('./'));
+			.pipe(gulp.dest('./build/'));
 	}
 });
 gulp.task('icon', function () {
@@ -68,10 +68,10 @@ gulp.task('icon', function () {
 		}
 	}
 	for(var s=0; s<smallsizes.length; s++) {
-		exec("inkscape", ["-z", "-e", "icon_"+smallsizes[s]+".png", "-w", smallsizes[s], "-h", smallsizes[s], "icon_raw/icon_small.svg", ], false, callback);
+		exec("inkscape", ["-z", "-e", "icon/icon_"+smallsizes[s]+".png", "-w", smallsizes[s], "-h", smallsizes[s], "icon_raw/icon_small.svg", ], false, callback);
 	}
 	for(s=0; s<sizes.length; s++) {
-		exec("inkscape", ["-z", "-e", "icon_"+sizes[s]+".png", "-w", sizes[s], "-h", sizes[s], "icon_raw/icon.svg", ], false, callback);
+		exec("inkscape", ["-z", "-e", "icon/icon_"+sizes[s]+".png", "-w", sizes[s], "-h", sizes[s], "icon_raw/icon.svg", ], false, callback);
 	}
 });
 

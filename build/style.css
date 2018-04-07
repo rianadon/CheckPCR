@@ -2251,10 +2251,10 @@ body[data-view="0"].showInfo .assignment:not(.full).modify.overWeekend.e6 {
   user-select: none; }
 
 body.holidayThemes.winter, body.winter.noList[data-view="1"]:not(.showDone) {
-  background-image: url("images/snow.svg");
+  background-image: url("/images/snow.svg");
   background-size: 375px 500px; }
   body.holidayThemes.winter.dark, body.winter.noList[data-view="1"]:not(.showDone).dark {
-    background-image: url("images/snowDark.svg"); }
+    background-image: url("/images/snowDark.svg"); }
 
 #empty {
   position: absolute;
