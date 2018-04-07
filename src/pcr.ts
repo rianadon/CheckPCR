@@ -8,6 +8,7 @@ import { snackbar } from './components/snackbar'
 import { deleteCookie, getCookie, setCookie } from './cookies'
 import { display, formatUpdate } from './display'
 import { _$, elemById, send } from './util'
+import { toDateNum } from './dates';
 
 const PCR_URL = 'https://webappsca.pcrsoft.com'
 const ASSIGNMENTS_URL = `${PCR_URL}/Clue/SC-Assignments-End-Date-Range/7536`
@@ -195,7 +196,7 @@ function attachmentify(element: HTMLElement): AttachmentArray[] {
     const attachments: AttachmentArray[] = []
 
     // Get all links
-    const as = element.getElementsByTagName('a')
+    const as = Array.from(element.getElementsByTagName('a'))
     as.forEach((a) => {
         if (a.id.includes('Attachment')) {
             attachments.push([
@@ -252,8 +253,8 @@ function parseAssignment(ca: HTMLElement): IAssignment {
 
     // The starting date and ending date of the assignment are parsed first
     const range = findId(ca, 'span', 'StartingOn').innerHTML.split(' - ')
-    const assignmentStart = Math.floor((Date.parse(range[0])) / 1000 / 3600 / 24)
-    const assignmentEnd = (range[1] != null) ? Math.floor((Date.parse(range[1])) / 1000 / 3600 / 24) : assignmentStart
+    const assignmentStart = toDateNum(Date.parse(range[0]))
+    const assignmentEnd = (range[1] != null) ? toDateNum(Date.parse(range[1])) : assignmentStart
 
     // Then, the name of the assignment is parsed
     const t = findId(ca, 'span', 'lblTitle')
@@ -287,7 +288,7 @@ function parseAssignment(ca: HTMLElement): IAssignment {
         return false
     })
 
-    if (assignmentClassIndex == null) {
+    if (assignmentClassIndex === null || assignmentClassIndex === -1) {
         throw new Error(`Could not find class in title ${title} (classes are ${data.classes}`)
     }
 
@@ -299,7 +300,7 @@ function parseAssignment(ca: HTMLElement): IAssignment {
 
     return {
         start: assignmentStart,
-        end: assignmentStart,
+        end: assignmentEnd,
         attachments: ap,
         body: assignmentBody,
         type: assignmentType,

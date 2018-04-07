@@ -63,3 +63,7 @@ declare namespace tinycolor {
 declare namespace chrono {
     function parseDate(str: string): Date
 }
+
+declare class NodeListOf<TNode extends Node> {
+    forEach(callbackfn: (value: HTMLInputElement, index: number, listObj: NodeListOf<HTMLInputElement>) => void, thisArg?: any): void
+}

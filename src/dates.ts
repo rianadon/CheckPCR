@@ -23,3 +23,13 @@ export function fromDateNum(days: number): Date {
 export function today(): number {
     return toDateNum(new Date())
 }
+
+/**
+ * Iterates from the starting date to ending date inclusive
+ */
+export function iterDays(start: Date, end: Date, cb: (date: Date) => void): void {
+    // tslint:disable-next-line no-loops
+    for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        cb(d)
+    }
+}

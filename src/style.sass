@@ -1163,9 +1163,9 @@ $scale: 15
 			right: 40%
 		@media #{$large-and-up}
 			right: 30%
-	background: url(images/hills.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
+	background: url(/images/hills.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
 	body.winter &
-		background: url(images/hills2.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
+		background: url(/images/hills2.svg) center bottom / #{5vmin*$scale} #{1.5vmin*$scale} repeat-x
 	opacity: 0
 	+transition(opacity 0.3s ease, right 0.3s ease)
 	will-change: opacity, right
@@ -1189,7 +1189,7 @@ $scale: 15
 		left: 0
 		right: 0
 		bottom: 2vmin*$scale
-		background: url(images/clouds.svg) center bottom / 100vmin 100vmin repeat
+		background: url(/images/clouds.svg) center bottom / 100vmin 100vmin repeat
 	&::before
 		content: ' '
 		position: absolute
@@ -1197,9 +1197,9 @@ $scale: 15
 		top: 10vh
 		width: 20vmin
 		height: 20vmin
-		background: url(images/sun.svg) center center / 20vmin 20vmin no-repeat
+		background: url(/images/sun.svg) center center / 20vmin 20vmin no-repeat
 		body.winter &
-			background-image: url(images/moon.svg)
+			background-image: url(/images/moon.svg)
 			background-size: 15vmin 15vmin
 
 // Progress bars adapted from Materialize
@@ -1318,7 +1318,7 @@ $scale: 15
 		left: 0
 		right: 0
 		height: 240px*9/16
-		background: url(images/bkg.svg)
+		background: url(/images/bkg.svg)
 	&>hr
 		border-color: rgba(0,0,0,0.12)
 		margin: 0

@@ -10,6 +10,7 @@ const linkById = (id: string) => elemById(id) as HTMLLinkElement
 
 // *displayError* displays a dialog containing information about an error.
 export function displayError(e: Error): void {
+    console.log('Displaying error', e)
     const errorHTML = `Message: ${e.message}\nStack: ${e.stack || (e as any).lineNumber}\n`
                     + `Browser: ${navigator.userAgent}\nVersion: ${VERSION}`
     elemById('errorContent').innerHTML = errorHTML.replace('\n', '<br>')

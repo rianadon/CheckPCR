@@ -45,7 +45,7 @@ export function extraToTask(custom: ICustomAssignment, data: IApplicationData): 
         end: custom.end || 'Forever',
         body: custom.body,
         id: `task${custom.body.replace(/[^\w]*/g, '')}${custom.start}${custom.end}${custom.class}`,
-        class: cls
+        class: cls === -1 ? null : cls
     }
 }
 

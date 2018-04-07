@@ -47,7 +47,9 @@ export function separate(cl: string): RegExpMatchArray {
 }
 
 export function assignmentClass(assignment: IAssignment, data: IApplicationData): string {
-    return (assignment.class != null) ? data.classes[assignment.class] : 'Task'
+    const cls = (assignment.class != null) ? data.classes[assignment.class] : 'Task'
+    if (cls == null) throw new Error(`Could not find class ${assignment.class} in ${data.classes}`)
+    return cls
 }
 
 export function separatedClass(assignment: IAssignment, data: IApplicationData): RegExpMatchArray {
@@ -348,7 +350,7 @@ export function getES(el: HTMLElement): [string, string] {
     let e = 0
     let s = 0
 
-    new Array(7).forEach((_, x) => {
+    Array.from(new Array(7), (_, x) => x).forEach((x) => {
         if (el.classList.contains(`e${x}`)) {
             e = x
         }

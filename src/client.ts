@@ -14,6 +14,9 @@ import { addToExtra, parseCustomTask, saveExtra } from './plugins/customAssignme
 import { _$, _$h, dateString, elemById, element, forceLayout, localStorageRead, localStorageWrite,
         requestIdleCallback, ripple } from './util'
 
+// @ts-ignore TODO: Make this less hacky
+NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
+
 // Additionally, if it's the user's first time, the page is set to the welcome page.
 if (!localStorageRead('noWelcome')) {
     localStorageWrite('noWelcome', true)
