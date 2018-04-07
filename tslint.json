@@ -1,0 +1,20 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-no-loops"
+    ],
+    "jsRules": {},
+    "rules": {
+        "no-console": false,
+        "quotemark": [true, "single"],
+        "semicolon": [true, "never"],
+        "typedef": [true, "call-signature", "parameter"],
+        "no-loops": true,
+        "max-line-length": [true, 120],
+        "curly": [true, "ignore-same-line"],
+        "indent": [true, "spaces", 4],
+        "trailing-comma": [true, {"multiline": "never", "singleline": "never"}]
+    },
+    "rulesDirectory": []
+}

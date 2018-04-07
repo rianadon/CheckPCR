@@ -1,0 +1,31 @@
+{
+  "name": "checkpcr",
+  "version": "2.24.3",
+  "private": true,
+  "description": "A client for PCR, the homework system used by The Harker School",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-ruby-sass": "^2.0.6",
+    "gulp-typescript": "^3.2.3",
+    "gulp-util": "^3.0.8",
+    "tslint": "^5.8.0",
+    "tslint-no-loops": "^1.0.1",
+    "typescript": "^2.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp",
+    "watch": "gulp watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rianadon/CheckPCR.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rianadon/CheckPCR/issues"
+  },
+  "homepage": "https://github.com/rianadon/CheckPCR#readme"
+}

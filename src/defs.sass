@@ -1,0 +1,117 @@
+$small-screen-up: 601px
+$medium-screen-up: 993px
+$large-screen-up: 1201px
+
+$medium-and-up: "only screen and (min-width : #{$small-screen-up})"
+$large-and-up: "only screen and (min-width : #{$medium-screen-up})"
+
+$medium-and-down: "only screen and (max-width: #{$medium-screen-up - 1px})"
+$small-and-down: "only screen and (max-width: #{$small-screen-up - 1px})"
+
+$base-color: #43A047
+$accent-color: #00AF49
+
+//transition mixin adapted from http://log.vieron.net/articles/sass-mixins-for-vendor-prefixed-transitions-including-properties/
+
+@function prefix($property, $prefixes: webkit moz o ms)
+	$vendor-prefixed-properties: transform background-clip background-size
+	$result: ()
+	@each $prefix in $prefixes
+		@if index($vendor-prefixed-properties, $property)
+			$property: -#{$prefix}-#{$property}
+		$result: append($result, $property)
+	@return $result
+
+@function trans-prefix($transition, $prefix: moz)
+	$prefixed: ()
+	@each $trans in $transition
+		$prop-name: nth($trans, 1)
+		$vendor-prop-name: prefix($prop-name, $prefix)
+		@if length($trans)>1
+			$prop-vals: nth($trans, 2)
+			$prefixed: append($prefixed, $vendor-prop-name $prop-vals, comma)
+		@else
+			$prefixed: append($prefixed, $vendor-prop-name, comma)
+	@return $prefixed
+
+=transition($values...)
+	$transitions: ()
+	@each $declaration in $values
+		$length: length($declaration)
+		$trans: $declaration
+		@if $length > 1
+			$prop: nth($declaration, 1)
+			$prop-opts: ()
+			@for $i from 2 through $length
+				$prop-opts: append($prop-opts, nth($declaration, $i))
+			$trans: $prop, $prop-opts
+		$transitions: append($transitions, $trans, comma)
+	-webkit-transition: trans-prefix($transitions, webkit)
+	-moz-transition: trans-prefix($transitions, moz)
+	-o-transition: trans-prefix($transitions, o)
+	transition: $values
+
+=box-shadow($properties...)
+	box-shadow: $properties
+	-webkit-box-shadow: $properties
+	-moz-box-shadow: $properties
+=border-radius($lengths)
+	border-radius: $lengths
+	-webkit-border-radius: $lengths
+	-moz-border-radius: $lengths
+=border-radius-corner($corner, $length)
+	border-#{$corner}-radius: $length
+	-webkit-border-#{$corner}-radius: $length
+	-moz-border-#{$corner}-radius: $length
+=keyframes($animation-name)
+	@-webkit-keyframes #{$animation-name}
+		@content
+	@-moz-keyframes #{$animation-name}
+		@content
+	@keyframes #{$animation-name}
+		@content
+=animation($args)
+	-webkit-animation: $args
+	-moz-animation: $args
+	-ms-animation: $args
+	-o-animation: $args
+	animation: $args
+=animation-delay($delay)
+	-webkit-animation-delay: $delay
+	-moz-animation-delay: $delay
+	-ms-animation-delay: $delay
+	-o-animation-delay: $delay
+	animation-delay: $delay
+
+
+html
+	box-sizing: border-box
+*, *::before, *::after
+	box-sizing: inherit
+
+
+body
+	margin: 0
+	font-size: 14px
+	color: rgba(0,0,0,0.87)
+	line-height: 1.5
+	font-family: "Roboto", sans-serif
+	font-weight: normal
+	@media #{$large-and-up}
+		font-size: 13px
+	padding-top: 112px
+	background-color: #FAFAFA
+
+a
+	cursor: pointer
+	color: #039be5
+	text-decoration: none
+	-webkit-tap-highlight-color: transparent
+	&:active, &:hover
+		outline: 0
+	&:hover
+		color: #0288D1
+	&:active
+		color: #0277BD
+	&:visited
+		color: #01579B
