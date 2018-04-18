@@ -1,13 +1,13 @@
 import { fromDateNum, today } from '../dates'
 import { display, getTimeAfter, ISplitAssignment } from '../display'
 import { getListDateOffset } from '../navigation'
-import { getAttachmentMimeType, getData, IApplicationData, IAssignment, urlForAttachment } from '../pcr'
+import { getAttachmentMimeType, IApplicationData, IAssignment, urlForAttachment } from '../pcr'
 import { recentActivity } from '../plugins/activity'
 import { getAthenaData } from '../plugins/athena'
 import { removeFromExtra, saveExtra } from '../plugins/customAssignments'
 import { addToDone, assignmentInDone, removeFromDone, saveDone } from '../plugins/done'
 import { modifiedBody, removeFromModified, saveModified, setModified } from '../plugins/modifiedAssignments'
-import { _$, dateString, elemById, element, forceLayout, localStorageRead, ripple } from '../util'
+import { _$, cssNumber, dateString, elemById, element, forceLayout, localStorageRead, ripple } from '../util'
 import { resize } from './resizer'
 
 const mimeTypes: { [mime: string]: [string, string] } = {
@@ -325,7 +325,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
                 e.classList.remove('anim')
                 e.classList.add('modify')
                 e.style.top = (e.getBoundingClientRect().top - document.body.scrollTop
-                            - Number(e.style.marginTop)) + 44 + 'px'
+                            - cssNumber(e.style.marginTop)) + 44 + 'px'
                 e.setAttribute('data-top', e.style.top)
                 document.body.style.overflow = 'hidden'
                 const back = elemById('background')
@@ -334,7 +334,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
                 e.classList.add('anim')
                 forceLayout(e)
                 e.classList.add('full')
-                e.style.top = (75 - Number(e.style.marginTop)) + 'px'
+                e.style.top = (75 - cssNumber(e.style.marginTop)) + 'px'
                 setTimeout(() => e.classList.remove('anim'), 350)
             }
         })

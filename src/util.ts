@@ -268,4 +268,9 @@ export function ripple(el: HTMLElement): void {
             }, delay)
         })
     })
-  }
+}
+
+export function cssNumber(css: string|null): number {
+    if (!css) return 0
+    return parseInt(css, 10)
+}
