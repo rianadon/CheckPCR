@@ -96,7 +96,6 @@ function getAssignmentSplits(assignment: IAssignment, start: Date, end: Date,
                 custom: Boolean(reference),
                 reference
             })
-            n += 7
         }
     } else if (localStorageRead('assignmentSpan') === 'start') {
         const s = fromDateNum(assignment.start)
@@ -269,7 +268,7 @@ export function display(doScroll: boolean = true): void {
                                     </i>
                                     <span class='title'>${s.assignment.title}</span>
                                     <small>${separatedClass(s.assignment, data)[2]}</small>
-                                    <div class='range'>${dateString(end, true)}</div>`,
+                                    <div class='range'>${dateString(s.assignment.end, true)}</div>`,
                                 `test${s.assignment.id}`)
                 if (s.assignment.class) te.setAttribute('data-class', data.classes[s.assignment.class])
                 te.addEventListener('click', () => {

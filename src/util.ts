@@ -1,3 +1,5 @@
+import { fromDateNum, toDateNum } from './dates'
+
 /**
  * Forces a layout on an element
  */
@@ -181,7 +183,7 @@ export function requestIdleCallback(cb: (deadline: IdleDeadline) => void, opts: 
  * Determine if the two dates have the same year, month, and day
  */
 function datesEqual(a: Date, b: Date): boolean {
-    return a.getDate() === b.getDate() && a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear()
+    return toDateNum(a) === toDateNum(b)
 }
 
 const DATE_RELATIVENAMES: {[name: string]: number} = {
@@ -194,14 +196,16 @@ const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 const FULLMONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
                     'November', 'December']
 
-export function dateString(date: Date|'Forever', addThis: boolean = false): string {
+export function dateString(date: Date|number|'Forever', addThis: boolean = false): string {
     if (date === 'Forever') return date
+    if (typeof date === 'number') return dateString(fromDateNum(date), addThis)
 
     const relativeMatch = Object.keys(DATE_RELATIVENAMES).find((name) => {
         const dayAt = new Date()
         dayAt.setDate(dayAt.getDate() + DATE_RELATIVENAMES[name])
         return datesEqual(dayAt, date)
     })
+    if (relativeMatch) return relativeMatch
 
     const daysAhead = (date.getTime() - Date.now()) / 1000 / 3600 / 24
 

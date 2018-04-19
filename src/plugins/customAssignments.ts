@@ -32,8 +32,9 @@ export function removeFromExtra(custom: ICustomAssignment): void {
 
 export function extraToTask(custom: ICustomAssignment, data: IApplicationData): IAssignment {
     let cls: number|null = null
-    if (custom.class != null) {
-        cls = data.classes.map((c) => c.toLowerCase()).indexOf(custom.class)
+    const className = custom.class
+    if (className != null) {
+        cls = data.classes.findIndex((c) => c.toLowerCase().includes(className))
     }
 
     return {

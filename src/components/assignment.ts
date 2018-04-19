@@ -76,8 +76,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
                       `<${smallTag}${link ? ` href='${link}' class='linked' target='_blank'` : ''}>
                            <span class='extra'>${separated[1]}</span>
                            ${separated[2]}
-                       </${smallTag}>
-                       <span class='title'>${assignment.title}</span>
+                       </${smallTag}><span class='title'>${assignment.title}</span>
                        <input type='hidden' class='due'
                               value='${assignment.end === 'Forever' ? 0 : assignment.end}' />`,
                       assignment.id + weekId)
@@ -301,7 +300,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
     e.classList.add(`s${split.start.getDay()}`)
     if (split.end !== 'Forever') e.classList.add(`e${6 - split.end.getDay()}`)
 
-    const st = Math.floor(split.start.getDate() / 1000 / 3600 / 24)
+    const st = Math.floor(split.start.getTime() / 1000 / 3600 / 24)
     if (split.assignment.end === 'Forever') {
         if (st <= (today() + getListDateOffset())) {
             e.classList.add('listDisp')
