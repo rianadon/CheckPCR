@@ -76,7 +76,7 @@ function letterToColorVal(letter: string): number {
 export function updateAvatar(): void {
     if (!localStorageRead('username')) return
     elemById('user').innerHTML = localStorageRead('username')
-    const initials = localStorage.username.match(/\d*(.).*?(.$)/) // Separate year from first name and initial
+    const initials = localStorageRead('username').match(/\d*(.).*?(.$)/) // Separate year from first name and initial
     if (initials != null) {
         const bg = labrgb(50, letterToColorVal(initials[1]), letterToColorVal(initials[2])) // Compute the color
         elemById('initials').style.backgroundColor = bg

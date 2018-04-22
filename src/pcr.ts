@@ -1,14 +1,13 @@
 /**
  * This module contains code to both fetch and parse assignments from PCR.
  */
-
 import { updateAvatar } from './components/avatar'
 import { displayError } from './components/errorDisplay'
 import { snackbar } from './components/snackbar'
 import { deleteCookie, getCookie, setCookie } from './cookies'
+import { toDateNum } from './dates'
 import { display, formatUpdate } from './display'
-import { _$, elemById, send } from './util'
-import { toDateNum } from './dates';
+import { _$, elemById, localStorageWrite, send } from './util'
 
 const PCR_URL = 'https://webappsca.pcrsoft.com'
 const ASSIGNMENTS_URL = `${PCR_URL}/Clue/SC-Assignments-End-Date-Range/7536`
@@ -119,7 +118,7 @@ export async function dologin(val?: [string, string]|null, submitEvt: boolean = 
     setTimeout(() => loginBackground.style.display = 'none', 350)
 
     const postArray: string[] = [] // Array of data to post
-    localStorage.username = val && !submitEvt ? val[0] : usernameEl.value
+    localStorageWrite('username', val && !submitEvt ? val[0] : usernameEl.value)
     updateAvatar()
     Object.keys(loginHeaders).forEach((h) =>  {
         // Loop through the input elements contained in the login page. As mentioned before, they

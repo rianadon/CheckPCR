@@ -5,17 +5,36 @@ import { updateNewTips } from './components/customAdder'
 import { getResizeAssignments, resize, resizeCaller } from './components/resizer'
 import { toDateNum, today } from './dates'
 import { display, formatUpdate, getScroll } from './display'
-import { decrementListDateOffset, getListDateOffset, incrementListDateOffset,
-  setListDateOffset, zeroListDateOffset } from './navigation'
-import { dologin, fetch, getData, IAssignment, logout, setData, switchViews } from './pcr'
+import {
+    decrementListDateOffset,
+    getListDateOffset,
+    incrementListDateOffset,
+    setListDateOffset,
+    zeroListDateOffset
+} from './navigation'
+import { dologin, fetch, getData, logout, setData, switchViews } from './pcr'
 import { addActivity, recentActivity } from './plugins/activity'
 import { updateAthenaData } from './plugins/athena'
 import { addToExtra, parseCustomTask, saveExtra } from './plugins/customAssignments'
-import { _$, _$h, dateString, elemById, element, forceLayout, localStorageRead, localStorageWrite,
-        requestIdleCallback, ripple } from './util'
+import {
+    _$,
+    _$h,
+    dateString,
+    elemById,
+    element,
+    forceLayout,
+    localStorageRead,
+    localStorageWrite,
+    requestIdleCallback,
+    ripple
+} from './util'
 
 // @ts-ignore TODO: Make this less hacky
-NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
+NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach
+
+if (localStorageRead('data') != null) {
+    setData(localStorageRead('data'))
+}
 
 // Additionally, if it's the user's first time, the page is set to the welcome page.
 if (!localStorageRead('noWelcome')) {
@@ -385,10 +404,10 @@ if (JSON.parse(localStorage.sepTaskClass)) { document.body.classList.add('sepTas
 if (localStorage.colorType == null) { localStorage.colorType = 'assignment' }
 
 interface IColorMap { [cls: string]: string }
-const assignmentColors: IColorMap = localStorageRead('assignmentColors', {
+let assignmentColors: IColorMap = localStorageRead('assignmentColors', {
     classwork: '#689f38', homework: '#2196f3', longterm: '#f57c00', test: '#f44336'
 })
-const classColors = localStorageRead('classColors', () => {
+let classColors = localStorageRead('classColors', () => {
     const cc: IColorMap = {}
     const data = getData()
     if (!data) return cc
@@ -453,15 +472,18 @@ document.querySelectorAll('.colors').forEach((e) => {
 
         const sp = _$h(color.querySelector('span'))
         const listName = e.getAttribute('id') === 'classColors' ? 'classColors' : 'assignmentColors'
+        const listSetter = (v: IColorMap) => {
+            e.getAttribute('id') === 'classColors' ? classColors = v : assignmentColors = v
+        }
         const list = e.getAttribute('id') === 'classColors' ? classColors : assignmentColors
         sp.style.backgroundColor = list[controlledColor]
         Object.keys(palette).forEach((p) => {
-        const pe = element('span', [])
-        pe.style.backgroundColor = p
-        if (p === list[controlledColor]) {
-            pe.classList.add('selected')
-        }
-        sp.appendChild(pe)
+            const pe = element('span', [])
+            pe.style.backgroundColor = p
+            if (p === list[controlledColor]) {
+                pe.classList.add('selected')
+            }
+            sp.appendChild(pe)
         })
         const custom = element('span', ['customColor'], `<a>Custom</a> \
     <input type='text' placeholder='Was ${list[controlledColor]}' /> \
@@ -475,15 +497,17 @@ document.querySelectorAll('.colors').forEach((e) => {
         })
         sp.addEventListener('click', (evt) => {
             if (sp.classList.contains('choose')) {
-                const bg = tinycolor(sp.style.backgroundColor || '#000').toHexString()
+                const target = _$h(evt.target)
+                const bg = tinycolor(target.style.backgroundColor || '#000').toHexString()
                 list[controlledColor] = bg
                 sp.style.backgroundColor = bg
-                const selected = sp.querySelector('.selected')
+                const selected = target.querySelector('.selected')
                 if (selected) {
                     selected.classList.remove('selected')
                 }
-                sp.classList.add('selected')
+                target.classList.add('selected')
                 localStorage[listName] = JSON.stringify(list)
+                listSetter(list)
                 updateColors()
             }
             sp.classList.toggle('choose')
@@ -626,10 +650,7 @@ console.log('')
 const triedLastUpdate = localStorageRead('lastUpdate')
 elemById('lastUpdate').innerHTML = triedLastUpdate ? formatUpdate(triedLastUpdate) : 'Never'
 
-// Now, we load the saved assignments (if any) and fetch the current assignments from PCR.
 if (localStorageRead('data') != null) {
-    setData(localStorageRead('data'))
-
     // Now check if there's activity
     recentActivity().forEach((item) => {
         addActivity(item[0], item[1], new Date(item[2]), true, item[3])

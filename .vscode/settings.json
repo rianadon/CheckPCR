@@ -3,5 +3,6 @@
     "search.exclude": {
         "build": true
     },
-    "typescriptHero.imports.insertSemicolons": false
+    "typescriptHero.imports.insertSemicolons": false,
+    "typescriptHero.imports.multiLineTrailingComma": false
 }
