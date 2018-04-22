@@ -12,7 +12,7 @@ import {
     setListDateOffset,
     zeroListDateOffset
 } from './navigation'
-import { dologin, fetch, getData, logout, setData, switchViews, getClasses } from './pcr'
+import { dologin, fetch, getClasses, getData, logout, setData, switchViews } from './pcr'
 import { addActivity, recentActivity } from './plugins/activity'
 import { updateAthenaData } from './plugins/athena'
 import { addToExtra, parseCustomTask, saveExtra } from './plugins/customAssignments'
@@ -75,7 +75,7 @@ elemById('background').addEventListener('click', closeOpened)
 // Then, the tabs are made interactive.
 document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
   tab.addEventListener('click', (evt) => {
-    if (!trans) {
+    if (!settings.viewTrans) {
       document.body.classList.add('noTrans')
       forceLayout(document.body)
     }
@@ -145,7 +145,7 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
             (assignment as HTMLElement).style.top = 'auto'
         })
     }
-    if (!trans) {
+    if (!settings.viewTrans) {
       forceLayout(document.body)
       setTimeout(() => {
           document.body.classList.remove('noTrans')
@@ -582,6 +582,7 @@ colorType.checked = true
 Array.from(document.getElementsByName('colorType')).forEach((c) => {
   c.addEventListener('change', (evt) => {
     const v = (_$(document.querySelector('input[name="colorType"]:checked')) as HTMLInputElement).value
+    if (v !== 'assignment' && v !== 'class') return
     settings.colorType = v
     if (v === 'class') {
       elemById('assignmentColors').style.display = 'none'

@@ -1,6 +1,5 @@
 import { localStorageRead, localStorageWrite } from './util'
 
-
 type AssignmentSpan = 'multiple' | 'start' | 'end'
 type HideAssignments = 'day' | 'ms' | 'us'
 type ColorType = 'assignment' | 'class'
@@ -92,5 +91,5 @@ export const settings = {
      * Whether to display tasks in the task pane that are completed
      */
     get showDoneTasks(): boolean { return localStorageRead('showDoneTasks', false) },
-    set showDoneTasks(v: boolean) { localStorageWrite('showDoneTasks', v) },
+    set showDoneTasks(v: boolean) { localStorageWrite('showDoneTasks', v) }
 }
