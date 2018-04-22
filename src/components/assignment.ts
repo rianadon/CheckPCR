@@ -7,7 +7,8 @@ import { getAthenaData } from '../plugins/athena'
 import { removeFromExtra, saveExtra } from '../plugins/customAssignments'
 import { addToDone, assignmentInDone, removeFromDone, saveDone } from '../plugins/done'
 import { modifiedBody, removeFromModified, saveModified, setModified } from '../plugins/modifiedAssignments'
-import { _$, cssNumber, dateString, elemById, element, forceLayout, localStorageRead, ripple } from '../util'
+import { settings } from '../settings'
+import { _$, cssNumber, dateString, elemById, element, forceLayout, ripple } from '../util'
 import { resize } from './resizer'
 
 const mimeTypes: { [mime: string]: [string, string] } = {
@@ -291,10 +292,10 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
     })
     e.appendChild(mods)
 
-    if ((localStorageRead('assignmentSpan') === 'multiple') && (start < split.start)) {
+    if (settings.assignmentSpan === 'multiple' && (start < split.start)) {
         e.classList.add('fromWeekend')
     }
-    if ((localStorageRead('assignmentSpan') === 'multiple') && (end > split.end)) {
+    if (settings.assignmentSpan === 'multiple' && (end > split.end)) {
         e.classList.add('overWeekend')
     }
     e.classList.add(`s${split.start.getDay()}`)
@@ -308,7 +309,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
     } else {
         const midDate = new Date()
         midDate.setDate(midDate.getDate() + getListDateOffset())
-        const push = (assignment.baseType === 'test' && assignment.start === st) ? localStorageRead('earlyTest') : 0
+        const push = (assignment.baseType === 'test' && assignment.start === st) ? settings.earlyTest : 0
         const endExtra = getListDateOffset() === 0 ? getTimeAfter(midDate) : 24 * 3600 * 1000
         if (fromDateNum(st - push) <= midDate &&
             (split.end === 'Forever' || midDate.getTime() <= split.end.getTime() + endExtra)) {
@@ -317,7 +318,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
     }
 
     // Add click interactivity
-    if (!split.custom || !JSON.parse(localStorage.sepTasks)) {
+    if (!split.custom || !settings.sepTasks) {
         e.addEventListener('click', (evt) => {
             if ((document.getElementsByClassName('full').length === 0) &&
                 (document.body.getAttribute('data-view') === '0')) {

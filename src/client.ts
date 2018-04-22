@@ -12,10 +12,11 @@ import {
     setListDateOffset,
     zeroListDateOffset
 } from './navigation'
-import { dologin, fetch, getData, logout, setData, switchViews } from './pcr'
+import { dologin, fetch, getData, logout, setData, switchViews, getClasses } from './pcr'
 import { addActivity, recentActivity } from './plugins/activity'
 import { updateAthenaData } from './plugins/athena'
 import { addToExtra, parseCustomTask, saveExtra } from './plugins/customAssignments'
+import { settings } from './settings'
 import {
     _$,
     _$h,
@@ -74,7 +75,6 @@ elemById('background').addEventListener('click', closeOpened)
 // Then, the tabs are made interactive.
 document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
   tab.addEventListener('click', (evt) => {
-    const trans = localStorageRead('viewTrans')
     if (!trans) {
       document.body.classList.add('noTrans')
       forceLayout(document.body)
@@ -83,50 +83,50 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
     document.body.setAttribute('data-view', String(tabIndex))
     if (tabIndex === 1) {
         window.addEventListener('resize', resizeCaller)
-        if (trans) {
-        let start: number|null = null
-        // The code below is the same code used in the resize() function. It basically just
-        // positions the assignments correctly as they animate
-        const widths = document.body.classList.contains('showInfo') ?
-            [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800]
-        let columns = 1
-        widths.forEach((w, index) => {
-            if (window.innerWidth > w) { columns = index + 1 }
-        })
-        const assignments = getResizeAssignments()
-        const columnHeights = Array.from(new Array(columns), () => 0)
-        const step = (timestamp: number) => {
-            if (!columns) throw new Error('Columns number not found')
-            if (start == null) { start = timestamp }
-            assignments.forEach((assignment, n) => {
-                const col = n % columns
-                if (n < columns) {
-                columnHeights[col] = 0
-                }
-                assignment.style.top = columnHeights[col] + 'px'
-                assignment.style.left = ((100 / columns) * col) + '%'
-                assignment.style.right = ((100 / columns) * (columns - col - 1)) + '%'
-                columnHeights[col] += assignment.offsetHeight + 24
+        if (settings.viewTrans) {
+            let start: number|null = null
+            // The code below is the same code used in the resize() function. It basically just
+            // positions the assignments correctly as they animate
+            const widths = document.body.classList.contains('showInfo') ?
+                [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800]
+            let columns = 1
+            widths.forEach((w, index) => {
+                if (window.innerWidth > w) { columns = index + 1 }
             })
-            if ((timestamp - start) < 350) {
-                return window.requestAnimationFrame(step)
+            const assignments = getResizeAssignments()
+            const columnHeights = Array.from(new Array(columns), () => 0)
+            const step = (timestamp: number) => {
+                if (!columns) throw new Error('Columns number not found')
+                if (start == null) { start = timestamp }
+                assignments.forEach((assignment, n) => {
+                    const col = n % columns
+                    if (n < columns) {
+                    columnHeights[col] = 0
+                    }
+                    assignment.style.top = columnHeights[col] + 'px'
+                    assignment.style.left = ((100 / columns) * col) + '%'
+                    assignment.style.right = ((100 / columns) * (columns - col - 1)) + '%'
+                    columnHeights[col] += assignment.offsetHeight + 24
+                })
+                if ((timestamp - start) < 350) {
+                    return window.requestAnimationFrame(step)
+                }
             }
+            window.requestAnimationFrame(step)
+            setTimeout(() => {
+                if (!columns) throw new Error('Columns number not found')
+                assignments.forEach((assignment, n) => {
+                    const col = n % columns
+                    if (n < columns) {
+                    columnHeights[col] = 0
+                    }
+                    assignment.style.top = columnHeights[col] + 'px'
+                    columnHeights[col] += assignment.offsetHeight + 24
+                })
+            }, 350)
+        } else {
+            resize()
         }
-        window.requestAnimationFrame(step)
-        setTimeout(() => {
-            if (!columns) throw new Error('Columns number not found')
-            assignments.forEach((assignment, n) => {
-                const col = n % columns
-                if (n < columns) {
-                columnHeights[col] = 0
-                }
-                assignment.style.top = columnHeights[col] + 'px'
-                columnHeights[col] += assignment.offsetHeight + 24
-            })
-        }, 350)
-      } else {
-        resize()
-      }
     } else {
         window.scrollTo(0, getScroll())
         NAV_ELEMENT.classList.add('headroom--locked')
@@ -162,9 +162,9 @@ document.querySelectorAll('#infoTabs>li').forEach((tab, tabIndex) => {
 })
 
 // The view is set to what it was last.
-if (localStorage.view != null) {
-  document.body.setAttribute('data-view', localStorage.view)
-  if (localStorage.view === '1') {
+if (localStorageRead('view') != null) {
+  document.body.setAttribute('data-view', localStorageRead('view'))
+  if (localStorageRead('view') === '1') {
     window.addEventListener('resize', resizeCaller)
   }
 }
@@ -386,23 +386,12 @@ elemById('backButton').addEventListener('click', () => {
 })
 
 // The code below is what the settings control.
-if (localStorage.viewTrans == null) { localStorage.viewTrans = JSON.stringify(true) }
-if (localStorage.earlyTest == null) { localStorage.earlyTest = JSON.stringify(1) }
-if (localStorage.googleA == null) { localStorage.googleA = JSON.stringify(true) }
-if (localStorage.sepTasks == null) { localStorage.sepTasks = JSON.stringify(false) }
-if (localStorage.sepTaskClass == null) { localStorage.sepTaskClass = JSON.stringify(true) }
-if (localStorage.projectsInTestPane == null) { localStorage.projectsInTestPane = JSON.stringify(false) }
-if (localStorage.assignmentSpan == null) { localStorage.assignmentSpan = JSON.stringify('multiple') }
-if (localStorage.hideassignments == null) { localStorage.hideassignments = JSON.stringify('day') }
-if (JSON.parse(localStorage.sepTasks)) {
+if (settings.sepTasks) {
     elemById('info').classList.add('isTasks')
     elemById('new').style.display = 'none'
 }
-if (localStorage.holidayThemes == null) { localStorage.holidayThemes = JSON.stringify(false) }
-if (JSON.parse(localStorage.holidayThemes)) { document.body.classList.add('holidayThemes') }
-if (JSON.parse(localStorage.sepTaskClass)) { document.body.classList.add('sepTaskClass') }
-if (localStorage.colorType == null) { localStorage.colorType = 'assignment' }
-
+if (settings.holidayThemes) { document.body.classList.add('holidayThemes') }
+if (settings.sepTaskClass) { document.body.classList.add('sepTaskClass') }
 interface IColorMap { [cls: string]: string }
 let assignmentColors: IColorMap = localStorageRead('assignmentColors', {
     classwork: '#689f38', homework: '#2196f3', longterm: '#f57c00', test: '#f44336'
@@ -416,16 +405,12 @@ let classColors = localStorageRead('classColors', () => {
     })
     return cc
 })
-elemById(`${localStorage.colorType}Colors`).style.display = 'block'
-if (localStorage.refreshOnFocus == null) { localStorage.refreshOnFocus = JSON.stringify(true) }
+elemById(`${settings.colorType}Colors`).style.display = 'block'
 window.addEventListener('focus', () => {
-  if (localStorageRead('refreshOnFocus')) {
-    return fetch()
-  }
+  if (settings.refreshOnFocus) fetch()
 })
-if (localStorage.refreshRate == null) { localStorage.refreshRate = JSON.stringify(-1) }
 function intervalRefresh(): void {
-    const r = JSON.parse(localStorage.refreshRate)
+    const r = settings.refreshRate
     if (r > 0) {
         setTimeout(() => {
             console.debug('Refreshing because of timer')
@@ -457,14 +442,13 @@ const palette: IColorMap = {
   '#795548': '#3E2723',
   '#616161': '#212121'
 }
-if (localStorageRead('data') != null) {
-    localStorageRead('data').classes.forEach((c: string) => {
-        const d = element('div', [], c)
-        d.setAttribute('data-control', c)
-        d.appendChild(element('span', []))
-        elemById('classColors').appendChild(d)
-    })
-}
+
+getClasses().forEach((c: string) => {
+    const d = element('div', [], c)
+    d.setAttribute('data-control', c)
+    d.appendChild(element('span', []))
+    elemById('classColors').appendChild(d)
+})
 document.querySelectorAll('.colors').forEach((e) => {
     e.querySelectorAll('div').forEach((color) => {
         const controlledColor = color.getAttribute('data-control')
@@ -545,7 +529,7 @@ function updateColors(): void {
 
     const createPalette = (color: string) => tinycolor(color).darken(24).toHexString()
 
-    if (localStorage.colorType === 'assignment') {
+    if (settings.colorType === 'assignment') {
         Object.entries(assignmentColors).forEach(([name, color]) => {
             addColorRule(`.${name}`, color, palette[color] || createPalette(color))
         })
@@ -593,12 +577,12 @@ document.querySelectorAll('.settingsControl').forEach((e) => {
 
 // This also needs to be done for radio buttons
 const colorType =
-    _$(document.querySelector(`input[name=\"colorType\"][value=\"${localStorage.colorType}\"]`)) as HTMLInputElement
+    _$(document.querySelector(`input[name=\"colorType\"][value=\"${settings.colorType}\"]`)) as HTMLInputElement
 colorType.checked = true
 Array.from(document.getElementsByName('colorType')).forEach((c) => {
   c.addEventListener('change', (evt) => {
     const v = (_$(document.querySelector('input[name="colorType"]:checked')) as HTMLInputElement).value
-    localStorage.colorType = v
+    settings.colorType = v
     if (v === 'class') {
       elemById('assignmentColors').style.display = 'none'
       elemById('classColors').style.display = 'block'
@@ -749,11 +733,7 @@ elemById('filterActivity').addEventListener('click', () => {
 })
 
 // At the start, it needs to be correctly populated
-const activityTypes = localStorageRead('shownActivity', {
-  add: true,
-  edit: true,
-  delete: true
-})
+const activityTypes = settings.shownActivity
 
 function updateSelectNum(): string {
     const c = (bool: boolean)  => bool ? 1 : 0
@@ -773,19 +753,19 @@ Object.entries(activityTypes).forEach(([type, enabled]) => {
     activityTypes[type] = selectEl.checked
     elemById('infoActivity').setAttribute('data-filtered', updateSelectNum())
     elemById('infoActivity').classList.toggle(type)
-    return localStorage.shownActivity = JSON.stringify(activityTypes)
+    settings.shownActivity = activityTypes
   })
 })
 
 // The show completed tasks checkbox is set correctly and is assigned an event listener.
 const showDoneTasksEl = elemById('showDoneTasks') as HTMLInputElement
-if (localStorageRead('showDoneTasks')) {
+if (settings.showDoneTasks) {
   showDoneTasksEl.checked = true
   elemById('infoTasksInner').classList.add('showDoneTasks')
 }
 showDoneTasksEl.addEventListener('change', () => {
-  localStorageWrite('showDoneTasks', showDoneTasksEl.checked)
-  elemById('infoTasksInner').classList.toggle('showDoneTasks', showDoneTasksEl.checked)
+  settings.showDoneTasks = showDoneTasksEl.checked
+  elemById('infoTasksInner').classList.toggle('showDoneTasks', settings.showDoneTasks)
 })
 
 // <a name="updates"/>

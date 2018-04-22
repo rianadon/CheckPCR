@@ -8,6 +8,7 @@ import { addActivity, saveActivity } from './plugins/activity'
 import { extraToTask, getExtra, ICustomAssignment } from './plugins/customAssignments'
 import { assignmentInDone, removeFromDone, saveDone } from './plugins/done'
 import { assignmentInModified, removeFromModified, saveModified } from './plugins/modifiedAssignments'
+import { settings } from './settings'
 import { _$, dateString, elemById, element, localStorageRead, smoothScroll } from './util'
 
 export interface ISplitAssignment {
@@ -39,9 +40,9 @@ export function getScroll(): number {
 }
 
 export function getTimeAfter(date: Date): number {
-    const hideassignments = localStorage.getItem('hideAssignments')
-    if (hideassignments === 'day' || hideassignments === 'ms' || hideassignments === 'us') {
-        return SCHEDULE_ENDS[hideassignments](date)
+    const hideAssignments = settings.hideAssignments
+    if (hideAssignments === 'day' || hideAssignments === 'ms' || hideAssignments === 'us') {
+        return SCHEDULE_ENDS[hideAssignments](date)
     } else {
         return SCHEDULE_ENDS.day(date)
     }
@@ -73,7 +74,7 @@ function getStartEndDates(data: IApplicationData): {start: Date, end: Date } {
 function getAssignmentSplits(assignment: IAssignment, start: Date, end: Date,
                              reference?: ICustomAssignment): ISplitAssignment[] {
     const split: ISplitAssignment[] = []
-    if (localStorageRead('assignmentSpan') === 'multiple') {
+    if (settings.assignmentSpan === 'multiple') {
         const s = Math.max(start.getTime(), fromDateNum(assignment.start).getTime())
         const e = assignment.end === 'Forever' ? s : Math.min(end.getTime(), fromDateNum(assignment.end).getTime())
         const span = ((e - s) / 1000 / 3600 / 24) + 1 // Number of days assignment takes up
@@ -97,7 +98,7 @@ function getAssignmentSplits(assignment: IAssignment, start: Date, end: Date,
                 reference
             })
         }
-    } else if (localStorageRead('assignmentSpan') === 'start') {
+    } else if (settings.assignmentSpan === 'start') {
         const s = fromDateNum(assignment.start)
         if (s.getTime() >= start.getTime()) {
             split.push({
@@ -108,7 +109,7 @@ function getAssignmentSplits(assignment: IAssignment, start: Date, end: Date,
                 reference
             })
         }
-    } else if (localStorageRead('assignmentSpan') === 'end') {
+    } else if (settings.assignmentSpan === 'end') {
         const e = assignment.end === 'Forever' ? assignment.end : fromDateNum(assignment.end)
         const de = e === 'Forever' ? fromDateNum(assignment.start) : e
         if (de.getTime() <= end.getTime()) {
@@ -222,7 +223,6 @@ export function display(doScroll: boolean = true): void {
             previousAssignments[assignment.id] = assignment
         })
 
-        const separateTaskClass = JSON.parse(localStorage.sepTaskClass)
         split.forEach((s) => {
             const weekId = computeWeekId(s)
             wk = document.getElementById(weekId)
@@ -231,7 +231,7 @@ export function display(doScroll: boolean = true): void {
             const e = createAssignment(s, data)
 
             // Calculate how many assignments are placed before the current one
-            if (!s.custom || !localStorageRead('sepTasks')) {
+            if (!s.custom || !settings.sepTasks) {
                 let pos = 0
                 // tslint:disable-next-line no-loops
                 while (true) {
@@ -261,7 +261,7 @@ export function display(doScroll: boolean = true): void {
 
             // If the assignment is a test and is upcoming, add it to the upcoming tests panel.
             if (s.assignment.end >= today() && (s.assignment.baseType === 'test' ||
-                (localStorageRead('projectsInTestPane') && s.assignment.baseType === 'longterm'))) {
+                (settings.projectsInTestPane && s.assignment.baseType === 'longterm'))) {
                 const te = element('div', ['upcomingTest', 'assignmentItem', s.assignment.baseType],
                                 `<i class='material-icons'>
                                         ${s.assignment.baseType === 'longterm' ? 'assignment' : 'assessment'}
@@ -299,7 +299,7 @@ export function display(doScroll: boolean = true): void {
             if (already != null) { // Assignment already exists
                 already.style.marginTop = e.style.marginTop
                 already.setAttribute('data-class',
-                    s.custom && separateTaskClass ? 'Task' : classById(s.assignment.class))
+                    s.custom && settings.sepTaskClass ? 'Task' : classById(s.assignment.class))
                 if (!assignmentInModified(s.assignment.id)) {
                     already.getElementsByClassName('body')[0].innerHTML = e.getElementsByClassName('body')[0].innerHTML
                 }
@@ -314,7 +314,7 @@ export function display(doScroll: boolean = true): void {
                     if (e.classList.contains(cl)) already.classList.add(cl)
                 })
             } else {
-                if (s.custom && JSON.parse(localStorage.sepTasks)) {
+                if (s.custom && settings.sepTasks) {
                     const st = Math.floor(s.start.getTime() / 1000 / 3600 / 24)
                     if ((s.assignment.start === st) &&
                         (s.assignment.end === 'Forever' || s.assignment.end >= today())) {
