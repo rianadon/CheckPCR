@@ -261,7 +261,7 @@ function parseAssignment(ca: HTMLElement): IAssignment {
 
     // The actual body of the assignment and its attachments are parsed next
     const b = _$(_$(t.parentNode).parentNode) as HTMLElement
-    const divs = [...b.getElementsByTagName('div')].splice(0, 2)
+    [...b.getElementsByTagName('div')].slice(0, 2).forEach((div) => div.remove())
 
     const ap = attachmentify(b) // Separates attachments from the body
 

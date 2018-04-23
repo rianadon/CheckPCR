@@ -223,16 +223,12 @@ navToggle('infoButton', 'showInfo')
 navToggle('lightButton', 'dark')
 
 // For ease of animations, a function that returns a promise is defined.
-// function animateEl(el: HTMLElement, keyframes: AnimationKeyFrame[], options: AnimationOptions):
-//     Promise<AnimationPlaybackEvent> {
-//     return new Promise((resolve, reject) => {
-//         const player = el.animate(keyframes, options)
-//         player.onfinish = (e) => resolve(e)
-//     })
-// }
-function animateEl(el: HTMLElement, keyframes: any, options: any): Promise<any> {
-    console.error('TODO: Upgrade typescript')
-    return Promise.resolve(null)
+function animateEl(el: HTMLElement, keyframes: AnimationKeyFrame[], options: AnimationOptions):
+    Promise<AnimationPlaybackEvent> {
+    return new Promise((resolve, reject) => {
+        const player = el.animate(keyframes, options)
+        player.onfinish = (e) => resolve(e)
+    })
 }
 
 // In order to make the previous date / next date buttons do something, they need event listeners.
