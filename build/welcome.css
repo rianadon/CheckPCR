@@ -17,18 +17,18 @@ body {
     body {
       font-size: 13px; } }
 
-a, #login > input[type="submit"], #login > button {
+a, #login > input[type="submit"], #error > input[type="submit"], #login > button, #error > button {
   cursor: pointer;
   color: #039be5;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent; }
-  a:active, #login > input[type="submit"]:active, #login > button:active, a:hover, #login > input[type="submit"]:hover, #login > button:hover {
+  a:active, #login > input[type="submit"]:active, #error > input[type="submit"]:active, #login > button:active, #error > button:active, a:hover, #login > input[type="submit"]:hover, #error > input[type="submit"]:hover, #login > button:hover, #error > button:hover {
     outline: 0; }
-  a:hover, #login > input[type="submit"]:hover, #login > button:hover {
+  a:hover, #login > input[type="submit"]:hover, #error > input[type="submit"]:hover, #login > button:hover, #error > button:hover {
     color: #0288D1; }
-  a:active, #login > input[type="submit"]:active, #login > button:active {
+  a:active, #login > input[type="submit"]:active, #error > input[type="submit"]:active, #login > button:active, #error > button:active {
     color: #0277BD; }
-  a:visited, #login > input[type="submit"]:visited, #login > button:visited {
+  a:visited, #login > input[type="submit"]:visited, #error > input[type="submit"]:visited, #login > button:visited, #error > button:visited {
     color: #01579B; }
 
 @font-face {
@@ -57,7 +57,7 @@ a, #login > input[type="submit"], #login > button {
   font-weight: 400;
   src: url(https://example.com/MaterialIcons-Regular.eot);
   src: local("Material Icons"), local("MaterialIcons-Regular"), url("/font/material-design-icons/MaterialIcons-Regular.woff2") format("woff2"), url("/font/material-design-icons/MaterialIcons-Regular.woff") format("woff"), url("/font/material-design-icons/MaterialIcons-Regular.ttf") format("truetype"); }
-.material-icons, .assignment > .range::before, .assignment > .attachments::before, .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before {
+.material-icons, .assignment > .range::before, .assignment > .attachments::before, .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #error.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #error.attachments > button > span::before {
   font-family: "Material Icons";
   font-weight: normal;
   font-style: normal;
@@ -90,7 +90,7 @@ a, #login > input[type="submit"], #login > button {
 input {
   color: inherit; }
 
-#login {
+#login, #error {
   position: fixed;
   top: calc(40vh - 130px);
   left: 0;
@@ -113,13 +113,13 @@ input {
   -moz-transition: -moz-transform 0.2s ease-out;
   -o-transition: -o-transform 0.2s ease-out;
   transition: transform 0.2s ease-out; }
-  #login > h1 {
+  #login > h1, #error > h1 {
     margin: 0 0 20px 0;
     font-size: 20px;
     line-height: 1.1;
     font-weight: 500;
     padding: 0 24px; }
-  #login.active {
+  #login.active, .active#error {
     -webkit-transition: -webkit-transform 0.2s ease-in;
     -moz-transition: -moz-transform 0.2s ease-in;
     -o-transition: -o-transform 0.2s ease-in;
@@ -129,9 +129,9 @@ input {
     -ms-transform: scale(1, 1);
     -o-transform: scale(1, 1);
     transform: scale(1, 1); }
-    #login.active + #loginBackground {
+    #login.active + #loginBackground, .active#error + #loginBackground {
       opacity: 0.5; }
-  #login > input[type="submit"], #login > button {
+  #login > input[type="submit"], #error > input[type="submit"], #login > button, #error > button {
     color: #00AF49 !important;
     background-color: transparent;
     padding: 0 8px;
@@ -147,19 +147,19 @@ input {
     position: absolute;
     bottom: 8px;
     right: 8px; }
-  #login > .content {
+  #login > .content, #error > .content {
     max-height: calc(60vh + -22px);
     padding: 0 24px;
     overflow: auto; }
-    #login > .content > .input-field:last-of-type {
+    #login > .content > .input-field:last-of-type, #error > .content > .input-field:last-of-type {
       margin-bottom: 16px; }
-  #login.large {
+  #login.large, .large#error {
     width: 480px; }
-    #login.large > .content > .input-field {
+    #login.large > .content > .input-field, .large#error > .content > .input-field {
       margin-left: auto;
       margin-right: auto;
       width: 280px; }
-    #login.large > .content > label {
+    #login.large > .content > label, .large#error > .content > label {
       margin-left: 76px; }
 
 #loginBackground {
@@ -673,7 +673,7 @@ body {
   overflow-x: hidden;
   overflow-y: auto; }
 
-h1 {
+h1:not(.nottitle) {
   font-family: inherit;
   font-size: 56px;
   font-weight: 300;
@@ -683,7 +683,7 @@ h1 {
   color: #FFF;
   position: relative; }
   @media only screen and (max-width: 600px) {
-    h1 {
+    h1:not(.nottitle) {
       padding: 16px 16px 24px 16px;
       text-align: center; } }
 
@@ -801,7 +801,7 @@ h2 {
   padding: 0 8px;
   margin: 0 0 8px 0; }
 
-.next, #login > input[type="submit"] {
+.next, form#login > input[type="submit"], form#error > input[type="submit"] {
   margin: 0 auto;
   border: none;
   border-radius: 2px;
@@ -828,14 +828,14 @@ h2 {
   -o-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
   cursor: pointer; }
-  .next:hover, #login > input[type="submit"]:hover {
+  .next:hover, form#login > input[type="submit"]:hover, form#error > input[type="submit"]:hover {
     background-color: #00c954;
     color: #FFF;
     box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
     -webkit-box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
     -moz-box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15); }
 
-#login {
+form#login, form#error {
   position: static;
   -webkit-transform: scale(1);
   -moz-transform: scale(1);
@@ -848,30 +848,30 @@ h2 {
   -moz-box-shadow: none;
   padding: 0;
   width: 100% !important; }
-  #login > input[type="submit"] {
+  form#login > input[type="submit"], form#error > input[type="submit"] {
     position: static; }
-  #login:not(.ready) > input[type="submit"] {
+  form#login:not(.ready) > input[type="submit"], form#error:not(.ready) > input[type="submit"] {
     background-color: #DFDFDF !important;
     box-shadow: none;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     color: #9F9F9F !important;
     cursor: default; }
-    #login:not(.ready) > input[type="submit"]:hover {
+    form#login:not(.ready) > input[type="submit"]:hover, form#error:not(.ready) > input[type="submit"]:hover {
       background-color: #DFDFDF;
       color: #9F9F9F; }
-  #login:not(.ready)::after {
+  form#login:not(.ready)::after, form#error:not(.ready)::after {
     content: "In order to log you in, Check PCR is fetching the login page from PCR. Please wait for it to load.";
     margin-top: 8px;
     display: block; }
-  #login.done::after {
+  form#login.done::after, form.done#error::after {
     content: "You're already logged into PCR. Just click Next below to continue.";
     margin-top: 8px;
     display: block; }
   @media only screen and (min-width: 601px) {
-    #login {
+    form#login, form#error {
       width: 600px !important; } }
-  #login > .content {
+  form#login > .content, form#error > .content {
     max-height: none; }
 
 [type="checkbox"] + label {
@@ -916,14 +916,14 @@ h2 {
       min-width: 288px;
       max-width: 568px;
       border-radius: 2px 2px 0 0; } }
-  .snackInner > a, #login.snackInner > input[type="submit"], #login.snackInner > button {
+  .snackInner > a, #login.snackInner > input[type="submit"], #error.snackInner > input[type="submit"], #login.snackInner > button, #error.snackInner > button {
     text-transform: uppercase;
     color: #00AF49;
     float: right;
     margin-left: 24px;
     font-weight: 500; }
     @media only screen and (min-width: 601px) {
-      .snackInner > a, #login.snackInner > input[type="submit"], #login.snackInner > button {
+      .snackInner > a, #login.snackInner > input[type="submit"], #error.snackInner > input[type="submit"], #login.snackInner > button, #error.snackInner > button {
         margin-left: 48px; } }
 
 #progress {
@@ -1195,7 +1195,7 @@ td {
     content: "attachment"; }
   .assignment.attachment {
     margin-top: 8px; }
-  .assignment > .attachments > a, .assignment > #login.attachments > input[type="submit"], .assignment > #login.attachments > button {
+  .assignment > .attachments > a, .assignment > #login.attachments > input[type="submit"], .assignment > #error.attachments > input[type="submit"], .assignment > #login.attachments > button, .assignment > #error.attachments > button {
     width: 144px;
     height: 96px;
     background-color: #F5F5F5;
@@ -1217,9 +1217,9 @@ td {
     border-radius: 2px;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px; }
-    .assignment > .attachments > a:hover, .assignment > #login.attachments > input[type="submit"]:hover, .assignment > #login.attachments > button:hover {
+    .assignment > .attachments > a:hover, .assignment > #login.attachments > input[type="submit"]:hover, .assignment > #error.attachments > input[type="submit"]:hover, .assignment > #login.attachments > button:hover, .assignment > #error.attachments > button:hover {
       background-color: #E0E0E0; }
-    .assignment > .attachments > a::after, .assignment > #login.attachments > input[type="submit"]::after, .assignment > #login.attachments > button::after {
+    .assignment > .attachments > a::after, .assignment > #login.attachments > input[type="submit"]::after, .assignment > #error.attachments > input[type="submit"]::after, .assignment > #login.attachments > button::after, .assignment > #error.attachments > button::after {
       content: " ";
       width: 0;
       height: 0;
@@ -1229,7 +1229,7 @@ td {
       position: absolute;
       right: 0;
       bottom: 0; }
-    .assignment > .attachments > a::before, .assignment > #login.attachments > input[type="submit"]::before, .assignment > #login.attachments > button::before {
+    .assignment > .attachments > a::before, .assignment > #login.attachments > input[type="submit"]::before, .assignment > #error.attachments > input[type="submit"]::before, .assignment > #login.attachments > button::before, .assignment > #error.attachments > button::before {
       content: " ";
       width: 0;
       height: 0;
@@ -1239,34 +1239,34 @@ td {
       position: absolute;
       right: 0;
       bottom: 0; }
-    .assignment > .attachments > a > span, .assignment > #login.attachments > input[type="submit"] > span, .assignment > #login.attachments > button > span {
+    .assignment > .attachments > a > span, .assignment > #login.attachments > input[type="submit"] > span, .assignment > #error.attachments > input[type="submit"] > span, .assignment > #login.attachments > button > span, .assignment > #error.attachments > button > span {
       position: absolute;
       bottom: 16px;
       left: 16px;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.54); }
-      .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before {
+      .assignment > .attachments > a > span::before, .assignment > #login.attachments > input[type="submit"] > span::before, .assignment > #error.attachments > input[type="submit"] > span::before, .assignment > #login.attachments > button > span::before, .assignment > #error.attachments > button > span::before {
         margin-right: 4px;
         font-size: 12px;
         vertical-align: middle; }
-    .assignment > .attachments > a.document::before, .assignment > #login.attachments > input.document[type="submit"]::before, .assignment > #login.attachments > button.document::before {
+    .assignment > .attachments > a.document::before, .assignment > #login.attachments > input.document[type="submit"]::before, .assignment > #error.attachments > input.document[type="submit"]::before, .assignment > #login.attachments > button.document::before, .assignment > #error.attachments > button.document::before {
       border-top-color: #2196F3; }
-    .assignment > .attachments > a.document > span::before, .assignment > #login.attachments > input.document[type="submit"] > span::before, .assignment > #login.attachments > button.document > span::before {
+    .assignment > .attachments > a.document > span::before, .assignment > #login.attachments > input.document[type="submit"] > span::before, .assignment > #error.attachments > input.document[type="submit"] > span::before, .assignment > #login.attachments > button.document > span::before, .assignment > #error.attachments > button.document > span::before {
       content: "description";
       color: #2196F3; }
-    .assignment > .attachments > a.slides::before, .assignment > #login.attachments > input.slides[type="submit"]::before, .assignment > #login.attachments > button.slides::before {
+    .assignment > .attachments > a.slides::before, .assignment > #login.attachments > input.slides[type="submit"]::before, .assignment > #error.attachments > input.slides[type="submit"]::before, .assignment > #login.attachments > button.slides::before, .assignment > #error.attachments > button.slides::before {
       border-top-color: #FFC107; }
-    .assignment > .attachments > a.slides > span::before, .assignment > #login.attachments > input.slides[type="submit"] > span::before, .assignment > #login.attachments > button.slides > span::before {
+    .assignment > .attachments > a.slides > span::before, .assignment > #login.attachments > input.slides[type="submit"] > span::before, .assignment > #error.attachments > input.slides[type="submit"] > span::before, .assignment > #login.attachments > button.slides > span::before, .assignment > #error.attachments > button.slides > span::before {
       content: "crop_5_4";
       color: #FFC107; }
-    .assignment > .attachments > a.pdf::before, .assignment > #login.attachments > input.pdf[type="submit"]::before, .assignment > #login.attachments > button.pdf::before {
+    .assignment > .attachments > a.pdf::before, .assignment > #login.attachments > input.pdf[type="submit"]::before, .assignment > #error.attachments > input.pdf[type="submit"]::before, .assignment > #login.attachments > button.pdf::before, .assignment > #error.attachments > button.pdf::before {
       border-top-color: #F44336; }
-    .assignment > .attachments > a.pdf > span::before, .assignment > #login.attachments > input.pdf[type="submit"] > span::before, .assignment > #login.attachments > button.pdf > span::before {
+    .assignment > .attachments > a.pdf > span::before, .assignment > #login.attachments > input.pdf[type="submit"] > span::before, .assignment > #error.attachments > input.pdf[type="submit"] > span::before, .assignment > #login.attachments > button.pdf > span::before, .assignment > #error.attachments > button.pdf > span::before {
       content: "insert_drive_file";
       color: #F44336; }
-    .assignment > .attachments > a.plain::before, .assignment > #login.attachments > input.plain[type="submit"]::before, .assignment > #login.attachments > button.plain::before {
+    .assignment > .attachments > a.plain::before, .assignment > #login.attachments > input.plain[type="submit"]::before, .assignment > #error.attachments > input.plain[type="submit"]::before, .assignment > #login.attachments > button.plain::before, .assignment > #error.attachments > button.plain::before {
       border-top-color: #009688; }
-    .assignment > .attachments > a.plain > span::before, .assignment > #login.attachments > input.plain[type="submit"] > span::before, .assignment > #login.attachments > button.plain > span::before {
+    .assignment > .attachments > a.plain > span::before, .assignment > #login.attachments > input.plain[type="submit"] > span::before, .assignment > #error.attachments > input.plain[type="submit"] > span::before, .assignment > #login.attachments > button.plain > span::before, .assignment > #error.attachments > button.plain > span::before {
       content: "description";
       color: #009688; }
   .assignment > .body {
@@ -1280,7 +1280,7 @@ td {
     @media medium-and-up {
       .assignment > .body {
         font-size: 13px; } }
-    .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #login > button {
+    .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #error > input[type="submit"], .assignment > .body #login > button, .assignment > .body #error > button {
       max-width: 500px;
       overflow: hidden;
       display: inline-block;
@@ -1288,5 +1288,68 @@ td {
       text-overflow: ellipsis;
       vertical-align: bottom; }
       @media only screen and (max-width: 600px) {
-        .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #login > button {
+        .assignment > .body a, .assignment > .body #login > input[type="submit"], .assignment > .body #error > input[type="submit"], .assignment > .body #login > button, .assignment > .body #error > button {
           max-width: calc(100vw - 60px); } }
+
+#error {
+  width: 480px;
+  color: rgba(0, 0, 0, 0.54);
+  width: 640px;
+  padding-bottom: 8px; }
+  #error h1, #error h2 {
+    color: rgba(0, 0, 0, 0.87); }
+  #error h2 {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 8px 0 4px 0; }
+  #error > button:first-of-type {
+    right: 129px; }
+  #error.active + #errorBackground {
+    opacity: 0.5; }
+  body.dark #error {
+    background-color: #424242;
+    color: rgba(255, 255, 255, 0.7); }
+  body.dark #error h1, body.dark #error h2 {
+    color: #FFF; }
+
+#errorContent {
+  font-family: monospace;
+  padding-left: 8px;
+  word-wrap: break-word;
+  overflow: auto; }
+
+#errorNo, #errorGoogle, #errorGitHub {
+  color: #00AF49 !important;
+  background-color: transparent;
+  padding: 0 8px;
+  min-width: 64px;
+  border: none;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  font-size: inherit;
+  height: 36px;
+  border: none;
+  outline: none;
+  float: right;
+  position: static !important;
+  margin-top: 32px;
+  line-height: 36px; }
+
+#errorBackground {
+  background: #000;
+  position: fixed;
+  will-change: opacity;
+  opacity: 0;
+  z-index: 1500;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  -webkit-transition: opacity 0.3s ease;
+  -moz-transition: opacity 0.3s ease;
+  -o-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease; }
+  #errorBackground.active {
+    opacity: 0.5; }

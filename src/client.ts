@@ -30,9 +30,6 @@ import {
     ripple
 } from './util'
 
-// @ts-ignore TODO: Make this less hacky
-NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach
-
 if (localStorageRead('data') != null) {
     setData(localStorageRead('data'))
 }
@@ -563,7 +560,7 @@ document.querySelectorAll('.settingsControl').forEach((e) => {
             case 'earlyTest': return display()
             case 'assignmentSpan': return display()
             case 'projectsInTestPane': return display()
-            case 'hideassignments': return display()
+            case 'hideAssignments': return display()
             case 'holidayThemes': return document.body.classList.toggle('holidayThemes', e.checked)
             case 'sepTaskClass': document.body.classList.toggle('sepTaskClass', e.checked); return display()
             case 'sepTasks': return elemById('sepTasksRefresh').style.display = 'block'
@@ -664,9 +661,9 @@ dragTarget.on('pan', (e) => {
     let { x } = e.center
     const { y } = e.center
 
-    const sbkg = elemById('sideBackground')
-    sbkg.style.display = 'block'
-    sbkg.style.opacity = '0'
+    const sBkg = elemById('sideBackground')
+    sBkg.style.display = 'block'
+    sBkg.style.opacity = '0'
     elemById('sideNav').classList.add('manual')
 
     // Keep within boundaries
@@ -685,8 +682,8 @@ dragTarget.on('pan', (e) => {
     }
 
     elemById('sideNav').style.transform = `translateX(${x - 240}px)`
-    const overlayPerc = Math.min(x / 480, 0.5)
-    return sbkg.style.opacity = String(overlayPerc)
+    const overlayPercent = Math.min(x / 480, 0.5)
+    return sBkg.style.opacity = String(overlayPercent)
   }
 })
 
@@ -797,15 +794,15 @@ elemById('newsBackground').addEventListener('click', closeNews)
 // It also needs to be opened when the news button is clicked.
 elemById('newsB').addEventListener('click', () => {
   elemById('sideBackground').click()
-  const dispNews = () => {
+  const displayNews = () => {
     elemById('newsBackground').style.display = 'block'
     return elemById('news').classList.add('active')
   }
 
   if (elemById('newsContent').childNodes.length === 0) {
-    getNews(dispNews)
+    getNews(displayNews)
   } else {
-    dispNews()
+    displayNews()
   }
 })
 
@@ -866,7 +863,7 @@ elemById('newDialog').addEventListener('submit', (evt) => {
   const start = (st != null) ? toDateNum(chrono.parseDate(st)) : today()
   if (due != null) {
     end = start
-    if (end < start) { // Assignmend ends before it is assigned
+    if (end < start) { // Assignment ends before it is assigned
       end += Math.ceil((start - end) / 7) * 7
     }
   }
@@ -898,7 +895,7 @@ if ('serviceWorker' in navigator) {
   )
 }
 
-// If the serviceworker detects that the web app has been updated, the commit is fetched from GitHub.
+// If the service worker detects that the web app has been updated, the commit is fetched from GitHub.
 navigator.serviceWorker.addEventListener('message', (event) => {
     console.log('Getting commit because of serviceworker')
     if (event.data.getCommit) { return checkCommit() }

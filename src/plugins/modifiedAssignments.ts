@@ -6,7 +6,7 @@ interface IModifiedBodies {
     [id: string]: string
 }
 
-const modified: IModifiedBodies = localStorageRead(MODIFIED_STORAGE_NAME) || {}
+const modified: IModifiedBodies = localStorageRead(MODIFIED_STORAGE_NAME, {})
 
 export function removeFromModified(id: string): void {
     delete modified[id]

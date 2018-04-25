@@ -2,7 +2,7 @@ import { localStorageRead, localStorageWrite } from '../util'
 
 const DONE_STORAGE_NAME = 'done'
 
-const done: string[] = localStorageRead(DONE_STORAGE_NAME) || []
+const done: string[] = localStorageRead(DONE_STORAGE_NAME, [])
 
 export function removeFromDone(id: string): void {
     const index = done.indexOf(id)

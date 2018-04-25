@@ -1,5 +1,8 @@
 import { fromDateNum, toDateNum } from './dates'
 
+// @ts-ignore TODO: Make this less hacky
+NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach
+
 /**
  * Forces a layout on an element
  */

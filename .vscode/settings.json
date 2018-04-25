@@ -4,5 +4,20 @@
         "build": true
     },
     "typescriptHero.imports.insertSemicolons": false,
-    "typescriptHero.imports.multiLineTrailingComma": false
+    "typescriptHero.imports.multiLineTrailingComma": false,
+    "cSpell.words": [
+        "Disp",
+        "chrono",
+        "dologin",
+        "hammertime",
+        "listbefore",
+        "listnext",
+        "listnextdate",
+        "listnowdate",
+        "listprevdate",
+        "recognizers",
+        "resizer",
+        "taptimer",
+        "tinycolor"
+    ]
 }

@@ -4,21 +4,21 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<title>Welcome to Check PCR</title>
-		<link rel="stylesheet" type="text/css" href="/welcome.css" />
+		<link rel="stylesheet" type="text/css" href="/build/welcome.css" />
 		<link rel="manifest" href="/androidmanifest.json">
 		<!-- Set the navbar color -->
 		<meta name="theme-color" content="#43A047">
 		<meta name="msapplication-navbutton-color" content="#43A047">
 		<meta name="apple-mobile-web-app-status-bar-style" content="#43A047">
 		<!-- The wonderful long list of favicons -->
-		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-		<link rel="icon" href="/icon_16.png" sizes="16x16">
-		<link rel="icon" href="/icon_32.png" sizes="32x32">
-		<link rel="icon" href="/icon_192.png" sizes="192x192">
+		<link rel="shortcut icon" type="image/x-icon" href="/icon/favicon.ico" />
+		<link rel="icon" href="/icon/icon_16.png" sizes="16x16">
+		<link rel="icon" href="/icon/icon_32.png" sizes="32x32">
+		<link rel="icon" href="/icon/icon_192.png" sizes="192x192">
 		<link rel="apple-touch-icon-precomposed" href="/favicon-152.png">
-		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/favicon-120.png">
+		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/icon/favicon-120.png">
 		<meta name="msapplication-TileColor" content="#FFFFFF">
-		<meta name="msapplication-TileImage" content="/favicon-144.png">
+		<meta name="msapplication-TileImage" content="/icon/favicon-144.png">
 	</head>
 <body data-view="0">
 	<h1>
@@ -151,6 +151,38 @@
 	<div id="progress">
 		<div class="indeterminate"></div>
 	</div>
-	<script src="welcome.js"></script>
+
+	<div id="error">
+		<h1 class="nottitle">Whoops. That wasn't supposed to happen!</h1>
+		<div class="content">
+			<h2>
+				Something went wrong parsing your assignments from PCR.
+			</h2>
+			<p>
+				The most likely cause of this is that you aren't on month or week view.
+			</p>
+			<p>
+				However, if you are doing everything properly, then you've just dicovered a bug! Yay!
+			</p>
+			<p>
+				If you were just messing around with the source code or would like to repeatedly see this amazing dialog and never want Check PCR to function again for you, don't send a bug report.<br>
+				Otherwise, I recommend you do so that this bug can be fixed / squashed / exterminated.
+			</p>
+			<p>
+				You can either do this through a GitHub or Google forms.<br>
+				If you have a GitHub account, I'd prefer that you use GitHub, but the Google form is fine too.
+			</p>
+			<p>
+				If you are submitting the issue via GitHub, please include the following information along with a description of what caused this dialog to appear:
+			</p>
+			<pre id="errorContent"></pre>
+		</div>
+		<a id="errorGitHub" href="https://github.com/19RyanA/CheckPCR/issues/new" target="_blank">SUBMIT (GITHUB)</a>
+		<a id="errorGoogle" href="https://docs.google.com/a/students.harker.org/forms/d/1sa2gUtYFPdKT5YENXIEYauyRPucqsQCVaQAPeF3bZ4Q/viewform" target="_blank">SUBMIT (G. FORMS)</a>
+		<button id="errorNo">CLOSE</button>
+	</div>
+	<div id="errorBackground"></div>
+	<script src="/vendor/diff_match_patch/diff_match_patch.js"></script>
+	<script src="/build/welcome-bundle.js"></script>
 </body>
 </html>

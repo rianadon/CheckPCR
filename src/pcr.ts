@@ -6,7 +6,7 @@ import { displayError } from './components/errorDisplay'
 import { snackbar } from './components/snackbar'
 import { deleteCookie, getCookie, setCookie } from './cookies'
 import { toDateNum } from './dates'
-import { display, formatUpdate } from './display'
+import { formatUpdate, display } from './display'
 import { _$, elemById, localStorageWrite, send } from './util'
 
 const PCR_URL = 'https://webappsca.pcrsoft.com'
@@ -18,8 +18,8 @@ const ONE_MINUTE_MS = 60000
 
 const progressElement = elemById('progress')
 const loginDialog = elemById('login')
-const loginBackground = elemById('loginBackground')
-const lastUpdateEl = elemById('lastUpdate')
+const loginBackground = document.getElementById('loginBackground')
+const lastUpdateEl = document.getElementById('lastUpdate')
 const usernameEl = elemById('username') as HTMLInputElement
 const passwordEl = elemById('password') as HTMLInputElement
 const rememberCheck = elemById('remember') as HTMLInputElement
@@ -63,7 +63,8 @@ export type AttachmentArray = [string, string]
  * @param override Whether to force an update even there was one recently
  * @param data  Optional data to be posted to PCR
  */
-export async function fetch(override: boolean = false, data?: string): Promise<void> {
+export async function fetch(override: boolean = false, data?: string, onsuccess: () => void = display,
+                            onlogin?: () => void): Promise<void> {
     if (!override && Date.now() - lastUpdate < ONE_MINUTE_MS) return
     lastUpdate = Date.now()
 
@@ -81,21 +82,23 @@ export async function fetch(override: boolean = false, data?: string): Promise<v
             const up = getCookie('userPass') // Attempts to get the cookie *userPass*, which is set if the
                                              // "Remember me" checkbox is checked when logging in through CheckPCR
             if (up === '') {
-                loginBackground.style.display = 'block'
+                if (loginBackground) loginBackground.style.display = 'block'
                 loginDialog.classList.add('active')
             } else {
                 // Because we were remembered, we can log in immediately without waiting for the
                 // user to log in through the login form
                 dologin(window.atob(up).split(':') as [string, string])
+                if (onlogin) onlogin()
             }
         } else {
             // Logged in now
             console.log('Fetching assignments successful')
             const t = Date.now()
             localStorage.lastUpdate = t
-            lastUpdateEl.innerHTML = formatUpdate(t)
+            if (lastUpdateEl) lastUpdateEl.innerHTML = formatUpdate(t)
             try {
                 parse(resp.response)
+                onsuccess()
             } catch (error) {
                 console.log(error)
                 displayError(error)
@@ -113,9 +116,12 @@ export async function fetch(override: boolean = false, data?: string): Promise<v
  *              If this array is not given the login dialog inputs will be used.
  * @param submitEvt Whether to override the username and password suppleid in val with the values of the input elements
  */
-export async function dologin(val?: [string, string]|null, submitEvt: boolean = false): Promise<void> {
+export async function dologin(val?: [string, string]|null, submitEvt: boolean = false,
+                              onsuccess: () => void = display): Promise<void> {
     loginDialog.classList.remove('active')
-    setTimeout(() => loginBackground.style.display = 'none', 350)
+    setTimeout(() => {
+        if (loginBackground) loginBackground.style.display = 'none'
+    }, 350)
 
     const postArray: string[] = [] // Array of data to post
     localStorageWrite('username', val && !submitEvt ? val[0] : usernameEl.value)
@@ -143,7 +149,7 @@ export async function dologin(val?: [string, string]|null, submitEvt: boolean = 
             passwordEl.value = ''
 
             loginDialog.classList.add('active')
-            loginBackground.style.display = 'block'
+            if (loginBackground) loginBackground.style.display = 'block'
         } else {
             // Otherwise, we are logged in
             if (rememberCheck.checked) { // Is the "remember me" checkbox checked?
@@ -154,9 +160,10 @@ export async function dologin(val?: [string, string]|null, submitEvt: boolean = 
             // loadingBar.style.display = "none"
             const t = Date.now()
             localStorage.lastUpdate = t
-            lastUpdateEl.innerHTML = formatUpdate(t)
+            if (lastUpdateEl) lastUpdateEl.innerHTML = formatUpdate(t)
             try {
                 parse(resp.response) // Parse the data PCR has replied with
+                onsuccess()
             } catch (e) {
                 console.log(e)
                 displayError(e)
@@ -347,7 +354,6 @@ function parse(doc: HTMLDocument): void {
     // Now allow the view to be switched
     document.body.classList.add('loaded')
 
-    display() // Display the data
     localStorage.setItem('data', JSON.stringify(getData())) // Store for offline use
 }
 

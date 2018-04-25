@@ -4,8 +4,8 @@ import { assignmentInDone } from '../plugins/done'
 import { _$, dateString, elemById, element, smoothScroll } from '../util'
 import { separate } from './assignment'
 
-const insertTo = elemById('infoActivity')
 export function addActivityElement(el: HTMLElement): void {
+    const insertTo = elemById('infoActivity')
     insertTo.insertBefore(el, insertTo.querySelector('.activity'))
 }
 

@@ -76,14 +76,15 @@ function parseAthenaData(dat: string): IAthenaData|null {
 }
 
 export function updateAthenaData(data: string): void {
+    const refreshEl = document.getElementById('athenaDataRefresh')
     try {
         athenaData = parseAthenaData(data)
         localStorageWrite(ATHENA_STORAGE_NAME, data)
         elemById('athenaDataError').style.display = 'none'
-        elemById('athenaDataRefresh').style.display = 'block'
+        if (refreshEl) refreshEl.style.display = 'block'
     } catch (e) {
         elemById('athenaDataError').style.display = 'block'
-        elemById('athenaDataRefresh').style.display = 'none'
+        if (refreshEl) refreshEl.style.display = 'none'
         elemById('athenaDataError').innerHTML = e.message
     }
 }

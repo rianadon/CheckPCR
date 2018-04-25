@@ -11,7 +11,7 @@ export interface ICustomAssignment {
     end: number|'Forever'
 }
 
-const extra: ICustomAssignment[] = localStorageRead(CUSTOM_STORAGE_NAME) || {}
+const extra: ICustomAssignment[] = localStorageRead(CUSTOM_STORAGE_NAME, [])
 
 export function getExtra(): ICustomAssignment[] {
     return extra

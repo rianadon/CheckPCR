@@ -75,11 +75,15 @@ function letterToColorVal(letter: string): number {
 // The function below uses this algorithm to generate a background color for the initials displayed in the sidebar.
 export function updateAvatar(): void {
     if (!localStorageRead('username')) return
-    elemById('user').innerHTML = localStorageRead('username')
+    const userEl = document.getElementById('user')
+    const initialsEl = document.getElementById('initials')
+    if (!userEl || !initialsEl) return
+
+    userEl.innerHTML = localStorageRead('username')
     const initials = localStorageRead('username').match(/\d*(.).*?(.$)/) // Separate year from first name and initial
     if (initials != null) {
         const bg = labrgb(50, letterToColorVal(initials[1]), letterToColorVal(initials[2])) // Compute the color
-        elemById('initials').style.backgroundColor = bg
-        elemById('initials').innerHTML = initials[1] + initials[2]
+        initialsEl.style.backgroundColor = bg
+        initialsEl.innerHTML = initials[1] + initials[2]
     }
 }
