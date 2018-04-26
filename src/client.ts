@@ -16,7 +16,7 @@ import { dologin, fetch, getClasses, getData, logout, setData, switchViews } fro
 import { addActivity, recentActivity } from './plugins/activity'
 import { updateAthenaData } from './plugins/athena'
 import { addToExtra, parseCustomTask, saveExtra } from './plugins/customAssignments'
-import { settings } from './settings'
+import { getSetting, setSetting, settings } from './settings'
 import {
     _$,
     _$h,
@@ -542,18 +542,16 @@ updateColors()
 // The elements that control the settings also need event listeners
 document.querySelectorAll('.settingsControl').forEach((e) => {
     if (!(e instanceof HTMLInputElement)) return
-    if (localStorage[e.name] != null) {
-        if (e.type === 'checkbox') {
-        e.checked = JSON.parse(localStorage[e.name])
-        } else {
-        e.value = JSON.parse(localStorage[e.name])
-        }
+    if (e.type === 'checkbox') {
+        e.checked = getSetting(e.name)
+    } else {
+        e.value = getSetting(e.name)
     }
     e.addEventListener('change', (evt) => {
         if (e.type === 'checkbox') {
-            localStorageWrite(e.name, e.checked)
+            setSetting(e.name, e.checked)
         } else {
-            localStorageWrite(e.name, e.value)
+            setSetting(e.name, e.value)
         }
         switch (e.name) {
             case 'refreshRate': return intervalRefresh()

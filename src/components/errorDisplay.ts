@@ -20,3 +20,8 @@ export function displayError(e: Error): void {
     elemById('errorBackground').style.display = 'block'
     return elemById('error').classList.add('active')
 }
+
+window.addEventListener('error', (evt) => {
+    evt.preventDefault()
+    displayError(evt.error)
+})

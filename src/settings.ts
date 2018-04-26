@@ -93,3 +93,15 @@ export const settings = {
     get showDoneTasks(): boolean { return localStorageRead('showDoneTasks', false) },
     set showDoneTasks(v: boolean) { localStorageWrite('showDoneTasks', v) }
 }
+
+export function getSetting(name: string): any {
+    if (!settings.hasOwnProperty(name)) throw new Error(`Invalid setting name ${name}`)
+    // @ts-ignore
+    return settings[name]
+}
+
+export function setSetting(name: string, value: any): void {
+    if (!settings.hasOwnProperty(name)) throw new Error(`Invalid setting name ${name}`)
+    // @ts-ignore
+    settings[name] = value
+}
