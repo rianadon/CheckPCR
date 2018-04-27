@@ -6,7 +6,7 @@ import { displayError } from './components/errorDisplay'
 import { snackbar } from './components/snackbar'
 import { deleteCookie, getCookie, setCookie } from './cookies'
 import { toDateNum } from './dates'
-import { formatUpdate, display } from './display'
+import { display, formatUpdate } from './display'
 import { _$, elemById, localStorageWrite, send } from './util'
 
 const PCR_URL = 'https://webappsca.pcrsoft.com'
@@ -99,6 +99,7 @@ export async function fetch(override: boolean = false, data?: string, onsuccess:
             try {
                 parse(resp.response)
                 onsuccess()
+                localStorageWrite('data', getData()) // Store for offline use
             } catch (error) {
                 console.log(error)
                 displayError(error)
@@ -164,6 +165,7 @@ export async function dologin(val?: [string, string]|null, submitEvt: boolean = 
             try {
                 parse(resp.response) // Parse the data PCR has replied with
                 onsuccess()
+                localStorageWrite('data', getData()) // Store for offline use
             } catch (e) {
                 console.log(e)
                 displayError(e)
@@ -355,8 +357,6 @@ function parse(doc: HTMLDocument): void {
 
     // Now allow the view to be switched
     document.body.classList.add('loaded')
-
-    localStorage.setItem('data', JSON.stringify(getData())) // Store for offline use
 }
 
 export function urlForAttachment(search: string): string {

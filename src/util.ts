@@ -70,12 +70,12 @@ export function send(url: string, respType?: XMLHttpRequestResponseType|null, he
 
         // Sometimes the browser won't give the total bytes in the response, so use past results or
         // a default of 170,000 bytes if the browser doesn't provide the number
-        const load = Number(localStorage.getItem('load')) || 170000
+        const load = localStorageRead('load', 170000)
         let computedLoad = 0
 
         req.addEventListener('load', (evt) => {
             // Cache the number of bytes loaded so it can be used for better estimates later on
-            localStorage.setItem('load', String(computedLoad))
+            localStorageWrite('load', computedLoad)
             if (progress) progress.classList.remove('active')
             // Resolve with the request
             if (req.status === 200) {
