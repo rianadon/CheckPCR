@@ -198,6 +198,7 @@ function parseDateHash(element: HTMLAnchorElement): number {
 }
 
 // The *attachmentify* function parses the body of an assignment (*text*) and returns the assignment's attachments.
+// Side effect: these attachments are removed
 function attachmentify(element: HTMLElement): AttachmentArray[] {
     const attachments: AttachmentArray[] = []
 
@@ -209,6 +210,7 @@ function attachmentify(element: HTMLElement): AttachmentArray[] {
                 a.innerHTML,
                 a.search + a.hash
             ])
+            a.remove()
         }
     })
     return attachments
