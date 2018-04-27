@@ -7,7 +7,6 @@ try {
 } catch(e) {
 	sass = require('gulp-ruby-sass'); //alternate
 }
-// var coffee = require('gulp-coffee');
 var gutil = require('gulp-util');
 var spawn = require('child_process').spawn;
 
@@ -32,11 +31,6 @@ function exec(command, args, log, cb) {
 	});
 }
 
-gulp.task('coffee', function() {
-	gulp.src(['client.litcoffee', 'welcome.litcoffee'])
-		.pipe(coffee({bare: true}).on('error', function(err) {gutil.log(err.toString());}))
-		.pipe(gulp.dest('./'));
-});
 gulp.task('sass', function () {
 	if(libSass) {
 		gulp.src(['style.sass', 'welcome.sass'], { cwd: 'src'})
@@ -78,12 +72,9 @@ gulp.task('icon', function () {
 gulp.task('sass:watch', function () {
 	gulp.watch('*.sass', ['sass']);
 });
-gulp.task('coffee:watch', function() {
-	gulp.watch('*.litcoffee', ['coffee']);
-});
 gulp.task('icon:watch', function() {
 	gulp.watch('icon_raw/icon.svg', ['icon']);
 });
 
-gulp.task('watch', ['sass:watch', 'coffee:watch', 'icon:watch']);
-gulp.task('default', ['sass', 'coffee', 'icon']);
+gulp.task('watch', ['sass:watch', 'icon:watch']);
+gulp.task('default', ['sass', 'icon']);
