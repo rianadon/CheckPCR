@@ -218,16 +218,18 @@ function attachmentify(element: HTMLElement): AttachmentArray[] {
     return attachments
 }
 
+const URL_REGEX = new RegExp(`(\
+https?:\\/\\/\
+[-A-Z0-9+&@#\\/%?=~_|!:,.;]*\
+[-A-Z0-9+&@#\\/%=~_|]+\
+)`, 'ig'
+)
+
 // This function replaces text that represents a hyperlink with a functional hyperlink by using
 // javascript's replace function with a regular expression if the text already isn't part of a
 // hyperlink.
 function urlify(text: string): string {
-    return text.replace(new RegExp(`(\
-        https?:\\/\\/\
-        [-A-Z0-9+&@#\\/%?=~_|!:,.;]*\
-        [-A-Z0-9+&@#\\/%=~_|]+\
-        )`, 'ig'
-    ), (str, str2, offset) => { // Function to replace matches
+    return text.replace(URL_REGEX, (str, str2, offset) => { // Function to replace matches
         if (/href\s*=\s*./.test(text.substring(offset - 10, offset)) ||
             /originalpath\s*=\s*./.test(text.substring(offset - 20, offset))
         ) {
@@ -254,7 +256,7 @@ function parseAssignmentType(type: string): string {
 }
 
 function parseAssignmentBaseType(type: string): string {
-    return type.toLowerCase().replace('& quizzes', '').replace(/\s/g, '')
+    return type.toLowerCase().replace('& quizzes', '').replace(/\s/g, '').replace('quizzes', 'test')
 }
 
 function parseAssignment(ca: HTMLElement): IAssignment {
