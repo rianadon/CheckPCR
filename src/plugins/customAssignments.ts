@@ -51,14 +51,18 @@ export function extraToTask(custom: ICustomAssignment, data: IApplicationData): 
 }
 
 interface IParseResult {
+    text: string
     cls?: string
     due?: string
     st?: string
 }
 
-export function parseCustomTask(text: string, result: IParseResult = {}): IParseResult {
+export function parseCustomTask(text: string, result: IParseResult = { text: '' }): IParseResult {
     const parsed = text.match(/(.*) (for|by|due|assigned|starting|ending|beginning) (.*)/)
-    if (parsed == null) return result
+    if (parsed == null) {
+        result.text = text
+        return result
+    }
 
     switch (parsed[2]) {
         case 'for': result.cls = parsed[3]; break

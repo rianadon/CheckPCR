@@ -854,13 +854,13 @@ elemById('newCancel').addEventListener('click', closeNew)
 // When the enter key is pressed or the submit button is clicked, the new assignment is added.
 elemById('newDialog').addEventListener('submit', (evt) => {
   evt.preventDefault()
-  const text = (elemById('newText') as HTMLInputElement).value
-  const { cls, due, st } = parseCustomTask(text)
+  const itext = (elemById('newText') as HTMLInputElement).value
+  const { text, cls, due, st } = parseCustomTask(itext)
   let end: 'Forever'|number = 'Forever'
 
   const start = (st != null) ? toDateNum(chrono.parseDate(st)) : today()
   if (due != null) {
-    end = start
+    end = toDateNum(chrono.parseDate(due))
     if (end < start) { // Assignment ends before it is assigned
       end += Math.ceil((start - end) / 7) * 7
     }
