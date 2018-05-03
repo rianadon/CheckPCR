@@ -629,7 +629,7 @@ elemById('lastUpdate').innerHTML = triedLastUpdate ? formatUpdate(triedLastUpdat
 if (localStorageRead('data') != null) {
     // Now check if there's activity
     recentActivity().forEach((item) => {
-        addActivity(item[0], item[1], new Date(item[2]), true, item[3])
+        addActivity(item[0], item[1], new Date(item[2]), false, item[3])
     })
 
     display()

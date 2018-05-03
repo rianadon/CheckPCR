@@ -324,9 +324,10 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
                 (document.body.getAttribute('data-view') === '0')) {
                 e.classList.remove('anim')
                 e.classList.add('modify')
-                e.style.top = (e.getBoundingClientRect().top - document.body.scrollTop
-                            - cssNumber(e.style.marginTop)) + 44 + 'px'
-                e.setAttribute('data-top', e.style.top)
+                const top = (e.getBoundingClientRect().top - document.body.scrollTop
+                            - cssNumber(e.style.marginTop)) + 44
+                e.style.top = top - window.pageYOffset + 'px'
+                e.setAttribute('data-top', String(top))
                 document.body.style.overflow = 'hidden'
                 const back = elemById('background')
                 back.classList.add('active')
@@ -367,7 +368,7 @@ export function closeOpened(evt: Event): void {
     const el = document.querySelector('.full') as HTMLElement|null
     if (el == null) return
 
-    el.style.top = el.getAttribute('data-top')
+    el.style.top = Number(el.getAttribute('data-top') || '0') - window.pageYOffset + 'px'
     el.classList.add('anim')
     el.classList.remove('full')
     el.scrollTop = 0
