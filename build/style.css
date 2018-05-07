@@ -1469,7 +1469,7 @@ body[data-view="1"] .week {
   max-height: 26px;
   z-index: 100;
   cursor: pointer;
-  will-change: background-color, box-shadow, padding, max-height, min-height, left, right, top, margin;
+  will-change: background-color, box-shadow, padding, max-height, min-height, top, margin;
   min-height: 0; }
   .assignment > .title {
     position: relative;
@@ -1782,20 +1782,20 @@ body[data-view="1"] .week {
     -webkit-border-bottom-right-radius: 0;
     -moz-border-bottom-right-radius: 0; }
   body:not(.noTrans) .assignment.anim {
-    -webkit-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out left 0.3s ease-out right 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
-    -moz-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out left 0.3s ease-out right 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
-    -o-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out left 0.3s ease-out right 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
-    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out, padding 0.3s ease-out, max-height 0.3s ease-out, min-height 0.3s ease-out, left 0.3s ease-out, right 0.3s ease-out, top 0.3s ease-out, margin 0.3s ease-out; }
+    -webkit-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
+    -moz-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
+    -o-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
+    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out, padding 0.3s ease-out, max-height 0.3s ease-out, min-height 0.3s ease-out, top 0.3s ease-out, margin 0.3s ease-out; }
   body[data-view="0"]:not(.noTrans) .assignment.anim {
-    -webkit-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out left 0.3s ease-out right 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
-    -moz-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out left 0.3s ease-out right 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
-    -o-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out left 0.3s ease-out right 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out;
-    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out, padding 0.3s ease-out, max-height 0.3s ease-out, min-height 0.3s ease-out, left 0.3s ease-out, right 0.3s ease-out, top 0.3s ease-out, margin 0.3s ease-out; }
+    -webkit-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out left 0.3s ease-out right 0.3s ease-out;
+    -moz-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out left 0.3s ease-out right 0.3s ease-out;
+    -o-transition: background-color 0.3s ease-out box-shadow 0.3s ease-out padding 0.3s ease-out max-height 0.3s ease-out min-height 0.3s ease-out top 0.3s ease-out margin 0.3s ease-out left 0.3s ease-out right 0.3s ease-out;
+    transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out, padding 0.3s ease-out, max-height 0.3s ease-out, min-height 0.3s ease-out, top 0.3s ease-out, margin 0.3s ease-out, left 0.3s ease-out, right 0.3s ease-out; }
     body[data-view="0"]:not(.noTrans) .assignment.anim.full {
-      -webkit-transition: background-color 0.3s ease-in box-shadow 0.3s ease-in padding 0.3s ease-in max-height 0.3s ease-in min-height 0.3s ease-in left 0.3s ease-in right 0.3s ease-in top 0.3s ease-in margin 0.3s ease-in;
-      -moz-transition: background-color 0.3s ease-in box-shadow 0.3s ease-in padding 0.3s ease-in max-height 0.3s ease-in min-height 0.3s ease-in left 0.3s ease-in right 0.3s ease-in top 0.3s ease-in margin 0.3s ease-in;
-      -o-transition: background-color 0.3s ease-in box-shadow 0.3s ease-in padding 0.3s ease-in max-height 0.3s ease-in min-height 0.3s ease-in left 0.3s ease-in right 0.3s ease-in top 0.3s ease-in margin 0.3s ease-in;
-      transition: background-color 0.3s ease-in, box-shadow 0.3s ease-in, padding 0.3s ease-in, max-height 0.3s ease-in, min-height 0.3s ease-in, left 0.3s ease-in, right 0.3s ease-in, top 0.3s ease-in, margin 0.3s ease-in; }
+      -webkit-transition: background-color 0.3s ease-in box-shadow 0.3s ease-in padding 0.3s ease-in max-height 0.3s ease-in min-height 0.3s ease-in top 0.3s ease-in margin 0.3s ease-in left 0.3s ease-in right 0.3s ease-in;
+      -moz-transition: background-color 0.3s ease-in box-shadow 0.3s ease-in padding 0.3s ease-in max-height 0.3s ease-in min-height 0.3s ease-in top 0.3s ease-in margin 0.3s ease-in left 0.3s ease-in right 0.3s ease-in;
+      -o-transition: background-color 0.3s ease-in box-shadow 0.3s ease-in padding 0.3s ease-in max-height 0.3s ease-in min-height 0.3s ease-in top 0.3s ease-in margin 0.3s ease-in left 0.3s ease-in right 0.3s ease-in;
+      transition: background-color 0.3s ease-in, box-shadow 0.3s ease-in, padding 0.3s ease-in, max-height 0.3s ease-in, min-height 0.3s ease-in, top 0.3s ease-in, margin 0.3s ease-in, left 0.3s ease-in, right 0.3s ease-in; }
   body[data-view="1"] .assignment {
     margin: 12px !important;
     background-color: #FFF !important;

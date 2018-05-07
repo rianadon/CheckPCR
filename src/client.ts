@@ -1,5 +1,5 @@
 import { checkCommit, fetchNews, getNews, VERSION } from './app'
-import { closeOpened } from './components/assignment'
+import { closeOpened, getES } from './components/assignment'
 import { updateAvatar } from './components/avatar'
 import { updateNewTips } from './components/customAdder'
 import { getResizeAssignments, resize, resizeCaller } from './components/resizer'
@@ -20,6 +20,7 @@ import { getSetting, setSetting, settings } from './settings'
 import {
     _$,
     _$h,
+    animateEl,
     dateString,
     elemById,
     element,
@@ -94,17 +95,30 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
             const columnHeights = Array.from(new Array(columns), () => 0)
             const step = (timestamp: number) => {
                 if (!columns) throw new Error('Columns number not found')
-                if (start == null) { start = timestamp }
                 assignments.forEach((assignment, n) => {
                     const col = n % columns
                     if (n < columns) {
-                    columnHeights[col] = 0
+                        columnHeights[col] = 0
                     }
                     assignment.style.top = columnHeights[col] + 'px'
-                    assignment.style.left = ((100 / columns) * col) + '%'
-                    assignment.style.right = ((100 / columns) * (columns - col - 1)) + '%'
+                    if (start == null) {
+                        const [eName, sName] = getES(assignment)
+                        const oldLeft = Number(sName.substring(1)) * 100 / 7 + '%'
+                        const oldRight = Number(eName.substring(1)) * 100 / 7 + '%'
+
+                        const left = ((100 / columns) * col) + '%'
+                        const right = ((100 / columns) * (columns - col - 1)) + '%'
+                        animateEl(assignment, [
+                            { left: oldLeft, right: oldRight },
+                            { left, right }
+                        ], { duration: 300 }).then(() => {
+                            assignment.style.left = left
+                            assignment.style.right = right
+                        })
+                    }
                     columnHeights[col] += assignment.offsetHeight + 24
                 })
+                if (start == null) start = timestamp
                 if ((timestamp - start) < 350) {
                     return window.requestAnimationFrame(step)
                 }
@@ -161,7 +175,7 @@ document.querySelectorAll('#infoTabs>li').forEach((tab, tabIndex) => {
 // The view is set to what it was last.
 if (localStorageRead('view') != null) {
   document.body.setAttribute('data-view', localStorageRead('view'))
-  if (localStorageRead('view') === '1') {
+  if (localStorageRead('view') === 1) {
     window.addEventListener('resize', resizeCaller)
   }
 }
@@ -218,15 +232,6 @@ navToggle('infoButton', 'showInfo')
 
 // This also gets repeated for the theme toggling.
 navToggle('lightButton', 'dark')
-
-// For ease of animations, a function that returns a promise is defined.
-function animateEl(el: HTMLElement, keyframes: AnimationKeyFrame[], options: AnimationOptions):
-    Promise<AnimationPlaybackEvent> {
-    return new Promise((resolve, reject) => {
-        const player = el.animate(keyframes, options)
-        player.onfinish = (e) => resolve(e)
-    })
-}
 
 // In order to make the previous date / next date buttons do something, they need event listeners.
 elemById('listnext').addEventListener('click', () => {

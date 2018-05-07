@@ -1,4 +1,4 @@
-import { _$ } from '../util'
+import { _$, animateEl } from '../util'
 
 // For list view, the assignments can't be on top of each other.
 // Therefore, a listener is attached to the resizing of the browser window.
@@ -25,6 +25,8 @@ export function resizeCaller(): void {
     }
 }
 
+let lastColumns: number|null = null
+
 export function resize(): void {
     ticking = true
     // To calculate the number of columns, the below algorithm is used becase as the screen size
@@ -35,6 +37,8 @@ export function resize(): void {
     widths.forEach((w, index) => {
         if (window.innerWidth > w) { columns = index + 1 }
     })
+    const columnChange = (columns !== lastColumns)
+
     const columnHeights = Array.from(new Array(columns), () => 0)
     const cch: number[] = []
     const assignments = getResizeAssignments()
@@ -46,8 +50,26 @@ export function resize(): void {
     assignments.forEach((assignment, n) => {
         const col = n % columns
         assignment.style.top = cch[n] + 'px'
-        assignment.style.left = ((100 / columns) * col) + '%'
-        assignment.style.right = ((100 / columns) * (columns - col - 1)) + '%'
+        if (columnChange) {
+            const left = ((100 / columns) * col) + '%'
+            const right = ((100 / columns) * (columns - col - 1)) + '%'
+            if (lastColumns === null) {
+                assignment.style.left = left
+                assignment.style.right = right
+            } else {
+                const lastCol = n % lastColumns
+                animateEl(assignment, [
+                    {
+                        left: ((100 / lastColumns) * lastCol) + '%',
+                        right: ((100 / lastColumns) * (lastColumns - lastCol - 1)) + '%',
+                    },
+                    { left, right }
+                ], { duration: 300 }).then(() => {
+                    assignment.style.left = left
+                    assignment.style.right = right
+                })
+            }
+        }
     })
     if (timeoutId) clearTimeout(timeoutId)
     timeoutId = setTimeout(() => {
@@ -64,5 +86,6 @@ export function resize(): void {
             assignment.style.top = cch[n] + 'px'
         })
     }, 500)
+    lastColumns = columns
     ticking = false
 }

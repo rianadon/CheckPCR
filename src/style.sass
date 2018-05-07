@@ -923,13 +923,15 @@ body[data-view="1"] .week
 	&.overWeekend
 		+border-radius-corner(top-right, 0)
 		+border-radius-corner(bottom-right, 0)
-	$transitions: background-color, box-shadow, padding, max-height, min-height, left, right, top, margin
+	$transitions: background-color, box-shadow, padding, max-height, min-height, top, margin
+	$extra-trans: left, right
 	&.anim
 		$tt: ()
 		$ttIn: ()
 		$ttOut: ()
 		@each $transition in $transitions
 			$tt: append($tt, $transition + " 0.3s ease-out", comma)
+		@each $transition in join($transitions, $extra-trans, comma)
 			$ttIn: append($ttIn, $transition + " 0.3s ease-out", comma)
 			$ttOut: append($ttOut, $transition + " 0.3s ease-in", comma)
 		body:not(.noTrans) &

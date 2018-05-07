@@ -281,3 +281,12 @@ export function cssNumber(css: string|null): number {
     if (!css) return 0
     return parseInt(css, 10)
 }
+
+// For ease of animations, a function that returns a promise is defined.
+export function animateEl(el: HTMLElement, keyframes: AnimationKeyFrame[], options: AnimationOptions):
+    Promise<AnimationPlaybackEvent> {
+    return new Promise((resolve, reject) => {
+        const player = el.animate(keyframes, options)
+        player.onfinish = (e) => resolve(e)
+    })
+}

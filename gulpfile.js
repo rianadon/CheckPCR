@@ -33,14 +33,11 @@ function exec(command, args, log, cb) {
 
 gulp.task('sass', function () {
 	if(libSass) {
-		gulp.src(['style.sass', 'welcome.sass'], { cwd: 'src'})
+		return gulp.src(['style.sass', 'welcome.sass'], { cwd: 'src'})
 			.pipe(sass().on('error', sass.logError))
-			.pipe(gulp.dest('./'));
+			.pipe(gulp.dest('./build'));
 	} else {
-		sass('src/style.sass')
-			.on('error', sass.logError)
-			.pipe(gulp.dest('./build/'));
-		sass('src/welcome.sass')
+		return sass(['src/style.sass', 'src/welcome.sass'])
 			.on('error', sass.logError)
 			.pipe(gulp.dest('./build/'));
 	}
@@ -70,10 +67,10 @@ gulp.task('icon', function () {
 });
 
 gulp.task('sass:watch', function () {
-	gulp.watch('*.sass', ['sass']);
+	return gulp.watch('src/*.sass', ['sass']);
 });
 gulp.task('icon:watch', function() {
-	gulp.watch('icon_raw/icon.svg', ['icon']);
+	return gulp.watch('icon_raw/icon.svg', ['icon']);
 });
 
 gulp.task('watch', ['sass:watch', 'icon:watch']);
