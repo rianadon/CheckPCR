@@ -2862,7 +2862,7 @@ body.dark {
     color: rgba(255, 255, 255, 0.3); }
   body.dark .upcomingTest > small, body.dark .activity > small, body.dark .innerActivity > small, body.dark .taskPaneItem > small, body.dark .activity > small, body.dark .upcomingTest > .range, body.dark .activity > .range, body.dark .innerActivity > .range, body.dark .taskPaneItem > .range, body.dark .activity > .range, body.dark #infoTests::after, body.dark #infoTasksInner:empty::after, body.dark #dates > div, body.dark #infoTabs > li, body.dark #filterActivity, body.dark label, body.dark .input-field > label, body.dark .editAssignment, body.dark .deleteAssignment, body.dark .restore, body.dark .others, body.dark .customInfo, body.dark #listbefore, body.dark #listnext {
     color: rgba(255, 255, 255, 0.7); }
-  body.dark #info > #extra, body.dark .colors > div {
+  body.dark #info > #extra, body.dark .colors > div, body.dark:not([data-pcrview]) > main::after {
     color: rgba(255, 255, 255, 0.3); }
   body.dark #empty {
     filter: invert(80%);
