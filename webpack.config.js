@@ -3,6 +3,7 @@ const path = require('path');
 module.exports = {
   entry: {
     app: './src/client.ts',
+    preload: './src/preload.ts',
     welcome: './src/welcome.ts'
   },
   devtool: 'inline-source-map',
