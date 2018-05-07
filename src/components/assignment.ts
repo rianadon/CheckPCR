@@ -375,12 +375,16 @@ export function closeOpened(evt: Event): void {
     document.body.style.overflow = 'auto'
     const back = elemById('background')
     back.classList.remove('active')
-    setTimeout(() => {
+
+    const transitionListener = () => {
         back.style.display = 'none'
         el.classList.remove('anim')
         el.classList.remove('modify')
         el.style.top = 'auto'
         forceLayout(el)
         el.classList.add('anim')
-    }, 1000)
+        el.removeEventListener('transitionend', transitionListener)
+    }
+
+    el.addEventListener('transitionend', transitionListener)
 }
