@@ -26,6 +26,8 @@ export function resizeCaller(): void {
 }
 
 let lastColumns: number|null = null
+let lastAssignments: number|null = null
+let lastDoneCount: number|null = null
 
 export function resize(): void {
     ticking = true
@@ -37,11 +39,11 @@ export function resize(): void {
     widths.forEach((w, index) => {
         if (window.innerWidth > w) { columns = index + 1 }
     })
-    const columnChange = (columns !== lastColumns)
 
     const columnHeights = Array.from(new Array(columns), () => 0)
     const cch: number[] = []
     const assignments = getResizeAssignments()
+    const doneCount = assignments.filter((a) => a.classList.contains('done')).length
     assignments.forEach((assignment, n) => {
         const col = n % columns
         cch.push(columnHeights[col])
@@ -50,18 +52,17 @@ export function resize(): void {
     assignments.forEach((assignment, n) => {
         const col = n % columns
         assignment.style.top = cch[n] + 'px'
-        if (columnChange) {
+        if (columns !== lastColumns || assignments.length !== lastAssignments || doneCount !== lastDoneCount) {
             const left = ((100 / columns) * col) + '%'
             const right = ((100 / columns) * (columns - col - 1)) + '%'
             if (lastColumns === null) {
                 assignment.style.left = left
                 assignment.style.right = right
             } else {
-                const lastCol = n % lastColumns
                 animateEl(assignment, [
                     {
-                        left: ((100 / lastColumns) * lastCol) + '%',
-                        right: ((100 / lastColumns) * (lastColumns - lastCol - 1)) + '%',
+                        left: assignment.style.left || left,
+                        right: assignment.style.right || right
                     },
                     { left, right }
                 ], { duration: 300 }).then(() => {
@@ -87,5 +88,7 @@ export function resize(): void {
         })
     }, 500)
     lastColumns = columns
+    lastAssignments = assignments.length
+    lastDoneCount = doneCount
     ticking = false
 }
