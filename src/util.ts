@@ -141,7 +141,8 @@ export function _$<T>(arg: T|null): T {
 
 export function _$h(arg: Node|EventTarget|null): HTMLElement {
     if (arg == null) throw new Error('Expected node to be non-null')
-    return arg as HTMLElement
+    if (!(arg instanceof HTMLElement)) throw new Error('Node is not an HTML element')
+    return arg
 }
 
 // Because some localStorage entries can become corrupted due to error side effects, the below
