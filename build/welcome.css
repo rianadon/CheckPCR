@@ -841,7 +841,7 @@ form#login, form#error {
   -ms-transform: scale(1);
   -o-transform: scale(1);
   transform: scale(1);
-  margin: 0;
+  margin: 0 auto;
   box-shadow: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -850,6 +850,7 @@ form#login, form#error {
   form#login > input[type="submit"], form#error > input[type="submit"] {
     position: static; }
   form#login:not(.ready) > input[type="submit"], form#error:not(.ready) > input[type="submit"] {
+    display: none;
     background-color: #DFDFDF !important;
     box-shadow: none;
     -webkit-box-shadow: none;
@@ -859,19 +860,26 @@ form#login, form#error {
     form#login:not(.ready) > input[type="submit"]:hover, form#error:not(.ready) > input[type="submit"]:hover {
       background-color: #DFDFDF;
       color: #9F9F9F; }
+  form#login::after, form#error::after {
+    text-align: center;
+    font-size: 1.2em; }
   form#login:not(.ready)::after, form#error:not(.ready)::after {
     content: "In order to log you in, Check PCR is fetching the login page from PCR. Please wait for it to load.";
-    margin-top: 8px;
+    margin-top: 16px;
+    margin-bottom: 12px;
     display: block; }
   form#login.done::after, form.done#error::after {
     content: "You're already logged into PCR. Just click Next below to continue.";
-    margin-top: 8px;
+    margin-top: 32px;
+    margin-bottom: 28px;
     display: block; }
   @media only screen and (min-width: 601px) {
     form#login, form#error {
       width: 600px !important; } }
   form#login > .content, form#error > .content {
     max-height: none; }
+  form#login.done > .content, form.done#error > .content, form#login.done > input, form.done#error > input {
+    display: none; }
 
 [type="checkbox"] + label {
   margin: 0 auto 32px auto !important;

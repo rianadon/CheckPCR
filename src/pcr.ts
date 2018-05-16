@@ -84,11 +84,11 @@ export async function fetch(override: boolean = false, data?: string, onsuccess:
             if (up === '') {
                 if (loginBackground) loginBackground.style.display = 'block'
                 loginDialog.classList.add('active')
+                if (onlogin) onlogin()
             } else {
                 // Because we were remembered, we can log in immediately without waiting for the
                 // user to log in through the login form
-                dologin(window.atob(up).split(':') as [string, string])
-                if (onlogin) onlogin()
+                dologin(window.atob(up).split(':') as [string, string], false, onsuccess)
             }
         } else {
             // Logged in now

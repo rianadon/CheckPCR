@@ -116,7 +116,7 @@ h2
 form#login
 	position: static
 	+transform(scale(1))
-	margin: 0
+	margin: 0 auto
 	+box-shadow(none)
 	padding: 0
 	width: 100% !important
@@ -124,6 +124,7 @@ form#login
 		@extend .next
 		position: static
 	&:not(.ready)>input[type="submit"]
+		display: none
 		background-color: #DFDFDF !important
 		+box-shadow(none)
 		color: #9F9F9F !important
@@ -132,18 +133,25 @@ form#login
 		&:hover
 			background-color: #DFDFDF
 			color: #9F9F9F
+	&::after
+		text-align: center
+		font-size: 1.2em
 	&:not(.ready)::after
 		content: "In order to log you in, Check PCR is fetching the login page from PCR. Please wait for it to load."
-		margin-top: 8px
+		margin-top: 16px
+		margin-bottom: 12px
 		display: block
 	&.done::after
 		content: "You're already logged into PCR. Just click Next below to continue."
-		margin-top: 8px
+		margin-top: 32px
+		margin-bottom: 28px
 		display: block
 	@media #{$medium-and-up}
 		width: 600px !important
 	&>.content
 		max-height: none
+	&.done > .content, &.done > input
+		display: none
 
 [type="checkbox"] + label
 	margin: 0 auto 32px auto !important

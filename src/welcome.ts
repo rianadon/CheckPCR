@@ -34,6 +34,8 @@ function advance(): void {
 }
 
 document.querySelectorAll('.next').forEach((nextButton) => {
+    if (!(nextButton instanceof HTMLAnchorElement)) return
+    if (nextButton.href) return
     nextButton.addEventListener('click', advance)
 })
 
