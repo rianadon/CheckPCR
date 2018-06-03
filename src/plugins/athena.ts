@@ -79,7 +79,7 @@ export function updateAthenaData(data: string): void {
     const refreshEl = document.getElementById('athenaDataRefresh')
     try {
         athenaData = parseAthenaData(data)
-        localStorageWrite(ATHENA_STORAGE_NAME, data)
+        localStorageWrite(ATHENA_STORAGE_NAME, athenaData)
         elemById('athenaDataError').style.display = 'none'
         if (refreshEl) refreshEl.style.display = 'block'
     } catch (e) {
