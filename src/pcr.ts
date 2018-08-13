@@ -10,7 +10,7 @@ import { display, formatUpdate } from './display'
 import { _$, elemById, localStorageWrite, send } from './util'
 
 const PCR_URL = 'https://webappsca.pcrsoft.com'
-const ASSIGNMENTS_URL = `${PCR_URL}/Clue/SC-Assignments-End-Date-Range/7536`
+const ASSIGNMENTS_URL = `${PCR_URL}/Clue/SC-Assignments-Start-and-End-Date-(No-Range)/18594`
 const LOGIN_URL = `${PCR_URL}/Clue/SC-Student-Portal-Login-LDAP/8464?returnUrl=${encodeURIComponent(ASSIGNMENTS_URL)}`
 const ATTACHMENTS_URL = `${PCR_URL}/Clue/Common/AttachmentRender.aspx`
 const FORM_HEADER_ONLY = { 'Content-type': 'application/x-www-form-urlencoded' }
