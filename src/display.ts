@@ -10,6 +10,7 @@ import { assignmentInDone, removeFromDone, saveDone } from './plugins/done'
 import { assignmentInModified, removeFromModified, saveModified } from './plugins/modifiedAssignments'
 import { settings } from './settings'
 import { _$, dateString, elemById, element, localStorageRead, smoothScroll } from './util'
+import { getCalDateOffset } from './navigation';
 
 export interface ISplitAssignment {
     assignment: IAssignment
@@ -56,7 +57,7 @@ function getStartEndDates(data: IApplicationData): {start: Date, end: Date } {
         const year = (new Date()).getFullYear() // For future calculations
 
         // Calculate what month we will be displaying by finding the month of today
-        const month = (new Date()).getMonth()
+        const month = (new Date()).getMonth() + getCalDateOffset()
 
         // Make sure the start and end dates lie within the month
         const start = new Date(Math.max(fromDateNum(startN).getTime(), (new Date(year, month)).getTime()))

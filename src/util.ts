@@ -220,6 +220,19 @@ export function dateString(date: Date|number|'Forever', addThis: boolean = false
     return `${WEEKDAYS[date.getDay()]}, ${FULLMONTHS[date.getMonth()]} ${date.getDate()}`
 }
 
+export function monthString(date: Date|number): string {
+    if (typeof date === 'number') return monthString(fromDateNum(date))
+
+    const today = new Date()
+    if (today.getFullYear() === date.getFullYear()) {
+        if (today.getMonth() === date.getMonth()) return 'This Month'
+        if (today.getMonth() + 1 === date.getMonth()) return 'Next Month'
+        if (today.getMonth() - 1 === date.getMonth()) return 'Last Month'
+        return FULLMONTHS[date.getMonth()]
+    }
+    return FULLMONTHS[date.getMonth()] + ' ' + date.getFullYear()
+}
+
 // The one below scrolls smoothly to a y position.
 export function smoothScroll(to: number): Promise<void> {
     return new Promise((resolve, reject) => {

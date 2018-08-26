@@ -14,7 +14,8 @@
         "max-line-length": [true, 120],
         "curly": [true, "ignore-same-line"],
         "indent": [true, "spaces", 4],
-        "trailing-comma": [true, {"multiline": "never", "singleline": "never"}]
+        "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+        "object-literal-sort-keys": [true, "match-declaration-order"]
     },
     "rulesDirectory": []
 }

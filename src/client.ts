@@ -6,11 +6,14 @@ import { getResizeAssignments, resize, resizeCaller } from './components/resizer
 import { toDateNum, today } from './dates'
 import { display, formatUpdate, getScroll } from './display'
 import {
+    decrementCalDateOffset,
     decrementListDateOffset,
+    getCalDateOffset,
     getListDateOffset,
+    incrementCalDateOffset,
     incrementListDateOffset,
     setListDateOffset,
-    zeroListDateOffset
+    zeroDateOffsets
 } from './navigation'
 import { dologin, fetch, getClasses, getData, logout, setData, switchViews } from './pcr'
 import { addActivity, recentActivity } from './plugins/activity'
@@ -27,6 +30,7 @@ import {
     forceLayout,
     localStorageRead,
     localStorageWrite,
+    monthString,
     requestIdleCallback,
     ripple
 } from './util'
@@ -138,6 +142,8 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
         } else {
             resize()
         }
+        zeroDateOffsets()
+        updateDateNavs()
     } else {
         window.scrollTo(0, getScroll())
         NAV_ELEMENT.classList.add('headroom--locked')
@@ -145,12 +151,13 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
             NAV_ELEMENT.classList.remove('headroom--unpinned')
             NAV_ELEMENT.classList.remove('headroom--locked')
             NAV_ELEMENT.classList.add('headroom--pinned')
-            requestIdleCallback(() => {
-                zeroListDateOffset()
-                updateListNav()
-                display()
-            }, {timeout: 2000})
         }, 350)
+        requestIdleCallback(() => {
+            setData(localStorageRead('data'))
+            zeroDateOffsets()
+            updateDateNavs()
+            display()
+        }, {timeout: 2000})
         window.removeEventListener('resize', resizeCaller)
         document.querySelectorAll('.assignment').forEach((assignment) => {
             (assignment as HTMLElement).style.top = 'auto'
@@ -233,65 +240,102 @@ navToggle('infoButton', 'showInfo')
 // This also gets repeated for the theme toggling.
 navToggle('lightButton', 'dark')
 
-// In order to make the previous date / next date buttons do something, they need event listeners.
-elemById('listnext').addEventListener('click', () => {
-  const pd = elemById('listprevdate')
-  const td = elemById('listnowdate')
-  const nd = elemById('listnextdate')
-  incrementListDateOffset()
-  display()
-  nd.style.display = 'inline-block'
-  return Promise.race([
-    animateEl(td, [
-      {transform: 'translateX(0%)', opacity: 1},
-      {opacity: 0},
-      {transform: 'translateX(-100%)', opacity: 0}
-    ], {duration: 300, easing: 'ease-out'}),
-    animateEl(nd, [
-      {transform: 'translateX(0%)', opacity: 0},
-      {opacity: 0},
-      {transform: 'translateX(-100%)', opacity: 1}
-    ], {duration: 300, easing: 'ease-out'})
-  ]).then(() => {
-    pd.innerHTML = td.innerHTML
-    td.innerHTML = nd.innerHTML
-    const listDate2 = new Date()
-    listDate2.setDate(listDate2.getDate() + 1 + getListDateOffset())
-    nd.innerHTML = dateString(listDate2).replace('Today', 'Now')
-    return nd.style.display = 'none'
-  })
+function setupDateListener(opts: { elem: HTMLElement, from: HTMLElement, current: HTMLElement, to: HTMLElement,
+                                   hooks: Array<() => void>, forward: boolean, newsupplier: () => string }): void {
+    const { elem, from, current, to, hooks, forward, newsupplier } = opts
+    elem.addEventListener('click', () => {
+        const transfrom = forward ? 'translateX(0%)' : 'translateX(-100%)'
+        const transto = forward ? 'translateX(-100%)' : 'translateX(0%)'
+        hooks.forEach((hook) => hook())
+        to.style.display = 'inline-block'
+        Promise.race([
+            animateEl(current, [
+                {transform: transfrom, opacity: 1},
+                {opacity: 0},
+                {transform: transto, opacity: 0}
+            ], {duration: 300, easing: 'ease-out'}),
+            animateEl(to, [
+                {transform: transfrom, opacity: 0},
+                {opacity: 0},
+                {transform: transto, opacity: 1}
+            ], {duration: 300, easing: 'ease-out'})
+        ]).then(() => {
+                from.innerHTML = current.innerHTML
+                current.innerHTML = to.innerHTML
+                to.innerHTML = newsupplier()
+                to.style.display = 'none'
+        })
+    })
+}
+
+setupDateListener({
+    elem: elemById('listnext'),
+    from: elemById('listprevdate'),
+    current: elemById('listnowdate'),
+    to: elemById('listnextdate'),
+    hooks: [incrementListDateOffset, display],
+    forward: true,
+    newsupplier: () => {
+        const listDate2 = new Date()
+        listDate2.setDate(listDate2.getDate() + 1 + getListDateOffset())
+        return dateString(listDate2).replace('Today', 'Now')
+    }
 })
 
-// The event listener for the previous date button is mostly the same.
-elemById('listbefore').addEventListener('click', () => {
-  const pd = elemById('listprevdate')
-  const td = elemById('listnowdate')
-  const nd = elemById('listnextdate')
-  decrementListDateOffset()
-  display()
-  pd.style.display = 'inline-block'
-  return Promise.race([
-    animateEl(td, [
-      {transform: 'translateX(-100%)', opacity: 1},
-      {opacity: 0},
-      {transform: 'translateX(0%)', opacity: 0}
-    ], {duration: 300, easing: 'ease-out'}),
-    animateEl(pd, [
-      {transform: 'translateX(-100%)', opacity: 0},
-      {opacity: 0},
-      {transform: 'translateX(0%)', opacity: 1}
-    ], {duration: 300, easing: 'ease-out'})
-  ]).then(() => {
-    nd.innerHTML = td.innerHTML
-    td.innerHTML = pd.innerHTML
-    const listDate2 = new Date()
-    listDate2.setDate((listDate2.getDate() + getListDateOffset()) - 1)
-    pd.innerHTML = dateString(listDate2).replace('Today', 'Now')
-    return pd.style.display = 'none'
-  })
+setupDateListener({
+    elem: elemById('listbefore'),
+    from: elemById('listnextdate'),
+    current: elemById('listnowdate'),
+    to: elemById('listprevdate'),
+    hooks: [decrementListDateOffset, display],
+    forward: false,
+    newsupplier: () => {
+        const listDate2 = new Date()
+        listDate2.setDate(listDate2.getDate() - 1 + getListDateOffset())
+        return dateString(listDate2).replace('Today', 'Now')
+    }
 })
 
-// Whenever a date is double clicked, long tapped, or force touched, list view for that day is displayed.
+function lazyFetch(): void {
+    Array.from(document.querySelectorAll('.week'))
+        .forEach((s) => s.remove())
+    document.body.removeAttribute('data-pcrview')
+    if (getCalDateOffset() === 0) {
+        setData(localStorageRead('data'))
+        display()
+    } else {
+        fetch(true)
+    }
+}
+
+setupDateListener({
+    elem: elemById('calnext'),
+    from: elemById('calprevdate'),
+    current: elemById('calnowdate'),
+    to: elemById('calnextdate'),
+    hooks: [incrementCalDateOffset, lazyFetch],
+    forward: true,
+    newsupplier: () => {
+        const listDate2 = new Date()
+        listDate2.setMonth(listDate2.getMonth() + 1 + getCalDateOffset())
+        return monthString(listDate2).replace('Today', 'Now')
+    }
+})
+
+setupDateListener({
+    elem: elemById('calbefore'),
+    from: elemById('calnextdate'),
+    current: elemById('calnowdate'),
+    to: elemById('calprevdate'),
+    hooks: [decrementCalDateOffset, lazyFetch],
+    forward: false,
+    newsupplier: () => {
+        const listDate2 = new Date()
+        listDate2.setMonth(listDate2.getMonth() - 1 + getCalDateOffset())
+        return monthString(listDate2)
+    }
+})
+
 function updateListNav(): void {
     const d = new Date()
     d.setDate((d.getDate() + getListDateOffset()) - 1)
@@ -304,10 +348,28 @@ function updateListNav(): void {
     up('listnextdate')
 }
 
+function updateCalNav(): void {
+    const d = new Date()
+    d.setMonth((d.getMonth() + getCalDateOffset()) - 1)
+    const up = (id: string) => {
+        elemById(id).innerHTML = monthString(d)
+        return d.setMonth(d.getMonth() + 1)
+    }
+    up('calprevdate')
+    up('calnowdate')
+    up('calnextdate')
+}
+
+// Whenever a date is double clicked, long tapped, or force touched, list view for that day is displayed.
+function updateDateNavs(): void {
+    updateListNav()
+    updateCalNav()
+}
+
 function switchToList(evt: Event): void {
     if (_$h(evt.target).classList.contains('month') || _$h(evt.target).classList.contains('date')) {
         setListDateOffset(toDateNum(Number(_$h(_$h(evt.target).parentNode).getAttribute('data-date'))) - today())
-        updateListNav()
+        updateDateNavs()
         document.body.setAttribute('data-view', '1')
         return display()
     }
@@ -545,12 +607,12 @@ function updateColors(): void {
 updateColors()
 
 // The elements that control the settings also need event listeners
-document.querySelectorAll('.settingsControl').forEach((e) => {
-    if (!(e instanceof HTMLInputElement)) return
+document.querySelectorAll('.settingsControl').forEach((e: HTMLInputElement) => {
     if (e.type === 'checkbox') {
         e.checked = getSetting(e.name)
     } else {
         e.value = getSetting(e.name)
+        console.log(e.name, getSetting(e.name))
     }
     e.addEventListener('change', (evt) => {
         if (e.type === 'checkbox') {

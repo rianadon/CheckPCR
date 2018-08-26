@@ -63,6 +63,24 @@
 	</div>
 	<div id="sideBackground"></div>
 	<main>
+		<section id="calnav" class="datenav">
+			<a class="material-icons datenavbefore" id="calbefore" title="Show assignments for the previous date range">navigate_before</a>
+			<div class="navdates">
+				<span id="calprevdate" class="navprevdate">Last Month</span>
+				<span id="calnowdate" class="navnowdate">This Month</span>
+				<span id="calnextdate" class="navnextdate">Next Month</span>
+			</div>
+			<a class="material-icons datenavnext" id="calnext" title="Show assignments for the following date range">navigate_next</a>
+		</section>
+		<section id="listnav" class="datenav">
+			<a class="material-icons datenavbefore" id="listbefore" title="Show assignments for the previous day">navigate_before</a>
+			<div class="navdates">
+				<span id="listprevdate" class="navprevdate">Yesterday</span>
+				<span id="listnowdate" class="navnowdate">Now</span>
+				<span id="listnextdate" class="navnextdate">Tomorrow</span>
+			</div>
+			<a class="material-icons datenavnext" id="listnext" title="Show assignments for the following day">navigate_next</a>
+		</section>
 		<section id="dates">
 			<div>Sun</div>
 			<div>Mon</div>
@@ -71,15 +89,6 @@
 			<div>Thu</div>
 			<div>Fri</div>
 			<div>Sat</div>
-		</section>
-		<section id="listnav">
-			<a class="material-icons" id="listbefore" title="Show assignments for the previous day">navigate_before</a>
-			<div id="listdates">
-				<span id="listprevdate">Yesterday</span>
-				<span id="listnowdate">Now</span>
-				<span id="listnextdate">Tomorrow</span>
-			</div>
-			<a class="material-icons" id="listnext" title="Show assignments for the following day">navigate_next</a>
 		</section>
 	</main>
 	<span id="lastUpdate"></span>

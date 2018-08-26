@@ -7,6 +7,7 @@ import { snackbar } from './components/snackbar'
 import { deleteCookie, getCookie, setCookie } from './cookies'
 import { toDateNum } from './dates'
 import { display, formatUpdate } from './display'
+import { zeroDateOffsets, getCalDateOffset, getListDateOffset } from './navigation'
 import { _$, elemById, localStorageWrite, send } from './util'
 
 const PCR_URL = 'https://webappsca.pcrsoft.com'
@@ -68,6 +69,33 @@ export async function fetch(override: boolean = false, data?: string, onsuccess:
     if (!override && Date.now() - lastUpdate < ONE_MINUTE_MS) return
     lastUpdate = Date.now()
 
+    // Request a new month if needed
+    const monthOffset = getCalDateOffset()
+    if (monthOffset !== 0) {
+        const today = new Date()
+        today.setMonth(today.getMonth() + getCalDateOffset())
+        // Remember months are zero-indexed
+        const dateArray = [today.getFullYear(), today.getMonth() + 1, 1]
+        const newViewData = {
+            ...viewData,
+            __EVENTTARGET: 'ctl00$ctl00$baseContent$baseContent$flashTop$ctl00$RadScheduler1$SelectedDateCalendar',
+            __EVENTARGUMENT: 'd',
+            ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_SelectedDateCalendar_SD:
+                JSON.stringify([dateArray]),
+            ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_SelectedDateCalendar_AD:
+                JSON.stringify([[1900, 1, 1], [2099, 12, 30], dateArray]),
+            ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState:
+                JSON.stringify({scrollTop: 0, scrollLeft: 0, isDirty: false}),
+            ctl00_ctl00_RadScriptManager1_TSM: ';;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, ' +
+                'PublicKeyToken=31bf3856ad364e35:en-US:d28568d3-e53e-4706-928f-3765912b66ca:ea597d4b:b25378d2'
+        }
+        const postArray: string[] = [] // Array of data to post
+        Object.entries(newViewData).forEach(([h, v]) => {
+            postArray.push(encodeURIComponent(h) + '=' + encodeURIComponent(v))
+        })
+        data = (data ? data + '&' : '') + postArray.join('&')
+    }
+
     const headers = data ? FORM_HEADER_ONLY : undefined
     console.time('Fetching assignments')
     try {
@@ -99,7 +127,9 @@ export async function fetch(override: boolean = false, data?: string, onsuccess:
             try {
                 parse(resp.response)
                 onsuccess()
-                localStorageWrite('data', getData()) // Store for offline use
+                if (monthOffset === 0) {
+                    localStorageWrite('data', getData()) // Store for offline use
+                }
             } catch (error) {
                 console.log(error)
                 displayError(error)
@@ -390,18 +420,22 @@ export function classById(id: number|null|undefined): string {
 export function switchViews(): void {
     if (Object.keys(viewData).length > 0) {
         elemById('sideBackground').click()
-        viewData.__EVENTTARGET = 'ctl00$ctl00$baseContent$baseContent$flashTop$ctl00$RadScheduler1'
-        viewData.__EVENTARGUMENT = JSON.stringify({
-            Command: `SwitchTo${document.body.getAttribute('data-pcrview') === 'month' ? 'Week' : 'Month'}View`
-        })
-        viewData.ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState =
-            JSON.stringify({scrollTop: 0, scrollLeft: 0, isDirty: false})
-        viewData.ctl00_ctl00_RadScriptManager1_TSM = ';;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, ' +
-            'PublicKeyToken=31bf3856ad364e35:en-US:d28568d3-e53e-4706-928f-3765912b66ca:ea597d4b:b25378d2'
+        const newViewData = {
+            ...viewData,
+            __EVENTTARGET: 'ctl00$ctl00$baseContent$baseContent$flashTop$ctl00$RadScheduler1',
+            __EVENTARGUMENT: JSON.stringify({
+                Command: `SwitchTo${document.body.getAttribute('data-pcrview') === 'month' ? 'Week' : 'Month'}View`
+            }),
+            ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState:
+                JSON.stringify({scrollTop: 0, scrollLeft: 0, isDirty: false}),
+            ctl00_ctl00_RadScriptManager1_TSM: ';;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, ' +
+                'PublicKeyToken=31bf3856ad364e35:en-US:d28568d3-e53e-4706-928f-3765912b66ca:ea597d4b:b25378d2'
+        }
         const postArray: string[] = [] // Array of data to post
-        Object.entries(viewData).forEach(([h, v]) => {
+        Object.entries(newViewData).forEach(([h, v]) => {
             postArray.push(encodeURIComponent(h) + '=' + encodeURIComponent(v))
         })
+        zeroDateOffsets()
         fetch(true, postArray.join('&'))
     }
 }

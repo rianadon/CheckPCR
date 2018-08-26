@@ -563,7 +563,8 @@ body[data-view="1"] .week
 		color: rgba(0,0,0,0.54)
 		line-height: 48px
 		font-weight: 500
-	body[data-view="1"] &
+	html > body[data-view="1"] &
+		// The html here increases precedence
 		height: 0
 		border-bottom-color: transparent
 .week
@@ -1642,7 +1643,7 @@ body.dark
 		background-color: #424242
 		border-color: #424242
 
-	#infoTabs > li:hover, .editAssignment:hover, .restore:hover, #newText, .customColor>input, #listbefore:hover, #listnext:hover
+	#infoTabs > li:hover, .editAssignment:hover, .restore:hover, #newText, .customColor>input, .datenavbefore:hover, .datenavnext:hover
 		color: #FFF
 
 	.dayTable td, #dates
@@ -1660,7 +1661,7 @@ body.dark
 	#sideNav > ul > li.disabled, #settings > ul > li.disabled
 		color: rgba(255,255,255,0.3)
 
-	.upcomingTest > small, %upcomingTestSmall, .activity > small, .upcomingTest > .range, %upcomingTestRange, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #filterActivity, label, .input-field > label, .editAssignment, .restore, .others, .customInfo, #listbefore, #listnext
+	.upcomingTest > small, %upcomingTestSmall, .activity > small, .upcomingTest > .range, %upcomingTestRange, .activity > .range, #infoTests::after, #dates>div, #infoTabs > li, #filterActivity, label, .input-field > label, .editAssignment, .restore, .others, .customInfo, .datenavbefore, .datenavnext
 		color: rgba(255,255,255,0.7)
 	#info > #extra, .colors > div, &:not([data-pcrview])>main::after
 		color: rgba(255,255,255,0.3)
@@ -2016,7 +2017,7 @@ body.dark
 			color: #FFF
 			+box-shadow(0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15))
 
-#listnav
+.datenav
 	display: flex
 	width: 100%
 	padding: 8px 16px 0 16px
@@ -2026,10 +2027,14 @@ body.dark
 	-moz-user-select: none
 	-ms-user-select: none
 	user-select: none
-	body[data-view="0"] &
-		display: none
 
-#listdates
+body[data-view="0"] #listnav, body[data-view="1"] #calnav, body:not([data-pcrview="month"]) #calnav, 
+	display: none
+
+body[data-view="0"]:not([data-pcrview]) #calnav
+	display: flex
+
+.navdates
 	flex-grow: 1
 	text-align: center
 	font-size: 16px
@@ -2037,16 +2042,16 @@ body.dark
 	white-space: nowrap
 	overflow: hidden
 
-#listnowdate
+.navnowdate
 	display: inline-block
 
-#listprevdate, #listnextdate
+.navprevdate, .navnextdate
 	display: none
 
-#listnowdate, #listprevdate, #listnextdate
+.navnowdate, .navprevdate, .navnextdate
 	width: 100%
 
-#listbefore, #listnext
+.datenavbefore, .datenavnext
 	color: rgba(0,0,0,0.54)
 	&:hover
 		color: rgba(0,0,0,0.87)
