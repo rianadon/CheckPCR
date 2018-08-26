@@ -84,10 +84,6 @@ export async function fetch(override: boolean = false, data?: string, onsuccess:
                 JSON.stringify([dateArray]),
             ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_SelectedDateCalendar_AD:
                 JSON.stringify([[1900, 1, 1], [2099, 12, 30], dateArray]),
-            ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_ClientState:
-                JSON.stringify({scrollTop: 0, scrollLeft: 0, isDirty: false}),
-            ctl00_ctl00_RadScriptManager1_TSM: ';;System.Web.Extensions, Version=4.0.0.0, Culture=neutral, ' +
-                'PublicKeyToken=31bf3856ad364e35:en-US:d28568d3-e53e-4706-928f-3765912b66ca:ea597d4b:b25378d2'
         }
         const postArray: string[] = [] // Array of data to post
         Object.entries(newViewData).forEach(([h, v]) => {

@@ -153,8 +153,8 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
             NAV_ELEMENT.classList.add('headroom--pinned')
         }, 350)
         requestIdleCallback(() => {
-            setData(localStorageRead('data'))
             zeroDateOffsets()
+            lazyFetch()
             updateDateNavs()
             display()
         }, {timeout: 2000})
@@ -297,7 +297,7 @@ setupDateListener({
 })
 
 function lazyFetch(): void {
-    Array.from(document.querySelectorAll('.week'))
+    Array.from(document.querySelectorAll('.week, .upcomingTest'))
         .forEach((s) => s.remove())
     document.body.removeAttribute('data-pcrview')
     if (getCalDateOffset() === 0) {
@@ -612,7 +612,6 @@ document.querySelectorAll('.settingsControl').forEach((e: HTMLInputElement) => {
         e.checked = getSetting(e.name)
     } else {
         e.value = getSetting(e.name)
-        console.log(e.name, getSetting(e.name))
     }
     e.addEventListener('change', (evt) => {
         if (e.type === 'checkbox') {
