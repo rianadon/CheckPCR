@@ -1,63 +1,63 @@
 {
-	"short_name": "Check PCR",
-	"name": "Check PCR",
-	"icons": [
-		{
-			"src": "icon_16.png",
-			"sizes": "16x16",
+  "short_name": "Check PCR",
+  "name": "Check PCR",
+  "icons": [
+    {
+      "src": "icon/icon_16.png",
+      "sizes": "16x16",
       "type": "image/png"
-		},
-		{
-			"src": "icon_32.png",
-			"sizes": "32x32",
+    },
+    {
+      "src": "icon/icon_32.png",
+      "sizes": "32x32",
       "type": "image/png"
-		},
-		{
-			"src": "icon_36.png",
-			"sizes": "36x36",
+    },
+    {
+      "src": "icon/icon_36.png",
+      "sizes": "36x36",
       "type": "image/png"
-		},
-		{
-			"src": "icon_64.png",
-			"sizes": "64x64",
+    },
+    {
+      "src": "icon/icon_64.png",
+      "sizes": "64x64",
       "type": "image/png"
-		},
-		{
-			"src": "icon_72.png",
-			"sizes": "72x72",
+    },
+    {
+      "src": "icon/icon_72.png",
+      "sizes": "72x72",
       "type": "image/png"
-		},
-		{
-			"src": "icon_96.png",
-			"sizes": "96x96",
+    },
+    {
+      "src": "icon/icon_96.png",
+      "sizes": "96x96",
       "type": "image/png"
-		},
-		{
-			"src": "icon_120.png",
-			"sizes": "120x120",
+    },
+    {
+      "src": "icon/icon_120.png",
+      "sizes": "120x120",
       "type": "image/png"
-		},
-		{
-			"src": "icon_128.png",
-			"sizes": "128x128",
+    },
+    {
+      "src": "icon/icon_128.png",
+      "sizes": "128x128",
       "type": "image/png"
-		},
-		{
-			"src": "icon_144.png",
-			"sizes": "144x144",
+    },
+    {
+      "src": "icon/icon_144.png",
+      "sizes": "144x144",
       "type": "image/png"
-		},
-		{
-			"src": "icon_152.png",
-			"sizes": "152x152",
+    },
+    {
+      "src": "icon/icon_152.png",
+      "sizes": "152x152",
       "type": "image/png"
-		},
-		{
-			"src": "icon_192.png",
-			"sizes": "192x192",
+    },
+    {
+      "src": "icon/icon_192.png",
+      "sizes": "192x192",
       "type": "image/png"
-		}
-	],
-	"start_url": "index.html",
+    }
+  ],
+  "start_url": "index.html",
   "display": "standalone"
 }
