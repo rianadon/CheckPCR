@@ -35,6 +35,7 @@ export interface IApplicationData {
     classes: string[]
     assignments: IAssignment[]
     monthView: boolean
+    monthOffset: number
 }
 
 export interface IAssignment {
@@ -121,7 +122,7 @@ export async function fetch(override: boolean = false, data?: string, onsuccess:
             localStorage.lastUpdate = t
             if (lastUpdateEl) lastUpdateEl.innerHTML = formatUpdate(t)
             try {
-                parse(resp.response)
+                parse(resp.response, monthOffset)
                 onsuccess()
                 if (monthOffset === 0) {
                     localStorageWrite('data', getData()) // Store for offline use
@@ -189,7 +190,7 @@ export async function dologin(val?: [string, string]|null, submitEvt: boolean = 
             localStorage.lastUpdate = t
             if (lastUpdateEl) lastUpdateEl.innerHTML = formatUpdate(t)
             try {
-                parse(resp.response) // Parse the data PCR has replied with
+                parse(resp.response, 0) // Parse the data PCR has replied with
                 onsuccess()
                 localStorageWrite('data', getData()) // Store for offline use
             } catch (e) {
@@ -352,13 +353,14 @@ function parseAssignment(ca: HTMLElement): IAssignment {
 // The function below will parse the data given by PCR and convert it into an object. If you open up
 // the developer console on CheckPCR and type in `data`, you can see the array containing all of
 // your assignments.
-function parse(doc: HTMLDocument): void {
+function parse(doc: HTMLDocument, monthOffset: number): void {
     console.time('Handling data') // To time how long it takes to parse the assignments
     const handledDataShort: string[] = [] // Array used to make sure we don"t parse the same assignment twice.
     const data: IApplicationData = {
         classes: [],
         assignments: [],
-        monthView: (_$(doc.querySelector('.rsHeaderMonth')).parentNode as HTMLElement).classList.contains('rsSelected')
+        monthView: (_$(doc.querySelector('.rsHeaderMonth')).parentNode as HTMLElement).classList.contains('rsSelected'),
+        monthOffset: monthOffset
     } // Reset the array in which all of your assignments are stored in.
     setData(data)
 

@@ -149,7 +149,8 @@ export function display(doScroll: boolean = true): void {
         end.setDate(end.getDate() + (6 - end.getDay()))
 
         // First populate the calendar with boxes for each day
-        const lastData = localStorageRead('data') as IApplicationData
+        // Only consider the previous set of assignments for activity purposes if the month is the same
+        const lastData = data.monthOffset == 0 ? (localStorageRead('data') as IApplicationData) : null
         let wk: HTMLElement|null = null
         iterDays(start, end, (d) => {
             if (d.getDay() === 0) {
