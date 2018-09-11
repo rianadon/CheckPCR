@@ -10,7 +10,7 @@
 export function getCookie(cname: string): string {
     const name = cname + '='
     const cookiePart = document.cookie.split(';').find((c) => c.includes(name))
-    if (cookiePart) return cookiePart.substring(name.length)
+    if (cookiePart) return cookiePart.trim().substring(name.length)
     return '' // Blank if cookie not found
   }
 

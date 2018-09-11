@@ -142,7 +142,9 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
         } else {
             resize()
         }
+        const prevOffset = getCalDateOffset()
         zeroDateOffsets()
+        if (prevOffset != 0) lazyFetch()
         updateDateNavs()
     } else {
         window.scrollTo(0, getScroll())
