@@ -5,7 +5,7 @@ import { resize } from './components/resizer'
 import { fromDateNum, iterDays, today } from './dates'
 import { classById, IApplicationData, IAssignment } from './pcr'
 import { addActivity, saveActivity } from './plugins/activity'
-import { extraToTask, getExtra, ICustomAssignment } from './plugins/customAssignments'
+import { extraToTask, ICustomAssignment } from './plugins/customAssignments'
 import { assignmentInDone, removeFromDone, saveDone } from './plugins/done'
 import { assignmentInModified, removeFromModified, saveModified } from './plugins/modifiedAssignments'
 import { state } from './state'
@@ -208,7 +208,7 @@ export function display(doScroll: boolean = true): void {
         }
 
         // Add custom assignments to the split array
-        getExtra().forEach((custom) => {
+        state.extra.get().forEach((custom) => {
             split.push(...getAssignmentSplits(extraToTask(custom, data), start, end, custom))
         })
 

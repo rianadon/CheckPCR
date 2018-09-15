@@ -2,7 +2,7 @@ import { fromDateNum, today } from '../dates'
 import { display, getTimeAfter, ISplitAssignment } from '../display'
 import { getAttachmentMimeType, IApplicationData, IAssignment, urlForAttachment } from '../pcr'
 import { recentActivity } from '../plugins/activity'
-import { removeFromExtra, saveExtra } from '../plugins/customAssignments'
+import { removeFromExtra } from '../plugins/customAssignments'
 import { addToDone, assignmentInDone, removeFromDone, saveDone } from '../plugins/done'
 import { modifiedBody, removeFromModified, saveModified, setModified } from '../plugins/modifiedAssignments'
 import { state } from '../state'
@@ -110,7 +110,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
                     added = false
                     reference.done = true
                 }
-                saveExtra()
+                state.extra.forceUpdate()
             } else {
                 if (e.classList.contains('done')) {
                     removeFromDone(assignment.id)
@@ -165,7 +165,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
         deleteA.addEventListener('mouseup', (evt) => {
             if (evt.which !== 1 || !reference) return
             removeFromExtra(reference)
-            saveExtra()
+            state.extra.forceUpdate()
             if (document.querySelector('.full') != null) {
                 document.body.style.overflow = 'auto'
                 const back = elemById('background')
@@ -239,7 +239,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
     body.addEventListener('input', (evt) => {
         if (reference != null) {
             reference.body = body.innerHTML
-            saveExtra()
+            state.extra.forceUpdate()
         } else {
             setModified(assignment.id,  body.innerHTML)
             saveModified()

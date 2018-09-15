@@ -2,13 +2,15 @@ import { checkCommit, fetchNews, getNews, VERSION } from './app'
 import { closeOpened, getES } from './components/assignment'
 import { updateAvatar } from './components/avatar'
 import { updateNewTips } from './components/customAdder'
+import { closeError } from './components/errorDisplay'
 import { getResizeAssignments, resize, resizeCaller } from './components/resizer'
 import { toDateNum, today } from './dates'
 import { display, formatUpdate, getScroll } from './display'
 import { dologin, fetch, getClasses, logout, switchViews } from './pcr'
 import { addActivity, recentActivity } from './plugins/activity'
 import { updateAthenaData } from './plugins/athena'
-import { addToExtra, parseCustomTask, saveExtra } from './plugins/customAssignments'
+import { initConsoleInteractivity } from './plugins/console'
+import { addToExtra, parseCustomTask } from './plugins/customAssignments'
 import { decrementState, getStateItem, incrementState, state, zeroDateOffsets } from './state'
 import {
     _$,
@@ -660,21 +662,7 @@ document.querySelectorAll('textarea').forEach((e) => {
 // Finally! We are (almost) done!
 //
 // Before getting to anything, let's print out a welcoming message to the console!
-console.log('%cCheck PCR', 'color: #004000; font-size: 3em')
-console.log(`%cVersion ${VERSION} (Check below for current version)`, 'font-size: 1.1em')
-console.log(`Welcome to the developer console for your browser! Besides looking at the source code, \
-you can also play around with Check PCR by executing the lines below:
-%c\tfetch(true)               %c// Reloads all of your assignments (the true is for forcing a reload if one \
-has already been triggered in the last minute)
-%c\tdata                      %c// Displays the object that contains the data parsed from PCR's interface
-%c\tactivity                  %c// The data for the assignments that show up in the activity pane
-%c\textra                     %c// All of the tasks you've created by clicking the + button
-%c\tathenaData                %c// The data fetched from Athena (if you've pasted the raw data into settings)
-%c\tsnackbar("Hello World!")  %c// Creates a snackbar showing the message "Hello World!"
-%c\tdisplayError(new Error()) %c// Displays the stack trace for a random error (Just don't submit it!)
-%c\tcloseError()              %c// Closes that dialog`,
-               ...(([] as string[]).concat(...Array.from(new Array(8), () => ['color: initial', 'color: grey']))))
-console.log('')
+initConsoleInteractivity()
 
 // The "last updated" text is set to the correct date.
 const triedLastUpdate = state.lastUpdate.get()
@@ -858,14 +846,6 @@ elemById('newsB').addEventListener('click', () => {
   }
 })
 
-// The same goes for the error dialog.
-function closeError(): void {
-  elemById('error').classList.remove('active')
-  setTimeout(() => {
-    elemById('errorBackground').style.display = 'none'
-  }, 350)
-}
-
 elemById('errorNo').addEventListener('click', closeError)
 elemById('errorBackground').addEventListener('click', closeError)
 
@@ -926,7 +906,7 @@ elemById('newDialog').addEventListener('submit', (evt) => {
     class: (cls != null) ? cls.toLowerCase().trim() : null,
     end
   })
-  saveExtra()
+  state.extra.forceUpdate()
   closeNew()
   display(false)
 })

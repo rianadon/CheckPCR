@@ -1,7 +1,5 @@
 import { IApplicationData, IAssignment } from '../pcr'
-import { localStorageRead, localStorageWrite } from '../util'
-
-const CUSTOM_STORAGE_NAME = 'extra'
+import { state } from '../state'
 
 export interface ICustomAssignment {
     body: string
@@ -10,22 +8,12 @@ export interface ICustomAssignment {
     class: string|null
     end: number|'Forever'
 }
-
-const extra: ICustomAssignment[] = localStorageRead(CUSTOM_STORAGE_NAME, [])
-
-export function getExtra(): ICustomAssignment[] {
-    return extra
-}
-
-export function saveExtra(): void {
-    localStorageWrite(CUSTOM_STORAGE_NAME, extra)
-}
-
 export function addToExtra(custom: ICustomAssignment): void {
-    extra.push(custom)
+    state.extra.get().push(custom)
 }
 
 export function removeFromExtra(custom: ICustomAssignment): void {
+    const extra = state.extra.get()
     if (!extra.includes(custom)) throw new Error('Cannot remove custom assignment that does not exist')
     extra.splice(extra.indexOf(custom), 1)
 }

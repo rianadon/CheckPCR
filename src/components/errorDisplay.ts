@@ -21,6 +21,13 @@ export function displayError(e: Error): void {
     return elemById('error').classList.add('active')
 }
 
+export function closeError(): void {
+    elemById('error').classList.remove('active')
+    setTimeout(() => {
+        elemById('errorBackground').style.display = 'none'
+    }, 350)
+}
+
 window.addEventListener('error', (evt) => {
     evt.preventDefault()
     displayError(evt.error)

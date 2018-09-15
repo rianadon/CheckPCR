@@ -20,7 +20,7 @@ export async function checkCommit(): Promise<void> {
     try {
         const resp = await send(VERSION_URL, 'text')
         const c = resp.responseText.trim()
-        console.log(`Current version: ${c} ${VERSION === c ? '(no update available)' : '(update available)'}`)
+        console.log(`Latest version: ${c} ${VERSION === c ? '(no update available)' : '(update available)'}`)
         elemById('newversion').innerHTML = c
         if (VERSION !== c) {
             elemById('updateIgnore').addEventListener('click', () => {

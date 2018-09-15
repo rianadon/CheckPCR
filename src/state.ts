@@ -1,6 +1,7 @@
 import { IApplicationData } from './pcr'
 import { ActivityItem } from './plugins/activity'
 import { IAthenaData } from './plugins/athena'
+import { ICustomAssignment } from './plugins/customAssignments'
 import { IModifiedBodies } from './plugins/modifiedAssignments'
 import { localStorageRead, localStorageWrite } from './util'
 
@@ -43,7 +44,6 @@ class CachedState<V> implements IStateItem<V> {
  * Back a given state to localStorage
  */
 function storedState<V>(name: string, statevar: IStateItem<V>): IBackedStateItem<V> {
-    console.log(name, statevar.get())
     statevar.set(localStorageRead(name, () => statevar.get()))
     return {
         get(): V { return statevar.get() },
@@ -73,7 +73,7 @@ interface IShownActivity {
     delete: boolean
 }
 
-export const state = (window as any).state = {
+export const state = {
 
     /** Offset from today of the date displayed in list view */
     listDateOffset: new CachedState(0),
@@ -107,6 +107,9 @@ export const state = (window as any).state = {
 
     /** The detected url to the news gist */
     newsUrl: new CachedState<string|null>(null),
+
+    /** Custom assignments */
+    extra: storedState('extra', new CachedState<ICustomAssignment[]>([])),
 
     //////////////////////////////////
     //           Settings           //
