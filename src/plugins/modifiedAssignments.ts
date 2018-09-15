@@ -1,29 +1,26 @@
-import { localStorageRead, localStorageWrite } from '../util'
+import { state } from '../state'
+import { localStorageWrite } from '../util'
 
-const MODIFIED_STORAGE_NAME = 'modified'
-
-interface IModifiedBodies {
+export interface IModifiedBodies {
     [id: string]: string
 }
 
-const modified: IModifiedBodies = localStorageRead(MODIFIED_STORAGE_NAME, {})
-
 export function removeFromModified(id: string): void {
-    delete modified[id]
+    delete state.modified.get()[id]
 }
 
 export function saveModified(): void {
-    localStorageWrite(MODIFIED_STORAGE_NAME, modified)
+    state.modified.forceUpdate()
 }
 
 export function assignmentInModified(id: string): boolean {
-    return modified.hasOwnProperty(id)
+    return state.modified.get().hasOwnProperty(id)
 }
 
 export function modifiedBody(id: string): string|undefined {
-    return modified[id]
+    return state.modified.get()[id]
 }
 
 export function setModified(id: string, body: string): void {
-    modified[id] = body
+    state.modified.get()[id] = body
 }

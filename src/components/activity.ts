@@ -1,4 +1,4 @@
-import { classById, getData, IAssignment } from '../pcr'
+import { classById, IAssignment } from '../pcr'
 import { ActivityType } from '../plugins/activity'
 import { assignmentInDone } from '../plugins/done'
 import { _$, dateString, elemById, element, smoothScroll } from '../util'

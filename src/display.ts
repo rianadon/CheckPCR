@@ -3,13 +3,12 @@ import { createDay, createWeek } from './components/calendar'
 import { displayError } from './components/errorDisplay'
 import { resize } from './components/resizer'
 import { fromDateNum, iterDays, today } from './dates'
-import { getCalDateOffset } from './navigation'
-import { classById, getData, IApplicationData, IAssignment } from './pcr'
+import { classById, IApplicationData, IAssignment } from './pcr'
 import { addActivity, saveActivity } from './plugins/activity'
 import { extraToTask, getExtra, ICustomAssignment } from './plugins/customAssignments'
 import { assignmentInDone, removeFromDone, saveDone } from './plugins/done'
 import { assignmentInModified, removeFromModified, saveModified } from './plugins/modifiedAssignments'
-import { settings } from './settings'
+import { state } from './state'
 import { _$, dateString, elemById, element, localStorageRead, smoothScroll } from './util'
 
 export interface ISplitAssignment {
@@ -41,7 +40,7 @@ export function getScroll(): number {
 }
 
 export function getTimeAfter(date: Date): number {
-    const hideAssignments = settings.hideAssignments
+    const hideAssignments = state.hideAssignments.get()
     if (hideAssignments === 'day' || hideAssignments === 'ms' || hideAssignments === 'us') {
         return SCHEDULE_ENDS[hideAssignments](date)
     } else {
@@ -57,7 +56,7 @@ function getStartEndDates(data: IApplicationData): {start: Date, end: Date } {
         const year = (new Date()).getFullYear() // For future calculations
 
         // Calculate what month we will be displaying by finding the month of today
-        const month = (new Date()).getMonth() + getCalDateOffset()
+        const month = (new Date()).getMonth() + state.calDateOffset.get()
 
         // Make sure the start and end dates lie within the month
         const start = new Date(Math.max(fromDateNum(startN).getTime(), (new Date(year, month)).getTime()))
@@ -75,7 +74,7 @@ function getStartEndDates(data: IApplicationData): {start: Date, end: Date } {
 function getAssignmentSplits(assignment: IAssignment, start: Date, end: Date,
                              reference?: ICustomAssignment): ISplitAssignment[] {
     const split: ISplitAssignment[] = []
-    if (settings.assignmentSpan === 'multiple') {
+    if (state.assignmentSpan.get() === 'multiple') {
         const s = Math.max(start.getTime(), fromDateNum(assignment.start).getTime())
         const e = assignment.end === 'Forever' ? s : Math.min(end.getTime(), fromDateNum(assignment.end).getTime())
         const span = ((e - s) / 1000 / 3600 / 24) + 1 // Number of days assignment takes up
@@ -99,7 +98,7 @@ function getAssignmentSplits(assignment: IAssignment, start: Date, end: Date,
                 reference
             })
         }
-    } else if (settings.assignmentSpan === 'start') {
+    } else if (state.assignmentSpan.get() === 'start') {
         const s = fromDateNum(assignment.start)
         if (s.getTime() >= start.getTime()) {
             split.push({
@@ -110,7 +109,7 @@ function getAssignmentSplits(assignment: IAssignment, start: Date, end: Date,
                 reference
             })
         }
-    } else if (settings.assignmentSpan === 'end') {
+    } else if (state.assignmentSpan.get() === 'end') {
         const e = assignment.end === 'Forever' ? assignment.end : fromDateNum(assignment.end)
         const de = e === 'Forever' ? fromDateNum(assignment.start) : e
         if (de.getTime() <= end.getTime()) {
@@ -131,7 +130,7 @@ function getAssignmentSplits(assignment: IAssignment, start: Date, end: Date,
 export function display(doScroll: boolean = true): void {
     console.time('Displaying data')
     try {
-        const data = getData()
+        const data = state.data.get()
         if (!data) {
             throw new Error('Data should have been fetched before display() was called')
         }
@@ -233,7 +232,7 @@ export function display(doScroll: boolean = true): void {
             const e = createAssignment(s, data)
 
             // Calculate how many assignments are placed before the current one
-            if (!s.custom || !settings.sepTasks) {
+            if (!s.custom || !state.sepTasks.get()) {
                 let pos = 0
                 // tslint:disable-next-line no-loops
                 while (true) {
@@ -263,7 +262,7 @@ export function display(doScroll: boolean = true): void {
 
             // If the assignment is a test and is upcoming, add it to the upcoming tests panel.
             if (s.assignment.end >= today() && (s.assignment.baseType === 'test' ||
-                (settings.projectsInTestPane && s.assignment.baseType === 'longterm'))) {
+                (state.projectsInTestPane.get() && s.assignment.baseType === 'longterm'))) {
                 const te = element('div', ['upcomingTest', 'assignmentItem', s.assignment.baseType],
                                 `<i class='material-icons'>
                                         ${s.assignment.baseType === 'longterm' ? 'assignment' : 'assessment'}
@@ -301,7 +300,7 @@ export function display(doScroll: boolean = true): void {
             if (already != null) { // Assignment already exists
                 already.style.marginTop = e.style.marginTop
                 already.setAttribute('data-class',
-                    s.custom && settings.sepTaskClass ? 'Task' : classById(s.assignment.class))
+                    s.custom && state.sepTaskClass.get() ? 'Task' : classById(s.assignment.class))
                 if (!assignmentInModified(s.assignment.id)) {
                     already.getElementsByClassName('body')[0].innerHTML = e.getElementsByClassName('body')[0].innerHTML
                 }
@@ -316,7 +315,7 @@ export function display(doScroll: boolean = true): void {
                     if (e.classList.contains(cl)) already.classList.add(cl)
                 })
             } else {
-                if (s.custom && settings.sepTasks) {
+                if (s.custom && state.sepTasks.get()) {
                     const st = Math.floor(s.start.getTime() / 1000 / 3600 / 24)
                     if ((s.assignment.start === st) &&
                         (s.assignment.end === 'Forever' || s.assignment.end >= today())) {

@@ -7,7 +7,7 @@ import { snackbar } from './components/snackbar'
 import { deleteCookie, getCookie, setCookie } from './cookies'
 import { toDateNum } from './dates'
 import { display, formatUpdate } from './display'
-import { zeroDateOffsets, getCalDateOffset, getListDateOffset } from './navigation'
+import { state, zeroDateOffsets } from './state'
 import { _$, elemById, localStorageWrite, send } from './util'
 
 const PCR_URL = 'https://webappsca.pcrsoft.com'
@@ -29,7 +29,6 @@ const incorrectLoginEl = elemById('loginIncorrect')
 // TODO keeping these as a global vars is bad
 const loginHeaders: {[header: string]: string} = {}
 const viewData: {[hader: string]: string} = {}
-let lastUpdate = 0 // The last time everything was updated
 
 export interface IApplicationData {
     classes: string[]
@@ -67,14 +66,14 @@ export type AttachmentArray = [string, string]
  */
 export async function fetch(override: boolean = false, data?: string, onsuccess: () => void = display,
                             onlogin?: () => void): Promise<void> {
-    if (!override && Date.now() - lastUpdate < ONE_MINUTE_MS) return
-    lastUpdate = Date.now()
+    if (!override && Date.now() - state.lastTriedUpdate.get() < ONE_MINUTE_MS) return
+    state.lastTriedUpdate.set(Date.now())
 
     // Request a new month if needed
-    const monthOffset = getCalDateOffset()
+    const monthOffset = state.calDateOffset.get()
     if (monthOffset !== 0) {
         const today = new Date()
-        today.setMonth(today.getMonth() + getCalDateOffset())
+        today.setMonth(today.getMonth() + state.calDateOffset.get())
         // Remember months are zero-indexed
         const dateArray = [today.getFullYear(), today.getMonth() + 1, 1]
         const newViewData = {
@@ -84,7 +83,7 @@ export async function fetch(override: boolean = false, data?: string, onsuccess:
             ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_SelectedDateCalendar_SD:
                 JSON.stringify([dateArray]),
             ctl00_ctl00_baseContent_baseContent_flashTop_ctl00_RadScheduler1_SelectedDateCalendar_AD:
-                JSON.stringify([[1900, 1, 1], [2099, 12, 30], dateArray]),
+                JSON.stringify([[1900, 1, 1], [2099, 12, 30], dateArray])
         }
         const postArray: string[] = [] // Array of data to post
         Object.entries(newViewData).forEach(([h, v]) => {
@@ -118,14 +117,13 @@ export async function fetch(override: boolean = false, data?: string, onsuccess:
         } else {
             // Logged in now
             console.log('Fetching assignments successful')
-            const t = Date.now()
-            localStorage.lastUpdate = t
-            if (lastUpdateEl) lastUpdateEl.innerHTML = formatUpdate(t)
+            state.lastUpdate.set(Date.now())
+            if (lastUpdateEl) lastUpdateEl.innerHTML = formatUpdate(state.lastUpdate.get())
             try {
                 parse(resp.response, monthOffset)
                 onsuccess()
                 if (monthOffset === 0) {
-                    localStorageWrite('data', getData()) // Store for offline use
+                    state.data.forceUpdate()
                 }
             } catch (error) {
                 console.log(error)
@@ -186,13 +184,12 @@ export async function dologin(val?: [string, string]|null, submitEvt: boolean = 
                 setCookie('userPass', window.btoa(usernameEl.value + ':' + passwordEl.value), 14)
             }
             // loadingBar.style.display = "none"
-            const t = Date.now()
-            localStorage.lastUpdate = t
-            if (lastUpdateEl) lastUpdateEl.innerHTML = formatUpdate(t)
+            state.lastUpdate.set(Date.now())
+            if (lastUpdateEl) lastUpdateEl.innerHTML = formatUpdate(state.lastUpdate.get())
             try {
                 parse(resp.response, 0) // Parse the data PCR has replied with
                 onsuccess()
-                localStorageWrite('data', getData()) // Store for offline use
+                state.data.forceUpdate() // Store for offline use
             } catch (e) {
                 console.log(e)
                 displayError(e)
@@ -204,18 +201,10 @@ export async function dologin(val?: [string, string]|null, submitEvt: boolean = 
     }
 }
 
-export function getData(): IApplicationData|undefined {
-    return (window as any).data
-}
-
 export function getClasses(): string[] {
-    const data = getData()
+    const data = state.data.get()
     if (!data) return []
     return data.classes
-}
-
-export function setData(data: IApplicationData): void {
-    (window as any).data = data
 }
 
 // In PCR's interface, you can click a date in month or week view to see it in day view.
@@ -287,7 +276,7 @@ function parseAssignmentBaseType(type: string): string {
 }
 
 function parseAssignment(ca: HTMLElement): IAssignment {
-    const data = getData()
+    const data = state.data.get()
     if (!data) throw new Error('Data dictionary not set up')
 
     // The starting date and ending date of the assignment are parsed first
@@ -362,7 +351,7 @@ function parse(doc: HTMLDocument, monthOffset: number): void {
         monthView: (_$(doc.querySelector('.rsHeaderMonth')).parentNode as HTMLElement).classList.contains('rsSelected'),
         monthOffset
     } // Reset the array in which all of your assignments are stored in.
-    setData(data)
+    state.data.localSet(data)
 
     doc.querySelectorAll('input:not([type="submit"])').forEach((e) => {
         viewData[(e as HTMLInputElement).name] = (e as HTMLInputElement).value || ''

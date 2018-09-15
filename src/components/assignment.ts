@@ -1,13 +1,11 @@
 import { fromDateNum, today } from '../dates'
 import { display, getTimeAfter, ISplitAssignment } from '../display'
-import { getListDateOffset } from '../navigation'
 import { getAttachmentMimeType, IApplicationData, IAssignment, urlForAttachment } from '../pcr'
 import { recentActivity } from '../plugins/activity'
-import { getAthenaData } from '../plugins/athena'
 import { removeFromExtra, saveExtra } from '../plugins/customAssignments'
 import { addToDone, assignmentInDone, removeFromDone, saveDone } from '../plugins/done'
 import { modifiedBody, removeFromModified, saveModified, setModified } from '../plugins/modifiedAssignments'
-import { settings } from '../settings'
+import { state } from '../state'
 import { _$, cssNumber, dateString, elemById, element, forceLayout, ripple } from '../util'
 import { resize } from './resizer'
 
@@ -67,7 +65,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
 
     let smallTag = 'small'
     let link = null
-    const athenaData = getAthenaData()
+    const athenaData = state.athenaData.get()
     if (athenaData && assignment.class != null && (athenaData[data.classes[assignment.class]] != null)) {
         link = athenaData[data.classes[assignment.class]].link
         smallTag = 'a'
@@ -292,10 +290,10 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
     })
     e.appendChild(mods)
 
-    if (settings.assignmentSpan === 'multiple' && (start < split.start)) {
+    if (state.assignmentSpan.get() === 'multiple' && (start < split.start)) {
         e.classList.add('fromWeekend')
     }
-    if (settings.assignmentSpan === 'multiple' && (end > split.end)) {
+    if (state.assignmentSpan.get() === 'multiple' && (end > split.end)) {
         e.classList.add('overWeekend')
     }
     e.classList.add(`s${split.start.getDay()}`)
@@ -303,14 +301,14 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
 
     const st = Math.floor(split.start.getTime() / 1000 / 3600 / 24)
     if (split.assignment.end === 'Forever') {
-        if (st <= (today() + getListDateOffset())) {
+        if (st <= (today() + state.listDateOffset.get())) {
             e.classList.add('listDisp')
         }
     } else {
         const midDate = new Date()
-        midDate.setDate(midDate.getDate() + getListDateOffset())
-        const push = (assignment.baseType === 'test' && assignment.start === st) ? settings.earlyTest : 0
-        const endExtra = getListDateOffset() === 0 ? getTimeAfter(midDate) : 24 * 3600 * 1000
+        midDate.setDate(midDate.getDate() + state.listDateOffset.get())
+        const push = (assignment.baseType === 'test' && assignment.start === st) ? state.earlyTest.get() : 0
+        const endExtra = state.listDateOffset.get() === 0 ? getTimeAfter(midDate) : 24 * 3600 * 1000
         if (fromDateNum(st - push) <= midDate &&
             (split.end === 'Forever' || midDate.getTime() <= split.end.getTime() + endExtra)) {
             e.classList.add('listDisp')
@@ -318,7 +316,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
     }
 
     // Add click interactivity
-    if (!split.custom || !settings.sepTasks) {
+    if (!split.custom || !state.sepTasks.get()) {
         e.addEventListener('click', (evt) => {
             if ((document.getElementsByClassName('full').length === 0) &&
                 (document.body.getAttribute('data-view') === '0')) {

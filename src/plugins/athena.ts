@@ -1,6 +1,5 @@
-import { elemById, localStorageRead, localStorageWrite } from '../util'
-
-const ATHENA_STORAGE_NAME = 'athenaData'
+import { state } from '../state'
+import { elemById } from '../util'
 
 interface IRawAthenaData {
     response_code: 200
@@ -35,12 +34,6 @@ export interface IAthenaDataItem {
 
 export interface IAthenaData {
     [cls: string]: IAthenaDataItem
-}
-
-let athenaData: IAthenaData|null = localStorageRead(ATHENA_STORAGE_NAME)
-
-export function getAthenaData(): IAthenaData|null {
-    return athenaData
 }
 
 function formatLogo(logo: string): string {
@@ -78,8 +71,7 @@ function parseAthenaData(dat: string): IAthenaData|null {
 export function updateAthenaData(data: string): void {
     const refreshEl = document.getElementById('athenaDataRefresh')
     try {
-        athenaData = parseAthenaData(data)
-        localStorageWrite(ATHENA_STORAGE_NAME, athenaData)
+        state.athenaData.set(parseAthenaData(data))
         elemById('athenaDataError').style.display = 'none'
         if (refreshEl) refreshEl.style.display = 'block'
     } catch (e) {

@@ -1,4 +1,4 @@
-import { getClasses, getData } from '../pcr'
+import { getClasses } from '../pcr'
 import { _$, capitalizeString, elemById, element } from '../util'
 
 // When anything is typed, the search suggestions need to be updated.

@@ -151,6 +151,9 @@ export function localStorageRead(name: string): any
 export function localStorageRead<R>(name: string, defaultVal: () => R): R
 export function localStorageRead<T>(name: string, defaultVal: T): T
 export function localStorageRead(name: string, defaultVal?: any): any {
+    if (!localStorage.hasOwnProperty(name)) {
+        return typeof defaultVal === 'function' ? defaultVal() : defaultVal
+    }
     try {
         return JSON.parse(localStorage.getItem(name) as any)
     } catch (e) {

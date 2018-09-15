@@ -5,21 +5,11 @@ import { updateNewTips } from './components/customAdder'
 import { getResizeAssignments, resize, resizeCaller } from './components/resizer'
 import { toDateNum, today } from './dates'
 import { display, formatUpdate, getScroll } from './display'
-import {
-    decrementCalDateOffset,
-    decrementListDateOffset,
-    getCalDateOffset,
-    getListDateOffset,
-    incrementCalDateOffset,
-    incrementListDateOffset,
-    setListDateOffset,
-    zeroDateOffsets
-} from './navigation'
-import { dologin, fetch, getClasses, getData, logout, setData, switchViews } from './pcr'
+import { dologin, fetch, getClasses, logout, switchViews } from './pcr'
 import { addActivity, recentActivity } from './plugins/activity'
 import { updateAthenaData } from './plugins/athena'
 import { addToExtra, parseCustomTask, saveExtra } from './plugins/customAssignments'
-import { getSetting, setSetting, settings } from './settings'
+import { decrementState, getStateItem, incrementState, state, zeroDateOffsets } from './state'
 import {
     _$,
     _$h,
@@ -34,10 +24,6 @@ import {
     requestIdleCallback,
     ripple
 } from './util'
-
-if (localStorageRead('data') != null) {
-    setData(localStorageRead('data'))
-}
 
 // Additionally, if it's the user's first time, the page is set to the welcome page.
 if (!localStorageRead('noWelcome')) {
@@ -77,7 +63,7 @@ elemById('background').addEventListener('click', closeOpened)
 // Then, the tabs are made interactive.
 document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
   tab.addEventListener('click', (evt) => {
-    if (!settings.viewTrans) {
+    if (!state.viewTrans.get()) {
       document.body.classList.add('noTrans')
       forceLayout(document.body)
     }
@@ -85,7 +71,7 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
     document.body.setAttribute('data-view', String(tabIndex))
     if (tabIndex === 1) {
         window.addEventListener('resize', resizeCaller)
-        if (settings.viewTrans) {
+        if (state.viewTrans.get()) {
             let start: number|null = null
             // The code below is the same code used in the resize() function. It basically just
             // positions the assignments correctly as they animate
@@ -142,7 +128,7 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
         } else {
             resize()
         }
-        const prevOffset = getCalDateOffset()
+        const prevOffset = state.calDateOffset.get()
         zeroDateOffsets()
         if (prevOffset !== 0) lazyFetch()
         updateDateNavs()
@@ -165,7 +151,7 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
             (assignment as HTMLElement).style.top = 'auto'
         })
     }
-    if (!settings.viewTrans) {
+    if (!state.viewTrans.get()) {
       forceLayout(document.body)
       setTimeout(() => {
           document.body.classList.remove('noTrans')
@@ -274,11 +260,11 @@ setupDateListener({
     from: elemById('listprevdate'),
     current: elemById('listnowdate'),
     to: elemById('listnextdate'),
-    hooks: [incrementListDateOffset, display],
+    hooks: [() => incrementState(state.listDateOffset), display],
     forward: true,
     newsupplier: () => {
         const listDate2 = new Date()
-        listDate2.setDate(listDate2.getDate() + 1 + getListDateOffset())
+        listDate2.setDate(listDate2.getDate() + 1 + state.listDateOffset.get())
         return dateString(listDate2).replace('Today', 'Now')
     }
 })
@@ -288,11 +274,11 @@ setupDateListener({
     from: elemById('listnextdate'),
     current: elemById('listnowdate'),
     to: elemById('listprevdate'),
-    hooks: [decrementListDateOffset, display],
+    hooks: [() => decrementState(state.listDateOffset), display],
     forward: false,
     newsupplier: () => {
         const listDate2 = new Date()
-        listDate2.setDate(listDate2.getDate() - 1 + getListDateOffset())
+        listDate2.setDate(listDate2.getDate() - 1 + state.listDateOffset.get())
         return dateString(listDate2).replace('Today', 'Now')
     }
 })
@@ -301,8 +287,8 @@ function lazyFetch(): void {
     Array.from(document.querySelectorAll('.week, .upcomingTest'))
         .forEach((s) => s.remove())
     document.body.removeAttribute('data-pcrview')
-    if (getCalDateOffset() === 0) {
-        setData(localStorageRead('data'))
+    if (state.calDateOffset.get() === 0) {
+        state.data.revert()
         display()
     } else {
         fetch(true)
@@ -314,11 +300,11 @@ setupDateListener({
     from: elemById('calprevdate'),
     current: elemById('calnowdate'),
     to: elemById('calnextdate'),
-    hooks: [incrementCalDateOffset, lazyFetch],
+    hooks: [() => incrementState(state.calDateOffset), lazyFetch],
     forward: true,
     newsupplier: () => {
         const listDate2 = new Date()
-        listDate2.setMonth(listDate2.getMonth() + 1 + getCalDateOffset())
+        listDate2.setMonth(listDate2.getMonth() + 1 + state.calDateOffset.get())
         return monthString(listDate2).replace('Today', 'Now')
     }
 })
@@ -328,18 +314,18 @@ setupDateListener({
     from: elemById('calnextdate'),
     current: elemById('calnowdate'),
     to: elemById('calprevdate'),
-    hooks: [decrementCalDateOffset, lazyFetch],
+    hooks: [() => decrementState(state.calDateOffset), lazyFetch],
     forward: false,
     newsupplier: () => {
         const listDate2 = new Date()
-        listDate2.setMonth(listDate2.getMonth() - 1 + getCalDateOffset())
+        listDate2.setMonth(listDate2.getMonth() - 1 + state.calDateOffset.get())
         return monthString(listDate2)
     }
 })
 
 function updateListNav(): void {
     const d = new Date()
-    d.setDate((d.getDate() + getListDateOffset()) - 1)
+    d.setDate((d.getDate() + state.listDateOffset.get()) - 1)
     const up = (id: string) => {
         elemById(id).innerHTML = dateString(d).replace('Today', 'Now')
         return d.setDate(d.getDate() + 1)
@@ -351,7 +337,7 @@ function updateListNav(): void {
 
 function updateCalNav(): void {
     const d = new Date()
-    d.setMonth((d.getMonth() + getCalDateOffset()) - 1)
+    d.setMonth((d.getMonth() + state.calDateOffset.get()) - 1)
     const up = (id: string) => {
         elemById(id).innerHTML = monthString(d)
         return d.setMonth(d.getMonth() + 1)
@@ -369,7 +355,7 @@ function updateDateNavs(): void {
 
 function switchToList(evt: Event): void {
     if (_$h(evt.target).classList.contains('month') || _$h(evt.target).classList.contains('date')) {
-        setListDateOffset(toDateNum(Number(_$h(_$h(evt.target).parentNode).getAttribute('data-date'))) - today())
+        state.listDateOffset.set(toDateNum(Number(_$h(_$h(evt.target).parentNode).getAttribute('data-date'))) - today())
         updateDateNavs()
         document.body.setAttribute('data-view', '1')
         return display()
@@ -429,7 +415,7 @@ updateAvatar()
 // Updates section, but it should go before the display() function forces a reflow.
 elemById('version').innerHTML = VERSION
 
-// To bring up the settings windows, an event listener needs to be added to the button.
+// To bring up the settings window, an event listener needs to be added to the button.
 elemById('settingsB').addEventListener('click', () => {
     elemById('sideBackground').click()
     document.body.classList.add('settingsShown')
@@ -447,31 +433,31 @@ elemById('backButton').addEventListener('click', () => {
 })
 
 // The code below is what the settings control.
-if (settings.sepTasks) {
+if (state.sepTasks.get()) {
     elemById('info').classList.add('isTasks')
     elemById('new').style.display = 'none'
 }
-if (settings.holidayThemes) { document.body.classList.add('holidayThemes') }
-if (settings.sepTaskClass) { document.body.classList.add('sepTaskClass') }
+if (state.holidayThemes.get()) { document.body.classList.add('holidayThemes') }
+if (state.sepTaskClass.get()) { document.body.classList.add('sepTaskClass') }
 interface IColorMap { [cls: string]: string }
 let assignmentColors: IColorMap = localStorageRead('assignmentColors', {
     classwork: '#689f38', homework: '#2196f3', longterm: '#f57c00', test: '#f44336'
 })
 let classColors = localStorageRead('classColors', () => {
     const cc: IColorMap = {}
-    const data = getData()
+    const data = state.data.get()
     if (!data) return cc
     data.classes.forEach((c: string) => {
         cc[c] = '#616161'
     })
     return cc
 })
-elemById(`${settings.colorType}Colors`).style.display = 'block'
+elemById(`${state.colorType.get()}Colors`).style.display = 'block'
 window.addEventListener('focus', () => {
-  if (settings.refreshOnFocus) fetch()
+  if (state.refreshOnFocus.get()) fetch()
 })
 function intervalRefresh(): void {
-    const r = settings.refreshRate
+    const r = state.refreshRate.get()
     if (r > 0) {
         setTimeout(() => {
             console.debug('Refreshing because of timer')
@@ -590,7 +576,7 @@ function updateColors(): void {
 
     const createPalette = (color: string) => tinycolor(color).darken(24).toHexString()
 
-    if (settings.colorType === 'assignment') {
+    if (state.colorType.get() === 'assignment') {
         Object.entries(assignmentColors).forEach(([name, color]) => {
             addColorRule(`.${name}`, color, palette[color] || createPalette(color))
         })
@@ -609,16 +595,17 @@ updateColors()
 
 // The elements that control the settings also need event listeners
 document.querySelectorAll('.settingsControl').forEach((e: HTMLInputElement) => {
+    const setting = getStateItem(e.name)
     if (e.type === 'checkbox') {
-        e.checked = getSetting(e.name)
+        e.checked = setting.get()
     } else {
-        e.value = getSetting(e.name)
+        e.value = setting.get()
     }
     e.addEventListener('change', (evt) => {
         if (e.type === 'checkbox') {
-            setSetting(e.name, e.checked)
+            setting.set(e.checked)
         } else {
-            setSetting(e.name, e.value)
+            setting.set(e.value)
         }
         switch (e.name) {
             case 'refreshRate': return intervalRefresh()
@@ -635,13 +622,13 @@ document.querySelectorAll('.settingsControl').forEach((e: HTMLInputElement) => {
 
 // This also needs to be done for radio buttons
 const colorType =
-    _$(document.querySelector(`input[name=\"colorType\"][value=\"${settings.colorType}\"]`)) as HTMLInputElement
+    _$(document.querySelector(`input[name=\"colorType\"][value=\"${state.colorType.get()}\"]`)) as HTMLInputElement
 colorType.checked = true
 Array.from(document.getElementsByName('colorType')).forEach((c) => {
   c.addEventListener('change', (evt) => {
     const v = (_$(document.querySelector('input[name="colorType"]:checked')) as HTMLInputElement).value
     if (v !== 'assignment' && v !== 'class') return
-    settings.colorType = v
+    state.colorType.set(v)
     if (v === 'class') {
       elemById('assignmentColors').style.display = 'none'
       elemById('classColors').style.display = 'block'
@@ -690,8 +677,8 @@ has already been triggered in the last minute)
 console.log('')
 
 // The "last updated" text is set to the correct date.
-const triedLastUpdate = localStorageRead('lastUpdate')
-elemById('lastUpdate').innerHTML = triedLastUpdate ? formatUpdate(triedLastUpdate) : 'Never'
+const triedLastUpdate = state.lastUpdate.get()
+elemById('lastUpdate').innerHTML = triedLastUpdate !== 0 ? formatUpdate(triedLastUpdate) : 'Never'
 
 if (localStorageRead('data') != null) {
     // Now check if there's activity
@@ -792,7 +779,7 @@ elemById('filterActivity').addEventListener('click', () => {
 })
 
 // At the start, it needs to be correctly populated
-const activityTypes = settings.shownActivity
+const activityTypes = state.shownActivity.get()
 
 function updateSelectNum(): string {
     const c = (bool: boolean)  => bool ? 1 : 0
@@ -812,19 +799,19 @@ Object.entries(activityTypes).forEach(([type, enabled]) => {
     activityTypes[type] = selectEl.checked
     elemById('infoActivity').setAttribute('data-filtered', updateSelectNum())
     elemById('infoActivity').classList.toggle(type)
-    settings.shownActivity = activityTypes
+    state.shownActivity.set(activityTypes)
   })
 })
 
 // The show completed tasks checkbox is set correctly and is assigned an event listener.
 const showDoneTasksEl = elemById('showDoneTasks') as HTMLInputElement
-if (settings.showDoneTasks) {
+if (state.showDoneTasks.get()) {
   showDoneTasksEl.checked = true
   elemById('infoTasksInner').classList.add('showDoneTasks')
 }
 showDoneTasksEl.addEventListener('change', () => {
-  settings.showDoneTasks = showDoneTasksEl.checked
-  elemById('infoTasksInner').classList.toggle('showDoneTasks', settings.showDoneTasks)
+  state.showDoneTasks.set(showDoneTasksEl.checked)
+  elemById('infoTasksInner').classList.toggle('showDoneTasks', state.showDoneTasks.get())
 })
 
 // <a name="updates"/>
@@ -865,7 +852,7 @@ elemById('newsB').addEventListener('click', () => {
   }
 
   if (elemById('newsContent').childNodes.length === 0) {
-    getNews(displayNews)
+    getNews().catch(displayNews)
   } else {
     displayNews()
   }

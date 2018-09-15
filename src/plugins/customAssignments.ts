@@ -1,4 +1,4 @@
-import { getData, IApplicationData, IAssignment } from '../pcr'
+import { IApplicationData, IAssignment } from '../pcr'
 import { localStorageRead, localStorageWrite } from '../util'
 
 const CUSTOM_STORAGE_NAME = 'extra'

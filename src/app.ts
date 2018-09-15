@@ -1,4 +1,5 @@
-import { elemById, element, localStorageRead, localStorageWrite, send } from './util'
+import { state } from './state'
+import { elemById, element, send } from './util'
 
 export const VERSION = '2.24.3'
 
@@ -46,38 +47,32 @@ export async function checkCommit(): Promise<void> {
     }
 }
 
-let newsUrl: string|null = null
-let newsCommit: string|null = null
-
 export async function fetchNews(): Promise<void> {
     try {
         const resp = await send(NEWS_URL, 'json')
-        let last = localStorageRead('newsCommit')
-        newsCommit = resp.response.history[0].version
+        const newsCommit = resp.response.history[0].version
 
-        if (last == null) {
-            last = newsCommit
-            localStorageWrite('newsCommit', newsCommit)
+        if (state.lastNewsCommit.get() == null) {
+            state.lastNewsCommit.set(newsCommit)
         }
 
-        newsUrl = resp.response.files['updates.htm'].raw_url
+        state.newsUrl.set(resp.response.files['updates.htm'].raw_url)
 
-        if (last !== newsCommit) {
-            getNews()
+        if (state.lastNewsCommit.get() !== newsCommit) {
+            getNews().then(() => state.lastNewsCommit.set(newsCommit))
         }
     } catch (err) {
         console.log('Could not access Github. Here\'s the error:', err)
     }
 }
 
-export async function getNews(onfail?: () => void): Promise<void> {
-    if (!newsUrl) {
-        if (onfail) onfail()
-        return
+export async function getNews(): Promise<void> {
+    const url = state.newsUrl.get()
+    if (!url) {
+        throw new Error('News url not yet found')
     }
     try {
-        const resp = await send(newsUrl)
-        localStorage.newsCommit = newsCommit
+        const resp = await send(url)
         resp.responseText.split('<hr>').forEach((news) => {
             elemById('newsContent').appendChild(element('div', 'newsItem', news))
         })
@@ -85,6 +80,6 @@ export async function getNews(onfail?: () => void): Promise<void> {
         elemById('news').classList.add('active')
     } catch (err) {
         console.log('Could not access Github. Here\'s the error:', err)
-        if (onfail) onfail()
+        throw err
     }
 }
