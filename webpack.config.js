@@ -1,13 +1,22 @@
 const path = require('path');
 
+const MODE = process.env.NODE_ENV || 'production';
+
 module.exports = {
   entry: {
     app: './src/client.ts',
     preload: './src/preload.ts',
     welcome: './src/welcome.ts'
   },
-  devtool: 'inline-source-map',
-  mode: 'development',
+  devtool: 'source-map',
+  mode: MODE,
+  optimization: {
+    minimize: false
+  },
+  performance: {
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
+  },
   module: {
     rules: [
       {
