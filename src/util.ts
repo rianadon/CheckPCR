@@ -152,14 +152,14 @@ export function localStorageRead<R>(name: string, defaultVal: () => R): R
 export function localStorageRead<T>(name: string, defaultVal: T): T
 export function localStorageRead(name: string, defaultVal?: any): any {
     try {
-        return JSON.parse(localStorage[name])
+        return JSON.parse(localStorage.getItem(name) as any)
     } catch (e) {
         return typeof defaultVal === 'function' ? defaultVal() : defaultVal
     }
 }
 
 export function localStorageWrite(name: string, item: any): void {
-    localStorage[name] = JSON.stringify(item)
+    localStorage.setItem(name, JSON.stringify(item))
 }
 
 interface IdleDeadline {

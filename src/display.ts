@@ -3,6 +3,7 @@ import { createDay, createWeek } from './components/calendar'
 import { displayError } from './components/errorDisplay'
 import { resize } from './components/resizer'
 import { fromDateNum, iterDays, today } from './dates'
+import { getCalDateOffset } from './navigation'
 import { classById, getData, IApplicationData, IAssignment } from './pcr'
 import { addActivity, saveActivity } from './plugins/activity'
 import { extraToTask, getExtra, ICustomAssignment } from './plugins/customAssignments'
@@ -10,7 +11,6 @@ import { assignmentInDone, removeFromDone, saveDone } from './plugins/done'
 import { assignmentInModified, removeFromModified, saveModified } from './plugins/modifiedAssignments'
 import { settings } from './settings'
 import { _$, dateString, elemById, element, localStorageRead, smoothScroll } from './util'
-import { getCalDateOffset } from './navigation';
 
 export interface ISplitAssignment {
     assignment: IAssignment
@@ -150,7 +150,7 @@ export function display(doScroll: boolean = true): void {
 
         // First populate the calendar with boxes for each day
         // Only consider the previous set of assignments for activity purposes if the month is the same
-        const lastData = data.monthOffset == 0 ? (localStorageRead('data') as IApplicationData) : null
+        const lastData = data.monthOffset === 0 ? (localStorageRead('data') as IApplicationData) : null
         let wk: HTMLElement|null = null
         iterDays(start, end, (d) => {
             if (d.getDay() === 0) {

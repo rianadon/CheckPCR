@@ -144,7 +144,7 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
         }
         const prevOffset = getCalDateOffset()
         zeroDateOffsets()
-        if (prevOffset != 0) lazyFetch()
+        if (prevOffset !== 0) lazyFetch()
         updateDateNavs()
     } else {
         window.scrollTo(0, getScroll())
@@ -236,7 +236,6 @@ function navToggle(elem: string, ls: string, f?: () => void): void {
 navToggle('cvButton', 'showDone', () => setTimeout(resize, 1000))
 
 // The same goes for the button that shows upcoming tests.
-if (localStorage.showInfo == null) { localStorage.showInfo = JSON.stringify(true) }
 navToggle('infoButton', 'showInfo')
 
 // This also gets repeated for the theme toggling.
@@ -552,7 +551,7 @@ document.querySelectorAll('.colors').forEach((e) => {
                     selected.classList.remove('selected')
                 }
                 target.classList.add('selected')
-                localStorage[listName] = JSON.stringify(list)
+                localStorageWrite(listName, JSON.stringify(list))
                 listSetter(list)
                 updateColors()
             }
@@ -566,7 +565,7 @@ document.querySelectorAll('.colors').forEach((e) => {
                 selectedEl.classList.remove('selected')
             }
             sp.style.backgroundColor = (list[controlledColor] = _$(custom.querySelector('input')).value)
-            localStorage[listName] = JSON.stringify(list)
+            localStorageWrite(listName, list)
             updateColors()
             return evt.stopPropagation()
         })
@@ -656,11 +655,11 @@ Array.from(document.getElementsByName('colorType')).forEach((c) => {
 
 // The same goes for textareas.
 document.querySelectorAll('textarea').forEach((e) => {
-  if ((e.name !== 'athenaDataRaw') && (localStorage[e.name] != null)) {
-    e.value = localStorage[e.name]
+  if ((e.name !== 'athenaDataRaw') && (localStorageRead(e.name, null) != null)) {
+    e.value = localStorageRead(e.name)
   }
   e.addEventListener('input', (evt) => {
-    localStorage[e.name] = e.value
+    localStorageWrite(e.name, e.value)
     if (e.name === 'athenaDataRaw') {
       updateAthenaData(e.value)
     }

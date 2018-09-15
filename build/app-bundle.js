@@ -224,14 +224,14 @@ function _$h(arg) {
 }
 function localStorageRead(name, defaultVal) {
     try {
-        return JSON.parse(localStorage[name]);
+        return JSON.parse(localStorage.getItem(name));
     }
     catch (e) {
         return typeof defaultVal === 'function' ? defaultVal() : defaultVal;
     }
 }
 function localStorageWrite(name, item) {
-    localStorage[name] = JSON.stringify(item);
+    localStorage.setItem(name, JSON.stringify(item));
 }
 // Because the requestIdleCallback function is very new (as of writing only works with Chrome
 // version 47), the below function polyfills that method.
@@ -977,7 +977,7 @@ function parse(doc, monthOffset) {
         classes: [],
         assignments: [],
         monthView: Object(util["a" /* _$ */])(doc.querySelector('.rsHeaderMonth')).parentNode.classList.contains('rsSelected'),
-        monthOffset: monthOffset
+        monthOffset
     }; // Reset the array in which all of your assignments are stored in.
     setData(data);
     doc.querySelectorAll('input:not([type="submit"])').forEach((e) => {
@@ -1104,6 +1104,9 @@ var errorDisplay = __webpack_require__(13);
 // EXTERNAL MODULE: ./src/components/resizer.ts
 var resizer = __webpack_require__(7);
 
+// EXTERNAL MODULE: ./src/navigation.ts
+var navigation = __webpack_require__(3);
+
 // EXTERNAL MODULE: ./src/pcr.ts + 2 modules
 var pcr = __webpack_require__(4);
 
@@ -1121,9 +1124,6 @@ var modifiedAssignments = __webpack_require__(8);
 
 // EXTERNAL MODULE: ./src/settings.ts
 var settings = __webpack_require__(2);
-
-// EXTERNAL MODULE: ./src/navigation.ts
-var navigation = __webpack_require__(3);
 
 // CONCATENATED MODULE: ./src/display.ts
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return getScroll; });
@@ -1258,7 +1258,7 @@ function display(doScroll = true) {
         end.setDate(end.getDate() + (6 - end.getDay()));
         // First populate the calendar with boxes for each day
         // Only consider the previous set of assignments for activity purposes if the month is the same
-        const lastData = data.monthOffset == 0 ? Object(util["j" /* localStorageRead */])('data') : null;
+        const lastData = data.monthOffset === 0 ? Object(util["j" /* localStorageRead */])('data') : null;
         let wk = null;
         Object(dates["b" /* iterDays */])(start, end, (d) => {
             if (d.getDay() === 0) {
@@ -2337,7 +2337,7 @@ function displayError(e) {
     Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorContent').innerHTML = errorHTML.replace('\n', '<br>');
     linkById('errorGoogle').href = ERROR_FORM_URL + ERROR_FORM_ENTRY + encodeURIComponent(errorHTML);
     linkById('errorGitHub').href =
-        ERROR_GITHUB_URL + '?body=' + encodeURIComponent(`I've encountered an bug.\n\n\`\`\`\n${errorHTML}\n\`\`\``);
+        ERROR_GITHUB_URL + '?body=' + encodeURIComponent(`I've encountered a bug.\n\n\`\`\`\n${errorHTML}\n\`\`\``);
     Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorBackground').style.display = 'block';
     return Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('error').classList.add('active');
 }
@@ -2766,7 +2766,7 @@ document.querySelectorAll('#navTabs>li').forEach((tab, tabIndex) => {
             }
             const prevOffset = Object(navigation["c" /* getCalDateOffset */])();
             Object(navigation["h" /* zeroDateOffsets */])();
-            if (prevOffset != 0)
+            if (prevOffset !== 0)
                 lazyFetch();
             updateDateNavs();
         }
@@ -2856,9 +2856,6 @@ function navToggle(elem, ls, f) {
 // The button to show/hide completed assignments in list view also needs event listeners.
 navToggle('cvButton', 'showDone', () => setTimeout(resizer["b" /* resize */], 1000));
 // The same goes for the button that shows upcoming tests.
-if (localStorage.showInfo == null) {
-    localStorage.showInfo = JSON.stringify(true);
-}
 navToggle('infoButton', 'showInfo');
 // This also gets repeated for the theme toggling.
 navToggle('lightButton', 'dark');
@@ -3156,7 +3153,7 @@ document.querySelectorAll('.colors').forEach((e) => {
                     selected.classList.remove('selected');
                 }
                 target.classList.add('selected');
-                localStorage[listName] = JSON.stringify(list);
+                Object(util["k" /* localStorageWrite */])(listName, JSON.stringify(list));
                 listSetter(list);
                 updateColors();
             }
@@ -3170,7 +3167,7 @@ document.querySelectorAll('.colors').forEach((e) => {
                 selectedEl.classList.remove('selected');
             }
             sp.style.backgroundColor = (list[controlledColor] = Object(util["a" /* _$ */])(custom.querySelector('input')).value);
-            localStorage[listName] = JSON.stringify(list);
+            Object(util["k" /* localStorageWrite */])(listName, list);
             updateColors();
             return evt.stopPropagation();
         });
@@ -3257,11 +3254,11 @@ Array.from(document.getElementsByName('colorType')).forEach((c) => {
 });
 // The same goes for textareas.
 document.querySelectorAll('textarea').forEach((e) => {
-    if ((e.name !== 'athenaDataRaw') && (localStorage[e.name] != null)) {
-        e.value = localStorage[e.name];
+    if ((e.name !== 'athenaDataRaw') && (Object(util["j" /* localStorageRead */])(e.name, null) != null)) {
+        e.value = Object(util["j" /* localStorageRead */])(e.name);
     }
     e.addEventListener('input', (evt) => {
-        localStorage[e.name] = e.value;
+        Object(util["k" /* localStorageWrite */])(e.name, e.value);
         if (e.name === 'athenaDataRaw') {
             Object(athena["b" /* updateAthenaData */])(e.value);
         }

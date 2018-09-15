@@ -360,7 +360,7 @@ function parse(doc: HTMLDocument, monthOffset: number): void {
         classes: [],
         assignments: [],
         monthView: (_$(doc.querySelector('.rsHeaderMonth')).parentNode as HTMLElement).classList.contains('rsSelected'),
-        monthOffset: monthOffset
+        monthOffset
     } // Reset the array in which all of your assignments are stored in.
     setData(data)
 

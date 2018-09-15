@@ -16,7 +16,7 @@ export function displayError(e: Error): void {
     elemById('errorContent').innerHTML = errorHTML.replace('\n', '<br>')
     linkById('errorGoogle').href = ERROR_FORM_URL + ERROR_FORM_ENTRY + encodeURIComponent(errorHTML)
     linkById('errorGitHub').href =
-        ERROR_GITHUB_URL + '?body=' + encodeURIComponent(`I've encountered an bug.\n\n\`\`\`\n${errorHTML}\n\`\`\``)
+        ERROR_GITHUB_URL + '?body=' + encodeURIComponent(`I've encountered a bug.\n\n\`\`\`\n${errorHTML}\n\`\`\``)
     elemById('errorBackground').style.display = 'block'
     return elemById('error').classList.add('active')
 }

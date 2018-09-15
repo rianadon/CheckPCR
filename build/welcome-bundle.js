@@ -224,14 +224,14 @@ function _$h(arg) {
 }
 function localStorageRead(name, defaultVal) {
     try {
-        return JSON.parse(localStorage[name]);
+        return JSON.parse(localStorage.getItem(name));
     }
     catch (e) {
         return typeof defaultVal === 'function' ? defaultVal() : defaultVal;
     }
 }
 function localStorageWrite(name, item) {
-    localStorage[name] = JSON.stringify(item);
+    localStorage.setItem(name, JSON.stringify(item));
 }
 // Because the requestIdleCallback function is very new (as of writing only works with Chrome
 // version 47), the below function polyfills that method.
@@ -977,7 +977,7 @@ function parse(doc, monthOffset) {
         classes: [],
         assignments: [],
         monthView: Object(util["a" /* _$ */])(doc.querySelector('.rsHeaderMonth')).parentNode.classList.contains('rsSelected'),
-        monthOffset: monthOffset
+        monthOffset
     }; // Reset the array in which all of your assignments are stored in.
     setData(data);
     doc.querySelectorAll('input:not([type="submit"])').forEach((e) => {
@@ -1104,6 +1104,9 @@ var errorDisplay = __webpack_require__(13);
 // EXTERNAL MODULE: ./src/components/resizer.ts
 var resizer = __webpack_require__(7);
 
+// EXTERNAL MODULE: ./src/navigation.ts
+var navigation = __webpack_require__(3);
+
 // EXTERNAL MODULE: ./src/pcr.ts + 2 modules
 var pcr = __webpack_require__(4);
 
@@ -1121,9 +1124,6 @@ var modifiedAssignments = __webpack_require__(8);
 
 // EXTERNAL MODULE: ./src/settings.ts
 var settings = __webpack_require__(2);
-
-// EXTERNAL MODULE: ./src/navigation.ts
-var navigation = __webpack_require__(3);
 
 // CONCATENATED MODULE: ./src/display.ts
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return getScroll; });
@@ -1258,7 +1258,7 @@ function display(doScroll = true) {
         end.setDate(end.getDate() + (6 - end.getDay()));
         // First populate the calendar with boxes for each day
         // Only consider the previous set of assignments for activity purposes if the month is the same
-        const lastData = data.monthOffset == 0 ? Object(util["j" /* localStorageRead */])('data') : null;
+        const lastData = data.monthOffset === 0 ? Object(util["j" /* localStorageRead */])('data') : null;
         let wk = null;
         Object(dates["b" /* iterDays */])(start, end, (d) => {
             if (d.getDay() === 0) {
@@ -2337,7 +2337,7 @@ function displayError(e) {
     Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorContent').innerHTML = errorHTML.replace('\n', '<br>');
     linkById('errorGoogle').href = ERROR_FORM_URL + ERROR_FORM_ENTRY + encodeURIComponent(errorHTML);
     linkById('errorGitHub').href =
-        ERROR_GITHUB_URL + '?body=' + encodeURIComponent(`I've encountered an bug.\n\n\`\`\`\n${errorHTML}\n\`\`\``);
+        ERROR_GITHUB_URL + '?body=' + encodeURIComponent(`I've encountered a bug.\n\n\`\`\`\n${errorHTML}\n\`\`\``);
     Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorBackground').style.display = 'block';
     return Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('error').classList.add('active');
 }
