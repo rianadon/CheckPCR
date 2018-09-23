@@ -66,7 +66,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -90,7 +90,7 @@
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return ripple; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return cssNumber; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return animateEl; });
-/* harmony import */ var _dates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var _dates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 
 // @ts-ignore TODO: Make this less hacky
 NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
@@ -377,6 +377,157 @@ function animateEl(el, keyframes, options) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return state; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return getStateItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return incrementState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return decrementState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return zeroDateOffsets; });
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+class CachedState {
+    constructor(value) {
+        this.value = value;
+    }
+    set(value) { this.value = value; }
+    get() { return this.value; }
+}
+/**
+ * Back a given state to localStorage
+ */
+function storedState(name, statevar) {
+    statevar.set(Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* localStorageRead */ "j"])(name, () => statevar.get()));
+    return {
+        get() { return statevar.get(); },
+        set(value) {
+            Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* localStorageWrite */ "k"])(name, value);
+            return statevar.set(value);
+        },
+        localSet(value) {
+            return statevar.set(value);
+        },
+        revert() {
+            statevar.set(Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* localStorageRead */ "j"])(name, () => statevar.get()));
+        },
+        forceUpdate() {
+            Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* localStorageWrite */ "k"])(name, statevar.get());
+        }
+    };
+}
+const state = {
+    /** Offset from today of the date displayed in list view */
+    listDateOffset: new CachedState(0),
+    /** Offset from today of the month displayed in calendar view */
+    calDateOffset: new CachedState(0),
+    /** Data fetched from PCR */
+    data: storedState('data', new CachedState(undefined)),
+    /** The last time an update was attempted from PCR (irregardless of success) */
+    lastTriedUpdate: new CachedState(0),
+    /** The last time data was succesfully fetched from PCR */
+    lastUpdate: storedState('lastUpdate', new CachedState(0)),
+    /** Recorded changes to assignments */
+    activity: storedState('activity', new CachedState([])),
+    /** Data on classes */
+    athenaData: storedState('athenaData', new CachedState(null)),
+    /** Assignments marked as done */
+    done: storedState('done', new CachedState([])),
+    /** Modifications made to assignments */
+    modified: storedState('modified', new CachedState({})),
+    /** The last fetched commit to the news gist */
+    lastNewsCommit: storedState('newsCommit', new CachedState(null)),
+    /** The detected url to the news gist */
+    newsUrl: new CachedState(null),
+    /** Custom assignments */
+    extra: storedState('extra', new CachedState([])),
+    //////////////////////////////////
+    //           Settings           //
+    //////////////////////////////////
+    /**
+     * Minutes between each automatic refresh of the page. Negative numbers indicate no automatic
+     * refreshing.
+     */
+    refreshRate: storedState('refreshRate', new CachedState(-1)),
+    /**
+     * Whether the window should refresh assignment data when focussed
+     */
+    refreshOnFocus: storedState('refreshOnFocus', new CachedState(true)),
+    /**
+     * Whether switching between views should be animated
+     */
+    viewTrans: storedState('viewTrans', new CachedState(true)),
+    /**
+     * Number of days early to show tests in list view
+     */
+    earlyTest: storedState('earlyTest', new CachedState(1)),
+    /**
+     * Whether to take tasks off the calendar view and show them in the info pane
+     */
+    sepTasks: storedState('sepTasks', new CachedState(false)),
+    /**
+     * Whether tasks should have their own color
+     */
+    sepTaskClass: storedState('sepTaskClass', new CachedState(false)),
+    /**
+     * Whether projects show up in the test page
+     */
+    projectsInTestPane: storedState('projectsInTestPane', new CachedState(false)),
+    /**
+     * When assignments should be shown on calendar view
+     */
+    assignmentSpan: storedState('assignmentSpan', new CachedState('multiple')),
+    /**
+     * When assignments should disappear from list view
+     */
+    hideAssignments: storedState('hideAssignments', new CachedState('day')),
+    /**
+     * Whether to use holiday theming
+     */
+    holidayThemes: storedState('holidayThemes', new CachedState(false)),
+    /**
+     * Whether to color assignments based on their type or class
+     */
+    colorType: storedState('colorType', new CachedState('assignment')),
+    /**
+     * Which types of activity are shown in the activity pane
+     */
+    shownActivity: storedState('shownActivity', new CachedState({
+        add: true,
+        edit: true,
+        delete: true
+    })),
+    /**
+     * Whether to display tasks in the task pane that are completed
+     */
+    showDoneTasks: storedState('showDoneTasks', new CachedState(false))
+};
+function getStateItem(name) {
+    if (!state.hasOwnProperty(name))
+        throw new Error(`Invalid state property ${name}`);
+    // @ts-ignore
+    return state[name];
+}
+/////////////////////////////////////////
+//           Generic helpers           //
+/////////////////////////////////////////
+function incrementState(statevar) {
+    statevar.set(statevar.get() + 1);
+}
+function decrementState(statevar) {
+    statevar.set(statevar.get() - 1);
+}
+//////////////////////////////////////////
+//           Specific helpers           //
+//////////////////////////////////////////
+function zeroDateOffsets() {
+    state.listDateOffset.set(0);
+    state.calDateOffset.set(0);
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* unused harmony export tzoff */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return toDateNum; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return fromDateNum; });
@@ -418,20 +569,457 @@ function iterDays(start, end, cb) {
 
 
 /***/ }),
-/* 2 */,
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 
-// EXTERNAL MODULE: ./src/components/avatar.ts
-var avatar = __webpack_require__(16);
+// EXTERNAL MODULE: ./src/components/assignment.ts
+var components_assignment = __webpack_require__(8);
+
+// EXTERNAL MODULE: ./src/dates.ts
+var dates = __webpack_require__(2);
+
+// EXTERNAL MODULE: ./src/util.ts
+var util = __webpack_require__(0);
+
+// CONCATENATED MODULE: ./src/components/calendar.ts
+
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function createWeek(id) {
+    const wk = Object(util["h" /* element */])('section', 'week', null, id);
+    const dayTable = Object(util["h" /* element */])('table', 'dayTable');
+    const tr = dayTable.insertRow();
+    // tslint:disable-next-line no-loops
+    for (let day = 0; day < 7; day++)
+        tr.insertCell();
+    wk.appendChild(dayTable);
+    return wk;
+}
+function createDay(d) {
+    const day = Object(util["h" /* element */])('div', 'day', null, 'day');
+    day.setAttribute('data-date', String(d.getTime()));
+    if (Math.floor((d.getTime() - d.getTimezoneOffset()) / 1000 / 3600 / 24) === Object(dates["d" /* today */])()) {
+        day.classList.add('today');
+    }
+    const month = Object(util["h" /* element */])('span', 'month', MONTHS[d.getMonth()]);
+    day.appendChild(month);
+    const date = Object(util["h" /* element */])('span', 'date', String(d.getDate()));
+    day.appendChild(date);
+    return day;
+}
 
 // EXTERNAL MODULE: ./src/components/errorDisplay.ts
-var errorDisplay = __webpack_require__(14);
+var errorDisplay = __webpack_require__(10);
+
+// EXTERNAL MODULE: ./src/components/resizer.ts
+var resizer = __webpack_require__(6);
+
+// EXTERNAL MODULE: ./src/pcr.ts + 1 modules
+var pcr = __webpack_require__(4);
+
+// EXTERNAL MODULE: ./src/plugins/activity.ts + 1 modules
+var activity = __webpack_require__(9);
+
+// EXTERNAL MODULE: ./src/plugins/customAssignments.ts
+var customAssignments = __webpack_require__(12);
+
+// EXTERNAL MODULE: ./src/plugins/done.ts
+var done = __webpack_require__(5);
+
+// EXTERNAL MODULE: ./src/plugins/modifiedAssignments.ts
+var modifiedAssignments = __webpack_require__(7);
+
+// EXTERNAL MODULE: ./src/state.ts
+var state = __webpack_require__(1);
+
+// CONCATENATED MODULE: ./src/display.ts
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return getScroll; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return getTimeAfter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return display; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return formatUpdate; });
+
+
+
+
+
+
+
+
+
+
+
+
+const SCHEDULE_ENDS = {
+    day: (date) => 24 * 3600 * 1000,
+    ms: (date) => [24,
+        15 + (35 / 60),
+        15 + (35 / 60),
+        15 + (15 / 60),
+        15 + (15 / 60),
+        15 + (15 / 60),
+        24 // Saturday
+    ][date.getDay()],
+    us: (date) => 15 * 3600 * 1000
+};
+const WEEKEND_CLASSNAMES = ['fromWeekend', 'overWeekend'];
+let display_scroll = 0; // The location to scroll to in order to reach today in calendar view
+function getScroll() {
+    return display_scroll;
+}
+function getTimeAfter(date) {
+    const hideAssignments = state["d" /* state */].hideAssignments.get();
+    if (hideAssignments === 'day' || hideAssignments === 'ms' || hideAssignments === 'us') {
+        return SCHEDULE_ENDS[hideAssignments](date);
+    }
+    else {
+        return SCHEDULE_ENDS.day(date);
+    }
+}
+function getStartEndDates(data) {
+    if (data.monthView) {
+        const startN = Math.min(...data.assignments.map((a) => a.start)); // Smallest date
+        const endN = Math.max(...data.assignments.map((a) => a.start)); // Largest date
+        const year = (new Date()).getFullYear(); // For future calculations
+        // Calculate what month we will be displaying by finding the month of today
+        const month = (new Date()).getMonth() + state["d" /* state */].calDateOffset.get();
+        // Make sure the start and end dates lie within the month
+        const start = new Date(Math.max(Object(dates["a" /* fromDateNum */])(startN).getTime(), (new Date(year, month)).getTime()));
+        // If the day argument for Date is 0, then the resulting date will be of the previous month
+        const end = new Date(Math.min(Object(dates["a" /* fromDateNum */])(endN).getTime(), (new Date(year, month + 1, 0)).getTime()));
+        return { start, end };
+    }
+    else {
+        const todaySE = new Date();
+        const start = new Date(todaySE.getFullYear(), todaySE.getMonth(), todaySE.getDate());
+        const end = new Date(todaySE.getFullYear(), todaySE.getMonth(), todaySE.getDate());
+        return { start, end };
+    }
+}
+function getAssignmentSplits(assignment, start, end, reference) {
+    const split = [];
+    if (state["d" /* state */].assignmentSpan.get() === 'multiple') {
+        const s = Math.max(start.getTime(), Object(dates["a" /* fromDateNum */])(assignment.start).getTime());
+        const e = assignment.end === 'Forever' ? s : Math.min(end.getTime(), Object(dates["a" /* fromDateNum */])(assignment.end).getTime());
+        const span = ((e - s) / 1000 / 3600 / 24) + 1; // Number of days assignment takes up
+        const spanRelative = 6 - (new Date(s)).getDay(); // Number of days until the next Saturday
+        const ns = new Date(s);
+        ns.setDate(ns.getDate() + spanRelative); //  The date of the next Saturday
+        // tslint:disable-next-line no-loops
+        for (let n = -6; n < span - spanRelative; n += 7) {
+            const lastSun = new Date(ns);
+            lastSun.setDate(lastSun.getDate() + n);
+            const nextSat = new Date(lastSun);
+            nextSat.setDate(nextSat.getDate() + 6);
+            split.push({
+                assignment,
+                start: new Date(Math.max(s, lastSun.getTime())),
+                end: new Date(Math.min(e, nextSat.getTime())),
+                custom: Boolean(reference),
+                reference
+            });
+        }
+    }
+    else if (state["d" /* state */].assignmentSpan.get() === 'start') {
+        const s = Object(dates["a" /* fromDateNum */])(assignment.start);
+        if (s.getTime() >= start.getTime()) {
+            split.push({
+                assignment,
+                start: s,
+                end: s,
+                custom: Boolean(reference),
+                reference
+            });
+        }
+    }
+    else if (state["d" /* state */].assignmentSpan.get() === 'end') {
+        const e = assignment.end === 'Forever' ? assignment.end : Object(dates["a" /* fromDateNum */])(assignment.end);
+        const de = e === 'Forever' ? Object(dates["a" /* fromDateNum */])(assignment.start) : e;
+        if (de.getTime() <= end.getTime()) {
+            split.push({
+                assignment,
+                start: de,
+                end: e,
+                custom: Boolean(reference),
+                reference
+            });
+        }
+    }
+    return split;
+}
+// This function will convert the array of assignments generated by *parse* into readable HTML.
+function display(doScroll = true) {
+    console.time('Displaying data');
+    try {
+        const data = state["d" /* state */].data.get();
+        if (!data) {
+            throw new Error('Data should have been fetched before display() was called');
+        }
+        document.body.setAttribute('data-pcrview', data.monthView ? 'month' : 'other');
+        const main = Object(util["a" /* _$ */])(document.querySelector('main'));
+        const taken = {};
+        const timeafter = getTimeAfter(new Date());
+        const { start, end } = getStartEndDates(data);
+        // Set the start date to be a Sunday and the end date to be a Saturday
+        start.setDate(start.getDate() - start.getDay());
+        end.setDate(end.getDate() + (6 - end.getDay()));
+        // First populate the calendar with boxes for each day
+        // Only consider the previous set of assignments for activity purposes if the month is the same
+        const lastData = data.monthOffset === 0 ? Object(util["j" /* localStorageRead */])('data') : null;
+        let wk = null;
+        Object(dates["b" /* iterDays */])(start, end, (d) => {
+            if (d.getDay() === 0) {
+                const id = `wk${d.getMonth()}-${d.getDate()}`; // Don't create a new week element if one already exists
+                wk = document.getElementById(id);
+                if (wk == null) {
+                    wk = createWeek(id);
+                    main.appendChild(wk);
+                }
+            }
+            if (!wk)
+                throw new Error(`Expected week element on day ${d} to not be null`);
+            if (wk.getElementsByClassName('day').length <= d.getDay()) {
+                wk.appendChild(createDay(d));
+            }
+            taken[d.getTime()] = [];
+        });
+        // Split assignments taking more than 1 week
+        const split = [];
+        data.assignments.forEach((assignment, num) => {
+            split.push(...getAssignmentSplits(assignment, start, end));
+            // Activity stuff
+            if (lastData != null) {
+                const oldAssignment = lastData.assignments.find((a) => a.id === assignment.id);
+                if (oldAssignment) {
+                    if (oldAssignment.body !== assignment.body) {
+                        Object(activity["a" /* addActivity */])('edit', oldAssignment, new Date(), true, oldAssignment.class != null ? lastData.classes[oldAssignment.class] : undefined);
+                        Object(modifiedAssignments["c" /* removeFromModified */])(assignment.id); // If the assignment is modified, reset it
+                    }
+                    lastData.assignments.splice(lastData.assignments.indexOf(oldAssignment), 1);
+                }
+                else {
+                    Object(activity["a" /* addActivity */])('add', assignment, new Date(), true);
+                }
+            }
+        });
+        if (lastData != null) {
+            // Check if any of the last assignments weren't deleted (so they have been deleted in PCR)
+            lastData.assignments.forEach((assignment) => {
+                Object(activity["a" /* addActivity */])('delete', assignment, new Date(), true, assignment.class != null ? lastData.classes[assignment.class] : undefined);
+                Object(done["c" /* removeFromDone */])(assignment.id);
+                Object(modifiedAssignments["c" /* removeFromModified */])(assignment.id);
+            });
+            // Then save a maximum of 128 activity items
+            Object(activity["c" /* saveActivity */])();
+            // And completed assignments + modifications
+            Object(done["d" /* saveDone */])();
+            Object(modifiedAssignments["d" /* saveModified */])();
+        }
+        // Add custom assignments to the split array
+        state["d" /* state */].extra.get().forEach((custom) => {
+            split.push(...getAssignmentSplits(Object(customAssignments["b" /* extraToTask */])(custom, data), start, end, custom));
+        });
+        // Calculate the today's week id
+        const tdst = new Date();
+        tdst.setDate(tdst.getDate() - tdst.getDay());
+        const todayWkId = `wk${tdst.getMonth()}-${tdst.getDate()}`;
+        // Then add assignments
+        const weekHeights = {};
+        const previousAssignments = {};
+        Array.prototype.forEach.call(document.getElementsByClassName('assignment'), (assignment) => {
+            previousAssignments[assignment.id] = assignment;
+        });
+        split.forEach((s) => {
+            const weekId = Object(components_assignment["b" /* computeWeekId */])(s);
+            wk = document.getElementById(weekId);
+            if (wk == null)
+                return;
+            const e = Object(components_assignment["c" /* createAssignment */])(s, data);
+            // Calculate how many assignments are placed before the current one
+            if (!s.custom || !state["d" /* state */].sepTasks.get()) {
+                let pos = 0;
+                // tslint:disable-next-line no-loops
+                while (true) {
+                    let found = true;
+                    Object(dates["b" /* iterDays */])(s.start, s.end === 'Forever' ? s.start : s.end, (d) => {
+                        if (typeof taken[d.getTime()] === 'undefined') {
+                            throw new Error(`Assignment range out of bounds (d=${d.getTime()}, start=${s.start.getTime()}, end=${typeof s.end === 'string' ? s.end : s.end.getTime()}, dstart=${start.getTime()}, dend=${end.getTime()})`);
+                        }
+                        if (taken[d.getTime()].indexOf(pos) !== -1) {
+                            found = false;
+                        }
+                    });
+                    if (found) {
+                        break;
+                    }
+                    pos++;
+                }
+                // Append the position the assignment is at to the taken array
+                Object(dates["b" /* iterDays */])(s.start, s.end === 'Forever' ? s.start : s.end, (d) => {
+                    taken[d.getTime()].push(pos);
+                });
+                // Calculate how far down the assignment must be placed as to not block the ones above it
+                e.style.marginTop = (pos * 30) + 'px';
+                if ((weekHeights[weekId] == null) || (pos > weekHeights[weekId])) {
+                    weekHeights[weekId] = pos;
+                    wk.style.height = 47 + ((pos + 1) * 30) + 'px';
+                }
+            }
+            // If the assignment is a test and is upcoming, add it to the upcoming tests panel.
+            if (s.assignment.end >= Object(dates["d" /* today */])() && (s.assignment.baseType === 'test' ||
+                (state["d" /* state */].projectsInTestPane.get() && s.assignment.baseType === 'longterm'))) {
+                const te = Object(util["h" /* element */])('div', ['upcomingTest', 'assignmentItem', s.assignment.baseType], `<i class='material-icons'>
+                                        ${s.assignment.baseType === 'longterm' ? 'assignment' : 'assessment'}
+                                    </i>
+                                    <span class='title'>${s.assignment.title}</span>
+                                    <small>${Object(components_assignment["f" /* separatedClass */])(s.assignment, data)[2]}</small>
+                                    <div class='range'>${Object(util["f" /* dateString */])(s.assignment.end, true)}</div>`, `test${s.assignment.id}`);
+                if (s.assignment.class)
+                    te.setAttribute('data-class', data.classes[s.assignment.class]);
+                te.addEventListener('click', () => {
+                    const doScrolling = async () => {
+                        await Object(util["p" /* smoothScroll */])((e.getBoundingClientRect().top + document.body.scrollTop) - 116);
+                        e.click();
+                    };
+                    if (document.body.getAttribute('data-view') === '0') {
+                        doScrolling();
+                    }
+                    else {
+                        Object(util["a" /* _$ */])(document.querySelector('#navTabs>li:first-child')).click();
+                        setTimeout(doScrolling, 500);
+                    }
+                });
+                if (Object(done["b" /* assignmentInDone */])(s.assignment.id)) {
+                    te.classList.add('done');
+                }
+                const testElem = document.getElementById(`test${s.assignment.id}`);
+                if (testElem) {
+                    testElem.innerHTML = te.innerHTML;
+                }
+                else {
+                    Object(util["g" /* elemById */])('infoTests').appendChild(te);
+                }
+            }
+            const already = document.getElementById(s.assignment.id + weekId);
+            if (already != null) { // Assignment already exists
+                already.style.marginTop = e.style.marginTop;
+                already.setAttribute('data-class', s.custom && state["d" /* state */].sepTaskClass.get() ? 'Task' : Object(pcr["a" /* classById */])(s.assignment.class));
+                if (!Object(modifiedAssignments["a" /* assignmentInModified */])(s.assignment.id)) {
+                    already.getElementsByClassName('body')[0].innerHTML = e.getElementsByClassName('body')[0].innerHTML;
+                }
+                Object(util["a" /* _$ */])(already.querySelector('.edits')).className = Object(util["a" /* _$ */])(e.querySelector('.edits')).className;
+                if (already.classList.toggle) {
+                    already.classList.toggle('listDisp', e.classList.contains('listDisp'));
+                }
+                Object(components_assignment["d" /* getES */])(already).forEach((cl) => already.classList.remove(cl));
+                Object(components_assignment["d" /* getES */])(e).forEach((cl) => already.classList.add(cl));
+                WEEKEND_CLASSNAMES.forEach((cl) => {
+                    already.classList.remove(cl);
+                    if (e.classList.contains(cl))
+                        already.classList.add(cl);
+                });
+            }
+            else {
+                if (s.custom && state["d" /* state */].sepTasks.get()) {
+                    const st = Math.floor(s.start.getTime() / 1000 / 3600 / 24);
+                    if ((s.assignment.start === st) &&
+                        (s.assignment.end === 'Forever' || s.assignment.end >= Object(dates["d" /* today */])())) {
+                        e.classList.remove('assignment');
+                        e.classList.add('taskPaneItem');
+                        e.style.order = String(s.assignment.end === 'Forever' ? Number.MAX_VALUE : s.assignment.end);
+                        const link = e.querySelector('.linked');
+                        if (link) {
+                            e.insertBefore(Object(util["h" /* element */])('small', [], link.innerHTML), link);
+                            link.remove();
+                        }
+                        Object(util["g" /* elemById */])('infoTasksInner').appendChild(e);
+                    }
+                }
+                else {
+                    wk.appendChild(e);
+                }
+            }
+            delete previousAssignments[s.assignment.id + weekId];
+        });
+        // Delete any assignments that have been deleted since updating
+        Object.entries(previousAssignments).forEach(([name, assignment]) => {
+            if (assignment.classList.contains('full')) {
+                Object(util["g" /* elemById */])('background').classList.remove('active');
+            }
+            assignment.remove();
+        });
+        // Scroll to the correct position in calendar view
+        if (weekHeights[todayWkId] != null) {
+            let h = 0;
+            const sw = (wkid) => wkid.substring(2).split('-').map((x) => Number(x));
+            const todayWk = sw(todayWkId);
+            Object.entries(weekHeights).forEach(([wkId, val]) => {
+                const wkSplit = sw(wkId);
+                if ((wkSplit[0] < todayWk[0]) || ((wkSplit[0] === todayWk[0]) && (wkSplit[1] < todayWk[1]))) {
+                    h += val;
+                }
+            });
+            display_scroll = (h * 30) + 112 + 14;
+            // Also show the day headers if today's date is displayed in the first row of the calendar
+            if (display_scroll < 50)
+                display_scroll = 0;
+            if (doScroll && (document.body.getAttribute('data-view') === '0') &&
+                !document.body.querySelector('.full')) {
+                // in calendar view
+                window.scrollTo(0, display_scroll);
+            }
+        }
+        document.body.classList.toggle('noList', document.querySelectorAll('.assignment.listDisp:not(.done)').length === 0);
+        if (document.body.getAttribute('data-view') === '1') { // in list view
+            Object(resizer["b" /* resize */])();
+        }
+    }
+    catch (err) {
+        Object(errorDisplay["b" /* displayError */])(err);
+    }
+    console.timeEnd('Displaying data');
+}
+// The function below converts an update time to a human-readable date.
+function formatUpdate(date) {
+    const now = new Date();
+    const update = new Date(+date);
+    if (now.getDate() === update.getDate()) {
+        let ampm = 'AM';
+        let hr = update.getHours();
+        if (hr > 12) {
+            ampm = 'PM';
+            hr -= 12;
+        }
+        const min = update.getMinutes();
+        return `Today at ${hr}:${min < 10 ? `0${min}` : min} ${ampm}`;
+    }
+    else {
+        const daysPast = Math.ceil((now.getTime() - update.getTime()) / 1000 / 3600 / 24);
+        if (daysPast === 1) {
+            return 'Yesterday';
+        }
+        else {
+            return daysPast + ' days ago';
+        }
+    }
+}
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXTERNAL MODULE: ./src/components/avatar.ts
+var avatar = __webpack_require__(14);
+
+// EXTERNAL MODULE: ./src/components/errorDisplay.ts
+var errorDisplay = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./src/components/snackbar.ts
-var snackbar = __webpack_require__(6);
+var snackbar = __webpack_require__(13);
 
 // CONCATENATED MODULE: ./src/cookies.ts
 /**
@@ -469,13 +1057,13 @@ function deleteCookie(cname) {
 }
 
 // EXTERNAL MODULE: ./src/dates.ts
-var dates = __webpack_require__(1);
+var dates = __webpack_require__(2);
 
 // EXTERNAL MODULE: ./src/display.ts + 1 modules
-var display = __webpack_require__(5);
+var display = __webpack_require__(3);
 
 // EXTERNAL MODULE: ./src/state.ts
-var state = __webpack_require__(4);
+var state = __webpack_require__(1);
 
 // EXTERNAL MODULE: ./src/util.ts
 var util = __webpack_require__(0);
@@ -873,636 +1461,7 @@ function logout() {
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return state; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return getStateItem; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return incrementState; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return decrementState; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return zeroDateOffsets; });
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-
-class CachedState {
-    constructor(value) {
-        this.value = value;
-    }
-    set(value) { this.value = value; }
-    get() { return this.value; }
-}
-/**
- * Back a given state to localStorage
- */
-function storedState(name, statevar) {
-    statevar.set(Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* localStorageRead */ "j"])(name, () => statevar.get()));
-    return {
-        get() { return statevar.get(); },
-        set(value) {
-            Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* localStorageWrite */ "k"])(name, value);
-            return statevar.set(value);
-        },
-        localSet(value) {
-            return statevar.set(value);
-        },
-        revert() {
-            statevar.set(Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* localStorageRead */ "j"])(name, () => statevar.get()));
-        },
-        forceUpdate() {
-            Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* localStorageWrite */ "k"])(name, statevar.get());
-        }
-    };
-}
-const state = {
-    /** Offset from today of the date displayed in list view */
-    listDateOffset: new CachedState(0),
-    /** Offset from today of the month displayed in calendar view */
-    calDateOffset: new CachedState(0),
-    /** Data fetched from PCR */
-    data: storedState('data', new CachedState(undefined)),
-    /** The last time an update was attempted from PCR (irregardless of success) */
-    lastTriedUpdate: new CachedState(0),
-    /** The last time data was succesfully fetched from PCR */
-    lastUpdate: storedState('lastUpdate', new CachedState(0)),
-    /** Recorded changes to assignments */
-    activity: storedState('activity', new CachedState([])),
-    /** Data on classes */
-    athenaData: storedState('athenaData', new CachedState(null)),
-    /** Assignments marked as done */
-    done: storedState('done', new CachedState([])),
-    /** Modifications made to assignments */
-    modified: storedState('modified', new CachedState({})),
-    /** The last fetched commit to the news gist */
-    lastNewsCommit: storedState('newsCommit', new CachedState(null)),
-    /** The detected url to the news gist */
-    newsUrl: new CachedState(null),
-    /** Custom assignments */
-    extra: storedState('extra', new CachedState([])),
-    //////////////////////////////////
-    //           Settings           //
-    //////////////////////////////////
-    /**
-     * Minutes between each automatic refresh of the page. Negative numbers indicate no automatic
-     * refreshing.
-     */
-    refreshRate: storedState('refreshRate', new CachedState(-1)),
-    /**
-     * Whether the window should refresh assignment data when focussed
-     */
-    refreshOnFocus: storedState('refreshOnFocus', new CachedState(true)),
-    /**
-     * Whether switching between views should be animated
-     */
-    viewTrans: storedState('viewTrans', new CachedState(true)),
-    /**
-     * Number of days early to show tests in list view
-     */
-    earlyTest: storedState('earlyTest', new CachedState(1)),
-    /**
-     * Whether to take tasks off the calendar view and show them in the info pane
-     */
-    sepTasks: storedState('sepTasks', new CachedState(false)),
-    /**
-     * Whether tasks should have their own color
-     */
-    sepTaskClass: storedState('sepTaskClass', new CachedState(false)),
-    /**
-     * Whether projects show up in the test page
-     */
-    projectsInTestPane: storedState('projectsInTestPane', new CachedState(false)),
-    /**
-     * When assignments should be shown on calendar view
-     */
-    assignmentSpan: storedState('assignmentSpan', new CachedState('multiple')),
-    /**
-     * When assignments should disappear from list view
-     */
-    hideAssignments: storedState('hideAssignments', new CachedState('day')),
-    /**
-     * Whether to use holiday theming
-     */
-    holidayThemes: storedState('holidayThemes', new CachedState(false)),
-    /**
-     * Whether to color assignments based on their type or class
-     */
-    colorType: storedState('colorType', new CachedState('assignment')),
-    /**
-     * Which types of activity are shown in the activity pane
-     */
-    shownActivity: storedState('shownActivity', new CachedState({
-        add: true,
-        edit: true,
-        delete: true
-    })),
-    /**
-     * Whether to display tasks in the task pane that are completed
-     */
-    showDoneTasks: storedState('showDoneTasks', new CachedState(false))
-};
-function getStateItem(name) {
-    if (!state.hasOwnProperty(name))
-        throw new Error(`Invalid state property ${name}`);
-    // @ts-ignore
-    return state[name];
-}
-/////////////////////////////////////////
-//           Generic helpers           //
-/////////////////////////////////////////
-function incrementState(statevar) {
-    statevar.set(statevar.get() + 1);
-}
-function decrementState(statevar) {
-    statevar.set(statevar.get() - 1);
-}
-//////////////////////////////////////////
-//           Specific helpers           //
-//////////////////////////////////////////
-function zeroDateOffsets() {
-    state.listDateOffset.set(0);
-    state.calDateOffset.set(0);
-}
-
-
-/***/ }),
 /* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-// EXTERNAL MODULE: ./src/components/assignment.ts
-var components_assignment = __webpack_require__(11);
-
-// EXTERNAL MODULE: ./src/dates.ts
-var dates = __webpack_require__(1);
-
-// EXTERNAL MODULE: ./src/util.ts
-var util = __webpack_require__(0);
-
-// CONCATENATED MODULE: ./src/components/calendar.ts
-
-
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-function createWeek(id) {
-    const wk = Object(util["h" /* element */])('section', 'week', null, id);
-    const dayTable = Object(util["h" /* element */])('table', 'dayTable');
-    const tr = dayTable.insertRow();
-    // tslint:disable-next-line no-loops
-    for (let day = 0; day < 7; day++)
-        tr.insertCell();
-    wk.appendChild(dayTable);
-    return wk;
-}
-function createDay(d) {
-    const day = Object(util["h" /* element */])('div', 'day', null, 'day');
-    day.setAttribute('data-date', String(d.getTime()));
-    if (Math.floor((d.getTime() - d.getTimezoneOffset()) / 1000 / 3600 / 24) === Object(dates["d" /* today */])()) {
-        day.classList.add('today');
-    }
-    const month = Object(util["h" /* element */])('span', 'month', MONTHS[d.getMonth()]);
-    day.appendChild(month);
-    const date = Object(util["h" /* element */])('span', 'date', String(d.getDate()));
-    day.appendChild(date);
-    return day;
-}
-
-// EXTERNAL MODULE: ./src/components/errorDisplay.ts
-var errorDisplay = __webpack_require__(14);
-
-// EXTERNAL MODULE: ./src/components/resizer.ts
-var resizer = __webpack_require__(8);
-
-// EXTERNAL MODULE: ./src/pcr.ts + 1 modules
-var pcr = __webpack_require__(3);
-
-// EXTERNAL MODULE: ./src/plugins/activity.ts + 1 modules
-var activity = __webpack_require__(12);
-
-// EXTERNAL MODULE: ./src/plugins/customAssignments.ts
-var customAssignments = __webpack_require__(10);
-
-// EXTERNAL MODULE: ./src/plugins/done.ts
-var done = __webpack_require__(7);
-
-// EXTERNAL MODULE: ./src/plugins/modifiedAssignments.ts
-var modifiedAssignments = __webpack_require__(9);
-
-// EXTERNAL MODULE: ./src/state.ts
-var state = __webpack_require__(4);
-
-// CONCATENATED MODULE: ./src/display.ts
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return getScroll; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return getTimeAfter; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return display; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return formatUpdate; });
-
-
-
-
-
-
-
-
-
-
-
-
-const SCHEDULE_ENDS = {
-    day: (date) => 24 * 3600 * 1000,
-    ms: (date) => [24,
-        15 + (35 / 60),
-        15 + (35 / 60),
-        15 + (15 / 60),
-        15 + (15 / 60),
-        15 + (15 / 60),
-        24 // Saturday
-    ][date.getDay()],
-    us: (date) => 15 * 3600 * 1000
-};
-const WEEKEND_CLASSNAMES = ['fromWeekend', 'overWeekend'];
-let display_scroll = 0; // The location to scroll to in order to reach today in calendar view
-function getScroll() {
-    return display_scroll;
-}
-function getTimeAfter(date) {
-    const hideAssignments = state["d" /* state */].hideAssignments.get();
-    if (hideAssignments === 'day' || hideAssignments === 'ms' || hideAssignments === 'us') {
-        return SCHEDULE_ENDS[hideAssignments](date);
-    }
-    else {
-        return SCHEDULE_ENDS.day(date);
-    }
-}
-function getStartEndDates(data) {
-    if (data.monthView) {
-        const startN = Math.min(...data.assignments.map((a) => a.start)); // Smallest date
-        const endN = Math.max(...data.assignments.map((a) => a.start)); // Largest date
-        const year = (new Date()).getFullYear(); // For future calculations
-        // Calculate what month we will be displaying by finding the month of today
-        const month = (new Date()).getMonth() + state["d" /* state */].calDateOffset.get();
-        // Make sure the start and end dates lie within the month
-        const start = new Date(Math.max(Object(dates["a" /* fromDateNum */])(startN).getTime(), (new Date(year, month)).getTime()));
-        // If the day argument for Date is 0, then the resulting date will be of the previous month
-        const end = new Date(Math.min(Object(dates["a" /* fromDateNum */])(endN).getTime(), (new Date(year, month + 1, 0)).getTime()));
-        return { start, end };
-    }
-    else {
-        const todaySE = new Date();
-        const start = new Date(todaySE.getFullYear(), todaySE.getMonth(), todaySE.getDate());
-        const end = new Date(todaySE.getFullYear(), todaySE.getMonth(), todaySE.getDate());
-        return { start, end };
-    }
-}
-function getAssignmentSplits(assignment, start, end, reference) {
-    const split = [];
-    if (state["d" /* state */].assignmentSpan.get() === 'multiple') {
-        const s = Math.max(start.getTime(), Object(dates["a" /* fromDateNum */])(assignment.start).getTime());
-        const e = assignment.end === 'Forever' ? s : Math.min(end.getTime(), Object(dates["a" /* fromDateNum */])(assignment.end).getTime());
-        const span = ((e - s) / 1000 / 3600 / 24) + 1; // Number of days assignment takes up
-        const spanRelative = 6 - (new Date(s)).getDay(); // Number of days until the next Saturday
-        const ns = new Date(s);
-        ns.setDate(ns.getDate() + spanRelative); //  The date of the next Saturday
-        // tslint:disable-next-line no-loops
-        for (let n = -6; n < span - spanRelative; n += 7) {
-            const lastSun = new Date(ns);
-            lastSun.setDate(lastSun.getDate() + n);
-            const nextSat = new Date(lastSun);
-            nextSat.setDate(nextSat.getDate() + 6);
-            split.push({
-                assignment,
-                start: new Date(Math.max(s, lastSun.getTime())),
-                end: new Date(Math.min(e, nextSat.getTime())),
-                custom: Boolean(reference),
-                reference
-            });
-        }
-    }
-    else if (state["d" /* state */].assignmentSpan.get() === 'start') {
-        const s = Object(dates["a" /* fromDateNum */])(assignment.start);
-        if (s.getTime() >= start.getTime()) {
-            split.push({
-                assignment,
-                start: s,
-                end: s,
-                custom: Boolean(reference),
-                reference
-            });
-        }
-    }
-    else if (state["d" /* state */].assignmentSpan.get() === 'end') {
-        const e = assignment.end === 'Forever' ? assignment.end : Object(dates["a" /* fromDateNum */])(assignment.end);
-        const de = e === 'Forever' ? Object(dates["a" /* fromDateNum */])(assignment.start) : e;
-        if (de.getTime() <= end.getTime()) {
-            split.push({
-                assignment,
-                start: de,
-                end: e,
-                custom: Boolean(reference),
-                reference
-            });
-        }
-    }
-    return split;
-}
-// This function will convert the array of assignments generated by *parse* into readable HTML.
-function display(doScroll = true) {
-    console.time('Displaying data');
-    try {
-        const data = state["d" /* state */].data.get();
-        if (!data) {
-            throw new Error('Data should have been fetched before display() was called');
-        }
-        document.body.setAttribute('data-pcrview', data.monthView ? 'month' : 'other');
-        const main = Object(util["a" /* _$ */])(document.querySelector('main'));
-        const taken = {};
-        const timeafter = getTimeAfter(new Date());
-        const { start, end } = getStartEndDates(data);
-        // Set the start date to be a Sunday and the end date to be a Saturday
-        start.setDate(start.getDate() - start.getDay());
-        end.setDate(end.getDate() + (6 - end.getDay()));
-        // First populate the calendar with boxes for each day
-        // Only consider the previous set of assignments for activity purposes if the month is the same
-        const lastData = data.monthOffset === 0 ? Object(util["j" /* localStorageRead */])('data') : null;
-        let wk = null;
-        Object(dates["b" /* iterDays */])(start, end, (d) => {
-            if (d.getDay() === 0) {
-                const id = `wk${d.getMonth()}-${d.getDate()}`; // Don't create a new week element if one already exists
-                wk = document.getElementById(id);
-                if (wk == null) {
-                    wk = createWeek(id);
-                    main.appendChild(wk);
-                }
-            }
-            if (!wk)
-                throw new Error(`Expected week element on day ${d} to not be null`);
-            if (wk.getElementsByClassName('day').length <= d.getDay()) {
-                wk.appendChild(createDay(d));
-            }
-            taken[d.getTime()] = [];
-        });
-        // Split assignments taking more than 1 week
-        const split = [];
-        data.assignments.forEach((assignment, num) => {
-            split.push(...getAssignmentSplits(assignment, start, end));
-            // Activity stuff
-            if (lastData != null) {
-                const oldAssignment = lastData.assignments.find((a) => a.id === assignment.id);
-                if (oldAssignment) {
-                    if (oldAssignment.body !== assignment.body) {
-                        Object(activity["a" /* addActivity */])('edit', oldAssignment, new Date(), true, oldAssignment.class != null ? lastData.classes[oldAssignment.class] : undefined);
-                        Object(modifiedAssignments["c" /* removeFromModified */])(assignment.id); // If the assignment is modified, reset it
-                    }
-                    lastData.assignments.splice(lastData.assignments.indexOf(oldAssignment), 1);
-                }
-                else {
-                    Object(activity["a" /* addActivity */])('add', assignment, new Date(), true);
-                }
-            }
-        });
-        if (lastData != null) {
-            // Check if any of the last assignments weren't deleted (so they have been deleted in PCR)
-            lastData.assignments.forEach((assignment) => {
-                Object(activity["a" /* addActivity */])('delete', assignment, new Date(), true, assignment.class != null ? lastData.classes[assignment.class] : undefined);
-                Object(done["c" /* removeFromDone */])(assignment.id);
-                Object(modifiedAssignments["c" /* removeFromModified */])(assignment.id);
-            });
-            // Then save a maximum of 128 activity items
-            Object(activity["c" /* saveActivity */])();
-            // And completed assignments + modifications
-            Object(done["d" /* saveDone */])();
-            Object(modifiedAssignments["d" /* saveModified */])();
-        }
-        // Add custom assignments to the split array
-        state["d" /* state */].extra.get().forEach((custom) => {
-            split.push(...getAssignmentSplits(Object(customAssignments["b" /* extraToTask */])(custom, data), start, end, custom));
-        });
-        // Calculate the today's week id
-        const tdst = new Date();
-        tdst.setDate(tdst.getDate() - tdst.getDay());
-        const todayWkId = `wk${tdst.getMonth()}-${tdst.getDate()}`;
-        // Then add assignments
-        const weekHeights = {};
-        const previousAssignments = {};
-        Array.prototype.forEach.call(document.getElementsByClassName('assignment'), (assignment) => {
-            previousAssignments[assignment.id] = assignment;
-        });
-        split.forEach((s) => {
-            const weekId = Object(components_assignment["b" /* computeWeekId */])(s);
-            wk = document.getElementById(weekId);
-            if (wk == null)
-                return;
-            const e = Object(components_assignment["c" /* createAssignment */])(s, data);
-            // Calculate how many assignments are placed before the current one
-            if (!s.custom || !state["d" /* state */].sepTasks.get()) {
-                let pos = 0;
-                // tslint:disable-next-line no-loops
-                while (true) {
-                    let found = true;
-                    Object(dates["b" /* iterDays */])(s.start, s.end === 'Forever' ? s.start : s.end, (d) => {
-                        if (taken[d.getTime()].indexOf(pos) !== -1) {
-                            found = false;
-                        }
-                    });
-                    if (found) {
-                        break;
-                    }
-                    pos++;
-                }
-                // Append the position the assignment is at to the taken array
-                Object(dates["b" /* iterDays */])(s.start, s.end === 'Forever' ? s.start : s.end, (d) => {
-                    taken[d.getTime()].push(pos);
-                });
-                // Calculate how far down the assignment must be placed as to not block the ones above it
-                e.style.marginTop = (pos * 30) + 'px';
-                if ((weekHeights[weekId] == null) || (pos > weekHeights[weekId])) {
-                    weekHeights[weekId] = pos;
-                    wk.style.height = 47 + ((pos + 1) * 30) + 'px';
-                }
-            }
-            // If the assignment is a test and is upcoming, add it to the upcoming tests panel.
-            if (s.assignment.end >= Object(dates["d" /* today */])() && (s.assignment.baseType === 'test' ||
-                (state["d" /* state */].projectsInTestPane.get() && s.assignment.baseType === 'longterm'))) {
-                const te = Object(util["h" /* element */])('div', ['upcomingTest', 'assignmentItem', s.assignment.baseType], `<i class='material-icons'>
-                                        ${s.assignment.baseType === 'longterm' ? 'assignment' : 'assessment'}
-                                    </i>
-                                    <span class='title'>${s.assignment.title}</span>
-                                    <small>${Object(components_assignment["f" /* separatedClass */])(s.assignment, data)[2]}</small>
-                                    <div class='range'>${Object(util["f" /* dateString */])(s.assignment.end, true)}</div>`, `test${s.assignment.id}`);
-                if (s.assignment.class)
-                    te.setAttribute('data-class', data.classes[s.assignment.class]);
-                te.addEventListener('click', () => {
-                    const doScrolling = async () => {
-                        await Object(util["p" /* smoothScroll */])((e.getBoundingClientRect().top + document.body.scrollTop) - 116);
-                        e.click();
-                    };
-                    if (document.body.getAttribute('data-view') === '0') {
-                        doScrolling();
-                    }
-                    else {
-                        Object(util["a" /* _$ */])(document.querySelector('#navTabs>li:first-child')).click();
-                        setTimeout(doScrolling, 500);
-                    }
-                });
-                if (Object(done["b" /* assignmentInDone */])(s.assignment.id)) {
-                    te.classList.add('done');
-                }
-                const testElem = document.getElementById(`test${s.assignment.id}`);
-                if (testElem) {
-                    testElem.innerHTML = te.innerHTML;
-                }
-                else {
-                    Object(util["g" /* elemById */])('infoTests').appendChild(te);
-                }
-            }
-            const already = document.getElementById(s.assignment.id + weekId);
-            if (already != null) { // Assignment already exists
-                already.style.marginTop = e.style.marginTop;
-                already.setAttribute('data-class', s.custom && state["d" /* state */].sepTaskClass.get() ? 'Task' : Object(pcr["a" /* classById */])(s.assignment.class));
-                if (!Object(modifiedAssignments["a" /* assignmentInModified */])(s.assignment.id)) {
-                    already.getElementsByClassName('body')[0].innerHTML = e.getElementsByClassName('body')[0].innerHTML;
-                }
-                Object(util["a" /* _$ */])(already.querySelector('.edits')).className = Object(util["a" /* _$ */])(e.querySelector('.edits')).className;
-                if (already.classList.toggle) {
-                    already.classList.toggle('listDisp', e.classList.contains('listDisp'));
-                }
-                Object(components_assignment["d" /* getES */])(already).forEach((cl) => already.classList.remove(cl));
-                Object(components_assignment["d" /* getES */])(e).forEach((cl) => already.classList.add(cl));
-                WEEKEND_CLASSNAMES.forEach((cl) => {
-                    already.classList.remove(cl);
-                    if (e.classList.contains(cl))
-                        already.classList.add(cl);
-                });
-            }
-            else {
-                if (s.custom && state["d" /* state */].sepTasks.get()) {
-                    const st = Math.floor(s.start.getTime() / 1000 / 3600 / 24);
-                    if ((s.assignment.start === st) &&
-                        (s.assignment.end === 'Forever' || s.assignment.end >= Object(dates["d" /* today */])())) {
-                        e.classList.remove('assignment');
-                        e.classList.add('taskPaneItem');
-                        e.style.order = String(s.assignment.end === 'Forever' ? Number.MAX_VALUE : s.assignment.end);
-                        const link = e.querySelector('.linked');
-                        if (link) {
-                            e.insertBefore(Object(util["h" /* element */])('small', [], link.innerHTML), link);
-                            link.remove();
-                        }
-                        Object(util["g" /* elemById */])('infoTasksInner').appendChild(e);
-                    }
-                }
-                else {
-                    wk.appendChild(e);
-                }
-            }
-            delete previousAssignments[s.assignment.id + weekId];
-        });
-        // Delete any assignments that have been deleted since updating
-        Object.entries(previousAssignments).forEach(([name, assignment]) => {
-            if (assignment.classList.contains('full')) {
-                Object(util["g" /* elemById */])('background').classList.remove('active');
-            }
-            assignment.remove();
-        });
-        // Scroll to the correct position in calendar view
-        if (weekHeights[todayWkId] != null) {
-            let h = 0;
-            const sw = (wkid) => wkid.substring(2).split('-').map((x) => Number(x));
-            const todayWk = sw(todayWkId);
-            Object.entries(weekHeights).forEach(([wkId, val]) => {
-                const wkSplit = sw(wkId);
-                if ((wkSplit[0] < todayWk[0]) || ((wkSplit[0] === todayWk[0]) && (wkSplit[1] < todayWk[1]))) {
-                    h += val;
-                }
-            });
-            display_scroll = (h * 30) + 112 + 14;
-            // Also show the day headers if today's date is displayed in the first row of the calendar
-            if (display_scroll < 50)
-                display_scroll = 0;
-            if (doScroll && (document.body.getAttribute('data-view') === '0') &&
-                !document.body.querySelector('.full')) {
-                // in calendar view
-                window.scrollTo(0, display_scroll);
-            }
-        }
-        document.body.classList.toggle('noList', document.querySelectorAll('.assignment.listDisp:not(.done)').length === 0);
-        if (document.body.getAttribute('data-view') === '1') { // in list view
-            Object(resizer["b" /* resize */])();
-        }
-    }
-    catch (err) {
-        Object(errorDisplay["b" /* displayError */])(err);
-    }
-    console.timeEnd('Displaying data');
-}
-// The function below converts an update time to a human-readable date.
-function formatUpdate(date) {
-    const now = new Date();
-    const update = new Date(+date);
-    if (now.getDate() === update.getDate()) {
-        let ampm = 'AM';
-        let hr = update.getHours();
-        if (hr > 12) {
-            ampm = 'PM';
-            hr -= 12;
-        }
-        const min = update.getMinutes();
-        return `Today at ${hr}:${min < 10 ? `0${min}` : min} ${ampm}`;
-    }
-    else {
-        const daysPast = Math.ceil((now.getTime() - update.getTime()) / 1000 / 3600 / 24);
-        if (daysPast === 1) {
-            return 'Yesterday';
-        }
-        else {
-            return daysPast + ' days ago';
-        }
-    }
-}
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return snackbar; });
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/**
- * All this is responsible for is creating snackbars.
- */
-
-function snackbar(message, action, f) {
-    const snack = Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* element */ "h"])('div', 'snackbar');
-    const snackInner = Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* element */ "h"])('div', 'snackInner', message);
-    snack.appendChild(snackInner);
-    if ((action != null) && (f != null)) {
-        const actionE = Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* element */ "h"])('a', [], action);
-        actionE.addEventListener('click', () => {
-            snack.classList.remove('active');
-            f();
-        });
-        snackInner.appendChild(actionE);
-    }
-    const add = () => {
-        document.body.appendChild(snack);
-        Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* forceLayout */ "i"])(snack);
-        snack.classList.add('active');
-        setTimeout(() => {
-            snack.classList.remove('active');
-            setTimeout(() => snack.remove(), 900);
-        }, 5000);
-    };
-    const existing = document.querySelector('.snackbar');
-    if (existing != null) {
-        existing.classList.remove('active');
-        setTimeout(add, 300);
-    }
-    else {
-        add();
-    }
-}
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1510,7 +1469,7 @@ function snackbar(message, action, f) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return addToDone; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return saveDone; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return assignmentInDone; });
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 
 const DONE_STORAGE_NAME = 'done';
 function removeFromDone(id) {
@@ -1530,7 +1489,7 @@ function assignmentInDone(id) {
 
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1638,7 +1597,7 @@ function resize() {
 
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1647,7 +1606,7 @@ function resize() {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return assignmentInModified; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return modifiedBody; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return setModified; });
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 
 function removeFromModified(id) {
     delete _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get()[id];
@@ -1667,70 +1626,7 @@ function setModified(id, body) {
 
 
 /***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return addToExtra; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return removeFromExtra; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return extraToTask; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return parseCustomTask; });
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-
-function addToExtra(custom) {
-    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].extra.get().push(custom);
-}
-function removeFromExtra(custom) {
-    const extra = _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].extra.get();
-    if (!extra.includes(custom))
-        throw new Error('Cannot remove custom assignment that does not exist');
-    extra.splice(extra.indexOf(custom), 1);
-}
-function extraToTask(custom, data) {
-    let cls = null;
-    const className = custom.class;
-    if (className != null) {
-        cls = data.classes.findIndex((c) => c.toLowerCase().includes(className));
-    }
-    return {
-        title: 'Task',
-        baseType: 'task',
-        type: 'task',
-        attachments: [],
-        start: custom.start,
-        end: custom.end || 'Forever',
-        body: custom.body,
-        id: `task${custom.body.replace(/[^\w]*/g, '')}${custom.start}${custom.end}${custom.class}`,
-        class: cls === -1 ? null : cls
-    };
-}
-function parseCustomTask(text, result = { text: '' }) {
-    const parsed = text.match(/(.*) (for|by|due|assigned|starting|ending|beginning) (.*)/);
-    if (parsed == null) {
-        result.text = text;
-        return result;
-    }
-    switch (parsed[2]) {
-        case 'for':
-            result.cls = parsed[3];
-            break;
-        case 'by':
-        case 'due':
-        case 'ending':
-            result.due = parsed[3];
-            break;
-        case 'assigned':
-        case 'starting':
-        case 'beginning':
-            result.st = parsed[3];
-            break;
-    }
-    return parseCustomTask(parsed[1], result);
-}
-
-
-/***/ }),
-/* 11 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1741,16 +1637,16 @@ function parseCustomTask(text, result = { text: '' }) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return createAssignment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return getES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return closeOpened; });
-/* harmony import */ var _dates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _display__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* harmony import */ var _pcr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _plugins_activity__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
-/* harmony import */ var _plugins_customAssignments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
-/* harmony import */ var _plugins_done__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7);
-/* harmony import */ var _plugins_modifiedAssignments__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9);
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4);
+/* harmony import */ var _dates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _display__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _pcr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
+/* harmony import */ var _plugins_activity__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9);
+/* harmony import */ var _plugins_customAssignments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
+/* harmony import */ var _plugins_done__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
+/* harmony import */ var _plugins_modifiedAssignments__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7);
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(0);
-/* harmony import */ var _resizer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8);
+/* harmony import */ var _resizer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6);
 
 
 
@@ -2120,22 +2016,22 @@ function closeOpened(evt) {
 
 
 /***/ }),
-/* 12 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 
 // EXTERNAL MODULE: ./src/pcr.ts + 1 modules
-var pcr = __webpack_require__(3);
+var pcr = __webpack_require__(4);
 
 // EXTERNAL MODULE: ./src/plugins/done.ts
-var done = __webpack_require__(7);
+var done = __webpack_require__(5);
 
 // EXTERNAL MODULE: ./src/util.ts
 var util = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./src/components/assignment.ts
-var components_assignment = __webpack_require__(11);
+var components_assignment = __webpack_require__(8);
 
 // CONCATENATED MODULE: ./src/components/activity.ts
 
@@ -2178,7 +2074,7 @@ function createActivity(type, assignment, date, className) {
 }
 
 // EXTERNAL MODULE: ./src/state.ts
-var state = __webpack_require__(4);
+var state = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/plugins/activity.ts
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return addActivity; });
@@ -2205,7 +2101,47 @@ function recentActivity() {
 
 
 /***/ }),
-/* 13 */
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return displayError; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return closeError; });
+/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+
+
+const ERROR_FORM_URL = 'https://docs.google.com/a/students.harker.org/forms/d/'
+    + '1sa2gUtYFPdKT5YENXIEYauyRPucqsQCVaQAPeF3bZ4Q/viewform';
+const ERROR_FORM_ENTRY = '?entry.120036223=';
+const ERROR_GITHUB_URL = 'https://github.com/19RyanA/CheckPCR/issues/new';
+const linkById = (id) => Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])(id);
+// *displayError* displays a dialog containing information about an error.
+function displayError(e) {
+    console.log('Displaying error', e);
+    const errorHTML = `Message: ${e.message}\nStack: ${e.stack || e.lineNumber}\n`
+        + `Browser: ${navigator.userAgent}\nVersion: ${_app__WEBPACK_IMPORTED_MODULE_0__[/* VERSION */ "a"]}`;
+    Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorContent').innerHTML = errorHTML.replace('\n', '<br>');
+    linkById('errorGoogle').href = ERROR_FORM_URL + ERROR_FORM_ENTRY + encodeURIComponent(errorHTML);
+    linkById('errorGitHub').href =
+        ERROR_GITHUB_URL + '?body=' + encodeURIComponent(`I've encountered a bug.\n\n\`\`\`\n${errorHTML}\n\`\`\``);
+    Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorBackground').style.display = 'block';
+    return Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('error').classList.add('active');
+}
+function closeError() {
+    Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('error').classList.remove('active');
+    setTimeout(() => {
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorBackground').style.display = 'none';
+    }, 350);
+}
+window.addEventListener('error', (evt) => {
+    evt.preventDefault();
+    displayError(evt.error);
+});
+
+
+/***/ }),
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2213,7 +2149,7 @@ function recentActivity() {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return checkCommit; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return fetchNews; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return getNews; });
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 
 
@@ -2298,104 +2234,113 @@ async function getNews() {
 
 
 /***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return addToExtra; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return removeFromExtra; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return extraToTask; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return parseCustomTask; });
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+
+function addToExtra(custom) {
+    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].extra.get().push(custom);
+}
+function removeFromExtra(custom) {
+    const extra = _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].extra.get();
+    if (!extra.includes(custom))
+        throw new Error('Cannot remove custom assignment that does not exist');
+    extra.splice(extra.indexOf(custom), 1);
+}
+function extraToTask(custom, data) {
+    let cls = null;
+    const className = custom.class;
+    if (className != null) {
+        cls = data.classes.findIndex((c) => c.toLowerCase().includes(className));
+    }
+    return {
+        title: 'Task',
+        baseType: 'task',
+        type: 'task',
+        attachments: [],
+        start: custom.start,
+        end: custom.end || 'Forever',
+        body: custom.body,
+        id: `task${custom.body.replace(/[^\w]*/g, '')}${custom.start}${custom.end}${custom.class}`,
+        class: cls === -1 ? null : cls
+    };
+}
+function parseCustomTask(text, result = { text: '' }) {
+    const parsed = text.match(/(.*) (for|by|due|assigned|starting|ending|beginning) (.*)/);
+    if (parsed == null) {
+        result.text = text;
+        return result;
+    }
+    switch (parsed[2]) {
+        case 'for':
+            result.cls = parsed[3];
+            break;
+        case 'by':
+        case 'due':
+        case 'ending':
+            result.due = parsed[3];
+            break;
+        case 'assigned':
+        case 'starting':
+        case 'beginning':
+            result.st = parsed[3];
+            break;
+    }
+    return parseCustomTask(parsed[1], result);
+}
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return snackbar; });
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/**
+ * All this is responsible for is creating snackbars.
+ */
+
+function snackbar(message, action, f) {
+    const snack = Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* element */ "h"])('div', 'snackbar');
+    const snackInner = Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* element */ "h"])('div', 'snackInner', message);
+    snack.appendChild(snackInner);
+    if ((action != null) && (f != null)) {
+        const actionE = Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* element */ "h"])('a', [], action);
+        actionE.addEventListener('click', () => {
+            snack.classList.remove('active');
+            f();
+        });
+        snackInner.appendChild(actionE);
+    }
+    const add = () => {
+        document.body.appendChild(snack);
+        Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* forceLayout */ "i"])(snack);
+        snack.classList.add('active');
+        setTimeout(() => {
+            snack.classList.remove('active');
+            setTimeout(() => snack.remove(), 900);
+        }, 5000);
+    };
+    const existing = document.querySelector('.snackbar');
+    if (existing != null) {
+        existing.classList.remove('active');
+        setTimeout(add, 300);
+    }
+    else {
+        add();
+    }
+}
+
+
+/***/ }),
 /* 14 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return displayError; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return closeError; });
-/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
-
-
-const ERROR_FORM_URL = 'https://docs.google.com/a/students.harker.org/forms/d/'
-    + '1sa2gUtYFPdKT5YENXIEYauyRPucqsQCVaQAPeF3bZ4Q/viewform';
-const ERROR_FORM_ENTRY = '?entry.120036223=';
-const ERROR_GITHUB_URL = 'https://github.com/19RyanA/CheckPCR/issues/new';
-const linkById = (id) => Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])(id);
-// *displayError* displays a dialog containing information about an error.
-function displayError(e) {
-    console.log('Displaying error', e);
-    const errorHTML = `Message: ${e.message}\nStack: ${e.stack || e.lineNumber}\n`
-        + `Browser: ${navigator.userAgent}\nVersion: ${_app__WEBPACK_IMPORTED_MODULE_0__[/* VERSION */ "a"]}`;
-    Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorContent').innerHTML = errorHTML.replace('\n', '<br>');
-    linkById('errorGoogle').href = ERROR_FORM_URL + ERROR_FORM_ENTRY + encodeURIComponent(errorHTML);
-    linkById('errorGitHub').href =
-        ERROR_GITHUB_URL + '?body=' + encodeURIComponent(`I've encountered a bug.\n\n\`\`\`\n${errorHTML}\n\`\`\``);
-    Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorBackground').style.display = 'block';
-    return Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('error').classList.add('active');
-}
-function closeError() {
-    Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('error').classList.remove('active');
-    setTimeout(() => {
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('errorBackground').style.display = 'none';
-    }, 350);
-}
-window.addEventListener('error', (evt) => {
-    evt.preventDefault();
-    displayError(evt.error);
-});
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return updateAthenaData; });
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
-
-
-function formatLogo(logo) {
-    return logo.substr(0, logo.indexOf('" alt="'))
-        .replace('<div class="profile-picture"><img src="', '')
-        .replace('tiny', 'reg');
-}
-// Now, there's the schoology/athena integration stuff. First, we need to check if it's been more
-// than a day. There's no point constantly retrieving classes from Athena; they dont't change that
-// much.
-// Then, once the variable for the last date is initialized, it's time to get the classes from
-// athena. Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any
-// better! Seriously! It's just too bad the login page isn't in JSON.
-function parseAthenaData(dat) {
-    if (dat === '')
-        return null;
-    const d = JSON.parse(dat);
-    const athenaData2 = {};
-    const allCourseDetails = {};
-    d.body.courses.sections.forEach((section) => {
-        allCourseDetails[section.course_nid] = section;
-    });
-    d.body.courses.courses.reverse().forEach((course) => {
-        const courseDetails = allCourseDetails[course.nid];
-        athenaData2[course.course_title] = {
-            link: `https://athena.harker.org${courseDetails.link}`,
-            logo: formatLogo(courseDetails.logo),
-            period: courseDetails.section_title
-        };
-    });
-    return athenaData2;
-}
-function updateAthenaData(data) {
-    const refreshEl = document.getElementById('athenaDataRefresh');
-    try {
-        _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].athenaData.set(parseAthenaData(data));
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').style.display = 'none';
-        if (refreshEl)
-            refreshEl.style.display = 'block';
-    }
-    catch (e) {
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').style.display = 'block';
-        if (refreshEl)
-            refreshEl.style.display = 'none';
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').innerHTML = e.message;
-    }
-}
-
-
-/***/ }),
-/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2485,13 +2430,70 @@ function updateAvatar() {
 
 
 /***/ }),
-/* 17 */,
-/* 18 */
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return updateAthenaData; });
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+
+
+function formatLogo(logo) {
+    return logo.substr(0, logo.indexOf('" alt="'))
+        .replace('<div class="profile-picture"><img src="', '')
+        .replace('tiny', 'reg');
+}
+// Now, there's the schoology/athena integration stuff. First, we need to check if it's been more
+// than a day. There's no point constantly retrieving classes from Athena; they dont't change that
+// much.
+// Then, once the variable for the last date is initialized, it's time to get the classes from
+// athena. Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any
+// better! Seriously! It's just too bad the login page isn't in JSON.
+function parseAthenaData(dat) {
+    if (dat === '')
+        return null;
+    const d = JSON.parse(dat);
+    const athenaData2 = {};
+    const allCourseDetails = {};
+    d.body.courses.sections.forEach((section) => {
+        allCourseDetails[section.course_nid] = section;
+    });
+    d.body.courses.courses.reverse().forEach((course) => {
+        const courseDetails = allCourseDetails[course.nid];
+        athenaData2[course.course_title] = {
+            link: `https://athena.harker.org${courseDetails.link}`,
+            logo: formatLogo(courseDetails.logo),
+            period: courseDetails.section_title
+        };
+    });
+    return athenaData2;
+}
+function updateAthenaData(data) {
+    const refreshEl = document.getElementById('athenaDataRefresh');
+    try {
+        _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].athenaData.set(parseAthenaData(data));
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').style.display = 'none';
+        if (refreshEl)
+            refreshEl.style.display = 'block';
+    }
+    catch (e) {
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').style.display = 'block';
+        if (refreshEl)
+            refreshEl.style.display = 'none';
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').innerHTML = e.message;
+    }
+}
+
+
+/***/ }),
+/* 16 */,
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _pcr__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
+/* harmony import */ var _pcr__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _plugins_athena__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 

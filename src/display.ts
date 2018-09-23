@@ -232,12 +232,17 @@ export function display(doScroll: boolean = true): void {
             const e = createAssignment(s, data)
 
             // Calculate how many assignments are placed before the current one
+            // This is done for assignments that are not custom assignments
+            // shown in a separate window
             if (!s.custom || !state.sepTasks.get()) {
                 let pos = 0
                 // tslint:disable-next-line no-loops
                 while (true) {
                     let found = true
                     iterDays(s.start, s.end === 'Forever' ? s.start : s.end, (d) => {
+                        if (typeof taken[d.getTime()] === 'undefined') {
+                            throw new Error(`Assignment range out of bounds (d=${d.getTime()}, start=${s.start.getTime()}, end=${typeof s.end === 'string' ? s.end : s.end.getTime()}, dstart=${start.getTime()}, dend=${end.getTime()})`)
+                        }
                         if (taken[d.getTime()].indexOf(pos) !== -1) {
                             found = false
                         }
