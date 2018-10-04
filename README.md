@@ -31,6 +31,8 @@ If there are any problems with the program or completing the above steps, please
 Compiling / Hacking
 -------------------
 
+**NOTE**: These instructions have changed since I moved to typescript. Building the typescript files is now done with webpack (`node_modules/.bin/webpack`). You can use `--watch` to run incremental builds. Gulp is still used for all other files (icons and stylesheets).
+
 First of all, if you want to change anything and have that change preserved when updating, you **must** use git to clone the repository.
 
 Now, if you want to change anything in the extension, you have two choices.
