@@ -8,6 +8,7 @@ import { toDateNum, today } from './dates'
 import { display, formatUpdate, getScroll } from './display'
 import { dologin, fetch, getClasses, logout, switchViews } from './pcr'
 import { addActivity, recentActivity } from './plugins/activity'
+import { initAnalytics } from './plugins/analytics'
 import { updateAthenaData } from './plugins/athena'
 import { initConsoleInteractivity } from './plugins/console'
 import { addToExtra, parseCustomTask } from './plugins/customAssignments'
@@ -932,3 +933,7 @@ navigator.serviceWorker.addEventListener('message', (event) => {
     console.log('Getting commit because of serviceworker')
     if (event.data.getCommit) { return checkCommit() }
 })
+
+requestIdleCallback(() => {
+    initAnalytics()
+}, { timeout: 1000 })

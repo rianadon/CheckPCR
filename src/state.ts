@@ -111,6 +111,9 @@ export const state = {
     /** Custom assignments */
     extra: storedState('extra', new CachedState<ICustomAssignment[]>([])),
 
+    /** Whether to alert the user that analytics can be disabled */
+    alertAnalytics: storedState('askGoogleAnalytics', new CachedState(true)),
+
     //////////////////////////////////
     //           Settings           //
     //////////////////////////////////
@@ -183,7 +186,12 @@ export const state = {
     /**
      * Whether to display tasks in the task pane that are completed
      */
-    showDoneTasks: storedState('showDoneTasks', new CachedState<boolean>(false))
+    showDoneTasks: storedState('showDoneTasks', new CachedState<boolean>(false)),
+
+    /**
+     * Whether to enable Google Analytics
+     */
+    enableAnalytics: storedState('googleA', new CachedState(true))
 }
 
 export function getStateItem(name: string): IStateItem<any> {
