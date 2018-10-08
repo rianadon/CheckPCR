@@ -8,7 +8,7 @@ import { deleteCookie, getCookie, setCookie } from './cookies'
 import { toDateNum } from './dates'
 import { display, formatUpdate } from './display'
 import { state, zeroDateOffsets } from './state'
-import { _$, elemById, localStorageWrite, send } from './util'
+import { _$, _$h, elemById, localStorageWrite, send } from './util'
 
 const PCR_URL = 'https://webappsca.pcrsoft.com'
 const ASSIGNMENTS_URL = `${PCR_URL}/Clue/SC-Assignments-Start-and-End-Date-(No-Range)/18594`
@@ -345,10 +345,15 @@ function parseAssignment(ca: HTMLElement): IAssignment {
 function parse(doc: HTMLDocument, monthOffset: number): void {
     console.time('Handling data') // To time how long it takes to parse the assignments
     const handledDataShort: string[] = [] // Array used to make sure we don"t parse the same assignment twice.
+    const monthViewIndicatorEl = doc.querySelector('.rsHeaderMonth')
+    if (!monthViewIndicatorEl) {
+        const title = doc.querySelector('title')
+        throw new Error(`Could not find month view indicator (document title is ${title ? title.textContent : 'not present'})`)
+    }
     const data: IApplicationData = {
         classes: [],
         assignments: [],
-        monthView: (_$(doc.querySelector('.rsHeaderMonth')).parentNode as HTMLElement).classList.contains('rsSelected'),
+        monthView: _$h(monthViewIndicatorEl.parentNode).classList.contains('rsSelected'),
         monthOffset
     } // Reset the array in which all of your assignments are stored in.
     state.data.localSet(data)
