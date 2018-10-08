@@ -438,6 +438,8 @@ const state = {
     newsUrl: new CachedState(null),
     /** Custom assignments */
     extra: storedState('extra', new CachedState([])),
+    /** Whether to alert the user that analytics can be disabled */
+    alertAnalytics: storedState('askGoogleAnalytics', new CachedState(true)),
     //////////////////////////////////
     //           Settings           //
     //////////////////////////////////
@@ -497,7 +499,11 @@ const state = {
     /**
      * Whether to display tasks in the task pane that are completed
      */
-    showDoneTasks: storedState('showDoneTasks', new CachedState(false))
+    showDoneTasks: storedState('showDoneTasks', new CachedState(false)),
+    /**
+     * Whether to enable Google Analytics
+     */
+    enableAnalytics: storedState('googleA', new CachedState(true))
 };
 function getStateItem(name) {
     if (!state.hasOwnProperty(name))
@@ -837,6 +843,8 @@ function display(doScroll = true) {
                 return;
             const e = Object(components_assignment["c" /* createAssignment */])(s, data);
             // Calculate how many assignments are placed before the current one
+            // This is done for assignments that are not custom assignments
+            // shown in a separate window
             if (!s.custom || !state["d" /* state */].sepTasks.get()) {
                 let pos = 0;
                 // tslint:disable-next-line no-loops
@@ -1377,10 +1385,15 @@ function parseAssignment(ca) {
 function parse(doc, monthOffset) {
     console.time('Handling data'); // To time how long it takes to parse the assignments
     const handledDataShort = []; // Array used to make sure we don"t parse the same assignment twice.
+    const monthViewIndicatorEl = doc.querySelector('.rsHeaderMonth');
+    if (!monthViewIndicatorEl) {
+        const title = doc.querySelector('title');
+        throw new Error(`Could not find month view indicator (document title is ${title ? title.textContent : 'not present'})`);
+    }
     const data = {
         classes: [],
         assignments: [],
-        monthView: Object(util["a" /* _$ */])(doc.querySelector('.rsHeaderMonth')).parentNode.classList.contains('rsSelected'),
+        monthView: Object(util["b" /* _$h */])(monthViewIndicatorEl.parentNode).classList.contains('rsSelected'),
         monthOffset
     }; // Reset the array in which all of your assignments are stored in.
     state["d" /* state */].data.localSet(data);

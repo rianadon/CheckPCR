@@ -438,6 +438,8 @@ const state = {
     newsUrl: new CachedState(null),
     /** Custom assignments */
     extra: storedState('extra', new CachedState([])),
+    /** Whether to alert the user that analytics can be disabled */
+    alertAnalytics: storedState('askGoogleAnalytics', new CachedState(true)),
     //////////////////////////////////
     //           Settings           //
     //////////////////////////////////
@@ -497,7 +499,11 @@ const state = {
     /**
      * Whether to display tasks in the task pane that are completed
      */
-    showDoneTasks: storedState('showDoneTasks', new CachedState(false))
+    showDoneTasks: storedState('showDoneTasks', new CachedState(false)),
+    /**
+     * Whether to enable Google Analytics
+     */
+    enableAnalytics: storedState('googleA', new CachedState(true))
 };
 function getStateItem(name) {
     if (!state.hasOwnProperty(name))
@@ -837,6 +843,8 @@ function display(doScroll = true) {
                 return;
             const e = Object(components_assignment["c" /* createAssignment */])(s, data);
             // Calculate how many assignments are placed before the current one
+            // This is done for assignments that are not custom assignments
+            // shown in a separate window
             if (!s.custom || !state["d" /* state */].sepTasks.get()) {
                 let pos = 0;
                 // tslint:disable-next-line no-loops
@@ -1377,10 +1385,15 @@ function parseAssignment(ca) {
 function parse(doc, monthOffset) {
     console.time('Handling data'); // To time how long it takes to parse the assignments
     const handledDataShort = []; // Array used to make sure we don"t parse the same assignment twice.
+    const monthViewIndicatorEl = doc.querySelector('.rsHeaderMonth');
+    if (!monthViewIndicatorEl) {
+        const title = doc.querySelector('title');
+        throw new Error(`Could not find month view indicator (document title is ${title ? title.textContent : 'not present'})`);
+    }
     const data = {
         classes: [],
         assignments: [],
-        monthView: Object(util["a" /* _$ */])(doc.querySelector('.rsHeaderMonth')).parentNode.classList.contains('rsSelected'),
+        monthView: Object(util["b" /* _$h */])(monthViewIndicatorEl.parentNode).classList.contains('rsSelected'),
         monthOffset
     }; // Reset the array in which all of your assignments are stored in.
     state["d" /* state */].data.localSet(data);
@@ -2626,14 +2639,64 @@ var display = __webpack_require__(3);
 // EXTERNAL MODULE: ./src/plugins/activity.ts + 1 modules
 var activity = __webpack_require__(9);
 
-// EXTERNAL MODULE: ./src/plugins/athena.ts
-var athena = __webpack_require__(15);
-
 // EXTERNAL MODULE: ./src/components/snackbar.ts
 var snackbar = __webpack_require__(13);
 
 // EXTERNAL MODULE: ./src/state.ts
 var state = __webpack_require__(1);
+
+// CONCATENATED MODULE: ./src/plugins/analytics.ts
+// tslint:disable-next-line
+/// <reference path="./../../node_modules/@types/google.analytics/index.d.ts" />
+
+
+
+
+/**
+ * Calls the code Google provides to set up Google Analytics and also alerts the
+ * user that's it's being used.
+ */
+function initAnalytics() {
+    if (state["d" /* state */].enableAnalytics.get()) {
+        const gp = {
+            page: '/new.html',
+            title: location.protocol === 'chrome-extension:' ? `Version ${app["a" /* VERSION */]}` : 'Online'
+        };
+        const now = new Date();
+        const gaNewElem = {};
+        const gaElems = {};
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments);
+            }, i[r].l = 1 * now;
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m);
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga', gaNewElem, gaElems);
+        // tslint-enable
+        ga('create', 'UA-66932824-1', 'auto');
+        ga('set', 'checkProtocolTask', () => { });
+        ga('require', 'displayfeatures');
+        ga('send', 'pageview', gp);
+    }
+    else {
+        // @ts-ignore
+        window['ga-disable-UA-66932824-1'] = true;
+    }
+    // Alert the user about google analytics to be nice
+    if (state["d" /* state */].alertAnalytics.get()) {
+        Object(snackbar["a" /* snackbar */])("This page uses Google Analytics. You can opt out via Settings.", "Settings", () => {
+            Object(util["g" /* elemById */])("settingsB").click();
+        });
+        state["d" /* state */].alertAnalytics.set(false);
+    }
+}
+
+// EXTERNAL MODULE: ./src/plugins/athena.ts
+var athena = __webpack_require__(15);
 
 // CONCATENATED MODULE: ./src/plugins/console.ts
 
@@ -2688,6 +2751,7 @@ function initConsoleInteractivity() {
 var customAssignments = __webpack_require__(12);
 
 // CONCATENATED MODULE: ./src/client.ts
+
 
 
 
@@ -3550,6 +3614,9 @@ navigator.serviceWorker.addEventListener('message', (event) => {
         return Object(app["b" /* checkCommit */])();
     }
 });
+Object(util["m" /* requestIdleCallback */])(() => {
+    initAnalytics();
+}, { timeout: 1000 });
 
 
 /***/ })
