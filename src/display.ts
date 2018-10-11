@@ -1,4 +1,4 @@
-import { computeWeekId, createAssignment, getES, separatedClass } from './components/assignment'
+import { assignmentClass, computeWeekId, createAssignment, getES, separatedClass } from './components/assignment'
 import { createDay, createWeek } from './components/calendar'
 import { displayError } from './components/errorDisplay'
 import { resize } from './components/resizer'
@@ -276,7 +276,7 @@ export function display(doScroll: boolean = true): void {
                                     <small>${separatedClass(s.assignment, data)[2]}</small>
                                     <div class='range'>${dateString(s.assignment.end, true)}</div>`,
                                 `test${s.assignment.id}`)
-                if (s.assignment.class) te.setAttribute('data-class', data.classes[s.assignment.class])
+                if (s.assignment.class) te.setAttribute('data-class', assignmentClass(s.assignment, data, s.custom))
                 te.addEventListener('click', () => {
                     const doScrolling = async () => {
                         await smoothScroll((e.getBoundingClientRect().top + document.body.scrollTop) - 116)
@@ -304,8 +304,7 @@ export function display(doScroll: boolean = true): void {
             const already = document.getElementById(s.assignment.id + weekId)
             if (already != null) { // Assignment already exists
                 already.style.marginTop = e.style.marginTop
-                already.setAttribute('data-class',
-                    s.custom && state.sepTaskClass.get() ? 'Task' : classById(s.assignment.class))
+                already.setAttribute('data-class', assignmentClass(s.assignment, data, s.custom))
                 if (!assignmentInModified(s.assignment.id)) {
                     already.getElementsByClassName('body')[0].innerHTML = e.getElementsByClassName('body')[0].innerHTML
                 }

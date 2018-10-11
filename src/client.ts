@@ -534,6 +534,7 @@ document.querySelectorAll('.colors').forEach((e) => {
             sp.classList.toggle('onCustom')
             evt.stopPropagation()
         })
+        sp.appendChild(custom)
         sp.addEventListener('click', (evt) => {
             if (sp.classList.contains('choose')) {
                 const target = _$h(evt.target)
@@ -584,18 +585,20 @@ function updateColors(): void {
 
     const createPalette = (color: string) => tinycolor(color).darken(24).toHexString()
 
+    addColorRule('.task', '#F5F5F5', '#E0E0E0')
+    addColorRule('.task', '#424242', '#212121', '.dark ')
+
     if (state.colorType.get() === 'assignment') {
         Object.entries(assignmentColors).forEach(([name, color]) => {
-            addColorRule(`.${name}`, color, palette[color] || createPalette(color))
+            // I could do without the ":root div" here, but it's needed to keep the same presedence as .dark and .task rules
+            addColorRule(`.${name}`, color, palette[color] || createPalette(color), ':root div')
         })
     } else {
         Object.entries(classColors).forEach(([name, color]) => {
-            addColorRule(`[data-class=\"${name}\"]`, color, palette[color] || createPalette(color))
+            addColorRule(`[data-class=\"${name}\"]`, color, palette[color] || createPalette(color), ':root div')
         })
     }
 
-    addColorRule('.task', '#F5F5F5', '#E0E0E0')
-    addColorRule('.task', '#424242', '#212121', '.dark ')
 }
 
 // The function then needs to be called.

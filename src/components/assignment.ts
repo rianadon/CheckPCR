@@ -45,14 +45,15 @@ export function separate(cl: string): RegExpMatchArray {
     return m
 }
 
-export function assignmentClass(assignment: IAssignment, data: IApplicationData): string {
+export function assignmentClass(assignment: IAssignment, data: IApplicationData, iscustom: boolean): string {
+    if (iscustom && state.sepTaskClass.get()) return 'Task'
     const cls = (assignment.class != null) ? data.classes[assignment.class] : 'Task'
     if (cls == null) throw new Error(`Could not find class ${assignment.class} in ${data.classes}`)
     return cls
 }
 
 export function separatedClass(assignment: IAssignment, data: IApplicationData): RegExpMatchArray {
-    return separate(assignmentClass(assignment, data))
+    return separate(assignmentClass(assignment, data, false))
 }
 
 export function createAssignment(split: ISplitAssignment, data: IApplicationData): HTMLElement {
@@ -83,7 +84,7 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
     if (( reference && reference.done) || assignmentInDone(assignment.id)) {
         e.classList.add('done')
     }
-    e.setAttribute('data-class', assignmentClass(assignment, data))
+    e.setAttribute('data-class', assignmentClass(assignment, data, split.custom))
     const close = element('a', ['close', 'material-icons'], 'close')
     close.addEventListener('click', closeOpened)
     e.appendChild(close)

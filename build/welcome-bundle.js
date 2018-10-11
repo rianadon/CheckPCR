@@ -581,7 +581,7 @@ function iterDays(start, end, cb) {
 "use strict";
 
 // EXTERNAL MODULE: ./src/components/assignment.ts
-var components_assignment = __webpack_require__(8);
+var components_assignment = __webpack_require__(5);
 
 // EXTERNAL MODULE: ./src/dates.ts
 var dates = __webpack_require__(2);
@@ -620,10 +620,7 @@ function createDay(d) {
 var errorDisplay = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./src/components/resizer.ts
-var resizer = __webpack_require__(6);
-
-// EXTERNAL MODULE: ./src/pcr.ts + 1 modules
-var pcr = __webpack_require__(4);
+var resizer = __webpack_require__(7);
 
 // EXTERNAL MODULE: ./src/plugins/activity.ts + 1 modules
 var activity = __webpack_require__(9);
@@ -632,10 +629,10 @@ var activity = __webpack_require__(9);
 var customAssignments = __webpack_require__(12);
 
 // EXTERNAL MODULE: ./src/plugins/done.ts
-var done = __webpack_require__(5);
+var done = __webpack_require__(6);
 
 // EXTERNAL MODULE: ./src/plugins/modifiedAssignments.ts
-var modifiedAssignments = __webpack_require__(7);
+var modifiedAssignments = __webpack_require__(8);
 
 // EXTERNAL MODULE: ./src/state.ts
 var state = __webpack_require__(1);
@@ -645,7 +642,6 @@ var state = __webpack_require__(1);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return getTimeAfter; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return display; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return formatUpdate; });
-
 
 
 
@@ -837,11 +833,11 @@ function display(doScroll = true) {
             previousAssignments[assignment.id] = assignment;
         });
         split.forEach((s) => {
-            const weekId = Object(components_assignment["b" /* computeWeekId */])(s);
+            const weekId = Object(components_assignment["c" /* computeWeekId */])(s);
             wk = document.getElementById(weekId);
             if (wk == null)
                 return;
-            const e = Object(components_assignment["c" /* createAssignment */])(s, data);
+            const e = Object(components_assignment["d" /* createAssignment */])(s, data);
             // Calculate how many assignments are placed before the current one
             // This is done for assignments that are not custom assignments
             // shown in a separate window
@@ -881,10 +877,10 @@ function display(doScroll = true) {
                                         ${s.assignment.baseType === 'longterm' ? 'assignment' : 'assessment'}
                                     </i>
                                     <span class='title'>${s.assignment.title}</span>
-                                    <small>${Object(components_assignment["f" /* separatedClass */])(s.assignment, data)[2]}</small>
+                                    <small>${Object(components_assignment["g" /* separatedClass */])(s.assignment, data)[2]}</small>
                                     <div class='range'>${Object(util["f" /* dateString */])(s.assignment.end, true)}</div>`, `test${s.assignment.id}`);
                 if (s.assignment.class)
-                    te.setAttribute('data-class', data.classes[s.assignment.class]);
+                    te.setAttribute('data-class', Object(components_assignment["a" /* assignmentClass */])(s.assignment, data, s.custom));
                 te.addEventListener('click', () => {
                     const doScrolling = async () => {
                         await Object(util["p" /* smoothScroll */])((e.getBoundingClientRect().top + document.body.scrollTop) - 116);
@@ -912,7 +908,7 @@ function display(doScroll = true) {
             const already = document.getElementById(s.assignment.id + weekId);
             if (already != null) { // Assignment already exists
                 already.style.marginTop = e.style.marginTop;
-                already.setAttribute('data-class', s.custom && state["d" /* state */].sepTaskClass.get() ? 'Task' : Object(pcr["a" /* classById */])(s.assignment.class));
+                already.setAttribute('data-class', Object(components_assignment["a" /* assignmentClass */])(s.assignment, data, s.custom));
                 if (!Object(modifiedAssignments["a" /* assignmentInModified */])(s.assignment.id)) {
                     already.getElementsByClassName('body')[0].innerHTML = e.getElementsByClassName('body')[0].innerHTML;
                 }
@@ -920,8 +916,8 @@ function display(doScroll = true) {
                 if (already.classList.toggle) {
                     already.classList.toggle('listDisp', e.classList.contains('listDisp'));
                 }
-                Object(components_assignment["d" /* getES */])(already).forEach((cl) => already.classList.remove(cl));
-                Object(components_assignment["d" /* getES */])(e).forEach((cl) => already.classList.add(cl));
+                Object(components_assignment["e" /* getES */])(already).forEach((cl) => already.classList.remove(cl));
+                Object(components_assignment["e" /* getES */])(e).forEach((cl) => already.classList.add(cl));
                 WEEKEND_CLASSNAMES.forEach((cl) => {
                     already.classList.remove(cl);
                     if (e.classList.contains(cl))
@@ -1478,188 +1474,23 @@ function logout() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return removeFromDone; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return addToDone; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return saveDone; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return assignmentInDone; });
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-
-const DONE_STORAGE_NAME = 'done';
-function removeFromDone(id) {
-    const index = _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.get().indexOf(id);
-    if (index >= 0)
-        _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.get().splice(index, 1);
-}
-function addToDone(id) {
-    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.get().push(id);
-}
-function saveDone() {
-    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.forceUpdate();
-}
-function assignmentInDone(id) {
-    return _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.get().includes(id);
-}
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getResizeAssignments; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return resizeCaller; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return resize; });
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-
-// For list view, the assignments can't be on top of each other.
-// Therefore, a listener is attached to the resizing of the browser window.
-let ticking = false;
-let timeoutId = null;
-function getResizeAssignments() {
-    const assignments = Array.from(document.querySelectorAll(document.body.classList.contains('showDone') ?
-        '.assignment.listDisp' : '.assignment.listDisp:not(.done)'));
-    assignments.sort((a, b) => {
-        const ad = a.classList.contains('done');
-        const bd = b.classList.contains('done');
-        if (ad && !bd) {
-            return 1;
-        }
-        if (bd && !ad) {
-            return -1;
-        }
-        return Number(a.querySelector('.due').value)
-            - Number(b.querySelector('.due').value);
-    });
-    return assignments;
-}
-function resizeCaller() {
-    if (!ticking) {
-        requestAnimationFrame(resize);
-        ticking = true;
-    }
-}
-let lastColumns = null;
-let lastAssignments = null;
-let lastDoneCount = null;
-function resize() {
-    ticking = true;
-    // To calculate the number of columns, the below algorithm is used becase as the screen size
-    // increases, the column width increases
-    const widths = document.body.classList.contains('showInfo') ?
-        [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800];
-    let columns = 1;
-    widths.forEach((w, index) => {
-        if (window.innerWidth > w) {
-            columns = index + 1;
-        }
-    });
-    const columnHeights = Array.from(new Array(columns), () => 0);
-    const cch = [];
-    const assignments = getResizeAssignments();
-    const doneCount = assignments.filter((a) => a.classList.contains('done')).length;
-    assignments.forEach((assignment, n) => {
-        const col = n % columns;
-        cch.push(columnHeights[col]);
-        columnHeights[col] += assignment.offsetHeight + 24;
-    });
-    assignments.forEach((assignment, n) => {
-        const col = n % columns;
-        assignment.style.top = cch[n] + 'px';
-        if (columns !== lastColumns || assignments.length !== lastAssignments || doneCount !== lastDoneCount) {
-            const left = ((100 / columns) * col) + '%';
-            const right = ((100 / columns) * (columns - col - 1)) + '%';
-            if (lastColumns === null) {
-                assignment.style.left = left;
-                assignment.style.right = right;
-            }
-            else {
-                Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* animateEl */ "c"])(assignment, [
-                    {
-                        left: assignment.style.left || left,
-                        right: assignment.style.right || right
-                    },
-                    { left, right }
-                ], { duration: 300 }).then(() => {
-                    assignment.style.left = left;
-                    assignment.style.right = right;
-                });
-            }
-        }
-    });
-    if (timeoutId)
-        clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-        cch.length = 0;
-        assignments.forEach((assignment, n) => {
-            const col = n % columns;
-            if (n < columns) {
-                columnHeights[col] = 0;
-            }
-            cch.push(columnHeights[col]);
-            columnHeights[col] += assignment.offsetHeight + 24;
-        });
-        assignments.forEach((assignment, n) => {
-            assignment.style.top = cch[n] + 'px';
-        });
-    }, 500);
-    lastColumns = columns;
-    lastAssignments = assignments.length;
-    lastDoneCount = doneCount;
-    ticking = false;
-}
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return removeFromModified; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return saveModified; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return assignmentInModified; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return modifiedBody; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return setModified; });
-/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-
-function removeFromModified(id) {
-    delete _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get()[id];
-}
-function saveModified() {
-    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.forceUpdate();
-}
-function assignmentInModified(id) {
-    return _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get().hasOwnProperty(id);
-}
-function modifiedBody(id) {
-    return _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get()[id];
-}
-function setModified(id, body) {
-    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get()[id] = body;
-}
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return computeWeekId; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return separate; });
-/* unused harmony export assignmentClass */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return separatedClass; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return createAssignment; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return getES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return closeOpened; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return computeWeekId; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return separate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return assignmentClass; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return separatedClass; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return createAssignment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return getES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return closeOpened; });
 /* harmony import */ var _dates__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _display__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _pcr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
 /* harmony import */ var _plugins_activity__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9);
 /* harmony import */ var _plugins_customAssignments__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
-/* harmony import */ var _plugins_done__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
-/* harmony import */ var _plugins_modifiedAssignments__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7);
+/* harmony import */ var _plugins_done__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
+/* harmony import */ var _plugins_modifiedAssignments__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8);
 /* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(0);
-/* harmony import */ var _resizer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6);
+/* harmony import */ var _resizer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(7);
 
 
 
@@ -1706,14 +1537,16 @@ function separate(cl) {
         throw new Error(`Could not separate class string ${cl}`);
     return m;
 }
-function assignmentClass(assignment, data) {
+function assignmentClass(assignment, data, iscustom) {
+    if (iscustom && _state__WEBPACK_IMPORTED_MODULE_7__[/* state */ "d"].sepTaskClass.get())
+        return 'Task';
     const cls = (assignment.class != null) ? data.classes[assignment.class] : 'Task';
     if (cls == null)
         throw new Error(`Could not find class ${assignment.class} in ${data.classes}`);
     return cls;
 }
 function separatedClass(assignment, data) {
-    return separate(assignmentClass(assignment, data));
+    return separate(assignmentClass(assignment, data, false));
 }
 function createAssignment(split, data) {
     const { assignment, reference } = split;
@@ -1736,7 +1569,7 @@ function createAssignment(split, data) {
     if ((reference && reference.done) || Object(_plugins_done__WEBPACK_IMPORTED_MODULE_5__[/* assignmentInDone */ "b"])(assignment.id)) {
         e.classList.add('done');
     }
-    e.setAttribute('data-class', assignmentClass(assignment, data));
+    e.setAttribute('data-class', assignmentClass(assignment, data, split.custom));
     const close = Object(_util__WEBPACK_IMPORTED_MODULE_8__[/* element */ "h"])('a', ['close', 'material-icons'], 'close');
     close.addEventListener('click', closeOpened);
     e.appendChild(close);
@@ -2029,6 +1862,171 @@ function closeOpened(evt) {
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return removeFromDone; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return addToDone; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return saveDone; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return assignmentInDone; });
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+
+const DONE_STORAGE_NAME = 'done';
+function removeFromDone(id) {
+    const index = _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.get().indexOf(id);
+    if (index >= 0)
+        _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.get().splice(index, 1);
+}
+function addToDone(id) {
+    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.get().push(id);
+}
+function saveDone() {
+    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.forceUpdate();
+}
+function assignmentInDone(id) {
+    return _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].done.get().includes(id);
+}
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getResizeAssignments; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return resizeCaller; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return resize; });
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+// For list view, the assignments can't be on top of each other.
+// Therefore, a listener is attached to the resizing of the browser window.
+let ticking = false;
+let timeoutId = null;
+function getResizeAssignments() {
+    const assignments = Array.from(document.querySelectorAll(document.body.classList.contains('showDone') ?
+        '.assignment.listDisp' : '.assignment.listDisp:not(.done)'));
+    assignments.sort((a, b) => {
+        const ad = a.classList.contains('done');
+        const bd = b.classList.contains('done');
+        if (ad && !bd) {
+            return 1;
+        }
+        if (bd && !ad) {
+            return -1;
+        }
+        return Number(a.querySelector('.due').value)
+            - Number(b.querySelector('.due').value);
+    });
+    return assignments;
+}
+function resizeCaller() {
+    if (!ticking) {
+        requestAnimationFrame(resize);
+        ticking = true;
+    }
+}
+let lastColumns = null;
+let lastAssignments = null;
+let lastDoneCount = null;
+function resize() {
+    ticking = true;
+    // To calculate the number of columns, the below algorithm is used becase as the screen size
+    // increases, the column width increases
+    const widths = document.body.classList.contains('showInfo') ?
+        [650, 1100, 1800, 2700, 3800, 5100] : [350, 800, 1500, 2400, 3500, 4800];
+    let columns = 1;
+    widths.forEach((w, index) => {
+        if (window.innerWidth > w) {
+            columns = index + 1;
+        }
+    });
+    const columnHeights = Array.from(new Array(columns), () => 0);
+    const cch = [];
+    const assignments = getResizeAssignments();
+    const doneCount = assignments.filter((a) => a.classList.contains('done')).length;
+    assignments.forEach((assignment, n) => {
+        const col = n % columns;
+        cch.push(columnHeights[col]);
+        columnHeights[col] += assignment.offsetHeight + 24;
+    });
+    assignments.forEach((assignment, n) => {
+        const col = n % columns;
+        assignment.style.top = cch[n] + 'px';
+        if (columns !== lastColumns || assignments.length !== lastAssignments || doneCount !== lastDoneCount) {
+            const left = ((100 / columns) * col) + '%';
+            const right = ((100 / columns) * (columns - col - 1)) + '%';
+            if (lastColumns === null) {
+                assignment.style.left = left;
+                assignment.style.right = right;
+            }
+            else {
+                Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* animateEl */ "c"])(assignment, [
+                    {
+                        left: assignment.style.left || left,
+                        right: assignment.style.right || right
+                    },
+                    { left, right }
+                ], { duration: 300 }).then(() => {
+                    assignment.style.left = left;
+                    assignment.style.right = right;
+                });
+            }
+        }
+    });
+    if (timeoutId)
+        clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+        cch.length = 0;
+        assignments.forEach((assignment, n) => {
+            const col = n % columns;
+            if (n < columns) {
+                columnHeights[col] = 0;
+            }
+            cch.push(columnHeights[col]);
+            columnHeights[col] += assignment.offsetHeight + 24;
+        });
+        assignments.forEach((assignment, n) => {
+            assignment.style.top = cch[n] + 'px';
+        });
+    }, 500);
+    lastColumns = columns;
+    lastAssignments = assignments.length;
+    lastDoneCount = doneCount;
+    ticking = false;
+}
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return removeFromModified; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return saveModified; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return assignmentInModified; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return modifiedBody; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return setModified; });
+/* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+
+function removeFromModified(id) {
+    delete _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get()[id];
+}
+function saveModified() {
+    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.forceUpdate();
+}
+function assignmentInModified(id) {
+    return _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get().hasOwnProperty(id);
+}
+function modifiedBody(id) {
+    return _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get()[id];
+}
+function setModified(id, body) {
+    _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].modified.get()[id] = body;
+}
+
+
+/***/ }),
 /* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2038,13 +2036,13 @@ function closeOpened(evt) {
 var pcr = __webpack_require__(4);
 
 // EXTERNAL MODULE: ./src/plugins/done.ts
-var done = __webpack_require__(5);
+var done = __webpack_require__(6);
 
 // EXTERNAL MODULE: ./src/util.ts
 var util = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./src/components/assignment.ts
-var components_assignment = __webpack_require__(8);
+var components_assignment = __webpack_require__(5);
 
 // CONCATENATED MODULE: ./src/components/activity.ts
 
@@ -2060,7 +2058,7 @@ function createActivity(type, assignment, date, className) {
     const te = Object(util["h" /* element */])('div', ['activity', 'assignmentItem', assignment.baseType, type], `
         <i class='material-icons'>${type}</i>
         <span class='title'>${assignment.title}</span>
-        <small>${Object(components_assignment["e" /* separate */])(cname)[2]}</small>
+        <small>${Object(components_assignment["f" /* separate */])(cname)[2]}</small>
         <div class='range'>${Object(util["f" /* dateString */])(date)}</div>`, `activity${assignment.id}`);
     te.setAttribute('data-class', cname);
     const { id } = assignment;
