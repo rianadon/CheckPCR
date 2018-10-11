@@ -598,6 +598,9 @@ function updateColors(): void {
     addColorRule('.task', '#424242', '#212121', '.dark ')
 }
 
+// The function then needs to be called.
+updateColors()
+
 // The elements that control the settings also need event listeners
 document.querySelectorAll('.settingsControl').forEach((e: HTMLInputElement) => {
     const setting = getStateItem(e.name)
@@ -680,7 +683,6 @@ if (localStorageRead('data') != null) {
     display()
 }
 
-updateColors()
 fetch()
 
 // <a name="events"/>

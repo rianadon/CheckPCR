@@ -3308,6 +3308,8 @@ function updateColors() {
     addColorRule('.task', '#F5F5F5', '#E0E0E0');
     addColorRule('.task', '#424242', '#212121', '.dark ');
 }
+// The function then needs to be called.
+updateColors();
 // The elements that control the settings also need event listeners
 document.querySelectorAll('.settingsControl').forEach((e) => {
     const setting = Object(state["b" /* getStateItem */])(e.name);
@@ -3388,7 +3390,6 @@ if (Object(util["j" /* localStorageRead */])('data') != null) {
     });
     Object(display["a" /* display */])();
 }
-updateColors();
 Object(pcr["c" /* fetch */])();
 // <a name="events"/>
 // Events
