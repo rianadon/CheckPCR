@@ -3170,6 +3170,12 @@ let classColors = Object(util["j" /* localStorageRead */])('classColors', () => 
     });
     return cc;
 });
+try {
+    classColors = JSON.parse(classColors); // Fix for when I double JSON.stringified classColors
+}
+catch (e) {
+    // classColors is in the correct format
+}
 Object(util["g" /* elemById */])(`${state["d" /* state */].colorType.get()}Colors`).style.display = 'block';
 window.addEventListener('focus', () => {
     if (state["d" /* state */].refreshOnFocus.get())
@@ -3254,7 +3260,7 @@ document.querySelectorAll('.colors').forEach((e) => {
                     selected.classList.remove('selected');
                 }
                 target.classList.add('selected');
-                Object(util["k" /* localStorageWrite */])(listName, JSON.stringify(list));
+                Object(util["k" /* localStorageWrite */])(listName, list);
                 listSetter(list);
                 updateColors();
             }
@@ -3302,8 +3308,6 @@ function updateColors() {
     addColorRule('.task', '#F5F5F5', '#E0E0E0');
     addColorRule('.task', '#424242', '#212121', '.dark ');
 }
-// The function then needs to be called.
-updateColors();
 // The elements that control the settings also need event listeners
 document.querySelectorAll('.settingsControl').forEach((e) => {
     const setting = Object(state["b" /* getStateItem */])(e.name);
@@ -3384,6 +3388,7 @@ if (Object(util["j" /* localStorageRead */])('data') != null) {
     });
     Object(display["a" /* display */])();
 }
+updateColors();
 Object(pcr["c" /* fetch */])();
 // <a name="events"/>
 // Events

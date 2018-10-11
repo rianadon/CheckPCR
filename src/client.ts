@@ -455,6 +455,11 @@ let classColors = localStorageRead('classColors', () => {
     })
     return cc
 })
+try {
+    classColors = JSON.parse(classColors as any) // Fix for when I double JSON.stringified classColors
+} catch (e) {
+    // classColors is in the correct format
+}
 elemById(`${state.colorType.get()}Colors`).style.display = 'block'
 window.addEventListener('focus', () => {
   if (state.refreshOnFocus.get()) fetch()
@@ -540,7 +545,7 @@ document.querySelectorAll('.colors').forEach((e) => {
                     selected.classList.remove('selected')
                 }
                 target.classList.add('selected')
-                localStorageWrite(listName, JSON.stringify(list))
+                localStorageWrite(listName, list)
                 listSetter(list)
                 updateColors()
             }
@@ -592,9 +597,6 @@ function updateColors(): void {
     addColorRule('.task', '#F5F5F5', '#E0E0E0')
     addColorRule('.task', '#424242', '#212121', '.dark ')
 }
-
-// The function then needs to be called.
-updateColors()
 
 // The elements that control the settings also need event listeners
 document.querySelectorAll('.settingsControl').forEach((e: HTMLInputElement) => {
@@ -678,6 +680,7 @@ if (localStorageRead('data') != null) {
     display()
 }
 
+updateColors()
 fetch()
 
 // <a name="events"/>
