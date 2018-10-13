@@ -11,10 +11,10 @@
   "permissions": [
      "https://webappsca.pcrsoft.com/"
   ],
-  "app": {
-    "launch": {
-      "local_path": "index.html"
-    }
+  "browser_action": {},
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
   },
   "minimum_chrome_version": "28",
   "offline_enabled": true,
