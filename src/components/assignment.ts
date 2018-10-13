@@ -66,9 +66,9 @@ export function createAssignment(split: ISplitAssignment, data: IApplicationData
 
     let smallTag = 'small'
     let link = null
-    const athenaData = state.athenaData.get()
-    if (athenaData && assignment.class != null && (athenaData[data.classes[assignment.class]] != null)) {
-        link = athenaData[data.classes[assignment.class]].link
+    const schoologyData = state.schoologyData.get()
+    if (schoologyData && assignment.class != null && (schoologyData[data.classes[assignment.class]] != null)) {
+        link = schoologyData[data.classes[assignment.class]].link
         smallTag = 'a'
     }
 

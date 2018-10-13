@@ -1,6 +1,6 @@
 import { IApplicationData } from './pcr'
 import { ActivityItem } from './plugins/activity'
-import { IAthenaData } from './plugins/athena'
+import { ISchoologyData } from './plugins/schoology'
 import { ICustomAssignment } from './plugins/customAssignments'
 import { IModifiedBodies } from './plugins/modifiedAssignments'
 import { localStorageRead, localStorageWrite } from './util'
@@ -94,7 +94,7 @@ export const state = {
     activity: storedState('activity', new CachedState<ActivityItem[]>([])),
 
     /** Data on classes */
-    athenaData: storedState('athenaData', new CachedState<IAthenaData|null>(null)),
+    schoologyData: storedState('schoologyData', new CachedState<ISchoologyData|null>(null)),
 
     /** Assignments marked as done */
     done: storedState('done', new CachedState<string[]>([])),

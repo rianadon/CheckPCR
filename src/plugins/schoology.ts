@@ -1,7 +1,7 @@
 import { state } from '../state'
 import { elemById } from '../util'
 
-interface IRawAthenaData {
+interface IRawSchoologyData {
     response_code: 200
     body: {
         courses: {
@@ -26,14 +26,14 @@ interface IRawSection {
     // There's a bunch more that I've omitted
 }
 
-export interface IAthenaDataItem {
+export interface ISchoologyDataItem {
     link: string
     logo: string
     period: string
 }
 
-export interface IAthenaData {
-    [cls: string]: IAthenaDataItem
+export interface ISchoologyData {
+    [cls: string]: ISchoologyDataItem
 }
 
 function formatLogo(logo: string): string {
@@ -42,41 +42,41 @@ function formatLogo(logo: string): string {
                 .replace('tiny', 'reg')
 }
 
-// Now, there's the schoology/athena integration stuff. First, we need to check if it's been more
-// than a day. There's no point constantly retrieving classes from Athena; they dont't change that
+// Now, there's the schoology/schoology integration stuff. First, we need to check if it's been more
+// than a day. There's no point constantly retrieving classes from Schoology; they dont't change that
 // much.
 
 // Then, once the variable for the last date is initialized, it's time to get the classes from
-// athena. Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any
+// schoology. Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any
 // better! Seriously! It's just too bad the login page isn't in JSON.
-function parseAthenaData(dat: string): IAthenaData|null {
+function parseSchoologyData(dat: string): ISchoologyData|null {
     if (dat === '') return null
-    const d = JSON.parse(dat) as IRawAthenaData
-    const athenaData2: IAthenaData = {}
+    const d = JSON.parse(dat) as IRawSchoologyData
+    const schoologyData2: ISchoologyData = {}
     const allCourseDetails: { [nid: number]: IRawSection } = {}
     d.body.courses.sections.forEach((section) => {
         allCourseDetails[section.course_nid] = section
     })
     d.body.courses.courses.reverse().forEach((course) => {
         const courseDetails = allCourseDetails[course.nid]
-        athenaData2[course.course_title] = {
-            link: `https://athena.harker.org${courseDetails.link}`,
+        schoologyData2[course.course_title] = {
+            link: `https://schoology.harker.org${courseDetails.link}`,
             logo: formatLogo(courseDetails.logo),
             period: courseDetails.section_title
         }
     })
-    return athenaData2
+    return schoologyData2
 }
 
-export function updateAthenaData(data: string): void {
-    const refreshEl = document.getElementById('athenaDataRefresh')
+export function updateSchoologyData(data: string): void {
+    const refreshEl = document.getElementById('schoologyDataRefresh')
     try {
-        state.athenaData.set(parseAthenaData(data))
-        elemById('athenaDataError').style.display = 'none'
+        state.schoologyData.set(parseSchoologyData(data))
+        elemById('schoologyDataError').style.display = 'none'
         if (refreshEl) refreshEl.style.display = 'block'
     } catch (e) {
-        elemById('athenaDataError').style.display = 'block'
+        elemById('schoologyDataError').style.display = 'block'
         if (refreshEl) refreshEl.style.display = 'none'
-        elemById('athenaDataError').innerHTML = e.message
+        elemById('schoologyDataError').innerHTML = e.message
     }
 }

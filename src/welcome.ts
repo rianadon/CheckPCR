@@ -1,5 +1,5 @@
 import { dologin, fetch } from './pcr'
-import { updateAthenaData } from './plugins/athena'
+import { updateSchoologyData } from './plugins/schoology'
 import { _$h, elemById } from './util'
 
 // Welcome to the welcome file.
@@ -74,8 +74,8 @@ window.onpopstate = (event) => {
 }
 
 // The text box also needs to execute this function when anything is typed / pasted.
-const athenaDataEl = elemById('athenaData') as HTMLInputElement
-athenaDataEl.addEventListener('input', () => updateAthenaData(athenaDataEl.value))
+const schoologyDataEl = elemById('schoologyData') as HTMLInputElement
+schoologyDataEl.addEventListener('input', () => updateSchoologyData(schoologyDataEl.value))
 
 fetch(true, undefined, () => {
     elemById('loginNext').style.display = ''

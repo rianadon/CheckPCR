@@ -7,106 +7,106 @@ $radio-fill-color: $accent-color
 $input-bg-color: #fff
 
 =transform($args)
-	-webkit-transform: $args
-	-moz-transform: $args
-	-ms-transform: $args
-	-o-transform: $args
-	transform: $args
+    -webkit-transform: $args
+    -moz-transform: $args
+    -ms-transform: $args
+    -o-transform: $args
+    transform: $args
 
 =transform-origin($args)
-	-webkit-transform-origin: $args
-	-moz-transform-origin: $args
-	-ms-transform-origin: $args
-	-o-transform-origin: $args
-	transform-origin: $args
+    -webkit-transform-origin: $args
+    -moz-transform-origin: $args
+    -ms-transform-origin: $args
+    -o-transform-origin: $args
+    transform-origin: $args
 
 input
-	color: inherit
+    color: inherit
 
 #login
-	position: fixed
-	top: calc(40vh - 130px)
-	left: 0
-	right: 0
-	margin: 0 auto
-	z-index: 7000
-	background: #FFF
-	padding: 24px 0 24px+8px+36px+8px 0
-	width: 56px * 5
-	max-width: 100%
-	+transform(scale(0,0))
-	+box-shadow(0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21))
-	+transition(transform 0.2s ease-out)
-	&>h1
-		margin: 0 0 20px 0
-		font-size: 20px
-		line-height: 1.1
-		font-weight: 500
-		padding: 0 24px
-	&.active
-		+transition(transform 0.2s ease-in)
-		+transform(scale(1,1))
-		& + #loginBackground
-			opacity: 0.5
-	&>input[type="submit"], &>button
-		@extend a
-		color: $accent-color !important
-		background-color: transparent
-		padding: 0 8px
-		min-width: 64px
-		border: none
-		+border-radius(2px)
-		font-size: inherit
-		height: 36px
-		border: none
-		outline: none
-		position: absolute
-		bottom: 8px
-		right: 8px
-	&>.content
-		$offsetPx: 130px - 8px - 24px - 76px - 44px
-		max-height: calc(60vh + #{$offsetPx})
-		padding: 0 24px
-		overflow: auto
-		&>.input-field:last-of-type
-			margin-bottom: 16px
-	&.large
-		width: 480px
-		&>.content
-			&>.input-field
-				margin-left: auto
-				margin-right: auto
-				width: 280px
-			&>label
-				margin-left: 76px
+    position: fixed
+    top: calc(40vh - 130px)
+    left: 0
+    right: 0
+    margin: 0 auto
+    z-index: 7000
+    background: #FFF
+    padding: 24px 0 24px+8px+36px+8px 0
+    width: 56px * 5
+    max-width: 100%
+    +transform(scale(0,0))
+    +box-shadow(0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21))
+    +transition(transform 0.2s ease-out)
+    &>h1
+        margin: 0 0 20px 0
+        font-size: 20px
+        line-height: 1.1
+        font-weight: 500
+        padding: 0 24px
+    &.active
+        +transition(transform 0.2s ease-in)
+        +transform(scale(1,1))
+        & + #loginBackground
+            opacity: 0.5
+    &>input[type="submit"], &>button
+        @extend a
+        color: $accent-color !important
+        background-color: transparent
+        padding: 0 8px
+        min-width: 64px
+        border: none
+        +border-radius(2px)
+        font-size: inherit
+        height: 36px
+        border: none
+        outline: none
+        position: absolute
+        bottom: 8px
+        right: 8px
+    &>.content
+        $offsetPx: 130px - 8px - 24px - 76px - 44px
+        max-height: calc(60vh + #{$offsetPx})
+        padding: 0 24px
+        overflow: auto
+        &>.input-field:last-of-type
+            margin-bottom: 16px
+    &.large
+        width: 480px
+        &>.content
+            &>.input-field
+                margin-left: auto
+                margin-right: auto
+                width: 280px
+            &>label
+                margin-left: 76px
 
 #loginBackground
-	z-index: 6000
+    z-index: 6000
 
 #loginIncorrect
-	color: #F44336
-	display: none
-	text-align: center
-	font-size: 14px
+    color: #F44336
+    display: none
+    text-align: center
+    font-size: 14px
 
 #loginExtra
-	display: block
-	margin-top: 16px
-	&>b
-		display: block
-		margin-bottom: 8px
+    display: block
+    margin-top: 16px
+    &>b
+        display: block
+        margin-bottom: 8px
 
 #storeAbout
-	display: none
-	margin-left: 76px
-	margin-top: 8px
-	#remember:checked + label + &
-		display: block
+    display: none
+    margin-left: 76px
+    margin-top: 8px
+    #remember:checked + label + &
+        display: block
 
 /* Everything below is adapted from Materialize */
 
 label
-	color: $input-border-color
+    color: $input-border-color
 
 /***************************
  *	 Text Inputs + Textarea
@@ -114,18 +114,18 @@ label
 
 // Style Placeholders
 \::-webkit-input-placeholder
-	color: lighten($input-border-color, 20%)
+    color: lighten($input-border-color, 20%)
 
 \:-moz-placeholder
-	// Firefox 18-
-	color: lighten($input-border-color, 20%)
+    // Firefox 18-
+    color: lighten($input-border-color, 20%)
 
 \::-moz-placeholder
-	// Firefox 19+
-	color: lighten($input-border-color, 20%)
+    // Firefox 19+
+    color: lighten($input-border-color, 20%)
 
 \:-ms-input-placeholder
-	color: lighten($input-border-color, 20%)
+    color: lighten($input-border-color, 20%)
 
 // Text inputs
 
@@ -140,67 +140,67 @@ input[type=tel],
 input[type=number],
 input[type=search],
 textarea
-	// General Styles
-	background-color: transparent
-	border: none
-	border-bottom: 1px solid $input-border-color
-	border-radius: 0
-	outline: none
-	height: 16px+16px
-	width: 100%
-	font-size: 1rem
-	margin: 0 0 8px 0
-	padding: 0
-	box-shadow: none
-	box-sizing: content-box
-	+transition(all .3s)
-	// Focused input style
-	&:focus:not([readonly])
-		border-bottom: 1px solid $input-focus-color
-		box-shadow: 0 1px 0 0 $input-focus-color
-	// Focused label style
-	&:focus:not([readonly]) + label
-		color: $input-focus-color
-	// Form Message Shared Styles
-	& + label:after
-		display: block
-		content: ""
-		position: absolute
-		top: 65px
-		opacity: 0
-		transition: .2s opacity ease-out, .2s color ease-out
+    // General Styles
+    background-color: transparent
+    border: none
+    border-bottom: 1px solid $input-border-color
+    border-radius: 0
+    outline: none
+    height: 16px+16px
+    width: 100%
+    font-size: 1rem
+    margin: 0 0 8px 0
+    padding: 0
+    box-shadow: none
+    box-sizing: content-box
+    +transition(all .3s)
+    // Focused input style
+    &:focus:not([readonly])
+        border-bottom: 1px solid $input-focus-color
+        box-shadow: 0 1px 0 0 $input-focus-color
+    // Focused label style
+    &:focus:not([readonly]) + label
+        color: $input-focus-color
+    // Form Message Shared Styles
+    & + label:after
+        display: block
+        content: ""
+        position: absolute
+        top: 65px
+        opacity: 0
+        transition: .2s opacity ease-out, .2s color ease-out
 
 // Styling for input field wrapper
 .input-field
-	$fs: 16px*0.8
-	position: relative
-	margin-top: 16px+$fs
-	&>label
-		color: $input-border-color
-		position: absolute
-		top: 8px
-		left: 0
-		font-size: 16px
-		cursor: text
-		+transition(0.2s ease-out)
-		line-height: 1
-	&>label.active
-		font-size: $fs
-		+transform(translateY(#{-16px+(16px - $fs)/2 - 8px}))
+    $fs: 16px*0.8
+    position: relative
+    margin-top: 16px+$fs
+    &>label
+        color: $input-border-color
+        position: absolute
+        top: 8px
+        left: 0
+        font-size: 16px
+        cursor: text
+        +transition(0.2s ease-out)
+        line-height: 1
+    &>label.active
+        font-size: $fs
+        +transform(translateY(#{-16px+(16px - $fs)/2 - 8px}))
 
 // Default textarea
 textarea
-	width: 100%
-	height: 6.2rem
-	color: inherit
-	line-height: 1
-	background-color: transparent
+    width: 100%
+    height: 6.2rem
+    color: inherit
+    line-height: 1
+    background-color: transparent
 
-	padding: 2px 0
-	margin-top: 8px
-	margin-bottom: 0
-	resize: none
-	box-sizing: border-box
+    padding: 2px 0
+    margin-top: 8px
+    margin-bottom: 0
+    resize: none
+    box-sizing: border-box
 
 /***************
  *	 Checkboxes
@@ -208,134 +208,134 @@ textarea
 
 /* CUSTOM CSS CHECKBOXES
 form p
-	margin-bottom: 10px
-	text-align: left
+    margin-bottom: 10px
+    text-align: left
 
 form p:last-child
-	margin-bottom: 0
+    margin-bottom: 0
 
 /* Remove default checkbox
 
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked
-	position: absolute
-	left: -9999px
+    position: absolute
+    left: -9999px
 
 // Checkbox Styles
 [type="checkbox"]
-	// Text Label Style
-	+ label
-		position: relative
-		padding-left: 35px
-		cursor: pointer
-		display: inline-block
-		height: 25px
-		line-height: 25px
-		font-size: 1rem
-		-webkit-user-select: none
-		/* webkit (safari, chrome) browsers
-		-moz-user-select: none
-		/* mozilla browsers
-		-khtml-user-select: none
-		/* webkit (konqueror) browsers
-		-ms-user-select: none
-		/* IE10+
-	/* checkbox aspect
-	+ label:before
-		content: ''
-		position: absolute
-		top: 0
-		left: 0
-		width: 18px
-		height: 18px
-		z-index: 0
-		border: 2px solid $radio-empty-color
-		border-radius: 1px
-		margin-top: 2px
-		+transition(all 0.2s)
+    // Text Label Style
+    + label
+        position: relative
+        padding-left: 35px
+        cursor: pointer
+        display: inline-block
+        height: 25px
+        line-height: 25px
+        font-size: 1rem
+        -webkit-user-select: none
+        /* webkit (safari, chrome) browsers
+        -moz-user-select: none
+        /* mozilla browsers
+        -khtml-user-select: none
+        /* webkit (konqueror) browsers
+        -ms-user-select: none
+        /* IE10+
+    /* checkbox aspect
+    + label:before
+        content: ''
+        position: absolute
+        top: 0
+        left: 0
+        width: 18px
+        height: 18px
+        z-index: 0
+        border: 2px solid $radio-empty-color
+        border-radius: 1px
+        margin-top: 2px
+        +transition(all 0.2s)
 
 [type="checkbox"]:checked
-	+ label:before
-		top: -4px
-		left: -3px
-		width: 12px
-		height: 22px
-		border-top: 2px solid transparent
-		border-left: 2px solid transparent
-		border-right: 2px solid $radio-fill-color
-		border-bottom: 2px solid $radio-fill-color
-		+transform(rotate(40deg))
-		-webkit-backface-visibility: hidden
-		+transform-origin(100% 100%)
+    + label:before
+        top: -4px
+        left: -3px
+        width: 12px
+        height: 22px
+        border-top: 2px solid transparent
+        border-left: 2px solid transparent
+        border-right: 2px solid $radio-fill-color
+        border-bottom: 2px solid $radio-fill-color
+        +transform(rotate(40deg))
+        -webkit-backface-visibility: hidden
+        +transform-origin(100% 100%)
 
 /* Indeterminate checkbox
 [type="checkbox"]:indeterminate
-	+ label:before
-		left: -10px
-		top: -11px
-		width: 10px
-		height: 22px
-		border-top: none
-		border-left: none
-		border-right: 2px solid $radio-fill-color
-		border-bottom: none
-		+transform(rotate(90deg))
-		-webkit-backface-visibility: hidden
-		+transform-origin(100% 100%)
+    + label:before
+        left: -10px
+        top: -11px
+        width: 10px
+        height: 22px
+        border-top: none
+        border-left: none
+        border-right: 2px solid $radio-fill-color
+        border-bottom: none
+        +transform(rotate(90deg))
+        -webkit-backface-visibility: hidden
+        +transform-origin(100% 100%)
 
 // Filled in Style
 [type="checkbox"].filled-in
-	// General
-	+ label:after
-		border-radius: 2px
-	+ label:before,
-	+ label:after
-		content: ''
-		left: 0
-		position: absolute
-		/* .1s delay is for check animation
-		transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s
-		z-index: 1
-	// Unchecked style
-	&:not(:checked) + label:before
-		width: 0
-		height: 0
-		border: 3px solid transparent
-		left: 6px
-		top: 10px
-		-webkit-transform: rotateZ(37deg)
-		transform: rotateZ(37deg)
-		-webkit-transform-origin: 20% 40%
-		transform-origin: 100% 100%
-	&:not(:checked) + label:after
-		height: 20px
-		width: 20px
-		background-color: transparent
-		border: 2px solid $radio-empty-color
-		top: 0px
-		z-index: 0
-	// Checked style
-	&:checked
-		+ label:before
-			top: 0
-			left: 1px
-			width: 8px
-			height: 13px
-			border-top: 2px solid transparent
-			border-left: 2px solid transparent
-			border-right: 2px solid $input-bg-color
-			border-bottom: 2px solid $input-bg-color
-			-webkit-transform: rotateZ(37deg)
-			transform: rotateZ(37deg)
-			-webkit-transform-origin: 100% 100%
-			transform-origin: 100% 100%
-		+ label:after
-			top: 0px
-			width: 20px
-			height: 20px
-			border: 2px solid $accent-color
-			background-color: $accent-color
-			z-index: 0
+    // General
+    + label:after
+        border-radius: 2px
+    + label:before,
+    + label:after
+        content: ''
+        left: 0
+        position: absolute
+        /* .1s delay is for check animation
+        transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s
+        z-index: 1
+    // Unchecked style
+    &:not(:checked) + label:before
+        width: 0
+        height: 0
+        border: 3px solid transparent
+        left: 6px
+        top: 10px
+        -webkit-transform: rotateZ(37deg)
+        transform: rotateZ(37deg)
+        -webkit-transform-origin: 20% 40%
+        transform-origin: 100% 100%
+    &:not(:checked) + label:after
+        height: 20px
+        width: 20px
+        background-color: transparent
+        border: 2px solid $radio-empty-color
+        top: 0px
+        z-index: 0
+    // Checked style
+    &:checked
+        + label:before
+            top: 0
+            left: 1px
+            width: 8px
+            height: 13px
+            border-top: 2px solid transparent
+            border-left: 2px solid transparent
+            border-right: 2px solid $input-bg-color
+            border-bottom: 2px solid $input-bg-color
+            -webkit-transform: rotateZ(37deg)
+            transform: rotateZ(37deg)
+            -webkit-transform-origin: 100% 100%
+            transform-origin: 100% 100%
+        + label:after
+            top: 0px
+            width: 20px
+            height: 20px
+            border: 2px solid $accent-color
+            background-color: $accent-color
+            z-index: 0
 
 $switch-checked-lever-bg: desaturate(lighten($accent-color, 25%),25%)
 $switch-bg-color: $accent-color
@@ -344,127 +344,127 @@ $switch-unchecked-bg: #F1F1F1
 
 .switch,
 .switch *
-	-webkit-user-select: none
-	-moz-user-select: none
-	-khtml-user-select: none
-	-ms-user-select: none
+    -webkit-user-select: none
+    -moz-user-select: none
+    -khtml-user-select: none
+    -ms-user-select: none
 
 .switch label
-	cursor: pointer
+    cursor: pointer
 
 .switch label input[type=checkbox]
-	opacity: 0
-	width: 0
-	height: 0
+    opacity: 0
+    width: 0
+    height: 0
 
 .switch label input[type=checkbox]:checked + .lever
-	background-color: $switch-checked-lever-bg
+    background-color: $switch-checked-lever-bg
 
 .switch label input[type=checkbox]:checked + .lever:after
-	background-color: $switch-bg-color
+    background-color: $switch-bg-color
 
 .switch label .lever
-	content: ""
-	display: inline-block
-	position: relative
-	width: 40px
-	height: 15px
-	background-color: $switch-unchecked-lever-bg
-	border-radius: 15px
-	transition: background 0.3s ease
-	vertical-align: middle
-	margin: 4px 10px
+    content: ""
+    display: inline-block
+    position: relative
+    width: 40px
+    height: 15px
+    background-color: $switch-unchecked-lever-bg
+    border-radius: 15px
+    transition: background 0.3s ease
+    vertical-align: middle
+    margin: 4px 10px
 
 .switch label .lever:after
-	content: ""
-	position: absolute
-	display: inline-block
-	width: 21px
-	height: 21px
-	background-color: $switch-unchecked-bg
-	border-radius: 21px
-	box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2)
-	//end was 0.4
-	left: -5px
-	top: -3px
-	transition: left 0.3s ease, background .3s ease, box-shadow 0.1s ease
+    content: ""
+    position: absolute
+    display: inline-block
+    width: 21px
+    height: 21px
+    background-color: $switch-unchecked-bg
+    border-radius: 21px
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2)
+    //end was 0.4
+    left: -5px
+    top: -3px
+    transition: left 0.3s ease, background .3s ease, box-shadow 0.1s ease
 
 // Switch active style
 input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after
-	box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px transparentize($switch-bg-color, 0.9)
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px transparentize($switch-bg-color, 0.9)
 
 input[type=checkbox]:not(:disabled) ~ .lever:active:after
-	box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08)
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08)
 
 .switch label input[type=checkbox]:checked + .lever:after
-	left: 24px
+    left: 24px
 
 select:focus
-	outline: 1px solid lighten($accent-color, 47%)
+    outline: 1px solid lighten($accent-color, 47%)
 
 /***************
  *	Select Field
  ***************/
 
 .select-label
-	position: absolute
+    position: absolute
 
 .select-wrapper
-	position: relative
-	input.select-dropdown
-		position: relative
-		cursor: pointer
-		// color: #444;
-		background-color: transparent
-		border: none
-		border-bottom: 1px solid $input-border-color
-		outline: none
-		height: 3rem
-		line-height: 3rem
-		width: 100%
-		font-size: 1rem
-		margin: 0 0 15px 0
-		padding: 0
-		display: block
-	span.caret
-		color: initial
-		position: absolute
-		right: 0
-		top: 16px
-		font-size: 10px
-	& + label
-		position: absolute
-		top: -14px
-		font-size: $label-font-size
+    position: relative
+    input.select-dropdown
+        position: relative
+        cursor: pointer
+        // color: #444;
+        background-color: transparent
+        border: none
+        border-bottom: 1px solid $input-border-color
+        outline: none
+        height: 3rem
+        line-height: 3rem
+        width: 100%
+        font-size: 1rem
+        margin: 0 0 15px 0
+        padding: 0
+        display: block
+    span.caret
+        color: initial
+        position: absolute
+        right: 0
+        top: 16px
+        font-size: 10px
+    & + label
+        position: absolute
+        top: -14px
+        font-size: $label-font-size
 
 select
-	display: none
+    display: none
 
 select.browser-default
-	display: block
+    display: block
 
 .select-wrapper input.select-dropdown:disabled
-	color: rgba(0, 0, 0, 0.3)
-	cursor: default
-	-webkit-user-select: none
-	-moz-user-select: none
-	-ms-user-select: none
-	border-bottom: 1px solid rgba(0, 0, 0, 0.3)
+    color: rgba(0, 0, 0, 0.3)
+    cursor: default
+    -webkit-user-select: none
+    -moz-user-select: none
+    -ms-user-select: none
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3)
 
 .select-wrapper i
-	color: rgba(0, 0, 0, 0.3)
+    color: rgba(0, 0, 0, 0.3)
 
 .select-dropdown li.disabled
-	color: rgba(0, 0, 0, 0.3)
-	background-color: transparent
+    color: rgba(0, 0, 0, 0.3)
+    background-color: transparent
 
 select
-	background-color: rgba(255, 255, 255, 0.9)
-	width: 100%
-	padding: 5px
-	border: 1px solid #f2f2f2
-	border-radius: 2px
-	height: 3rem
+    background-color: rgba(255, 255, 255, 0.9)
+    width: 100%
+    padding: 5px
+    border: 1px solid #f2f2f2
+    border-radius: 2px
+    height: 3rem
 
 /***************
  *	Radio Buttons
@@ -474,72 +474,72 @@ select
 
 [type="radio"]:not(:checked),
 [type="radio"]:checked
-	position: absolute
-	left: -9999px
-	visibility: hidden
+    position: absolute
+    left: -9999px
+    visibility: hidden
 
 [type="radio"]:not(:checked) + label,
 [type="radio"]:checked + label
-	position: relative
-	padding-left: 35px
-	cursor: pointer
-	display: inline-block
-	height: 25px
-	line-height: 25px
-	font-size: 1rem
-	+transition(0.28s ease)
-	-webkit-user-select: none
-	/* webkit (safari, chrome) browsers
-	-moz-user-select: none
-	/* mozilla browsers
-	-khtml-user-select: none
-	/* webkit (konqueror) browsers
-	-ms-user-select: none
-	/* IE10+
+    position: relative
+    padding-left: 35px
+    cursor: pointer
+    display: inline-block
+    height: 25px
+    line-height: 25px
+    font-size: 1rem
+    +transition(0.28s ease)
+    -webkit-user-select: none
+    /* webkit (safari, chrome) browsers
+    -moz-user-select: none
+    /* mozilla browsers
+    -khtml-user-select: none
+    /* webkit (konqueror) browsers
+    -ms-user-select: none
+    /* IE10+
 
 [type="radio"] + label:before,
 [type="radio"] + label:after
-	content: ''
-	position: absolute
-	left: 0
-	top: 0
-	margin: 4px
-	width: 16px
-	height: 16px
-	z-index: 0
-	+transition(0.28s ease)
+    content: ''
+    position: absolute
+    left: 0
+    top: 0
+    margin: 4px
+    width: 16px
+    height: 16px
+    z-index: 0
+    +transition(0.28s ease)
 
 /* Unchecked styles
 [type="radio"]:not(:checked) + label:before
-	border-radius: 50%
-	border: 2px solid $radio-empty-color
+    border-radius: 50%
+    border: 2px solid $radio-empty-color
 
 [type="radio"]:not(:checked) + label:after
-	border-radius: 50%
-	border: 2px solid $radio-empty-color
-	z-index: -1
-	+transform(scale(0))
+    border-radius: 50%
+    border: 2px solid $radio-empty-color
+    z-index: -1
+    +transform(scale(0))
 
 /* Checked styles
 [type="radio"]:checked + label:before
-	border-radius: 50%
-	border: 2px solid transparent
+    border-radius: 50%
+    border: 2px solid transparent
 
 [type="radio"]:checked + label:after
-	border-radius: 50%
-	border: 2px solid $radio-fill-color
-	background-color: $radio-fill-color
-	z-index: 0
-	+transform(scale(1.02))
+    border-radius: 50%
+    border: 2px solid $radio-fill-color
+    background-color: $radio-fill-color
+    z-index: 0
+    +transform(scale(1.02))
 
 /* Radio With gap
 [type="radio"].with-gap:checked + label:before
-	border-radius: 50%
-	border: 2px solid $radio-fill-color
+    border-radius: 50%
+    border: 2px solid $radio-fill-color
 
 [type="radio"].with-gap:checked + label:after
-	border-radius: 50%
-	border: 2px solid $radio-fill-color
-	background-color: $radio-fill-color
-	z-index: 0
-	+transform(scale(0.5))
+    border-radius: 50%
+    border: 2px solid $radio-fill-color
+    background-color: $radio-fill-color
+    z-index: 0
+    +transform(scale(0.5))
