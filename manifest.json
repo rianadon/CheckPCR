@@ -9,7 +9,7 @@
   "128": "icon/icon_128.png"
   },
   "permissions": [
-     "https://webappsca.pcrsoft.com/",
+     "https://webappsca.pcrsoft.com/"
   ],
   "app": {
     "launch": {
