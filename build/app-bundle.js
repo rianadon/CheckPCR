@@ -2716,7 +2716,7 @@ was already triggered in the last minute)
 %c\tdata                      %c// The data parsed from PCR's interface
 %c\tactivity                  %c// The data for the assignments shown in the activity pane
 %c\textra                     %c// The tasks you've created by clicking the + button
-%c\tschoologyData                %c// The data you've entered from Schoology into settings
+%c\tschoologyData             %c// The data you've entered from Schoology into settings
 %c\tsnackbar("Hello World!")  %c// Creates a snackbar showing the message "Hello World!"
 %c\tdisplayError(new Error()) %c// Displays the stack trace for a random error (Just don't submit it!)
 %c\tcloseError()              %c// Closes that dialog`, ...([].concat(...Array.from(new Array(8), () => ['color: initial', 'color: grey']))));
