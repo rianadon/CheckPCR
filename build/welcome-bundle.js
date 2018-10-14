@@ -427,7 +427,7 @@ const state = {
     /** Recorded changes to assignments */
     activity: storedState('activity', new CachedState([])),
     /** Data on classes */
-    athenaData: storedState('athenaData', new CachedState(null)),
+    schoologyData: storedState('schoologyData', new CachedState(null)),
     /** Assignments marked as done */
     done: storedState('done', new CachedState([])),
     /** Modifications made to assignments */
@@ -1555,9 +1555,9 @@ function createAssignment(split, data) {
     const weekId = computeWeekId(split);
     let smallTag = 'small';
     let link = null;
-    const athenaData = _state__WEBPACK_IMPORTED_MODULE_7__[/* state */ "d"].athenaData.get();
-    if (athenaData && assignment.class != null && (athenaData[data.classes[assignment.class]] != null)) {
-        link = athenaData[data.classes[assignment.class]].link;
+    const schoologyData = _state__WEBPACK_IMPORTED_MODULE_7__[/* state */ "d"].schoologyData.get();
+    if (schoologyData && assignment.class != null && (schoologyData[data.classes[assignment.class]] != null)) {
+        link = schoologyData[data.classes[assignment.class]].link;
         smallTag = 'a';
     }
     const e = Object(_util__WEBPACK_IMPORTED_MODULE_8__[/* element */ "h"])('div', ['assignment', assignment.baseType, 'anim'], `<${smallTag}${link ? ` href='${link}' class='linked' target='_blank'` : ''}>
@@ -2445,7 +2445,7 @@ function updateAvatar() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return updateAthenaData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return updateSchoologyData; });
 /* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 
@@ -2455,44 +2455,44 @@ function formatLogo(logo) {
         .replace('<div class="profile-picture"><img src="', '')
         .replace('tiny', 'reg');
 }
-// Now, there's the schoology/athena integration stuff. First, we need to check if it's been more
-// than a day. There's no point constantly retrieving classes from Athena; they dont't change that
+// Now, there's the schoology/schoology integration stuff. First, we need to check if it's been more
+// than a day. There's no point constantly retrieving classes from Schoology; they dont't change that
 // much.
 // Then, once the variable for the last date is initialized, it's time to get the classes from
-// athena. Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any
+// schoology. Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any
 // better! Seriously! It's just too bad the login page isn't in JSON.
-function parseAthenaData(dat) {
+function parseSchoologyData(dat) {
     if (dat === '')
         return null;
     const d = JSON.parse(dat);
-    const athenaData2 = {};
+    const schoologyData2 = {};
     const allCourseDetails = {};
     d.body.courses.sections.forEach((section) => {
         allCourseDetails[section.course_nid] = section;
     });
     d.body.courses.courses.reverse().forEach((course) => {
         const courseDetails = allCourseDetails[course.nid];
-        athenaData2[course.course_title] = {
-            link: `https://athena.harker.org${courseDetails.link}`,
+        schoologyData2[course.course_title] = {
+            link: `https://schoology.harker.org${courseDetails.link}`,
             logo: formatLogo(courseDetails.logo),
             period: courseDetails.section_title
         };
     });
-    return athenaData2;
+    return schoologyData2;
 }
-function updateAthenaData(data) {
-    const refreshEl = document.getElementById('athenaDataRefresh');
+function updateSchoologyData(data) {
+    const refreshEl = document.getElementById('schoologyDataRefresh');
     try {
-        _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].athenaData.set(parseAthenaData(data));
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').style.display = 'none';
+        _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].schoologyData.set(parseSchoologyData(data));
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('schoologyDataError').style.display = 'none';
         if (refreshEl)
             refreshEl.style.display = 'block';
     }
     catch (e) {
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').style.display = 'block';
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('schoologyDataError').style.display = 'block';
         if (refreshEl)
             refreshEl.style.display = 'none';
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').innerHTML = e.message;
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('schoologyDataError').innerHTML = e.message;
     }
 }
 
@@ -2505,7 +2505,7 @@ function updateAthenaData(data) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pcr__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _plugins_athena__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
+/* harmony import */ var _plugins_schoology__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 
 
@@ -2578,8 +2578,8 @@ window.onpopstate = (event) => {
     }, 50);
 };
 // The text box also needs to execute this function when anything is typed / pasted.
-const athenaDataEl = Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* elemById */ "g"])('athenaData');
-athenaDataEl.addEventListener('input', () => Object(_plugins_athena__WEBPACK_IMPORTED_MODULE_1__[/* updateAthenaData */ "a"])(athenaDataEl.value));
+const schoologyDataEl = Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* elemById */ "g"])('schoologyData');
+schoologyDataEl.addEventListener('input', () => Object(_plugins_schoology__WEBPACK_IMPORTED_MODULE_1__[/* updateSchoologyData */ "a"])(schoologyDataEl.value));
 Object(_pcr__WEBPACK_IMPORTED_MODULE_0__[/* fetch */ "c"])(true, undefined, () => {
     Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* elemById */ "g"])('loginNext').style.display = '';
     Object(_util__WEBPACK_IMPORTED_MODULE_2__[/* elemById */ "g"])('login').classList.add('done');

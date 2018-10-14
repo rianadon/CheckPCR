@@ -427,7 +427,7 @@ const state = {
     /** Recorded changes to assignments */
     activity: storedState('activity', new CachedState([])),
     /** Data on classes */
-    athenaData: storedState('athenaData', new CachedState(null)),
+    schoologyData: storedState('schoologyData', new CachedState(null)),
     /** Assignments marked as done */
     done: storedState('done', new CachedState([])),
     /** Modifications made to assignments */
@@ -1555,9 +1555,9 @@ function createAssignment(split, data) {
     const weekId = computeWeekId(split);
     let smallTag = 'small';
     let link = null;
-    const athenaData = _state__WEBPACK_IMPORTED_MODULE_7__[/* state */ "d"].athenaData.get();
-    if (athenaData && assignment.class != null && (athenaData[data.classes[assignment.class]] != null)) {
-        link = athenaData[data.classes[assignment.class]].link;
+    const schoologyData = _state__WEBPACK_IMPORTED_MODULE_7__[/* state */ "d"].schoologyData.get();
+    if (schoologyData && assignment.class != null && (schoologyData[data.classes[assignment.class]] != null)) {
+        link = schoologyData[data.classes[assignment.class]].link;
         smallTag = 'a';
     }
     const e = Object(_util__WEBPACK_IMPORTED_MODULE_8__[/* element */ "h"])('div', ['assignment', assignment.baseType, 'anim'], `<${smallTag}${link ? ` href='${link}' class='linked' target='_blank'` : ''}>
@@ -2445,7 +2445,7 @@ function updateAvatar() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return updateAthenaData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return updateSchoologyData; });
 /* harmony import */ var _state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 
@@ -2455,44 +2455,44 @@ function formatLogo(logo) {
         .replace('<div class="profile-picture"><img src="', '')
         .replace('tiny', 'reg');
 }
-// Now, there's the schoology/athena integration stuff. First, we need to check if it's been more
-// than a day. There's no point constantly retrieving classes from Athena; they dont't change that
+// Now, there's the schoology/schoology integration stuff. First, we need to check if it's been more
+// than a day. There's no point constantly retrieving classes from Schoology; they dont't change that
 // much.
 // Then, once the variable for the last date is initialized, it's time to get the classes from
-// athena. Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any
+// schoology. Luckily, there's this file at /iapi/course/active - and it's in JSON! Life can't be any
 // better! Seriously! It's just too bad the login page isn't in JSON.
-function parseAthenaData(dat) {
+function parseSchoologyData(dat) {
     if (dat === '')
         return null;
     const d = JSON.parse(dat);
-    const athenaData2 = {};
+    const schoologyData2 = {};
     const allCourseDetails = {};
     d.body.courses.sections.forEach((section) => {
         allCourseDetails[section.course_nid] = section;
     });
     d.body.courses.courses.reverse().forEach((course) => {
         const courseDetails = allCourseDetails[course.nid];
-        athenaData2[course.course_title] = {
-            link: `https://athena.harker.org${courseDetails.link}`,
+        schoologyData2[course.course_title] = {
+            link: `https://schoology.harker.org${courseDetails.link}`,
             logo: formatLogo(courseDetails.logo),
             period: courseDetails.section_title
         };
     });
-    return athenaData2;
+    return schoologyData2;
 }
-function updateAthenaData(data) {
-    const refreshEl = document.getElementById('athenaDataRefresh');
+function updateSchoologyData(data) {
+    const refreshEl = document.getElementById('schoologyDataRefresh');
     try {
-        _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].athenaData.set(parseAthenaData(data));
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').style.display = 'none';
+        _state__WEBPACK_IMPORTED_MODULE_0__[/* state */ "d"].schoologyData.set(parseSchoologyData(data));
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('schoologyDataError').style.display = 'none';
         if (refreshEl)
             refreshEl.style.display = 'block';
     }
     catch (e) {
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').style.display = 'block';
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('schoologyDataError').style.display = 'block';
         if (refreshEl)
             refreshEl.style.display = 'none';
-        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('athenaDataError').innerHTML = e.message;
+        Object(_util__WEBPACK_IMPORTED_MODULE_1__[/* elemById */ "g"])('schoologyDataError').innerHTML = e.message;
     }
 }
 
@@ -2693,8 +2693,8 @@ function initAnalytics() {
     }
 }
 
-// EXTERNAL MODULE: ./src/plugins/athena.ts
-var athena = __webpack_require__(15);
+// EXTERNAL MODULE: ./src/plugins/schoology.ts
+var schoology = __webpack_require__(15);
 
 // CONCATENATED MODULE: ./src/plugins/console.ts
 
@@ -2716,7 +2716,7 @@ was already triggered in the last minute)
 %c\tdata                      %c// The data parsed from PCR's interface
 %c\tactivity                  %c// The data for the assignments shown in the activity pane
 %c\textra                     %c// The tasks you've created by clicking the + button
-%c\tathenaData                %c// The data you've entered from Athena into settings
+%c\tschoologyData             %c// The data you've entered from Schoology into settings
 %c\tsnackbar("Hello World!")  %c// Creates a snackbar showing the message "Hello World!"
 %c\tdisplayError(new Error()) %c// Displays the stack trace for a random error (Just don't submit it!)
 %c\tcloseError()              %c// Closes that dialog`, ...([].concat(...Array.from(new Array(8), () => ['color: initial', 'color: grey']))));
@@ -3120,7 +3120,7 @@ Object(util["g" /* elemById */])('sideBackground').addEventListener('click', () 
     }, 350);
 });
 Object(avatar["a" /* updateAvatar */])();
-// <a name="athena"/> Athena (Schoology)
+// <a name="schoology"/> Schoology (Schoology)
 // ------------------
 //
 // <a name="settings"/> Settings
@@ -3362,13 +3362,13 @@ Array.from(document.getElementsByName('colorType')).forEach((c) => {
 });
 // The same goes for textareas.
 document.querySelectorAll('textarea').forEach((e) => {
-    if ((e.name !== 'athenaDataRaw') && (Object(util["j" /* localStorageRead */])(e.name, null) != null)) {
+    if ((e.name !== 'schoologyDataRaw') && (Object(util["j" /* localStorageRead */])(e.name, null) != null)) {
         e.value = Object(util["j" /* localStorageRead */])(e.name);
     }
     e.addEventListener('input', (evt) => {
         Object(util["k" /* localStorageWrite */])(e.name, e.value);
-        if (e.name === 'athenaDataRaw') {
-            Object(athena["a" /* updateAthenaData */])(e.value);
+        if (e.name === 'schoologyDataRaw') {
+            Object(schoology["a" /* updateSchoologyData */])(e.value);
         }
     });
 });

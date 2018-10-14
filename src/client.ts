@@ -9,7 +9,7 @@ import { display, formatUpdate, getScroll } from './display'
 import { dologin, fetch, getClasses, logout, switchViews } from './pcr'
 import { addActivity, recentActivity } from './plugins/activity'
 import { initAnalytics } from './plugins/analytics'
-import { updateAthenaData } from './plugins/athena'
+import { updateSchoologyData } from './plugins/schoology'
 import { initConsoleInteractivity } from './plugins/console'
 import { addToExtra, parseCustomTask } from './plugins/customAssignments'
 import { decrementState, getStateItem, incrementState, state, zeroDateOffsets } from './state'
@@ -407,7 +407,7 @@ elemById('sideBackground').addEventListener('click', () => {
 
 updateAvatar()
 
-// <a name="athena"/> Athena (Schoology)
+// <a name="schoology"/> Schoology (Schoology)
 // ------------------
 //
 
@@ -653,13 +653,13 @@ Array.from(document.getElementsByName('colorType')).forEach((c) => {
 
 // The same goes for textareas.
 document.querySelectorAll('textarea').forEach((e) => {
-  if ((e.name !== 'athenaDataRaw') && (localStorageRead(e.name, null) != null)) {
+  if ((e.name !== 'schoologyDataRaw') && (localStorageRead(e.name, null) != null)) {
     e.value = localStorageRead(e.name)
   }
   e.addEventListener('input', (evt) => {
     localStorageWrite(e.name, e.value)
-    if (e.name === 'athenaDataRaw') {
-      updateAthenaData(e.value)
+    if (e.name === 'schoologyDataRaw') {
+      updateSchoologyData(e.value)
     }
   })
 })

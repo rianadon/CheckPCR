@@ -2741,16 +2741,16 @@ body[data-pcrview="other"] #switchViews > a::after, body[data-pcrview="other"] .
   font-size: 14px;
   display: block; }
 
-#athenaData {
+#schoologyData {
   word-break: break-all; }
 
-#athenaDataError {
+#schoologyDataError {
   color: #F44336 !important;
   margin-top: 8px !important; }
-  #athenaDataError::before {
+  #schoologyDataError::before {
     content: "Encountered an error when parsing: "; }
 
-#athenaDataRefresh, #sepTasksRefresh {
+#schoologyDataRefresh, #sepTasksRefresh {
   margin-top: 8px !important;
   color: inherit !important; }
 
