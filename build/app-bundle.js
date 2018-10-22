@@ -2278,7 +2278,7 @@ function extraToTask(custom, data) {
         start: custom.start,
         end: custom.end || 'Forever',
         body: custom.body,
-        id: `task${custom.body.replace(/[^\w]*/g, '')}${custom.start}${custom.end}${custom.class}`,
+        id: `task${custom.body}${custom.start}${custom.end}${custom.class}`.replace(/[^\w]*/g, ''),
         class: cls === -1 ? null : cls
     };
 }
