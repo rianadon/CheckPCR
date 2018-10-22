@@ -16,12 +16,14 @@ export function updateNewTips(val: string, scroll: boolean = true): void {
     }
 
     const spaceIndex = val.lastIndexOf(' ')
+    let foundFor = false
     if (spaceIndex !== -1) {
         const beforeSpace = val.lastIndexOf(' ', spaceIndex - 1)
         const before = val.substring((beforeSpace === -1 ? 0 : beforeSpace + 1), spaceIndex)
         Object.entries(TIP_NAMES).forEach(([name, possible]) => {
             if (possible.indexOf(before) !== -1) {
                 if (name === 'for') {
+                    foundFor = true
                     Object.keys(TIP_NAMES).forEach((tipName) => {
                         elemById(`tip${tipName}`).classList.remove('active')
                     })
@@ -46,6 +48,7 @@ export function updateNewTips(val: string, scroll: boolean = true): void {
             }
         })
     }
+    if (foundFor) return
 
     document.querySelectorAll('.classTip').forEach((el) => {
         el.classList.remove('active')

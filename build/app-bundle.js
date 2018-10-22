@@ -2534,12 +2534,14 @@ function updateNewTips(val, scroll = true) {
         Object(util["g" /* elemById */])('newTips').scrollTop = 0;
     }
     const spaceIndex = val.lastIndexOf(' ');
+    let foundFor = false;
     if (spaceIndex !== -1) {
         const beforeSpace = val.lastIndexOf(' ', spaceIndex - 1);
         const before = val.substring((beforeSpace === -1 ? 0 : beforeSpace + 1), spaceIndex);
         Object.entries(TIP_NAMES).forEach(([name, possible]) => {
             if (possible.indexOf(before) !== -1) {
                 if (name === 'for') {
+                    foundFor = true;
                     Object.keys(TIP_NAMES).forEach((tipName) => {
                         Object(util["g" /* elemById */])(`tip${tipName}`).classList.remove('active');
                     });
@@ -2564,6 +2566,8 @@ function updateNewTips(val, scroll = true) {
             }
         });
     }
+    if (foundFor)
+        return;
     document.querySelectorAll('.classTip').forEach((el) => {
         el.classList.remove('active');
     });
