@@ -1,7 +1,7 @@
 import { state } from './state'
 import { elemById, element, send } from './util'
 
-export const VERSION = '2.26.1'
+export const VERSION = '2.26.2'
 
 const VERSION_URL = 'https://raw.githubusercontent.com/19RyanA/CheckPCR/master/version.txt'
 const COMMIT_URL = (location.protocol === 'chrome-extension:' ?

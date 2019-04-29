@@ -1,6 +1,6 @@
 {
   "name": "checkpcr",
-  "version": "2.26.1",
+  "version": "2.26.2",
   "private": true,
   "description": "A client for PCR, the homework system used by The Harker School",
   "dependencies": {},
