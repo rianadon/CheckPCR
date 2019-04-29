@@ -503,7 +503,11 @@ const state = {
     /**
      * Whether to enable Google Analytics
      */
-    enableAnalytics: storedState('googleA', new CachedState(true))
+    enableAnalytics: storedState('googleA', new CachedState(true)),
+    /**
+     * The page will be named "${this} PCR"
+     */
+    titleAction: storedState('titleAction', new CachedState('Yoink'))
 };
 function getStateItem(name) {
     if (!state.hasOwnProperty(name))
@@ -2164,7 +2168,7 @@ window.addEventListener('error', (evt) => {
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 
 
-const VERSION = '2.26.0';
+const VERSION = '2.26.1';
 const VERSION_URL = 'https://raw.githubusercontent.com/19RyanA/CheckPCR/master/version.txt';
 const COMMIT_URL = (location.protocol === 'chrome-extension:' ?
     'https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master' : '/api/commit');
@@ -3146,7 +3150,7 @@ Object(util["g" /* elemById */])('settingsB').addEventListener('click', () => {
 Object(util["g" /* elemById */])('backButton').addEventListener('click', () => {
     Object(util["b" /* _$h */])(document.querySelector('main')).style.display = 'block';
     document.body.classList.remove('settingsShown');
-    return Object(util["g" /* elemById */])('brand').innerHTML = 'Check PCR';
+    return updateTitle();
 });
 // The code below is what the settings control.
 if (state["d" /* state */].sepTasks.get()) {
@@ -3194,6 +3198,10 @@ function intervalRefresh() {
     }
 }
 intervalRefresh();
+function updateTitle() {
+    Object(util["g" /* elemById */])('brand').innerHTML = state["d" /* state */].titleAction.get() + ' PCR';
+}
+updateTitle();
 // For choosing colors, the color choosing boxes need to be initialized.
 const palette = {
     '#f44336': '#B71C1C',
@@ -3341,6 +3349,7 @@ document.querySelectorAll('.settingsControl').forEach((e) => {
                 document.body.classList.toggle('sepTaskClass', e.checked);
                 return Object(display["a" /* display */])();
             case 'sepTasks': return Object(util["g" /* elemById */])('sepTasksRefresh').style.display = 'block';
+            case 'titleAction': return updateTitle();
         }
     });
 });

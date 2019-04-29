@@ -432,7 +432,7 @@ elemById('settingsB').addEventListener('click', () => {
 elemById('backButton').addEventListener('click', () => {
     _$h(document.querySelector('main')).style.display = 'block'
     document.body.classList.remove('settingsShown')
-    return elemById('brand').innerHTML = 'Check PCR'
+    return updateTitle()
 })
 
 // The code below is what the settings control.
@@ -475,6 +475,11 @@ function intervalRefresh(): void {
     }
 }
 intervalRefresh()
+
+function updateTitle() {
+    elemById('brand').innerHTML = state.titleAction.get() + ' PCR'
+}
+updateTitle()
 
 // For choosing colors, the color choosing boxes need to be initialized.
 const palette: IColorMap = {
@@ -627,6 +632,7 @@ document.querySelectorAll('.settingsControl').forEach((e: HTMLInputElement) => {
             case 'holidayThemes': return document.body.classList.toggle('holidayThemes', e.checked)
             case 'sepTaskClass': document.body.classList.toggle('sepTaskClass', e.checked); return display()
             case 'sepTasks': return elemById('sepTasksRefresh').style.display = 'block'
+            case 'titleAction': return updateTitle()
         }
     })
 })

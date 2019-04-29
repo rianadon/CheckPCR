@@ -191,7 +191,13 @@ export const state = {
     /**
      * Whether to enable Google Analytics
      */
-    enableAnalytics: storedState('googleA', new CachedState(true))
+    enableAnalytics: storedState('googleA', new CachedState(true)),
+
+    /**
+     * The page will be named "${this} PCR"
+     */
+    titleAction: storedState('titleAction', new CachedState<string>('Yoink'))
+
 }
 
 export function getStateItem(name: string): IStateItem<any> {

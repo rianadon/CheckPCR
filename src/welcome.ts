@@ -13,7 +13,7 @@ import { _$h, elemById } from './util'
 // First off, the buttons big, green, welcoming buttons on the bottom of the welcome page are
 // assigned event listeners so that they can make the page show more welcoming information.
 function advance(): void {
-    // The box holding the individual pages that ge scrolled
+    // The box holding the individual pages that get scrolled
     // when pressing the 'next' button is assigned to a varialbe.
     const container = document.body
     // show the next page

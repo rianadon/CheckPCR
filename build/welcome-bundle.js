@@ -503,7 +503,11 @@ const state = {
     /**
      * Whether to enable Google Analytics
      */
-    enableAnalytics: storedState('googleA', new CachedState(true))
+    enableAnalytics: storedState('googleA', new CachedState(true)),
+    /**
+     * The page will be named "${this} PCR"
+     */
+    titleAction: storedState('titleAction', new CachedState('Yoink'))
 };
 function getStateItem(name) {
     if (!state.hasOwnProperty(name))
@@ -2164,7 +2168,7 @@ window.addEventListener('error', (evt) => {
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 
 
-const VERSION = '2.26.0';
+const VERSION = '2.26.1';
 const VERSION_URL = 'https://raw.githubusercontent.com/19RyanA/CheckPCR/master/version.txt';
 const COMMIT_URL = (location.protocol === 'chrome-extension:' ?
     'https://api.github.com/repos/19RyanA/CheckPCR/git/refs/heads/master' : '/api/commit');
@@ -2521,7 +2525,7 @@ __webpack_require__.r(__webpack_exports__);
 // First off, the buttons big, green, welcoming buttons on the bottom of the welcome page are
 // assigned event listeners so that they can make the page show more welcoming information.
 function advance() {
-    // The box holding the individual pages that ge scrolled
+    // The box holding the individual pages that get scrolled
     // when pressing the 'next' button is assigned to a varialbe.
     const container = document.body;
     // show the next page
