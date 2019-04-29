@@ -3199,7 +3199,7 @@ function intervalRefresh() {
 }
 intervalRefresh();
 function updateTitle() {
-    Object(util["g" /* elemById */])('brand').innerHTML = state["d" /* state */].titleAction.get() + ' PCR';
+    Object(util["g" /* elemById */])('brand').innerHTML = document.title = state["d" /* state */].titleAction.get() + ' PCR';
 }
 updateTitle();
 // For choosing colors, the color choosing boxes need to be initialized.

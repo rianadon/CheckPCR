@@ -476,8 +476,8 @@ function intervalRefresh(): void {
 }
 intervalRefresh()
 
-function updateTitle() {
-    elemById('brand').innerHTML = state.titleAction.get() + ' PCR'
+function updateTitle(): void {
+    elemById('brand').innerHTML = document.title = state.titleAction.get() + ' PCR'
 }
 updateTitle()
 
